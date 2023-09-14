@@ -135,6 +135,7 @@ using TLIS_DAL.ViewModels.BaseTypeDTOs;
 using TLIS_DAL.ViewModels.InstallationPlaceDTOs;
 using TLIS_DAL.ViewModels.ImportSheetDtos;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
+using TLIS_DAL.ViewModels.RegionDTOs;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -1572,6 +1573,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLImwBULibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLImwDishLibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLImwOtherLibrary, LibraryDataDto>().ReverseMap();
+            CreateMap<TLImwRFULibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLImwODULibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIcabinetPowerLibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIradioAntennaLibrary, LibraryDataDto>().ReverseMap();
@@ -1582,6 +1584,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIradioOtherLibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIradioRRULibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIsolarLibrary, LibraryDataDto>().ReverseMap();
+            CreateMap<TLIregion, RegionViewModel>().ReverseMap();
 
 
         }

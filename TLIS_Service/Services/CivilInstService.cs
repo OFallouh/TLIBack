@@ -4767,27 +4767,22 @@ namespace TLIS_Service.Services
                     //
                     if (NotDateTimeDynamicInstallationAttributesViewModel != null ? NotDateTimeDynamicInstallationAttributesViewModel.Count > 0 : false)
                     {
-                         List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository
+                        var temp = NotDateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
+                        List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository
                             .GetIncludeWhere(x =>
                                 !x.disable &&
                                 x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
                                 !x.LibraryAtt &&
                                 x.DataType.Name.ToLower() != "datetime" &&
-                                NotDateTimeDynamicInstallationAttributesViewModel.Any(y => y.DynamicAttId == x.Id)
+                                temp.Any(y => y == x.Id)
                             , x => x.tablesNames, x => x.DataType)
                             .ToList();
 
-
-                        //List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        //   !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
-                        //    !x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        //   NotDateTimeDynamicInstallationAttributesViewModel.Exists(y => y.DynamicAttId == x.Id)
-                        //        , x => x.tablesNames, x => x.DataType).ToList();
-
+                        var tempno = NotDateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
                         List<TLIdynamicAttInstValue> NotDateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             !x.DynamicAtt.LibraryAtt && !x.disable &&
                             x.InventoryId == CivilWithLegInstallationObject.Id &&
-                            NotDateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString()
                                 , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -4851,15 +4846,17 @@ namespace TLIS_Service.Services
                     // 
                     if (DateTimeDynamicInstallationAttributesViewModel != null ? DateTimeDynamicInstallationAttributesViewModel.Count() > 0 : false)
                     {
+                        var temp = DateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
                         List<TLIdynamicAtt> DateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                            !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
                            !x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                            DateTimeDynamicInstallationAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
+                            temp.Any(y => y == x.Id), x => x.tablesNames).ToList();
 
+                        var tempno = DateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
                         List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             x.InventoryId == CivilWithLegInstallationObject.Id && !x.disable &&
                            !x.DynamicAtt.LibraryAtt &&
-                            DateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString()
                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -5022,16 +5019,17 @@ namespace TLIS_Service.Services
                     //
                     if (NotDateTimeDynamicInstallationAttributesViewModel != null ? NotDateTimeDynamicInstallationAttributesViewModel.Count > 0 : false)
                     {
+                        var temp = NotDateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
                         List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                             !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() &&
                             !x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                            NotDateTimeDynamicInstallationAttributesViewModel.Exists(y => y.DynamicAttId == x.Id)
+                            temp.Any(y => y == x.Id)
                                 , x => x.tablesNames, x => x.DataType).ToList();
-
+                        var tempno = NotDateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
                         List<TLIdynamicAttInstValue> NotDateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             !x.DynamicAtt.LibraryAtt && !x.disable &&
                             x.InventoryId == CivilWithoutLegInstallationObject.Id &&
-                            NotDateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString()
                                 , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -5095,15 +5093,17 @@ namespace TLIS_Service.Services
                     //
                     if (DateTimeDynamicInstallationAttributesViewModel != null ? DateTimeDynamicInstallationAttributesViewModel.Count() > 0 : false)
                     {
+                        var temp = DateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
                         List<TLIdynamicAtt> DateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                            !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() &&
                            !x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                            DateTimeDynamicInstallationAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
+                            temp.Any(y => y == x.Id), x => x.tablesNames).ToList();
 
+                        var tempno = DateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
                         List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             x.InventoryId == CivilWithoutLegInstallationObject.Id && !x.disable &&
                            !x.DynamicAtt.LibraryAtt &&
-                            DateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y) == x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString()
                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -5248,16 +5248,17 @@ namespace TLIS_Service.Services
                     //
                     if (NotDateTimeDynamicInstallationAttributesViewModel != null ? NotDateTimeDynamicInstallationAttributesViewModel.Count > 0 : false)
                     {
+                        var temp = NotDateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
                         List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                             !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() &&
                             !x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                            NotDateTimeDynamicInstallationAttributesViewModel.Exists(y => y.DynamicAttId == x.Id)
+                            temp.Any(y => y == x.Id)
                                 , x => x.tablesNames, x => x.DataType).ToList();
-
+                        var tempno = NotDateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
                         List<TLIdynamicAttInstValue> NotDateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             !x.DynamicAtt.LibraryAtt && !x.disable &&
                             x.InventoryId == CivilNonSteelInstallationObject.Id &&
-                            NotDateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y== x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString()
                                 , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -5321,15 +5322,16 @@ namespace TLIS_Service.Services
                     // 
                     if (DateTimeDynamicInstallationAttributesViewModel != null ? DateTimeDynamicInstallationAttributesViewModel.Count() > 0 : false)
                     {
+                        var temp = DateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
                         List<TLIdynamicAtt> DateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                            !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() &&
                            !x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                            DateTimeDynamicInstallationAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
-
+                            temp.Any(y => y == x.Id), x => x.tablesNames).ToList();
+                        var tempno = DateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
                         List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             x.InventoryId == CivilNonSteelInstallationObject.Id && !x.disable &&
                            !x.DynamicAtt.LibraryAtt &&
-                            DateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString()
                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
