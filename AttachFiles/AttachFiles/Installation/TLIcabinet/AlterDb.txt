@@ -1,0 +1,11 @@
+
+alter table "TLImwDish" add "CenterHigh" BINARY_FLOAT default 0;
+alter table "TLImwDish" add "HBA" BINARY_FLOAT default 0;
+alter table "TLImwDish" add "HieghFromLand" BINARY_FLOAT default 0;
+alter table "TLImwDish" add "EquivalentSpace" BINARY_FLOAT default 0;
+alter table "TLImwDish" modify "Azimuth" BINARY_FLOAT default 0;
+alter table "TLImwDish" modify "Is_Repeator" Number(1) not null
+alter table "TLImwDish" modify "SpaceInstallation" BINARY_FLOAT not null;
+alter table "TLImwDish" modify "HeightBase" BINARY_FLOAT not null;
+alter table "TLImwDish" modify "HeightLand" BINARY_FLOAT not null;
+alter table "TLImwDish" modify "MwDishLibraryId" Number(10) not null;

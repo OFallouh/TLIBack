@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TLIS_API", "TLIS_API\TLIS_API.csproj", "{91938ACA-2325-4910-A7EF-3FD5C99DF1F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D63A4753-9061-4D5F-B416-2648AED647EE} = {D63A4753-9061-4D5F-B416-2648AED647EE}
+		{B5F3A563-A89E-4845-BA73-A27200B4DD4A} = {B5F3A563-A89E-4845-BA73-A27200B4DD4A}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TLIS_Service", "TLIS_Service\TLIS_Service.csproj", "{76A832B3-FB62-4D3F-83FE-FE8569E5EB3F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TLIS_Repository", "TLIS_Repository\TLIS_Repository.csproj", "{D63A4753-9061-4D5F-B416-2648AED647EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TLIS_DAL", "TLIS_DAL\TLIS_DAL.csproj", "{B5F3A563-A89E-4845-BA73-A27200B4DD4A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91938ACA-2325-4910-A7EF-3FD5C99DF1F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91938ACA-2325-4910-A7EF-3FD5C99DF1F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91938ACA-2325-4910-A7EF-3FD5C99DF1F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91938ACA-2325-4910-A7EF-3FD5C99DF1F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A832B3-FB62-4D3F-83FE-FE8569E5EB3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A832B3-FB62-4D3F-83FE-FE8569E5EB3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76A832B3-FB62-4D3F-83FE-FE8569E5EB3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76A832B3-FB62-4D3F-83FE-FE8569E5EB3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63A4753-9061-4D5F-B416-2648AED647EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63A4753-9061-4D5F-B416-2648AED647EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63A4753-9061-4D5F-B416-2648AED647EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63A4753-9061-4D5F-B416-2648AED647EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5F3A563-A89E-4845-BA73-A27200B4DD4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F3A563-A89E-4845-BA73-A27200B4DD4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5F3A563-A89E-4845-BA73-A27200B4DD4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5F3A563-A89E-4845-BA73-A27200B4DD4A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F95B3F72-5F8D-4D9E-9EA0-2F1D502FD8AE}
+	EndGlobalSection
+EndGlobal

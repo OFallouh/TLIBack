@@ -1,0 +1,18 @@
+Please informed that proposed storage is suitable. 
+for table spaces design we will choose to work with 2 tablespaces for one for data (275GB) and the other one for indexes(25GB) .
+
+for database users,
+
+DB_owner , DB_operational ,,, they both should have same permissions (becuase of code first approach .. all mentioned  permessions are needed)
+one for test and the other one for production. 
+
+permessions are: 
+
+(update any table, select any table,read any table,
+merge any view** , keep sysguid** , insert any table,import full database**flashback any table**execute any procdure,execute any indextype, drop any view,
+drop any table,drop any trigger,drop any sequnce,drop any procdure,drop any index,drop any cluster,delete any table,create view,create trigger, create tableSpace,create table,
+create squence,create procedure	,
+create job,create cluster,create any view,
+create any table,create any trigger,create any sequnce,alter DatabaseLink,
+alter any table,alter any sequence,alter any procedure,alter any index, alter any cluster) 
+

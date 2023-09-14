@@ -1,0 +1,206 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using TLIS_DAL.Helper;
+using TLIS_DAL.Helper.Filters;
+using TLIS_DAL.Helpers;
+using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.LoadOtherDTOs;
+using TLIS_DAL.ViewModels.RadioAntennaDTOs;
+using TLIS_DAL.ViewModels.RadioOtherDTOs;
+using TLIS_DAL.ViewModels.RadioRRUDTOs;
+using TLIS_DAL.ViewModels.SideArmDTOs;
+using TLIS_Service.Helpers;
+using TLIS_Service.ServiceBase;
+
+namespace TLIS_API.Controllers
+{
+    [ServiceFilter(typeof(LogFilterAttribute))]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RadioInstController : ControllerBase
+    {
+        private readonly IUnitOfWorkService _unitOfWorkService;
+        private readonly IConfiguration _configuration;
+        public RadioInstController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration)
+        {
+            _unitOfWorkService = unitOfWorkService;
+            _configuration = configuration;
+        }
+        [HttpGet("GetAttForAdd")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAdd(string RadioInstType, int LibId, string SiteCode)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetAttForAdd(RadioInstType, LibId, SiteCode);
+            return Ok(response);
+        }
+        [HttpPost("AddRadioAntennaInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddRadioAntennaViewModel))]
+        public IActionResult AddRadioAntennaInstallation([FromBody]AddRadioAntennaViewModel addRadioAntenna, string SiteCode)
+        {
+            if (addRadioAntenna.TLIcivilLoads.sideArmId == 0)
+                addRadioAntenna.TLIcivilLoads.sideArmId = null;
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaViewModel)))
+            {
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("AddRadioRRUInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddRadioRRUViewModel))]
+        public IActionResult AddRadioRRUInstallation([FromBody]AddRadioRRUViewModel addRadioRRU, string SiteCode)
+        {
+            if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
+                addRadioRRU.TLIcivilLoads.sideArmId = null;
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUViewModel)))
+            {
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("AddRadioOtherInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddRadioOtherViewModel))]
+        public IActionResult AddRadioOtherInstallation([FromBody]AddRadioOtherViewModel addRadioOther, string SiteCode)
+        {
+            if (addRadioOther.TLIcivilLoads.sideArmId == 0)
+                addRadioOther.TLIcivilLoads.sideArmId = null;
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (TryValidateModel(addRadioOther, nameof(AddRadioOtherViewModel)))
+            {
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddRadioOtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpGet("GetById")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        public IActionResult GetById(int Id, string RadioType)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetById(Id, RadioType);
+            return Ok(response);
+        }
+        [HttpGet("DismantleRadioRRU")]
+
+        public IActionResult DismantleRadioRRU(string sitecode, int LoadId, string LoadName)
+        {
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            return Ok(response);
+
+        }
+        [HttpGet("DismantleRadioOther")]
+
+        public IActionResult DismantleRadioOther(string sitecode, int LoadId, string LoadName)
+        {
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            return Ok(response);
+
+        }
+        [HttpGet("DismatleRadioAntenna")]
+
+        public IActionResult DismatleRadioAntenna(string sitecode, int LoadId, string LoadName)
+        {
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            return Ok(response);
+
+        }
+
+        [HttpPost("EditRadioAntennaInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditRadioAntennaViewModel))]
+        public async Task<IActionResult> EditRadioAntennaInstallation([FromBody]EditRadioAntennaViewModel editRadioAntenna)
+        {
+            if(TryValidateModel(editRadioAntenna, nameof(EditRadioAntennaViewModel)))
+            {
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("EditRadioRRUInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditRadioRRUViewModel))]
+        public async Task<IActionResult> EditRadioRRUInstallation([FromBody]EditRadioRRUViewModel editRadioRRU)
+        {
+            if(TryValidateModel(editRadioRRU, nameof(EditRadioRRUViewModel)))
+            {
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("EditRadioOtherInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditRadioOtherViewModel))]
+        public async Task<IActionResult> EditRadioRRUInstallation([FromBody] EditRadioOtherViewModel editRadioOther)
+        {
+            if (TryValidateModel(editRadioOther, nameof(EditRadioOtherViewModel)))
+            {
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("GetRadioRRUsList")]
+        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioRRUViewModel>))]
+        public IActionResult GetRadioRRUsList([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetRadioRRUsList(filters, WithFilterData, parameters);
+            return Ok(response);
+        }
+        [HttpPost("GetRadioAntennasList")]
+        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioAntennaViewModel>))]
+        public IActionResult GetRadioAntennasList([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetRadioAntennasList(filters, WithFilterData, parameters);
+            return Ok(response);
+        }
+        [HttpPost("GetRadioOtherList")]
+        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioOtherViewModel>))]
+        public IActionResult GetRadioOtherList([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetRadioOtherList(filters, WithFilterData, parameters);
+            return Ok(response);
+        }
+    }
+}

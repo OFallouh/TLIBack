@@ -1,0 +1,1375 @@
+{
+  "data": {
+    "libraryActivatedAttributes": [
+      {
+        "key": "Model",
+        "value": "TestCivilWithLegLibraryValidation v2",
+        "desc": "Model",
+        "label": "Model",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Note",
+        "value": "TestCivilWithLegLibraryValidation v2",
+        "desc": "NoteTest",
+        "label": "Note1",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Prefix",
+        "value": "TestCivilWithLegLibraryValidation v2",
+        "desc": "Prefix2",
+        "label": "Prefix",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Height_Designed",
+        "value": 0,
+        "desc": "hp",
+        "label": "hp",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "Max_load_M2",
+        "value": 0,
+        "desc": "Max_load_M",
+        "label": "Max_load_M1",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "SpaceLibrary",
+        "value": 0,
+        "desc": "SpaceLibrary",
+        "label": "SpaceLibrary",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "supportTypeDesignedId",
+        "value": "NA",
+        "desc": "TLIsupportTypeDesigned",
+        "label": "supportTypeDesigned_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "sectionsLegTypeId",
+        "value": "NA",
+        "desc": "TLIsectionsLegType",
+        "label": "sectionsLegType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "structureTypeId",
+        "value": "NA",
+        "desc": "TLIstructureType",
+        "label": "structureType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Manufactured_Max_Load",
+        "value": 7777777,
+        "desc": "Manufactured_Max_Load",
+        "label": "Manufactured_Max_Load",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "NumberOfLegs",
+        "value": 1,
+        "desc": "NumberOfLegs",
+        "label": "NumberOfLegs",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "int"
+      },
+      {
+        "key": "Vendor",
+        "value": "NA",
+        "desc": "Vendor",
+        "label": "Vendor",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Designer",
+        "value": "NA",
+        "desc": "Designer",
+        "label": "Designer",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Supplier",
+        "value": "NA",
+        "desc": "Supplier",
+        "label": "Supplier",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Manufacturer",
+        "value": "NA",
+        "desc": "Manufacturer",
+        "label": "Manufacturer",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      }
+    ],
+    "attributesActivated": [
+      {
+        "id": 0,
+        "key": "Name",
+        "value": "TestAdd2",
+        "desc": "Name1",
+        "label": "Name",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "BasePlateDimensions",
+        "value": null,
+        "desc": "BasePlateDimensions",
+        "label": "BasePlateDimensions",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "BaseNote",
+        "value": null,
+        "desc": "BaseNote",
+        "label": "BaseNotee",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "locationTypeId",
+        "value": "NA",
+        "desc": "TLIlocationType",
+        "label": "locationType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "baseTypeId",
+        "value": "NA",
+        "desc": "TLIbaseType",
+        "label": "baseType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "VerticalMeasurement",
+        "value": null,
+        "desc": "VerticalMeasurement",
+        "label": "VerticalMeasurement",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "SteelCrossSection",
+        "value": null,
+        "desc": "SteelCrossSection",
+        "label": "SteelCrossSection",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "DiagonalMemberPrefix",
+        "value": null,
+        "desc": "DiagonalMemberPrefix",
+        "label": "DiagonalMemberPrefix",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "EnforcementHeightBase",
+        "value": 0,
+        "desc": "EnforcementHeightBase",
+        "label": "EnforcementHeightBase",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "Enforcementlevel",
+        "value": 0,
+        "desc": "Name",
+        "label": "Enforcementlevel",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "TotalHeight",
+        "value": 0,
+        "desc": "TotalHeight",
+        "label": "TotalHeight",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "SpaceInstallation",
+        "value": 0,
+        "desc": "SpaceInstallation",
+        "label": "SpaceInstallation",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "OwnerId",
+        "value": "NA",
+        "desc": "TLIowner",
+        "label": "Owner_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "CivilWithLegsLibId",
+        "value": "TestCivilWithLegLibraryValidation v2",
+        "desc": "TLIcivilWithLegLibrary",
+        "label": "CivilWithLegsLib_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "BaseCivilWithLegTypeId",
+        "value": "NA",
+        "desc": "TLIbaseCivilWithLegsType",
+        "label": "BaseCivilWithLegType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "GuylineTypeId",
+        "value": "Na",
+        "desc": "TLIguyLineType",
+        "label": "GuylineType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "BoltHoles",
+        "value": 0,
+        "desc": "BoltHoles",
+        "label": "BoltHoles",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "int"
+      },
+      {
+        "id": 0,
+        "key": "SupportTypeImplementedId",
+        "value": "NA",
+        "desc": "TLIsupportTypeImplemented",
+        "label": "SupportTypeImplemented_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "DiagonalMemberDimensions",
+        "value": null,
+        "desc": "DiagonalMemberDimensions",
+        "label": "DiagonalMemberDimensions",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "DimensionsLeg",
+        "value": null,
+        "desc": "DimensionsLeg",
+        "label": "DimensionsLeg",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "BasePlateShape",
+        "value": null,
+        "desc": "BasePlateShape",
+        "label": "BasePlateShape",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "WindMaxLoadm2",
+        "value": 0,
+        "desc": "WindMaxLoadm2",
+        "label": "WindMaxLoadm2",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "LocationHeight",
+        "value": 0,
+        "desc": "LocationHeight",
+        "label": "LocationHeight",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "double"
+      },
+      {
+        "id": 0,
+        "key": "PoType",
+        "value": null,
+        "desc": "PoType",
+        "label": "PoType",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "PoNo",
+        "value": null,
+        "desc": "PoNo",
+        "label": "PoNo",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "PoDate",
+        "value": "2023-02-08T00:00:00",
+        "desc": "PoDate",
+        "label": "PoDate",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "DateTime"
+      },
+      {
+        "id": 0,
+        "key": "HeightImplemented",
+        "value": 0,
+        "desc": "HeightImplemented",
+        "label": "HeightImplemented",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "double"
+      },
+      {
+        "id": 0,
+        "key": "BuildingMaxLoad",
+        "value": 0,
+        "desc": "BuildingMaxLoad",
+        "label": "BuildingMaxLoad",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "SupportMaxLoadAfterInforcement",
+        "value": 0,
+        "desc": "SupportMaxLoadAfterInforcement",
+        "label": "SupportMaxLoadAfterInforcement",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "warningpercentageloads",
+        "value": 0,
+        "desc": "warningpercentageloads",
+        "label": "warningpercentageloads",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "double"
+      },
+      {
+        "id": 0,
+        "key": "VerticalMeasured",
+        "value": "0",
+        "desc": "VerticalMeasured",
+        "label": "VerticalMeasured",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "int"
+      },
+      {
+        "id": 0,
+        "key": "OtherBaseType",
+        "value": null,
+        "desc": "OtherBaseType",
+        "label": "OtherBaseType",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "IsEnforeced",
+        "value": false,
+        "desc": "IsEnforeced",
+        "label": "IsEnforeced",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "bool"
+      },
+      {
+        "id": 0,
+        "key": "H2height",
+        "value": 0,
+        "desc": "H2height",
+        "label": "H2height",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "double"
+      },
+      {
+        "id": 0,
+        "key": "HeightBase",
+        "value": 0,
+        "desc": "HeightBase",
+        "label": "HeightBase",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "DiagonalMemberSection",
+        "value": null,
+        "desc": "DiagonalMemberSection",
+        "label": "DiagonalMemberSection",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "enforcmentCategoryId",
+        "value": "NA",
+        "desc": "TLIenforcmentCategory",
+        "label": "enforcmentCategory_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "Support_Limited_Load",
+        "value": 0,
+        "desc": "Support_Limited_Load",
+        "label": "Support_Limited_Load",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "StructureType",
+        "value": "Yes",
+        "desc": "StructureType",
+        "label": "StructureType",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "SectionsLegType",
+        "value": "Yes",
+        "desc": "SectionsLegType",
+        "label": "SectionsLegType",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "CurrentLoads",
+        "value": null,
+        "desc": "CurrentLoads",
+        "label": "CurrentLoads",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "double"
+      }
+    ],
+    "civilSiteDate": [
+      {
+        "id": 0,
+        "key": "LongitudinalSpindleLengthm",
+        "value": null,
+        "desc": "LongitudinalSpindleLengthm",
+        "label": "LongitudinalSpindleLengthm",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HorizontalSpindleLengthm",
+        "value": null,
+        "desc": "HorizontalSpindleLengthm",
+        "label": "HorizontalSpindleLengthm",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "InstallationDate",
+        "value": "0001-01-01T00:00:00",
+        "desc": "InstallationDate",
+        "label": "InstallationDate",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "DateTime"
+      },
+      {
+        "id": 0,
+        "key": "ReservedSpace",
+        "value": false,
+        "desc": "ReservedSpace",
+        "label": "ReservedSpace",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "bool"
+      }
+    ],
+    "civilSupportDistance": [
+      {
+        "id": 0,
+        "key": "Distance",
+        "value": null,
+        "desc": "Distance",
+        "label": "Distance",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "Azimuth",
+        "value": null,
+        "desc": "Azimuth",
+        "label": "Azimuth",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "ReferenceCivilId",
+        "value": "NA",
+        "desc": "ReferenceCivilId",
+        "label": "ReferenceCivilId",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      }
+    ],
+    "civilLoads": [],
+    "otherInSite": [],
+    "otherInventoryDistance": [],
+    "dynamicAtts": [],
+    "relatedTables": [
+      {
+        "key": "OwnerId",
+        "value": [
+          {
+            "id": 1,
+            "value": "gf"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 2,
+            "value": "hh"
+          }
+        ]
+      },
+      {
+        "key": "GuylineTypeId",
+        "value": [
+          {
+            "id": 121,
+            "value": "new5"
+          },
+          {
+            "id": 0,
+            "value": "Na"
+          },
+          {
+            "id": 141,
+            "value": "32"
+          }
+        ]
+      },
+      {
+        "key": "SupportTypeImplementedId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 222,
+            "value": "newewewew"
+          },
+          {
+            "id": 262,
+            "value": "321"
+          },
+          {
+            "id": 261,
+            "value": "54"
+          },
+          {
+            "id": 241,
+            "value": "TEST"
+          }
+        ]
+      },
+      {
+        "key": "BaseCivilWithLegTypeId",
+        "value": [
+          {
+            "id": 141,
+            "value": "new23"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 161,
+            "value": "321"
+          }
+        ]
+      },
+      {
+        "key": "CivilWithLegsLibId",
+        "value": [
+          {
+            "id": 822,
+            "value": "TestCivilWithLegLibraryValidation v2"
+          },
+          {
+            "id": 1042,
+            "value": "CivilWithLegLibrary2"
+          },
+          {
+            "id": 863,
+            "value": "uu"
+          },
+          {
+            "id": 869,
+            "value": "qqq"
+          },
+          {
+            "id": 1082,
+            "value": "ttttt"
+          },
+          {
+            "id": 1101,
+            "value": "TestDynamic 1"
+          },
+          {
+            "id": 1121,
+            "value": "12"
+          },
+          {
+            "id": 1147,
+            "value": "rere"
+          },
+          {
+            "id": 1183,
+            "value": "ehaw"
+          },
+          {
+            "id": 1203,
+            "value": "vvvv"
+          },
+          {
+            "id": 1382,
+            "value": "testnew"
+          },
+          {
+            "id": 1401,
+            "value": "nnnnn"
+          },
+          {
+            "id": 1043,
+            "value": "CivilWithLegLibrary3"
+          },
+          {
+            "id": 782,
+            "value": "11"
+          },
+          {
+            "id": 801,
+            "value": "modelwithvalidation"
+          },
+          {
+            "id": 821,
+            "value": "TestCivilWithLegLibraryValidation v1"
+          },
+          {
+            "id": 921,
+            "value": "new 123 edit"
+          },
+          {
+            "id": 1184,
+            "value": "gfhfg"
+          },
+          {
+            "id": 1185,
+            "value": "fghbfgb"
+          },
+          {
+            "id": 1191,
+            "value": "tttt"
+          },
+          {
+            "id": 1196,
+            "value": "ss"
+          },
+          {
+            "id": 1201,
+            "value": "ww"
+          },
+          {
+            "id": 1202,
+            "value": "www"
+          },
+          {
+            "id": 1421,
+            "value": "5555"
+          },
+          {
+            "id": 864,
+            "value": "testwithlwg"
+          },
+          {
+            "id": 1142,
+            "value": "logs"
+          },
+          {
+            "id": 868,
+            "value": "eee"
+          },
+          {
+            "id": 873,
+            "value": "uuu"
+          },
+          {
+            "id": 1187,
+            "value": "fghbfgb 3"
+          },
+          {
+            "id": 1189,
+            "value": "tt"
+          },
+          {
+            "id": 1190,
+            "value": "qwe"
+          },
+          {
+            "id": 1006,
+            "value": "newbyghosonwithleg121"
+          },
+          {
+            "id": 1007,
+            "value": "newbyghosonwithleg1291"
+          },
+          {
+            "id": 1198,
+            "value": "er"
+          },
+          {
+            "id": 1221,
+            "value": "498"
+          },
+          {
+            "id": 1261,
+            "value": "test front"
+          },
+          {
+            "id": 1281,
+            "value": "test11"
+          },
+          {
+            "id": 1321,
+            "value": "test"
+          },
+          {
+            "id": 1361,
+            "value": "0000000"
+          },
+          {
+            "id": 1083,
+            "value": "Mo1"
+          },
+          {
+            "id": 721,
+            "value": "Test by Eman-1"
+          },
+          {
+            "id": 1144,
+            "value": "logistiii"
+          },
+          {
+            "id": 653,
+            "value": "testbyEman-2"
+          },
+          {
+            "id": 865,
+            "value": "testdatedyna"
+          },
+          {
+            "id": 866,
+            "value": "xx"
+          },
+          {
+            "id": 1161,
+            "value": "nt"
+          },
+          {
+            "id": 1181,
+            "value": "new test"
+          },
+          {
+            "id": 1182,
+            "value": "sad"
+          },
+          {
+            "id": 1186,
+            "value": "fghbfgb2"
+          },
+          {
+            "id": 1197,
+            "value": "we"
+          },
+          {
+            "id": 1204,
+            "value": "qqqqq"
+          },
+          {
+            "id": 1205,
+            "value": "qqqqqqq"
+          },
+          {
+            "id": 1206,
+            "value": "new11"
+          },
+          {
+            "id": 1323,
+            "value": "slimantesttest2"
+          },
+          {
+            "id": 1341,
+            "value": "newgh"
+          },
+          {
+            "id": 1021,
+            "value": "ImanTest33"
+          },
+          {
+            "id": 1041,
+            "value": "CivilWithLegLibrary1"
+          },
+          {
+            "id": 781,
+            "value": "mmtesteer"
+          },
+          {
+            "id": 1081,
+            "value": "testtest"
+          },
+          {
+            "id": 1145,
+            "value": "loooooo"
+          },
+          {
+            "id": 1192,
+            "value": "vc"
+          },
+          {
+            "id": 823,
+            "value": "withleglibrary"
+          },
+          {
+            "id": 867,
+            "value": "rrr"
+          },
+          {
+            "id": 870,
+            "value": "wwww"
+          },
+          {
+            "id": 871,
+            "value": "rrrrr"
+          },
+          {
+            "id": 872,
+            "value": "testetetetetet"
+          },
+          {
+            "id": 1193,
+            "value": "asd"
+          },
+          {
+            "id": 922,
+            "value": "new civil123"
+          },
+          {
+            "id": 1241,
+            "value": "New Civil"
+          },
+          {
+            "id": 1262,
+            "value": "ROR"
+          },
+          {
+            "id": 1301,
+            "value": "FR"
+          },
+          {
+            "id": 931,
+            "value": "civilwithleg22"
+          },
+          {
+            "id": 1002,
+            "value": "Test Add History v3"
+          },
+          {
+            "id": 1302,
+            "value": "TEST"
+          },
+          {
+            "id": 1322,
+            "value": "testiman"
+          },
+          {
+            "id": 1381,
+            "value": "wr"
+          }
+        ]
+      },
+      {
+        "key": "enforcmentCategoryId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 122,
+            "value": "new23"
+          },
+          {
+            "id": 141,
+            "value": "54321"
+          }
+        ]
+      },
+      {
+        "key": "locationTypeId",
+        "value": [
+          {
+            "id": 1,
+            "value": "GreenField"
+          },
+          {
+            "id": 2,
+            "value": "RoofTop"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          }
+        ]
+      },
+      {
+        "key": "baseTypeId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 1,
+            "value": "bb"
+          },
+          {
+            "id": 2,
+            "value": "mm"
+          }
+        ]
+      },
+      {
+        "key": "StructureType",
+        "value": [
+          {
+            "id": 0,
+            "value": "Yes"
+          },
+          {
+            "id": 1,
+            "value": "No"
+          }
+        ]
+      },
+      {
+        "key": "SectionsLegType",
+        "value": [
+          {
+            "id": 0,
+            "value": "Yes"
+          },
+          {
+            "id": 1,
+            "value": "No"
+          }
+        ]
+      },
+      {
+        "key": "ReferenceCivilId",
+        "value": [
+          {
+            "id": 1461,
+            "value": "q"
+          },
+          {
+            "id": 1462,
+            "value": "g"
+          },
+          {
+            "id": 1463,
+            "value": "s"
+          },
+          {
+            "id": 1481,
+            "value": "e"
+          },
+          {
+            "id": 1482,
+            "value": "c"
+          },
+          {
+            "id": 1483,
+            "value": "3"
+          },
+          {
+            "id": 1484,
+            "value": "v"
+          },
+          {
+            "id": 1485,
+            "value": "d"
+          },
+          {
+            "id": 1486,
+            "value": "u"
+          },
+          {
+            "id": 1487,
+            "value": "l"
+          },
+          {
+            "id": 1488,
+            "value": "n"
+          },
+          {
+            "id": 1489,
+            "value": "b"
+          },
+          {
+            "id": 1490,
+            "value": "vf"
+          },
+          {
+            "id": 1491,
+            "value": "ff"
+          },
+          {
+            "id": 1492,
+            "value": "s1"
+          },
+          {
+            "id": 1493,
+            "value": "vc"
+          },
+          {
+            "id": 1501,
+            "value": "vb"
+          },
+          {
+            "id": 1502,
+            "value": "vcv"
+          },
+          {
+            "id": 1503,
+            "value": "vbv"
+          },
+          {
+            "id": 1504,
+            "value": "gv"
+          },
+          {
+            "id": 1505,
+            "value": "vbvv"
+          },
+          {
+            "id": 1506,
+            "value": "vv"
+          },
+          {
+            "id": 1507,
+            "value": "TestAdd2"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          }
+        ]
+      }
+    ]
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": null,
+  "code": 0,
+  "count": 0
+}

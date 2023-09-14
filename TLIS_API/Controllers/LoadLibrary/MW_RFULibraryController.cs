@@ -1,0 +1,117 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using TLIS_API.Helpers;
+using TLIS_DAL.Helper;
+using TLIS_DAL.Helper.Filters;
+using TLIS_DAL.Helpers;
+using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.DynamicAttDTOs;
+using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
+using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_Service.Helpers;
+using TLIS_Service.ServiceBase;
+
+namespace TLIS_API.Controllers.Load
+{
+    [ServiceFilter(typeof(LogFilterAttribute))]
+    [Route("api/[controller]")]
+    
+    public class MW_RFULibraryController : Controller
+    {
+        private readonly IUnitOfWorkService _unitOfWorkService;
+        private readonly IConfiguration _configuration;
+        public MW_RFULibraryController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration)
+        {
+            _unitOfWorkService = unitOfWorkService;
+            _configuration = configuration;
+        }
+
+        [HttpPost("getAll")]
+        [ProducesResponseType(200, Type = typeof(List<MW_RFULibraryViewModel>))]
+        public IActionResult GetMW_RFULibrary([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        {
+            var response = _unitOfWorkService.MWLibraryService.get_MW_RFU_LibrariesAsync(filters, WithFilterData, parameters);
+            return Ok(response);
+        }
+        [HttpPost("GetMW_RFULibraries")]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        public IActionResult GetMW_RFULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetMW_RFULibraries(CombineFilters, WithFilterData, parameters);
+            return Ok(response);
+        }
+        [HttpGet("getById/{id}")]
+        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
+        public IActionResult GetRFULibrary(int id)
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            return Ok(response);
+        }
+        [HttpPost("AddMW_RFULibrary")]
+        [ProducesResponseType(200, Type = typeof(AddMW_RFULibraryViewModel))]
+        public IActionResult AddMW_RFULibrary([FromBody]AddMW_RFULibraryViewModel addMW_RFULibraryViewModel)
+        {
+            if(TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMW_RFULibraryViewModel)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+
+        [HttpPost("EditMW_RFULibrary")]
+        [ProducesResponseType(200, Type = typeof(EditMW_RFULibraryViewModel))]
+        public async Task<IActionResult> EditMW_RFULibrary([FromBody]EditMW_RFULibraryViewModel editMW_RFULibraryViewModel)
+        {
+            if(TryValidateModel(editMW_RFULibraryViewModel, nameof(EditMW_RFULibraryViewModel)))
+            {
+                var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), editMW_RFULibraryViewModel);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+
+        [HttpPost("DisableMW_RFULibrary/{Id}")]
+        [ProducesResponseType(200, Type = typeof(MW_RFULibraryViewModel))]
+        public async Task<IActionResult> DisableMW_RFULibrary(int Id)
+        {
+            var response = await _unitOfWorkService.MWLibraryService.Disable(Id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            return Ok(response);
+        }
+
+        [HttpGet("GetForAdd")]
+        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
+        public IActionResult GetForAdd()
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            return Ok(response);
+        }
+
+        [HttpPost("DeleteMW_RFULibrary/{Id}")]
+        [ProducesResponseType(200, Type = typeof(MW_RFULibraryViewModel))]
+        public async Task<IActionResult> DeleteMW_RFULibrary(int Id)
+        {
+            var response = await _unitOfWorkService.MWLibraryService.Delete(Id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            return Ok(response);
+        }
+    }
+}

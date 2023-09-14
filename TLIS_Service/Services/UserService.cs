@@ -1,0 +1,790 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
+using TLIS_DAL.Helper;
+using TLIS_DAL.Helper.Filters;
+using TLIS_DAL.Helpers;
+using TLIS_DAL.Models;
+using TLIS_DAL.ViewModels.GroupDTOs;
+using TLIS_DAL.ViewModels.PermissionDTOs;
+using TLIS_DAL.ViewModels.UserDTOs;
+using TLIS_Repository.Base;
+using TLIS_Service.IService;
+using TLIS_Service.ServiceBase;
+using Microsoft.AspNetCore.Hosting;
+using System.Net;
+using System.Net.Mail;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using AutoMapper;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
+
+namespace TLIS_Service.Services
+{
+    public class UserService : IUserService
+    {
+
+        IUnitOfWork _unitOfWork;
+        IConfiguration _configuration;
+        IServiceCollection _services;
+        private IMapper _mapper;
+        private byte[] key = new byte[16]; // 128-bit key
+        private byte[] iv = new byte[16]; // 128-bit IV
+        public UserService(IUnitOfWork unitOfWork, IConfiguration configuration,
+            IServiceCollection services, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _configuration = configuration;
+            _services = services;
+            _mapper = mapper;
+        }
+        //Function to add external user 
+        //usually external user type is 2
+        public async Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain)
+        {
+            try
+            {
+                using (TransactionScope transaction = new TransactionScope())
+                {
+                    Response<bool> test = ValidateUserInAdAndDb(model.UserName, domain);
+                    if (test.Data == true)
+                    {
+                        byte[] salt = new byte[16] { 41, 214, 78, 222, 28, 87, 170, 211, 217, 125, 200, 214, 185, 144, 44, 34 };
+
+                        // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+                        //model.Password = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        //    password: model.Password,
+                        //    salt: salt,
+                        //    prf: KeyDerivationPrf.HMACSHA256,
+                        //    iterationCount: 100000,
+                        //    numBytesRequested: 256 / 8));
+
+                        model.Password = CryptPassword(model.Password);
+
+                        TLIuser UserEntity = _mapper.Map<TLIuser>(model);
+
+                        //Response<string> CheckEmail = SendConfirmationCode(model.Email, null);
+                        //if (!string.IsNullOrEmpty(CheckEmail.Data))
+                        //{
+                        //    UserEntity.ConfirmationCode = CheckEmail.Data;
+                        //}
+                        //else
+                        //{
+                        //    return new Response<UserViewModel>(true, null, null, CheckEmail.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                        //}
+                        UserEntity.ValidateAccount = false;
+                        UserEntity.UserType = 2;
+
+                        await _unitOfWork.UserRepository.AddAsync(UserEntity);
+                        await _unitOfWork.SaveChangesAsync();
+
+                        if (model.PermissionsIds != null)
+                        {
+                            foreach (int PermissionId in model.PermissionsIds)
+                            {
+                                TLIuserPermissions UserPermission = new TLIuserPermissions();
+                                UserPermission.Permission_Id = PermissionId;
+                                UserPermission.User_Id = UserEntity.Id;
+                                _unitOfWork.UserPermissionssRepository.Add(UserPermission);
+                            }
+                        }
+
+                        if (model.Groups != null)
+                        {
+                            List<int> GroupsIds = model.Groups.Select(x => x.Id).ToList();
+                            foreach (int GroupId in GroupsIds)
+                            {
+                                TLIgroupUser GroupUser = new TLIgroupUser();
+                                GroupUser.groupId = GroupId;
+                                GroupUser.userId = UserEntity.Id;
+                                _unitOfWork.GroupUserRepository.Add(GroupUser);
+                            }
+                        }
+                        UserViewModel UserModel = _mapper.Map<UserViewModel>(UserEntity);
+                        await _unitOfWork.SaveChangesAsync();
+                        transaction.Complete();
+                        return new Response<UserViewModel>(true, UserModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+                    }
+                    else
+                    {
+                        return new Response<UserViewModel>(true, null, null, test.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
+
+        // Helper Method For Sending Confirmation Code To The User's Email..
+        public Response<string> SendConfirmationCode(string UserEmail, int? UserId)
+        {
+            try
+            {
+                string to;
+                if (!String.IsNullOrEmpty(UserEmail))
+                {
+                    to = UserEmail;
+                }
+                else
+                {
+                    to = _unitOfWork.UserRepository.GetWhereSelectFirst(x => x.Id == UserId.Value && x.Active && !x.Deleted, x => x.Email);
+                }
+                string from = _configuration["SMTP:AhmadAhmad:user"].ToString();
+                MailMessage message = new MailMessage(from, to);
+                Random Generator = new Random();
+                string ConfirmationCode = Generator.Next(0, 1000000).ToString("D6");
+                string mailbody = $"This Is Your Confirmation Code \t{ConfirmationCode}";
+                message.Subject = "Confirm Your Email";
+                message.Body = mailbody;
+                message.BodyEncoding = Encoding.UTF8;
+                message.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient(_configuration["SMTP:AhmadAhmad:server"].ToString(), 587); //Gmail smtp    
+                NetworkCredential basicCredential1 = new NetworkCredential(_configuration["SMTP:AhmadAhmad:user"].ToString(), _configuration["SMTP:AhmadAhmad:pass"].ToString());
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = basicCredential1;
+
+                client.Send(message);
+                return new Response<string>(true, ConfirmationCode, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+            }
+            catch (Exception err)
+            {
+                return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
+        public async Task<Response<string>> ValidateEmail(string UserConfirmCode, int UserId)
+        {
+            try
+            {
+                TLIuser user = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
+                if (user != null)
+                {
+                    if (user.ConfirmationCode == UserConfirmCode)
+                    {
+                        user.ValidateAccount = true;
+                        user.ConfirmationCode = null;
+                        _unitOfWork.UserRepository.Update(user);
+                        await _unitOfWork.SaveChangesAsync();
+
+                        return new Response<string>(true, "Succeed", null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+                    }
+                    else
+                    {
+                        return new Response<string>(true, "Invalide Confirmation Code", null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+                    }
+                }
+
+                return new Response<string>(true, "Invalide User Id", null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+            }
+            catch (Exception err)
+            {
+                return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
+
+        //Function to add internal user
+        //usually internal user type is 1
+        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<PermissionViewModel> Permissions, string domain)
+        {
+            try
+            {
+                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind, null, null))
+                {
+                    //TLIuser CheckUser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == UserName.ToLower());
+                    //if (CheckUser != null)
+                    //    return new Response<UserViewModel>(true, null, null, $"This User {UserName} is already Exist in TLIS", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    UserPrincipal principal = new UserPrincipal(context);
+                    UserViewModel userModel = null;
+                    if (context != null)
+                    {
+                        GroupPrincipal group = GroupPrincipal.FindByIdentity(context, "TLI");
+                        principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
+                        if (principal != null && principal.IsMemberOf(group))
+                        {
+                            TLIuser user = new TLIuser();
+                            user.FirstName = principal.Name.Replace($" {principal.Surname}", "");
+                            user.MiddleName = principal.MiddleName;
+                            user.LastName = principal.Surname;
+                            user.Email = principal.EmailAddress;
+                            user.MobileNumber = principal.VoiceTelephoneNumber;
+                            user.UserName = principal.SamAccountName;
+                            var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName && !x.Deleted);
+                            if (tliuser != null)
+                            {
+                                return new Response<UserViewModel>(true, null, null, $"This User {UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            user.Domain = null;
+                            user.AdGUID = principal.Guid.ToString();
+                            user.UserType = 1;
+                            await _unitOfWork.UserRepository.AddAsync(user);
+                            await _unitOfWork.SaveChangesAsync();
+
+                            if (Permissions != null)
+                            {
+                                List<int> permissionsIds = Permissions.Select(x => x.Id).ToList();
+                                foreach (int permissionId in permissionsIds)
+                                {
+                                    TLIuserPermission tLIuserPermission = new TLIuserPermission();
+                                    tLIuserPermission.userId = user.Id;
+                                    tLIuserPermission.permissionId = permissionId;
+                                    await _unitOfWork.UserPermissionRepository.AddAsync(tLIuserPermission);
+                                }
+                            }
+
+                            await _unitOfWork.SaveChangesAsync();
+
+                            userModel = _mapper.Map<UserViewModel>(user);
+                        }
+                        else
+                        {
+                            return new Response<UserViewModel>(true, null, null, $"This User {UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    return new Response<UserViewModel>(true, userModel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+            }
+            catch (Exception err)
+            {
+                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        //Function enable or disable user depened on user status
+        public async Task<Response<UserViewModel>> DeactivateUser(int UserId)
+        {
+            try
+            {
+                TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && !x.Deleted);
+                User.Active = !(User.Active);
+                _unitOfWork.UserRepository.Update(User);
+                await _unitOfWork.SaveChangesAsync();
+                return new Response<UserViewModel>();
+            }
+            catch (Exception err)
+            {
+                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        //Function to GetAll active users
+        public Response<List<UserViewModel>> GetAll(List<FilterObjectList> filters, ParameterPagination parameter)
+        {
+            try
+            {
+                int count = 0;
+                List<FilterObject> condition = new List<FilterObject>();
+                condition.Add(new FilterObject("Active", true));
+                condition.Add(new FilterObject("Deleted", false));
+                var Users = _unitOfWork.UserRepository.GetAllIncludeMultipleWithCondition(parameter, filters, condition, out count, null).ToList();
+                return new Response<List<UserViewModel>>(true, _mapper.Map<List<UserViewModel>>(Users), null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        //Function to get all external users
+        public async Task<Response<List<UserViewModel>>> GetAllExternalUsers(string UserName, ParameterPagination parameter)
+        {
+            try
+            {
+                List<TLIuser> ExternalUsers = new List<TLIuser>();
+                if (string.IsNullOrEmpty(UserName))
+                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 2).OrderBy(x => x.UserName).ToList();
+                else
+                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 2 && x.UserName.ToLower().StartsWith(UserName.ToLower()))
+                        .OrderBy(x => x.UserName).ToList();
+
+                List<UserViewModel> UsersViewModels = _mapper.Map<List<UserViewModel>>(ExternalUsers);
+
+                foreach (UserViewModel User in UsersViewModels)
+                {
+                    List<int> PermissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x =>
+                        x.userId == User.Id).Select(x => x.permissionId).Distinct().ToList();
+
+                    List<PermissionViewModel> Permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.PermissionRepository.GetWhere(x =>
+                        PermissionsIds.Contains(x.Id) && x.Active).ToList());
+
+                    // User.Permissions = Permissions;
+
+                    List<int> GroupsIds = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                        x.userId == User.Id).Select(x => x.groupId).Distinct().ToList();
+
+                    List<GroupNamesViewModel> GroupsNames = _mapper.Map<List<GroupNamesViewModel>>(_unitOfWork.GroupRepository.GetWhere(x =>
+                        GroupsIds.Contains(x.Id) && x.Active && !x.Deleted).ToList());
+
+                    User.Groups = GroupsNames;
+                }
+
+                int Count = UsersViewModels.Count();
+                UsersViewModels = UsersViewModels.Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                    .Take(parameter.PageSize).AsQueryable().OrderBy(x => x.UserName).ToList();
+
+                return new Response<List<UserViewModel>>(true, UsersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+            }
+            catch (Exception err)
+            {
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public Response<List<UserViewModel>> GetExternalUsersByName(string UserName, ParameterPagination parameterPagination)
+        {
+            try
+            {
+                List<UserViewModel> UserModel = new List<UserViewModel>();
+
+                if (string.IsNullOrEmpty(UserName))
+                    UserModel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository
+                        .GetWhere(x => x.UserType == 2 && !x.Deleted)).OrderBy(x => x.UserName).ToList();
+                else
+                    UserModel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository
+                        .GetWhere(x => x.UserName.ToLower().StartsWith(UserName.ToLower()) && x.UserType == 2 && !x.Deleted).OrderBy(x => x.UserName).ToList());
+
+                int Count = UserModel.Count();
+
+                UserModel = UserModel.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                    .Take(parameterPagination.PageSize).AsQueryable().ToList();
+
+                return new Response<List<UserViewModel>>(true, UserModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+            }
+            catch (Exception err)
+            {
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail); ;
+            }
+        }
+        //Function to get all internal users
+        public async Task<Response<List<UserViewModel>>> GetAllInternalUsers(string UserName, ParameterPagination parameter)
+        {
+            try
+            {
+                List<TLIuser> ExternalUsers = new List<TLIuser>();
+                if (string.IsNullOrEmpty(UserName))
+                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 1).OrderBy(x => x.UserName).ToList();
+                else
+                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 1 && x.UserName.ToLower().StartsWith(UserName.ToLower()))
+                        .OrderBy(x => x.UserName).ToList();
+
+                List<UserViewModel> UsersViewModels = _mapper.Map<List<UserViewModel>>(ExternalUsers);
+
+                foreach (UserViewModel User in UsersViewModels)
+                {
+                    List<int> PermissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x =>
+                        x.userId == User.Id).Select(x => x.permissionId).Distinct().ToList();
+
+                    List<PermissionViewModel> Permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.PermissionRepository.GetWhere(x =>
+                        PermissionsIds.Contains(x.Id) && x.Active).ToList());
+
+                    // User.Permissions = Permissions;
+
+                    List<int> GroupsIds = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                        x.userId == User.Id).Select(x => x.groupId).Distinct().ToList();
+
+                    List<GroupNamesViewModel> GroupsNames = _mapper.Map<List<GroupNamesViewModel>>(_unitOfWork.GroupRepository.GetWhere(x =>
+                        GroupsIds.Contains(x.Id) && x.Active && !x.Deleted).ToList());
+
+                    User.Groups = GroupsNames;
+                }
+
+                int Count = UsersViewModels.Count();
+                UsersViewModels = UsersViewModels.Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                    .Take(parameter.PageSize).AsQueryable().OrderBy(x => x.UserName).ToList();
+
+                return new Response<List<UserViewModel>>(true, UsersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+            }
+            catch (Exception err)
+            {
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        public Response<List<UserViewModel>> GetInternalUsersByName(string UserName, ParameterPagination parameter)
+        {
+            try
+            {
+                List<UserViewModel> UserModel = new List<UserViewModel>();
+
+                if (string.IsNullOrEmpty(UserName))
+                    UserModel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository
+                        .GetWhere(x => x.UserType == 1 && !x.Deleted).OrderBy(x => x.UserName).ToList());
+                else
+                    UserModel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository
+                        .GetWhere(x => x.UserName.ToLower().StartsWith(UserName.ToLower()) && x.UserType == 1 && !x.Deleted).OrderBy(x => x.UserName).ToList());
+
+                int Count = UserModel.Count();
+
+                UserModel = UserModel.Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                    .Take(parameter.PageSize).AsQueryable().ToList();
+
+                return new Response<List<UserViewModel>>(true, UserModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+            }
+            catch (Exception err)
+            {
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public Response<List<UserViewModel>> GetUsersByUserType(int UserTypeId, string UserName, ParameterPagination parameterPagination)
+        {
+            try
+            {
+                List<UserViewModel> Usermodel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository.GetWhere(x =>
+                    x.UserType == UserTypeId && x.Active && !x.Deleted &&
+                    (!string.IsNullOrEmpty(UserName) ? x.UserName.ToLower().StartsWith(UserName.ToLower()) : true)).
+                        Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        .Take(parameterPagination.PageSize).AsQueryable().ToList());
+
+                return new Response<List<UserViewModel>>(true, Usermodel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        //Function to get user information and list his groups and list of his permissions
+        public async Task<Response<UserViewModel>> GetUserById(int Id)
+        {
+            try
+            {
+                UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
+                User.Password = DecryptPassword(User.Password);
+
+                User.Permissions = _unitOfWork.UserPermissionssRepository
+                    .GetIncludeWhere(x => x.User_Id == User.Id && x.IsActive, x => x.Permission)
+                    .Select(x => new NewPermissionsViewModel()
+                    {
+                        Id = x.Id,
+                        Page_URL = x.Permission.Page_URL
+                    }).ToList();
+
+                User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
+                    .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
+
+                return new Response<UserViewModel>(true, User, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+            }
+            catch (Exception err)
+            {
+                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
+
+        //Function to get users by group name
+        public Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain)
+        {
+            try
+            {
+                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind))
+                {
+                    GroupPrincipal groupPrincipal = null;
+                    if (context != null)
+                    {
+                        groupPrincipal = GroupPrincipal.FindByIdentity(context, IdentityType.SamAccountName, GroupName);
+                    }
+                    if (groupPrincipal != null)
+                    {
+                        var GroupUsers = groupPrincipal.GetMembers().ToList();
+                        List<UserViewModel> users = new List<UserViewModel>();
+                        //foreach (var GroupUser in GroupUsers)
+                        //{
+                        //    var test = _unitOfWork.UserRepository.GetAllAsQueryable().Where(u => u.AdGUID == GroupUser.Guid.ToString()).FirstOrDefault();
+                        //    if (test != null)
+                        //    {
+                        //        var user = _unitOfWork.UserRepository.GetAllAsQueryable().Where(u => u.AdGUID == GroupUser.Guid.ToString()).FirstOrDefault();
+                        //        users.Add(_mapper.Map<UserViewModel>(user));
+                        //    }
+                        //}
+                        Parallel.ForEach(GroupUsers, GroupUser =>
+                        {
+                            var test = _unitOfWork.UserRepository.GetAllAsQueryable().Where(u => u.AdGUID == GroupUser.Guid.ToString()).FirstOrDefault();
+                            if (test != null)
+                            {
+                                var user = _unitOfWork.UserRepository.GetAllAsQueryable().Where(u => u.AdGUID == GroupUser.Guid.ToString()).FirstOrDefault();
+                                users.Add(_mapper.Map<UserViewModel>(user));
+                            }
+                        });
+                        return new Response<List<UserViewModel>>(true, users, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    }
+                    else
+                    {
+                        return new Response<List<UserViewModel>>(true, null, null, "The group is not exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+
+                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        //Function to update user and his permissions
+        public async Task<Response<UserViewModel>> Updateuser(EditUserViewModel model)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+                    List<TLIuserPermissions> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
+                        .GetWhere(x => x.User_Id == model.Id).ToList();
+
+                    List<int> UserPermissionsToAdd = model.PermissionsIds.Where(x => !AllUserPermissionsInDB
+                        .Select(y => y.Permission_Id).Contains(x)).ToList();
+
+                    TLIuser UserEntity = _mapper.Map<TLIuser>(model);
+
+                    UserEntity.Password = null;
+
+                    foreach (int PermissionId in UserPermissionsToAdd)
+                    {
+                        TLIuserPermissions userPermission = new TLIuserPermissions();
+                        userPermission.User_Id = UserEntity.Id;
+                        userPermission.Permission_Id = PermissionId;
+                        _unitOfWork.UserPermissionssRepository.Add(userPermission);
+                    }
+
+                    List<TLIuserPermissions> UserPermissionsToDelete = AllUserPermissionsInDB.Where(x => !model.PermissionsIds
+                        .Contains(x.Permission_Id)).ToList();
+
+                    if (UserPermissionsToDelete.Count() > 0)
+                        _unitOfWork.UserPermissionssRepository.RemoveRangeItems(UserPermissionsToDelete);
+
+                    string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
+                    if (!string.IsNullOrEmpty(model.Password))
+                    {
+                        byte[] salt = new byte[16] { 41, 214, 78, 222, 28, 87, 170, 211, 217, 125, 200, 214, 185, 144, 44, 34 };
+
+                        string CheckPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: model.Password,
+                            salt: salt,
+                            prf: KeyDerivationPrf.HMACSHA256,
+                            iterationCount: 100000,
+                            numBytesRequested: 256 / 8));
+
+                        if (CheckPassword != OldPassword)
+                            UserEntity.Password = CheckPassword;
+                    }
+                    else
+                    {
+                        UserEntity.Password = OldPassword;
+                    }
+                    _unitOfWork.UserRepository.Update(UserEntity);
+
+                    List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                        x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
+                    List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
+
+                    List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
+                    foreach (var GroupId in GroupsToDelete)
+                    {
+                        TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
+                        _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
+                    }
+
+                    List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
+                    foreach (var GroupId in GroupsToAdd)
+                    {
+                        TLIgroupUser GroupUser = new TLIgroupUser();
+                        GroupUser.userId = UserEntity.Id;
+                        GroupUser.groupId = GroupId;
+                        _unitOfWork.GroupUserRepository.Add(GroupUser);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+                    transaction.Complete();
+
+                    return new Response<UserViewModel>(true, _mapper.Map<UserViewModel>(UserEntity), null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+                    return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+
+        //Function to check if the user not exist in active directory and database
+        public Response<bool> ValidateUserInAdAndDb(string UserName, string domain)
+        {
+            try
+            {
+                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind))
+                {
+                    UserPrincipal ValidateUserNameInAd = new UserPrincipal(context);
+                    if (context != null)
+                    {
+                        //ValidateUserNameInAd = null;
+                        ValidateUserNameInAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
+                    }
+                    TLIuser ValidateUserNameInDatabase = _unitOfWork.UserRepository.GetWhereFirst(u => u.UserName == UserName);
+                    if (ValidateUserNameInAd == null && ValidateUserNameInDatabase == null)
+                    {
+                        return new Response<bool>(true, true, null, "", (int)Helpers.Constants.ApiReturnCode.success);
+                    }
+                    else
+                    {
+                        return new Response<bool>(true, false, null, $"This User Name {UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                // PrincipalContext context = new PrincipalContext(ContextType.Domain, domain);
+            }
+            catch (Exception err)
+            {
+                return new Response<bool>(true, false, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public async Task<Response<ChangePasswordViewModel>> ChangePassword(ChangePasswordViewModel View)
+        {
+            try
+            {
+                TLIuser User = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == View.Id);
+                byte[] salt = new byte[16] { 41, 214, 78, 222, 28, 87, 170, 211, 217, 125, 200, 214, 185, 144, 44, 34 };
+
+                View.OldPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: View.OldPassword,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8));
+
+                if (View.OldPassword == User.Password)
+                {
+                    User.ChangedPasswordDate = DateTime.Now;
+                    _unitOfWork.UserRepository.Update(User);
+                    await _unitOfWork.SaveChangesAsync();
+                    return new Response<ChangePasswordViewModel>();
+                }
+                else
+                {
+                    return new Response<ChangePasswordViewModel>(true, null, null, "The old password isn't valid try again", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+            catch (Exception err)
+            {
+                return new Response<ChangePasswordViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public async Task<Response<ForgetPassword>> ForgetPassword(ForgetPassword password)
+        {
+            try
+            {
+                TLIuser User = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().Where(x => x.Id == password.Id).FirstOrDefault();
+                byte[] salt = new byte[16] { 41, 214, 78, 222, 28, 87, 170, 211, 217, 125, 200, 214, 185, 144, 44, 34 };
+
+                // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+                User.Password = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: User.Password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8));
+
+                User.ChangedPasswordDate = DateTime.Now;
+                _unitOfWork.UserRepository.Update(User);
+                await _unitOfWork.SaveChangesAsync();
+                return new Response<ForgetPassword>();
+            }
+            catch (Exception err)
+            {
+                return new Response<ForgetPassword>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public Response<bool?> CheckPasswordExpiryDate(int Id)
+        {
+            try
+            {
+                //var User = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().Where(x => x.Id == Id).FirstOrDefault();
+                TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id);
+                if (User == null)
+                {
+                    return new Response<bool?>(true, null, null, "User not existed", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else
+                {
+                    if (User.ChangedPasswordDate == null)
+                    {
+                        return new Response<bool?>(true, null, null, "You have to change your password", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    else
+                    {
+                        DateTime date = (DateTime)User.ChangedPasswordDate;
+                        if (date.AddDays(90) < DateTime.Now)
+                        {
+                            return new Response<bool?>(true, false, null, "Your passowrd is out of date", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            return new Response<bool?>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                return new Response<bool?>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        private string CryptPassword(string password)
+        {
+            byte[] plaintext = Encoding.UTF8.GetBytes(password);
+            byte[] ciphertext;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+
+                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                {
+                    ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+                }
+            }
+
+            return Convert.ToBase64String(ciphertext);
+
+
+        }
+
+
+        private string DecryptPassword(string CryptPassword)
+        {
+            try
+            {
+
+                byte[] ciphertext = Convert.FromBase64String(CryptPassword);
+                byte[] plaintext;
+
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.IV = iv;
+
+                    using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                    {
+                        plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+                    }
+                }
+
+                return Encoding.UTF8.GetString(plaintext);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
+
+    }
+}

@@ -1,0 +1,8439 @@
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (1, N'TLIaction', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (78, N'TLIrolePermission', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (77, N'TLIrole', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (76, N'TLIrepeaterType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (75, N'TLIrenewableCabinetType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (74, N'TLIregion', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (73, N'TLIradioRRULibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (72, N'TLIradioRRU', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (71, N'TLIradioOtherLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (70, N'TLIradioAntennaLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (69, N'TLIradioAntenna', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (68, N'TLIpowerLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (67, N'TLIpolarityType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (66, N'TLIpolarityOnLocation', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (65, N'TLIpermission', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (64, N'TLIparity', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (63, N'TLIowner', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (62, N'TLIotherInventoryDistance', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (61, N'TLIotherInSite', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (60, N'TLIoption', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (59, N'TLIoperation', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (58, N'TLIoduInstallationType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (57, N'TLImwRFULibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (56, N'TLImwODULibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (79, N'TLIrow', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (55, N'TLImwDishLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (80, N'TLIrowRule', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (82, N'TLIsectionsLegType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (107, N'TLIvalidation', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (106, N'TLIuserPermission', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (105, N'TLIuser', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (104, N'TLItelecomType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (103, N'TLItaskStatus', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (102, N'TLItablesNames', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (101, N'TLItablesHistory', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (99, N'TLIsupportTypeImplemented', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (98, N'TLIsupportTypeDesigned', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (97, N'TLIsuboption', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (96, N'TLIstructureType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (95, N'TLIstepActionOption', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (94, N'TLIstepActionItemOption', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (93, N'TLIstepActionIncomeItemStatus', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (92, N'TLIstepAction', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (91, N'TLIstep', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (90, N'TLIsolarLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (88, N'TLIsolar', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (87, N'TLIsiteStatus', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (86, N'TLIsite', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (85, N'TLIsideArmLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (84, N'TLIsideArmInstallationPlace', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (83, N'TLIsideArm', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (81, N'TLIrule', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (108, N'TLIworkFlow', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (54, N'TLImwBULibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (52, N'TLIlogisticalitem', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (24, N'TLIcivilWithoutLeg', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (23, N'TLIcivilWithLegs', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (22, N'TLIcivilWithLegLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (21, N'TLIcivilSteelSupportCategory', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (20, N'TLIcivilSiteDate', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (19, N'TLIcivilNonSteelLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (18, N'TLIcivilNonSteel', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (17, N'TLIcity', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (16, N'TLIcapacity', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (15, N'TLIcabinetTelecomLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (14, N'TLIcabinetPowerType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (13, N'TLIcabinetPowerLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (12, N'TLIcabinet', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (11, N'TLIboardType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (10, N'TLIbaseGeneratorType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (9, N'TLIbaseCivilWithLegsType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (8, N'TLIattributeActivated', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (7, N'TLIattActivatedCategory', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (6, N'TLIasType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (5, N'TLIarea', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (4, N'TLIactor', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (3, N'TLIactionOption', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (2, N'TLIactionItemOption', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (25, N'TLIcivilWithoutLegCategory', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (53, N'TLIlogisticalType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (26, N'TLIcivilWithoutLegLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (28, N'TLIconditionType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (51, N'TLIlogistical', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (50, N'TLIlogicalOperation', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (49, N'TLIlog', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (48, N'TLIleg', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (47, N'TLIitemStatus', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (46, N'TLIitemConnectTo', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (45, N'TLIinstallationPlace', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (44, N'TLIinstallationCivilwithoutLegsType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (43, N'TLIhistoryType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (42, N'TLIhistoryDetails', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (41, N'TLIguyLineType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (40, N'TLIgroupUser', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (39, N'TLIgroupRole', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (38, N'TLIgroup', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (37, N'TLIgeneratorLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (36, N'TLIgenerator', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (35, N'TLIdynamicAttLibValue', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (34, N'TLIdynamicAttInstValue', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (33, N'TLIdynamicAtt', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (32, N'TLIdiversityType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (31, N'TLIdependencyRow', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (30, N'TLIdependency', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (29, N'TLIdataType', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (27, N'TLIcondition', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (109, N'TLIworkFlowType', NULL);
+END;
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211103134826_seedData', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIdynamicAttLibValue" ADD "Value" NVARCHAR2(2000)
+/
+
+ALTER TABLE "TLIdynamicAttInstValue" ADD "Value" NVARCHAR2(2000)
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211104091444_AddValueGeneralForDynamic', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLImwDish" ADD "ownerId" NUMBER(10)
+/
+
+CREATE INDEX "IX_TLImwDish_ownerId" ON "TLImwDish" ("ownerId")
+/
+
+ALTER TABLE "TLImwDish" ADD CONSTRAINT "FK_TLImwDish_TLIowner_ownerId" FOREIGN KEY ("ownerId") REFERENCES "TLIowner" ("Id")
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211108102742_addOwnerToDish', N'2.2.6-servicing-10079')
+/
+
+CREATE INDEX "IX_TLImwRFU_OwnerId" ON "TLImwRFU" ("OwnerId")
+/
+
+CREATE INDEX "IX_TLIeditableManagmentView_TLItablesNames3Id" ON "TLIeditableManagmentView" ("TLItablesNames3Id")
+/
+
+ALTER TABLE "TLIattachedFiles" ADD CONSTRAINT "FK_TLIattachedFiles_TLItablesNames_tablesNamesId" FOREIGN KEY ("tablesNamesId") REFERENCES "TLItablesNames" ("Id")
+/
+
+ALTER TABLE "TLIeditableManagmentView" ADD CONSTRAINT "FK_TLIeditableManagmentView_TLItablesNames_TLItablesNames3Id" FOREIGN KEY ("TLItablesNames3Id") REFERENCES "TLItablesNames" ("Id")
+/
+
+ALTER TABLE "TLImwRFU" ADD CONSTRAINT "FK_TLImwRFU_TLIowner_OwnerId" FOREIGN KEY ("OwnerId") REFERENCES "TLIowner" ("Id")
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211122075759_editAttForDummyData', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIattachedFiles" DROP COLUMN "documenttype"
+/
+
+ALTER TABLE "TLIuser" ADD "Token" NVARCHAR2(2000)
+/
+
+BEGIN 
+EXECUTE IMMEDIATE 'CREATE TABLE 
+"TLIdocumentType" (
+    "Id" NUMBER(10) GENERATED BY DEFAULT ON NULL AS IDENTITY NOT NULL,
+    "Name" NVARCHAR2(2000),
+    CONSTRAINT "PK_TLIdocumentType" PRIMARY KEY ("Id")
+)';
+END;
+/
+
+CREATE INDEX "IX_TLIattachedFiles_documenttypeId" ON "TLIattachedFiles" ("documenttypeId")
+/
+
+ALTER TABLE "TLIattachedFiles" ADD CONSTRAINT "FK_TLIattachedFiles_TLIdocumentType_documenttypeId" FOREIGN KEY ("documenttypeId") REFERENCES "TLIdocumentType" ("Id") ON DELETE CASCADE
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211124091439_AddTokenToUser', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIuser" RENAME COLUMN "Token" TO "ConfirmationCode"
+/
+
+ALTER TABLE "TLIuser" ADD "ValidateAccount" NUMBER(1) DEFAULT 0 NOT NULL
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211128113718_editUserTable', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIeditableManagmentView" ADD "CivilWithoutLegCategoryId" NUMBER(10)
+/
+
+CREATE INDEX "IX_TLIeditableManagmentView_CivilWithoutLegCategoryId" ON "TLIeditableManagmentView" ("CivilWithoutLegCategoryId")
+/
+
+ALTER TABLE "TLIeditableManagmentView" ADD CONSTRAINT "FK_TLIeditableManagmentView_TLIcivilWithoutLegCategory_CivilWithoutLegCategoryId" FOREIGN KEY ("CivilWithoutLegCategoryId") REFERENCES "TLIcivilWithoutLegCategory" ("Id")
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211130124724_addCategoryIdTomanagmentView', N'2.2.6-servicing-10079')
+/
+
+DROP INDEX "IX_TLIeditableManagmentView_View"
+/
+
+ALTER TABLE "TLImwRFU" MODIFY "SerialNumber" NVARCHAR2(2000)
+/
+
+CREATE UNIQUE INDEX "IX_TLIeditableManagmentView_View_CivilWithoutLegCategoryId" ON "TLIeditableManagmentView" ("View", "CivilWithoutLegCategoryId")
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211205093126_changeSerialNimberDataType', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIcivilWithLegs" MODIFY "locationTypeId" NUMBER(10)
+/
+
+ALTER TABLE "TLIcivilWithLegs" ADD CONSTRAINT "FK_TLIcivilWithLegs_TLIlocationType_locationTypeId" FOREIGN KEY ("locationTypeId") REFERENCES "TLIlocationType" ("Id")
+/
+
+ALTER TABLE "TLIcivilWithoutLeg" ADD CONSTRAINT "FK_TLIcivilWithoutLeg_TLIsubType_subTypeId" FOREIGN KEY ("subTypeId") REFERENCES "TLIsubType" ("Id") ON DELETE CASCADE
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20211215080114_editCivilTables', N'2.2.6-servicing-10079')
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20220103083831_logTables', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIhistoryDetails" ADD "AttributeType" NUMBER(10) DEFAULT 0 NOT NULL
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20220111110105_addAttTypeToHistoryDetails', N'2.2.6-servicing-10079')
+/
+
+ALTER TABLE "TLIgroup" DROP CONSTRAINT "FK_TLIgroup_TLIgroup_GroupId"
+/
+
+DROP INDEX "IX_TLIgroup_GroupId"
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 168
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 308
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 341
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 375
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 454
+/
+
+ALTER TABLE "TLIgroup" RENAME COLUMN "GroupId" TO "UpperId"
+/
+
+ALTER TABLE "TLIattachedFiles" ADD "UnAttached" NUMBER(1) DEFAULT 0 NOT NULL
+/
+
+BEGIN 
+EXECUTE IMMEDIATE 'CREATE TABLE 
+"TLIlogUsersActions" (
+    "Id" NUMBER(10) GENERATED BY DEFAULT ON NULL AS IDENTITY NOT NULL,
+    "Date" TIMESTAMP(7) NOT NULL,
+    "UserId" NUMBER(10) NOT NULL,
+    "ControllerName" NVARCHAR2(2000),
+    "FunctionName" NVARCHAR2(2000),
+    "BodyParameters" NVARCHAR2(2000),
+    "HeaderParameters" NVARCHAR2(2000),
+    "ResponseStatus" NVARCHAR2(2000),
+    "Result" NVARCHAR2(2000),
+    CONSTRAINT "PK_TLIlogUsersActions" PRIMARY KEY ("Id")
+)';
+END;
+/
+
+BEGIN
+INSERT INTO "TLIlogisticalType" ("Id", "Name")
+VALUES (1, N'Vendor');
+END;
+/
+
+BEGIN
+INSERT INTO "TLIlogisticalType" ("Id", "Name")
+VALUES (2, N'Designer');
+END;
+/
+
+BEGIN
+INSERT INTO "TLIlogisticalType" ("Id", "Name")
+VALUES (3, N'Supplier');
+END;
+/
+
+BEGIN
+INSERT INTO "TLIlogisticalType" ("Id", "Name")
+VALUES (4, N'Manufacturer');
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablePartName" ("Id", "PartName")
+VALUES (1, N'CivilSupport');
+INSERT INTO "TLItablePartName" ("Id", "PartName")
+VALUES (2, N'MW');
+INSERT INTO "TLItablePartName" ("Id", "PartName")
+VALUES (3, N'Radio');
+INSERT INTO "TLItablePartName" ("Id", "PartName")
+VALUES (4, N'Power');
+INSERT INTO "TLItablePartName" ("Id", "PartName")
+VALUES (5, N'OtherInventory');
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (116, N'TLIloadOtherLibrary', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (117, N'TLImwOther', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
+VALUES (118, N'TLImwOtherLibrary', NULL);
+END;
+/
+
+CREATE UNIQUE INDEX "IX_TLIgroup_ParentId" ON "TLIgroup" ("ParentId")
+/
+
+ALTER TABLE "TLIgroup" ADD CONSTRAINT "FK_TLIgroup_TLIgroup_ParentId" FOREIGN KEY ("ParentId") REFERENCES "TLIgroup" ("Id")
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20220410085906_UpdateGroupEntity', N'2.2.6-servicing-10079')
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 477
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 478
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 479
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 480
+/
+
+DELETE FROM "TLIpermission"
+WHERE "Id" = 481
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 1
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 2
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 3
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 4
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 5
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 6
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilNonSteelLibrary'
+WHERE "Id" = 7
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 8
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 9
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 10
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 11
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 12
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 13
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithLegLibrary'
+WHERE "Id" = 14
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 15
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 16
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 17
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 18
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 19
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 20
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegLibrary'
+WHERE "Id" = 21
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 22
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 23
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 24
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 25
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 26
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 27
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 28
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 29
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 30
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'DynamicAtt'
+WHERE "Id" = 31
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 32
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 33
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 34
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 35
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 36
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 37
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOtherLibrary'
+WHERE "Id" = 38
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 39
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 40
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 41
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 42
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 43
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 44
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 45
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_BULibrary'
+WHERE "Id" = 46
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 47
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 48
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 49
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 50
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 51
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 52
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 53
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_DishLibrary'
+WHERE "Id" = 54
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 55
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 56
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 57
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 58
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 59
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 60
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 61
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_ODULibrary'
+WHERE "Id" = 62
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 63
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 64
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 65
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 66
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 67
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 68
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_OtherLibrary'
+WHERE "Id" = 69
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 70
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 71
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 72
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 73
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 74
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 75
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 76
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_RFULibrary'
+WHERE "Id" = 77
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 78
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 79
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 80
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 81
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 82
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 83
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 84
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'PowerLibrary'
+WHERE "Id" = 85
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 86
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 87
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 88
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 89
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 90
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 91
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioAntennaLibrary'
+WHERE "Id" = 92
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioOtherLibrary'
+WHERE "Id" = 93
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioOtherLibrary'
+WHERE "Id" = 94
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioOtherLibrary'
+WHERE "Id" = 95
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioOtherLibrary'
+WHERE "Id" = 96
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioOtherLibrary'
+WHERE "Id" = 97
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioOtherLibrary'
+WHERE "Id" = 98
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 99
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 100
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 101
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 102
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 103
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 104
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioRRULibrary'
+WHERE "Id" = 105
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 106
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 107
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 108
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 109
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 110
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 111
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetPowerLibrary'
+WHERE "Id" = 112
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 113
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 114
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 115
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 116
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 117
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 118
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CabinetTelecomLibrary'
+WHERE "Id" = 119
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 120
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 121
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 122
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 123
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 124
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 125
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GeneratorLibrary'
+WHERE "Id" = 126
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 127
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 128
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 129
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 130
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 131
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 132
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SolarLibrary'
+WHERE "Id" = 133
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Actor'
+WHERE "Id" = 134
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Actor'
+WHERE "Id" = 135
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Actor'
+WHERE "Id" = 136
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Actor'
+WHERE "Id" = 137
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Actor'
+WHERE "Id" = 138
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'AttributeActivated'
+WHERE "Id" = 139
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'AttributeViewManagment'
+WHERE "Id" = 140
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'AttributeViewManagment'
+WHERE "Id" = 141
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'BaseCivilWithLegsType'
+WHERE "Id" = 142
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'BaseCivilWithLegsType'
+WHERE "Id" = 143
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'BaseCivilWithLegsType'
+WHERE "Id" = 144
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'BaseCivilWithLegsType'
+WHERE "Id" = 145
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'City'
+WHERE "Id" = 146
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'City'
+WHERE "Id" = 147
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'City'
+WHERE "Id" = 148
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'City'
+WHERE "Id" = 149
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 150
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 151
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 152
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 153
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 154
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 155
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 156
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 157
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 158
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 159
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 160
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 161
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 162
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 163
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 164
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 165
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 166
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 167
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilInst'
+WHERE "Id" = 169
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilLibrary'
+WHERE "Id" = 170
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilLibrary'
+WHERE "Id" = 171
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegCategory'
+WHERE "Id" = 172
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegCategory'
+WHERE "Id" = 173
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegCategory'
+WHERE "Id" = 174
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegCategory'
+WHERE "Id" = 175
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'CivilWithoutLegCategory'
+WHERE "Id" = 176
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 177
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 178
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 179
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 180
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 181
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 182
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ConfigurationAtts'
+WHERE "Id" = 183
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 184
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 185
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 186
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 187
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 188
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 189
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'FileManagment'
+WHERE "Id" = 190
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 191
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 192
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 193
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 194
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 195
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 196
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 197
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 198
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 199
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 200
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 201
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 202
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Group'
+WHERE "Id" = 203
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupRole'
+WHERE "Id" = 204
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupRole'
+WHERE "Id" = 205
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupRole'
+WHERE "Id" = 206
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupRole'
+WHERE "Id" = 207
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupUser'
+WHERE "Id" = 208
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupUser'
+WHERE "Id" = 209
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GroupUser'
+WHERE "Id" = 210
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GuyLineType'
+WHERE "Id" = 211
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GuyLineType'
+WHERE "Id" = 212
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GuyLineType'
+WHERE "Id" = 213
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'GuyLineType'
+WHERE "Id" = 214
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ImportDataFromSharePoint'
+WHERE "Id" = 215
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ImportDataFromSharePoint'
+WHERE "Id" = 216
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ImportDataFromSharePoint'
+WHERE "Id" = 217
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Inventory'
+WHERE "Id" = 218
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Leg'
+WHERE "Id" = 219
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Leg'
+WHERE "Id" = 220
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Leg'
+WHERE "Id" = 221
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Leg'
+WHERE "Id" = 222
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Leg'
+WHERE "Id" = 223
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 224
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 225
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 226
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 227
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 228
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 229
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'LoadOther'
+WHERE "Id" = 230
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ManageAtt'
+WHERE "Id" = 231
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ManageAtt'
+WHERE "Id" = 232
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ManageAtt'
+WHERE "Id" = 233
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ManageAtt'
+WHERE "Id" = 234
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'ManageAtt'
+WHERE "Id" = 235
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_Port'
+WHERE "Id" = 236
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_Port'
+WHERE "Id" = 237
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_Port'
+WHERE "Id" = 238
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MW_Port'
+WHERE "Id" = 239
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 240
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 241
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 242
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 243
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 244
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 245
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 246
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 247
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 248
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 249
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 250
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 251
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 252
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 253
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 254
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 255
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 256
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 257
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 258
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 259
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 260
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 261
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'MWInst'
+WHERE "Id" = 262
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 263
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 264
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 265
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 266
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 267
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 268
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 269
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 270
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 271
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 272
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 273
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 274
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 275
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 276
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 277
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 278
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 279
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 280
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'OtherInventoryInst'
+WHERE "Id" = 281
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Owner'
+WHERE "Id" = 282
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Owner'
+WHERE "Id" = 283
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Owner'
+WHERE "Id" = 284
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Owner'
+WHERE "Id" = 285
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Permission'
+WHERE "Id" = 286
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Permission'
+WHERE "Id" = 287
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Power'
+WHERE "Id" = 288
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Power'
+WHERE "Id" = 289
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Power'
+WHERE "Id" = 290
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Power'
+WHERE "Id" = 291
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Power'
+WHERE "Id" = 292
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 293
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 294
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 295
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 296
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 297
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 298
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 299
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 300
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 301
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioInst'
+WHERE "Id" = 302
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 303
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 304
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 305
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 306
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 307
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 309
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 310
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 311
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 312
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 313
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 314
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 315
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 316
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 317
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 318
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 319
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 320
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 321
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RadioLibrary'
+WHERE "Id" = 322
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Role'
+WHERE "Id" = 323
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Role'
+WHERE "Id" = 324
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Role'
+WHERE "Id" = 325
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Role'
+WHERE "Id" = 326
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Role'
+WHERE "Id" = 327
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Role'
+WHERE "Id" = 328
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'RolePermission'
+WHERE "Id" = 329
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 330
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 331
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 332
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 333
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 334
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 335
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 336
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 337
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 338
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 339
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 340
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 342
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 343
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 344
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 345
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 346
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 347
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArmLibrary'
+WHERE "Id" = 348
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 349
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 350
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 351
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 352
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 353
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 354
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 355
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 356
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 357
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 358
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 359
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 360
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 361
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 362
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 363
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 364
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 365
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 366
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 367
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 368
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 369
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 370
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Site'
+WHERE "Id" = 371
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SupportTypeImplemented'
+WHERE "Id" = 372
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SupportTypeImplemented'
+WHERE "Id" = 373
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SupportTypeImplemented'
+WHERE "Id" = 374
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SupportTypeImplemented'
+WHERE "Id" = 376
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Ticket'
+WHERE "Id" = 377
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Ticket'
+WHERE "Id" = 378
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Ticket'
+WHERE "Id" = 379
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Ticket'
+WHERE "Id" = 380
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Ticket'
+WHERE "Id" = 381
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Token'
+WHERE "Id" = 382
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 383
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 384
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 385
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 386
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 387
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 388
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 389
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 390
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 391
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 392
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 393
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 394
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 395
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'User'
+WHERE "Id" = 396
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'UserPermission'
+WHERE "Id" = 397
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 398
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 399
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 400
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 401
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 402
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 403
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 404
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 405
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 406
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 407
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 408
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 409
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 410
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 411
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 412
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 413
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 414
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 415
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 416
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 417
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 418
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 419
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 420
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 421
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 422
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 423
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 424
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 425
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 426
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 427
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 428
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 429
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 430
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 431
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 432
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 433
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 434
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 435
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 436
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 437
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 438
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 439
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 440
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 441
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 442
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 443
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 444
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 445
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 446
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 447
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 448
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 449
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 450
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 451
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 452
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 453
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'Workflow'
+WHERE "Id" = 455
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 456
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 457
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 458
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 459
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 460
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 461
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 462
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 463
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 464
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 465
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 466
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 467
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 468
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 469
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 470
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 471
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 472
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 473
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 474
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 475
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'WorkFlowSetting'
+WHERE "Id" = 476
+/
+
+UPDATE "TLIpermission" SET "ControllerName" = N'SideArm'
+WHERE "Id" = 482
+/
+
+BEGIN
+INSERT INTO "TLIpermission" ("Id", "ActionName", "Active", "ControllerName", "Module", "Name", "PermissionType")
+VALUES (168, N'GetSubOptionsByOptionId', 1, N'WorkFlowSetting', N'WorkflowSetting', N'Get SubOptions By Option Id', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIpermission" ("Id", "ActionName", "Active", "ControllerName", "Module", "Name", "PermissionType")
+VALUES (308, N'GetAllItemStatus', 1, N'WorkFlowSetting', N'WorkflowSetting', N'Get All Item Status', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIpermission" ("Id", "ActionName", "Active", "ControllerName", "Module", "Name", "PermissionType")
+VALUES (341, N'GetItemStatusById', 1, N'WorkFlowSetting', N'WorkflowSetting', N'Get Item Status By Id', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIpermission" ("Id", "ActionName", "Active", "ControllerName", "Module", "Name", "PermissionType")
+VALUES (375, N'AddItemStatus', 1, N'WorkFlowSetting', N'WorkflowSetting', N'Add Item Status', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIpermission" ("Id", "ActionName", "Active", "ControllerName", "Module", "Name", "PermissionType")
+VALUES (454, N'UpdateItemStatus', 1, N'WorkFlowSetting', N'WorkflowSetting', N'Update Item Status', NULL);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (468, 1, 1, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (624, 1, 156, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (623, 1, 155, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (622, 1, 154, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (621, 1, 153, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (620, 1, 152, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (616, 1, 148, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (618, 1, 150, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (617, 1, 149, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (625, 1, 157, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (615, 1, 147, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (619, 1, 151, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (626, 1, 158, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (631, 1, 163, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (628, 1, 160, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (629, 1, 161, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (630, 1, 162, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (614, 1, 146, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (632, 1, 164, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (633, 1, 165, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (634, 1, 166, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (635, 1, 167, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (637, 1, 169, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (638, 1, 170, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (639, 1, 171, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (627, 1, 159, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (613, 1, 145, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (608, 1, 140, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (611, 1, 143, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (586, 1, 118, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (587, 1, 119, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (588, 1, 120, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (589, 1, 121, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (590, 1, 122, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (591, 1, 123, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (592, 1, 124, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (593, 1, 125, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (594, 1, 126, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (595, 1, 127, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (596, 1, 128, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (597, 1, 129, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (598, 1, 130, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (599, 1, 131, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (600, 1, 132, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (601, 1, 133, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (602, 1, 134, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (603, 1, 135, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (604, 1, 136, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (605, 1, 137, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (606, 1, 138, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (607, 1, 139, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (640, 1, 172, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (609, 1, 141, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (610, 1, 142, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (612, 1, 144, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (641, 1, 173, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (646, 1, 178, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (643, 1, 175, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (673, 1, 205, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (674, 1, 206, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (675, 1, 207, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (676, 1, 208, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (677, 1, 209, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (678, 1, 210, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (679, 1, 211, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (680, 1, 212, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (681, 1, 213, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (682, 1, 214, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (683, 1, 215, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (684, 1, 216, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (685, 1, 217, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (686, 1, 218, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (687, 1, 219, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (688, 1, 220, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (689, 1, 221, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (690, 1, 222, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (691, 1, 223, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (692, 1, 224, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (693, 1, 225, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (694, 1, 226, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (695, 1, 227, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (696, 1, 228, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (697, 1, 229, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (672, 1, 204, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (642, 1, 174, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (671, 1, 203, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (669, 1, 201, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (644, 1, 176, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (645, 1, 177, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (585, 1, 117, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (647, 1, 179, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (648, 1, 180, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (649, 1, 181, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (650, 1, 182, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (651, 1, 183, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (652, 1, 184, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (653, 1, 185, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (654, 1, 186, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (655, 1, 187, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (656, 1, 188, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (657, 1, 189, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (658, 1, 190, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (659, 1, 191, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (660, 1, 192, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (661, 1, 193, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (662, 1, 194, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (663, 1, 195, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (664, 1, 196, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (665, 1, 197, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (666, 1, 198, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (667, 1, 199, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (668, 1, 200, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (670, 1, 202, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (584, 1, 116, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (580, 1, 112, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (582, 1, 114, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (499, 1, 31, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (500, 1, 32, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (501, 1, 33, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (502, 1, 34, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (503, 1, 35, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (504, 1, 36, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (505, 1, 37, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (506, 1, 38, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (507, 1, 39, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (508, 1, 40, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (509, 1, 41, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (510, 1, 42, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (511, 1, 43, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (512, 1, 44, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (513, 1, 45, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (514, 1, 46, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (515, 1, 47, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (516, 1, 48, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (517, 1, 49, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (518, 1, 50, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (519, 1, 51, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (520, 1, 52, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (521, 1, 53, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (522, 1, 54, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (523, 1, 55, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (498, 1, 30, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (524, 1, 56, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (497, 1, 29, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (495, 1, 27, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (469, 1, 2, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (470, 1, 3, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (471, 1, 4, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (472, 1, 5, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (473, 1, 6, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (474, 1, 7, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (475, 1, 8, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (476, 1, 9, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (478, 1, 10, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (479, 1, 11, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (480, 1, 12, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (481, 1, 13, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (482, 1, 14, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (483, 1, 15, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (484, 1, 16, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (485, 1, 17, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (486, 1, 18, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (487, 1, 19, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (488, 1, 20, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (489, 1, 21, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (490, 1, 22, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (491, 1, 23, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (492, 1, 24, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (493, 1, 25, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (494, 1, 26, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (496, 1, 28, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (583, 1, 115, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (525, 1, 57, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (527, 1, 59, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (557, 1, 89, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (558, 1, 90, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (559, 1, 91, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (560, 1, 92, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (561, 1, 93, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (562, 1, 94, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (563, 1, 95, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (564, 1, 96, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (565, 1, 97, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (566, 1, 98, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (567, 1, 99, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (568, 1, 100, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (569, 1, 101, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (570, 1, 102, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (571, 1, 103, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (572, 1, 104, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (573, 1, 105, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (574, 1, 106, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (575, 1, 107, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (576, 1, 108, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (577, 1, 109, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (578, 1, 110, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (579, 1, 111, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (698, 1, 230, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (581, 1, 113, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (556, 1, 88, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (526, 1, 58, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (555, 1, 87, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (553, 1, 85, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (528, 1, 60, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (529, 1, 61, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (530, 1, 62, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (531, 1, 63, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (532, 1, 64, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (533, 1, 65, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (534, 1, 66, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (535, 1, 67, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (536, 1, 68, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (537, 1, 69, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (538, 1, 70, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (539, 1, 71, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (540, 1, 72, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (541, 1, 73, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (542, 1, 74, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (543, 1, 75, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (544, 1, 76, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (545, 1, 77, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (546, 1, 78, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (547, 1, 79, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (548, 1, 80, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (549, 1, 81, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (550, 1, 82, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (551, 1, 83, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (552, 1, 84, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (554, 1, 86, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (699, 1, 231, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (704, 1, 236, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (701, 1, 233, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (851, 1, 383, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (852, 1, 384, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (853, 1, 385, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (854, 1, 386, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (855, 1, 387, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (856, 1, 388, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (857, 1, 389, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (858, 1, 390, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (859, 1, 391, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (860, 1, 392, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (861, 1, 393, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (850, 1, 382, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (862, 1, 394, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (864, 1, 396, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (865, 1, 397, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (866, 1, 398, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (867, 1, 399, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (868, 1, 400, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (869, 1, 401, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (870, 1, 402, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (871, 1, 403, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (872, 1, 404, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (873, 1, 405, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (874, 1, 406, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (863, 1, 395, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (849, 1, 381, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (848, 1, 380, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (847, 1, 379, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (821, 1, 353, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (822, 1, 354, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (823, 1, 355, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (824, 1, 356, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (825, 1, 357, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (826, 1, 358, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (827, 1, 359, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (828, 1, 360, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (829, 1, 361, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (830, 1, 362, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (831, 1, 363, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (832, 1, 364, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (833, 1, 365, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (834, 1, 366, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (835, 1, 367, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (836, 1, 368, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (837, 1, 369, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (838, 1, 370, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (839, 1, 371, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (840, 1, 372, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (841, 1, 373, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (842, 1, 374, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (844, 1, 376, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (845, 1, 377, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (846, 1, 378, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (875, 1, 407, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (876, 1, 408, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (877, 1, 409, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (878, 1, 410, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (908, 1, 440, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (909, 1, 441, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (910, 1, 442, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (911, 1, 443, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (912, 1, 444, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (913, 1, 445, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (914, 1, 446, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (915, 1, 447, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (916, 1, 448, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (917, 1, 449, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (918, 1, 450, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (919, 1, 451, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (920, 1, 452, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (921, 1, 453, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (923, 1, 455, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (924, 1, 456, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (925, 1, 457, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (926, 1, 458, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (927, 1, 459, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (928, 1, 460, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (929, 1, 461, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (930, 1, 462, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (931, 1, 463, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (932, 1, 464, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (933, 1, 465, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (907, 1, 439, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (820, 1, 352, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (906, 1, 438, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (904, 1, 436, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (879, 1, 411, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (880, 1, 412, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (881, 1, 413, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (882, 1, 414, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (883, 1, 415, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (884, 1, 416, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (885, 1, 417, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (886, 1, 418, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (887, 1, 419, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (888, 1, 420, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (889, 1, 421, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (890, 1, 422, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (891, 1, 423, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (892, 1, 424, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (893, 1, 425, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (894, 1, 426, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (895, 1, 427, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (896, 1, 428, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (897, 1, 429, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (898, 1, 430, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (899, 1, 431, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (900, 1, 432, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (901, 1, 433, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (902, 1, 434, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (903, 1, 435, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (905, 1, 437, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (819, 1, 351, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (818, 1, 350, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (817, 1, 349, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (732, 1, 264, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (733, 1, 265, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (734, 1, 266, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (735, 1, 267, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (736, 1, 268, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (737, 1, 269, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (738, 1, 270, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (739, 1, 271, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (740, 1, 272, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (741, 1, 273, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (742, 1, 274, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (743, 1, 275, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (744, 1, 276, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (745, 1, 277, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (746, 1, 278, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (747, 1, 279, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (748, 1, 280, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (749, 1, 281, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (750, 1, 282, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (751, 1, 283, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (752, 1, 284, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (753, 1, 285, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (754, 1, 286, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (755, 1, 287, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (756, 1, 288, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (731, 1, 263, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (757, 1, 289, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (730, 1, 262, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (728, 1, 260, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (702, 1, 234, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (703, 1, 235, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (705, 1, 237, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (706, 1, 238, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (707, 1, 239, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (708, 1, 240, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (709, 1, 241, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (710, 1, 242, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (711, 1, 243, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (712, 1, 244, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (713, 1, 245, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (714, 1, 246, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (715, 1, 247, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (716, 1, 248, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (717, 1, 249, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (718, 1, 250, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (719, 1, 251, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (720, 1, 252, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (721, 1, 253, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (722, 1, 254, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (723, 1, 255, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (724, 1, 256, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (725, 1, 257, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (726, 1, 258, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (727, 1, 259, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (729, 1, 261, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (700, 1, 232, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (758, 1, 290, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (760, 1, 292, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (791, 1, 323, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (792, 1, 324, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (793, 1, 325, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (794, 1, 326, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (795, 1, 327, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (796, 1, 328, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (797, 1, 329, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (798, 1, 330, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (799, 1, 331, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (800, 1, 332, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (801, 1, 333, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (802, 1, 334, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (803, 1, 335, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (804, 1, 336, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (805, 1, 337, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (806, 1, 338, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (807, 1, 339, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (808, 1, 340, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (810, 1, 342, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (811, 1, 343, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (812, 1, 344, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (813, 1, 345, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (814, 1, 346, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (815, 1, 347, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (816, 1, 348, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (790, 1, 322, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (759, 1, 291, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (789, 1, 321, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (787, 1, 319, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (761, 1, 293, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (762, 1, 294, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (763, 1, 295, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (764, 1, 296, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (765, 1, 297, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (766, 1, 298, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (767, 1, 299, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (768, 1, 300, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (769, 1, 301, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (770, 1, 302, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (771, 1, 303, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (772, 1, 304, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (773, 1, 305, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (774, 1, 306, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (775, 1, 307, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (777, 1, 309, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (778, 1, 310, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (779, 1, 311, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (780, 1, 312, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (781, 1, 313, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (782, 1, 314, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (783, 1, 315, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (784, 1, 316, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (785, 1, 317, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (786, 1, 318, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (788, 1, 320, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (467, 1, 467, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (225, 1, 225, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (465, 1, 465, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (146, 1, 146, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (147, 1, 147, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (148, 1, 148, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (149, 1, 149, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (150, 1, 150, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (151, 1, 151, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (152, 1, 152, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (153, 1, 153, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (154, 1, 154, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (155, 1, 155, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (156, 1, 156, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (145, 1, 145, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (157, 1, 157, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (159, 1, 159, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (160, 1, 160, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (161, 1, 161, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (162, 1, 162, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (163, 1, 163, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (164, 1, 164, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (165, 1, 165, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (166, 1, 166, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (167, 1, 167, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (169, 1, 169, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (170, 1, 170, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (158, 1, 158, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (144, 1, 144, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (143, 1, 143, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (142, 1, 142, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (117, 1, 117, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (118, 1, 118, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (119, 1, 119, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (120, 1, 120, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (121, 1, 121, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (122, 1, 122, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (123, 1, 123, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (124, 1, 124, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (125, 1, 125, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (126, 1, 126, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (127, 1, 127, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (128, 1, 128, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (129, 1, 129, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (130, 1, 130, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (131, 1, 131, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (132, 1, 132, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (133, 1, 133, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (134, 1, 134, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (135, 1, 135, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (136, 1, 136, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (137, 1, 137, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (138, 1, 138, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (139, 1, 139, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (140, 1, 140, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (141, 1, 141, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (171, 1, 171, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (172, 1, 172, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (173, 1, 173, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (174, 1, 174, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (204, 1, 204, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (205, 1, 205, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (206, 1, 206, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (207, 1, 207, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (208, 1, 208, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (209, 1, 209, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (210, 1, 210, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (211, 1, 211, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (212, 1, 212, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (213, 1, 213, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (214, 1, 214, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (215, 1, 215, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (216, 1, 216, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (217, 1, 217, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (218, 1, 218, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (219, 1, 219, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (220, 1, 220, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (221, 1, 221, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (222, 1, 222, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (223, 1, 223, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (224, 1, 224, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (934, 1, 466, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (226, 1, 226, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (227, 1, 227, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (228, 1, 228, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (203, 1, 203, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (116, 1, 116, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (202, 1, 202, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (200, 1, 200, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (175, 1, 175, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (176, 1, 176, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (177, 1, 177, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (178, 1, 178, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (179, 1, 179, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (180, 1, 180, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (181, 1, 181, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (182, 1, 182, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (183, 1, 183, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (184, 1, 184, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (185, 1, 185, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (186, 1, 186, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (187, 1, 187, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (188, 1, 188, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (189, 1, 189, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (190, 1, 190, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (191, 1, 191, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (192, 1, 192, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (193, 1, 193, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (194, 1, 194, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (195, 1, 195, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (196, 1, 196, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (197, 1, 197, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (198, 1, 198, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (199, 1, 199, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (201, 1, 201, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (115, 1, 115, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (114, 1, 114, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (113, 1, 113, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (30, 1, 30, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (31, 1, 31, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (32, 1, 32, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (33, 1, 33, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (34, 1, 34, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (35, 1, 35, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (36, 1, 36, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (37, 1, 37, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (38, 1, 38, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (39, 1, 39, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (40, 1, 40, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (41, 1, 41, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (42, 1, 42, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (43, 1, 43, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (44, 1, 44, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (45, 1, 45, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (46, 1, 46, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (47, 1, 47, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (48, 1, 48, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (49, 1, 49, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (50, 1, 50, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (51, 1, 51, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (52, 1, 52, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (53, 1, 53, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (54, 1, 54, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (29, 1, 29, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (55, 1, 55, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (28, 1, 28, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (26, 1, 26, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (1, 1, 1, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (2, 1, 2, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (3, 1, 3, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (4, 1, 4, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (5, 1, 5, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (6, 1, 6, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (7, 1, 7, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (8, 1, 8, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (9, 1, 9, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (10, 1, 10, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (11, 1, 11, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (12, 1, 12, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (13, 1, 13, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (14, 1, 14, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (15, 1, 15, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (16, 1, 16, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (17, 1, 17, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (18, 1, 18, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (19, 1, 19, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (20, 1, 20, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (21, 1, 21, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (22, 1, 22, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (23, 1, 23, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (24, 1, 24, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (25, 1, 25, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (27, 1, 27, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (229, 1, 229, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (56, 1, 56, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (58, 1, 58, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (88, 1, 88, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (89, 1, 89, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (90, 1, 90, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (91, 1, 91, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (92, 1, 92, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (93, 1, 93, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (94, 1, 94, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (95, 1, 95, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (96, 1, 96, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (97, 1, 97, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (98, 1, 98, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (99, 1, 99, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (100, 1, 100, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (101, 1, 101, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (102, 1, 102, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (103, 1, 103, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (104, 1, 104, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (105, 1, 105, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (106, 1, 106, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (107, 1, 107, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (108, 1, 108, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (109, 1, 109, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (110, 1, 110, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (111, 1, 111, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (112, 1, 112, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (87, 1, 87, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (57, 1, 57, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (86, 1, 86, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (84, 1, 84, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (59, 1, 59, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (60, 1, 60, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (61, 1, 61, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (62, 1, 62, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (63, 1, 63, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (64, 1, 64, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (65, 1, 65, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (66, 1, 66, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (67, 1, 67, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (68, 1, 68, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (69, 1, 69, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (70, 1, 70, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (71, 1, 71, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (72, 1, 72, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (73, 1, 73, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (74, 1, 74, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (75, 1, 75, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (76, 1, 76, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (77, 1, 77, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (78, 1, 78, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (79, 1, 79, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (80, 1, 80, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (81, 1, 81, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (82, 1, 82, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (83, 1, 83, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (85, 1, 85, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (230, 1, 230, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (231, 1, 231, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (232, 1, 232, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (381, 1, 381, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (382, 1, 382, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (383, 1, 383, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (384, 1, 384, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (385, 1, 385, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (386, 1, 386, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (387, 1, 387, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (388, 1, 388, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (389, 1, 389, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (390, 1, 390, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (391, 1, 391, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (392, 1, 392, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (393, 1, 393, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (394, 1, 394, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (395, 1, 395, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (396, 1, 396, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (397, 1, 397, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (398, 1, 398, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (399, 1, 399, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (400, 1, 400, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (401, 1, 401, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (402, 1, 402, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (403, 1, 403, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (404, 1, 404, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (405, 1, 405, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (380, 1, 380, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (406, 1, 406, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (379, 1, 379, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (377, 1, 377, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (351, 1, 351, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (352, 1, 352, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (353, 1, 353, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (354, 1, 354, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (355, 1, 355, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (356, 1, 356, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (357, 1, 357, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (358, 1, 358, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (359, 1, 359, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (360, 1, 360, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (361, 1, 361, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (362, 1, 362, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (363, 1, 363, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (364, 1, 364, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (365, 1, 365, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (366, 1, 366, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (367, 1, 367, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (368, 1, 368, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (369, 1, 369, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (370, 1, 370, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (371, 1, 371, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (372, 1, 372, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (373, 1, 373, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (374, 1, 374, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (376, 1, 376, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (378, 1, 378, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (350, 1, 350, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (407, 1, 407, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (409, 1, 409, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (439, 1, 439, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (440, 1, 440, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (441, 1, 441, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (442, 1, 442, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (443, 1, 443, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (444, 1, 444, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (445, 1, 445, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (446, 1, 446, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (447, 1, 447, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (448, 1, 448, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (449, 1, 449, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (450, 1, 450, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (451, 1, 451, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (452, 1, 452, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (453, 1, 453, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (455, 1, 455, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (456, 1, 456, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (457, 1, 457, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (458, 1, 458, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (459, 1, 459, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (460, 1, 460, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (461, 1, 461, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (462, 1, 462, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (463, 1, 463, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (464, 1, 464, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (438, 1, 438, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (408, 1, 408, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (437, 1, 437, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (435, 1, 435, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (410, 1, 410, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (411, 1, 411, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (412, 1, 412, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (413, 1, 413, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (414, 1, 414, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (415, 1, 415, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (416, 1, 416, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (417, 1, 417, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (418, 1, 418, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (419, 1, 419, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (420, 1, 420, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (421, 1, 421, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (422, 1, 422, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (423, 1, 423, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (424, 1, 424, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (425, 1, 425, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (426, 1, 426, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (427, 1, 427, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (428, 1, 428, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (429, 1, 429, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (430, 1, 430, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (431, 1, 431, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (432, 1, 432, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (433, 1, 433, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (434, 1, 434, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (436, 1, 436, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (466, 1, 466, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (349, 1, 349, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (347, 1, 347, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (262, 1, 262, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (263, 1, 263, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (264, 1, 264, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (265, 1, 265, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (266, 1, 266, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (267, 1, 267, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (268, 1, 268, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (269, 1, 269, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (270, 1, 270, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (271, 1, 271, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (272, 1, 272, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (273, 1, 273, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (274, 1, 274, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (275, 1, 275, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (276, 1, 276, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (277, 1, 277, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (278, 1, 278, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (279, 1, 279, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (280, 1, 280, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (281, 1, 281, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (282, 1, 282, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (283, 1, 283, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (284, 1, 284, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (285, 1, 285, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (286, 1, 286, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (261, 1, 261, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (287, 1, 287, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (260, 1, 260, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (258, 1, 258, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (233, 1, 233, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (234, 1, 234, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (235, 1, 235, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (236, 1, 236, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (237, 1, 237, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (238, 1, 238, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (239, 1, 239, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (240, 1, 240, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (241, 1, 241, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (242, 1, 242, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (243, 1, 243, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (244, 1, 244, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (245, 1, 245, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (246, 1, 246, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (247, 1, 247, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (248, 1, 248, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (249, 1, 249, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (250, 1, 250, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (251, 1, 251, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (252, 1, 252, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (253, 1, 253, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (254, 1, 254, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (255, 1, 255, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (256, 1, 256, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (257, 1, 257, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (259, 1, 259, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (348, 1, 348, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (288, 1, 288, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (290, 1, 290, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (321, 1, 321, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (322, 1, 322, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (323, 1, 323, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (324, 1, 324, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (325, 1, 325, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (326, 1, 326, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (327, 1, 327, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (328, 1, 328, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (329, 1, 329, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (330, 1, 330, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (331, 1, 331, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (332, 1, 332, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (333, 1, 333, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (334, 1, 334, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (335, 1, 335, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (336, 1, 336, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (337, 1, 337, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (338, 1, 338, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (339, 1, 339, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (340, 1, 340, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (342, 1, 342, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (343, 1, 343, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (344, 1, 344, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (345, 1, 345, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (346, 1, 346, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (320, 1, 320, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (289, 1, 289, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (319, 1, 319, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (317, 1, 317, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (291, 1, 291, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (292, 1, 292, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (293, 1, 293, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (294, 1, 294, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (295, 1, 295, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (296, 1, 296, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (297, 1, 297, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (298, 1, 298, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (299, 1, 299, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (300, 1, 300, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (301, 1, 301, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (302, 1, 302, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (303, 1, 303, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (304, 1, 304, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (305, 1, 305, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (306, 1, 306, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (307, 1, 307, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (309, 1, 309, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (310, 1, 310, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (311, 1, 311, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (312, 1, 312, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (313, 1, 313, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (314, 1, 314, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (315, 1, 315, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (316, 1, 316, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (318, 1, 318, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (935, 1, 467, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (168, 1, 168, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (636, 1, 168, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (308, 1, 308, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (776, 1, 308, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (341, 1, 341, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (809, 1, 341, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (375, 1, 375, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (843, 1, 375, 435);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (454, 1, 454, 434);
+END;
+/
+
+BEGIN
+INSERT INTO "TLIuserPermission" ("Id", "Active", "permissionId", "userId")
+VALUES (922, 1, 454, 435);
+END;
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20220411122845_SeedDataForTLIuserPermission', N'2.2.6-servicing-10079')
+/
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES (N'20220425093702_SlemanTestMigration', N'2.2.6-servicing-10079')
+/
+

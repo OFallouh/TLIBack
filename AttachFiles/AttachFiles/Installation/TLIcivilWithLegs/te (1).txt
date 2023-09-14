@@ -1,0 +1,122 @@
+ public Response<string> ImportFileData(IFormFile file)
+        {
+            
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                ExcelPackage pck = new ExcelPackage();
+                string filePath = SaveFile(file);
+              
+                var siteAdapter = new OleDbDataAdapter("SELECT * FROM [Select t_site_geoinfo$]", filePath);
+                var siteDS = new DataSet();
+
+            siteAdapter.Fill(siteDS, "ExcelTable");
+
+                DataTable siteDtable = siteDS.Tables["ExcelTable"];
+  #region save file
+        public string SaveFile(IFormFile file)
+        {
+            string fileDirectory = Directory.GetCurrentDirectory();
+            string DirectoryPath = null;
+            string FilePath = null;
+            DirectoryPath = Path.Combine(fileDirectory, "ExcelData");
+            if (!Directory.Exists(DirectoryPath))
+            {
+                Directory.CreateDirectory(DirectoryPath);
+            }
+            //Create file path
+
+            if (file.Length > 0)
+            {
+                var FileName = file.FileName;
+                FilePath = Path.Combine(DirectoryPath, $"{ FileName }");
+                //if (System.IO.File.Exists(FilePath))
+                //{
+                //    System.IO.File.Delete(FilePath);
+                //}
+                using (Stream fileStream = new FileStream(FilePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+            }
+            string filePath = FilePath;
+            FileInfo existingFile = new FileInfo(filePath);
+
+            var connectionString = "";
+            if (existingFile.FullName.EndsWith(".xls"))
+            {
+                connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", filePath);
+            }
+            else if (existingFile.FullName.EndsWith(".xlsx"))
+            {
+                connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\";", filePath);
+            }
+            return connectionString;
+
+        }
+        #endregion
+ #region Generate Excel
+        public void saveDt (ExcelPackage pck,string sheetName, DataTable dt)
+        {
+            ExcelWorksheet teamSheet = pck.Workbook.Worksheets.Add(sheetName);
+            teamSheet.Cells[1, 1].LoadFromDataTable(dt);
+        }
+        public string GenerateExcel (ExcelPackage pck)
+        {
+            string fileDirectory = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(fileDirectory))
+            {
+                Directory.CreateDirectory(fileDirectory);
+            }
+            //Create new file path to my file
+            var filePath = Path.Combine(fileDirectory, "Error_Records" + ".xlsx");
+            //if file path is already exists return true or false if true delete filePath
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            var file = new FileInfo(filePath);
+           
+            pck.SaveAs(file);
+            return filePath;
+        }
+
+        #endregion
+
+
+
+
+  public Response<string> ImportFileData(IFormFile file)
+        {
+            
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                ExcelPackage pck = new ExcelPackage();
+                string filePath = SaveFile(file);
+              
+                var siteAdapter = new OleDbDataAdapter("SELECT * FROM [Select t_site_geoinfo$]", filePath);
+                var siteDS = new DataSet();
+
+            siteAdapter.Fill(siteDS, "ExcelTable");
+
+                DataTable siteDtable = siteDS.Tables["ExcelTable"];
+               
+               // string Resultstring = "successed";              
+                int siteStatusId = 0;
+                string Area = "";
+                
+                
+                List<SiteValidation> siteCodeList = _unitOfWork.SiteRepository.GetAllAsQueryable().Select(x => new SiteValidation(x.SiteCode, x.SiteName)).ToList();
+                string sitecode;
+                string siteName;
+                int rowNumber = 0;
+                string ErrorMesg = "";
+                foreach (DataRow row in siteDtable.Rows)
+                {
+                    rowNumber++;
+                    if (row["SITE_CODE"].ToString() != "")
+                    {
+                        TLIsite site = new TLIsite();
+                        sitecode = row["SITE_CODE"].ToString();
+                        siteName = row["SITE_NAME"].ToString();

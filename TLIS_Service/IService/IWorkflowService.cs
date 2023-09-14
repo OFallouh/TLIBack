@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using TLIS_DAL.Helper;
+using TLIS_DAL.Helper.Filters;
+using TLIS_DAL.Helpers;
+using TLIS_DAL.ViewModels.ActionDTOs;
+using TLIS_DAL.ViewModels.StepActionDTOs;
+using TLIS_DAL.ViewModels.StepDTOs;
+using TLIS_DAL.ViewModels.WorkFlowDTOs;
+using TLIS_DAL.ViewModels.WorkFlowTypeDTOs;
+
+namespace TLIS_Service.IService
+{
+    public interface IWorkflowService
+    {
+        Response<List<ListWorkFlowViewModel>> GetAllWorkflows(ParameterPagination parameterPagination, List<FilterObjectList> filter);
+        Response<ListWorkFlowViewModel> AddWorkflow(AddWorkFlowViewModel Workflow);
+        Response<ListWorkFlowViewModel> UpdateWorkflow(EditWorkFlowViewModel Workflow);
+        Response<ListWorkFlowViewModel> GetWorkflowbyId(int Id);
+        Response<ListWorkFlowViewModel> DeleteWorkflow(int workflowId);
+        Response<ListWorkFlowViewModel> ChangeWorkflowStatus(int workflowId);
+        Response<ListWorkFlowViewModel> WorkflowPermissions(WorkFlowGroupsViewModel Workflow);
+        Response<List<ListWorkFlowTypeViewModel>> GetAllWorkflowTypes(ParameterPagination parameterPagination, List<FilterObjectList> filter, int WorkflowId);
+        Response<ListWorkFlowTypeViewModel> GetWorkflowTypeById(int Id);
+        Response<ListWorkFlowTypeViewModel> AddWorkflowType(AddWorkFlowTypeViewModel WorkflowType);
+        Response<ListWorkFlowTypeViewModel> DeleteWorkflowType(int workflowTypeId);
+        Response<ListWorkFlowTypeViewModel> UpdateWorkflowType(EditWorkFlowTypeViewModel WorkflowType);
+        Response<List<StepListViewModel>> GetAllSteps(ParameterPagination parameterPagination, List<FilterObjectList> filter);
+        Response<List<StepListViewModel>> GetWorkFlowSteps(ParameterPagination parameterPagination, List<FilterObjectList> filter, int workflowId);
+        Response<List<StepListViewModel>> GetSubStep(ParameterPagination parameterPagination, List<FilterObjectList> filter, int stepId);
+        Task<Response<StepListViewModel>> GetStepById(int Id);
+        Task<Response<StepEditViewModel>> AddStep(StepAddViewModel step);
+        Task<Response<StepEditViewModel>> UpdateStep(StepEditViewModel step);
+        //Response<List<ActionListViewModel>> GetAllActions(ParameterPagination parameterPagination, List<FilterObjectList> filter);
+        Response<List<ActionListViewModel>> GetAllActions();
+        Task<Response<ActionListViewModel>> GetActionById(int Id);
+        Response<List<ListStepActionViewModel>> GetAllStepActions();
+        Response<StepActionWithNamesViewModel> GetStepActionById(int Id);
+        Response<StepActionWithNamesViewModel> AddStepAction(AddStepActionViewModel step);
+        Response<StepActionWithNamesViewModel> AddMailStepAction(AddMailStepActionViewModel action);
+        Response<StepActionWithNamesViewModel> AddTicketStatusStepAction(AddTicketStatusStepActionViewModel action);
+        Response<StepActionWithNamesViewModel> AddInsertDataStepAction(AddStepActionInsertDataViewModel action);
+        Response<StepActionWithNamesViewModel> AddUpdateDataStepAction(AddStepActionInsertDataViewModel action);
+        Response<StepActionWithNamesViewModel> AddUploadFileStepAction(AddUploadFileStepActionViewModel action);
+        Response<StepActionWithNamesViewModel> AddCorrectDataStepAction(AddStepActionInsertDataViewModel action);
+        Response<StepActionWithNamesViewModel> AddStepActionApplyCalculation(AddStepActionApplyCalculationViewModel action);
+        Response<ListStepActionViewModel> SetStepActionPermission(int StepActionId, StepActionGroupPermission permissions);
+        Response<StepActionWithNamesViewModel> UpdateStepAction(EditStepActionViewModel step);
+        Response<List<ListConditionActionViewModel>> GetConditionActions();
+        Response<List<ListConditionActionViewModel>> GetTelecomValidationActions();
+        Response<List<ListConditionActionViewModel>> GetCivilValidationActions();
+        Response<List<ListCivilDecisionActionViewModel>> GetCivilDecisionActions();
+        Response<ListCivilDecisionActionViewModel> GetCivilDecisionAction();
+        Response<StepActionWithNamesViewModel> AddConditionStepAction(AddStepActionConditionViewModel action);
+        Response<StepActionWithNamesViewModel> AddSelectTargetSupportStepAction(AddStepActionSelectTargetSupportViewModel action);
+        Response<StepActionWithNamesViewModel> AddCheckAvailableSpaceStepAction(AddStepActionCheckAvailableSpaceViewModel action);
+        Response<StepActionWithNamesViewModel> AddTelecomValidationStepAction(AddStepActionTelecomValidationViewModel action);
+        Response<StepActionWithNamesViewModel> AddCivilDecisionStepAction(AddStepActionCivilDecisionViewModel action);
+        Response<StepActionWithNamesViewModel> AddProposalApprovedStepAction(AddStepActionProposalApprovedViewModel action);
+        Response<StepActionWithNamesViewModel> AddStudyResultStepAction(AddStepActionProposalApprovedViewModel action);
+        Response<StepActionWithNamesViewModel> AddCivilValidationStepAction(AddStepActionTelecomValidationViewModel action);
+        Response<List<ListStepActionViewModel>> GetWorkFlowStepActions(int workFlowId);
+        Response<ListStepActionViewModel> DelStepAction(int Id);
+        Response<ListStepActionViewModel> MoveUpStepAction(int Id);
+        Response<ListStepActionViewModel> MoveDownStepAction(int Id);
+        Response<List<ListActionOptionViewModel>> GetAvailableSpaceOptions();
+        Response<StepActionWithNamesViewModel> EditMailStepAction(EditMailStepActionViewModel action);
+        Response<StepActionWithNamesViewModel> EditStepActionApplyCalculation(EditStepActionApplyCalculationViewModel action);
+        Response<StepActionWithNamesViewModel> EditCheckAvailableSpaceStepAction(EditStepActionCheckAvailableSpaceViewModel action);
+        Response<StepActionWithNamesViewModel> EditCivilDecisionStepAction(EditStepActionCivilDecisionViewModel action);
+        Response<StepActionWithNamesViewModel> EditConditionStepAction(EditStepActionConditionViewModel action);
+        Response<StepActionWithNamesViewModel> EditInsertDataStepAction(EditStepActionInsertDataViewModel action);
+        Response<StepActionWithNamesViewModel> EditUpdateDataStepAction(EditStepActionInsertDataViewModel action);
+        Response<StepActionWithNamesViewModel> EditCorrectDataStepAction(EditStepActionInsertDataViewModel action);
+        Response<StepActionWithNamesViewModel> EditStudyResultStepAction(EditStepActionProposalApprovedViewModel action);
+        Response<StepActionWithNamesViewModel> EditProposalApprovedStepAction(EditStepActionProposalApprovedViewModel action);
+        Response<StepActionWithNamesViewModel> EditSelectTargetSupportStepAction(EditStepActionSelectTargetSupportViewModel action);
+        Response<StepActionWithNamesViewModel> EditTelecomValidationStepAction(EditStepActionTelecomValidationViewModel action);
+        Response<StepActionWithNamesViewModel> EditCivilValidationStepAction(EditStepActionTelecomValidationViewModel action);
+        Response<StepActionWithNamesViewModel> EditTicketStatusStepAction(EditStepActionTicketStatusViewModel action);
+    }
+}

@@ -1,0 +1,177 @@
+{
+  "data": {
+    "model": [
+      {
+        "Id": 569,
+        "Model": "neww",
+        "SpaceLibrary": 55,
+        "Active": true,
+        "SupportTypeDesigned_Name": "NA",
+        "SectionsLegType_Name": "NA",
+        "StructureType_Name": "NA",
+        "new": "5",
+        "ff": "5",
+        "gh11": 65,
+        "ttt": true,
+        "DateTimeAttributes": {}
+      },
+      {
+        "Id": 567,
+        "Model": "1222",
+        "SpaceLibrary": 1,
+        "Active": true,
+        "SupportTypeDesigned_Name": "Guyed",
+        "SectionsLegType_Name": "NA",
+        "StructureType_Name": "New",
+        "new": "1",
+        "ff": "1",
+        "gh11": 65,
+        "ttt": true,
+        "DateTimeAttributes": {}
+      },
+      {
+        "Id": 570,
+        "Model": "dy",
+        "SpaceLibrary": 55,
+        "Active": true,
+        "SupportTypeDesigned_Name": "Guyed",
+        "SectionsLegType_Name": "Angle",
+        "StructureType_Name": "New",
+        "new": "5",
+        "ff": "5",
+        "gh11": 65,
+        "ttt": true,
+        "DateTimeAttributes": {}
+      },
+      {
+        "Id": 565,
+        "Model": "Mmooll",
+        "SpaceLibrary": 10,
+        "Active": true,
+        "SupportTypeDesigned_Name": "Guyed",
+        "SectionsLegType_Name": "Tube",
+        "StructureType_Name": "New",
+        "new": "ff",
+        "ff": "gg",
+        "gh11": 65,
+        "ttt": true,
+        "DateTimeAttributes": {}
+      },
+      {
+        "Id": 563,
+        "Model": "Mohamad565",
+        "SpaceLibrary": 0,
+        "Active": true,
+        "SupportTypeDesigned_Name": "Guyed",
+        "SectionsLegType_Name": "Angle",
+        "StructureType_Name": "Delete",
+        "new": "ss",
+        "ff": "xx",
+        "gh11": 65,
+        "ttt": true,
+        "DateTimeAttributes": {}
+      },
+      {
+        "Id": 566,
+        "Model": "Moo21",
+        "SpaceLibrary": 10,
+        "Active": true,
+        "SupportTypeDesigned_Name": "Guyed",
+        "SectionsLegType_Name": "Tube",
+        "StructureType_Name": "Delete",
+        "new": "uuu",
+        "ff": "ii",
+        "gh11": 65,
+        "ttt": true,
+        "DateTimeAttributes": {}
+      }
+    ],
+    "filters": [
+      {
+        "key": "supportTypeDesignedId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 102,
+            "value": "Guyed"
+          },
+          {
+            "id": 61,
+            "value": "ff32"
+          },
+          {
+            "id": 62,
+            "value": "new test2022"
+          }
+        ]
+      },
+      {
+        "key": "sectionsLegTypeId",
+        "value": [
+          {
+            "id": 1,
+            "value": "Angle"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 61,
+            "value": "Tube"
+          }
+        ]
+      },
+      {
+        "key": "structureTypeId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 61,
+            "value": "New"
+          },
+          {
+            "id": 81,
+            "value": "Delete"
+          }
+        ]
+      },
+      {
+        "key": "civilSteelSupportCategoryId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 2,
+            "value": "Mast"
+          },
+          {
+            "id": 1,
+            "value": "Tower"
+          },
+          {
+            "id": 3,
+            "value": "Monopole"
+          },
+          {
+            "id": 4,
+            "value": "Capsule"
+          }
+        ]
+      }
+    ]
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": null,
+  "code": 0,
+  "count": 6
+}

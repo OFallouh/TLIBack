@@ -1,0 +1,1102 @@
+<p-toast position="top-center"></p-toast>
+<form #myForm="ngForm">
+    <div class="card ">
+
+        <p-steps [style]="{'margin-top': '20px'}" [(activeIndex)]="activeIndex" [model]="items" [readonly]="true">
+        </p-steps>
+
+        <div class="card-body ">
+            <div class="tab-content" id="cardPillContent"
+                *ngIf="activeIndex == 0 && (selectedInstalledType != 'TLIsideArm' && selectedInstalledType != 'TLIpower' && selectedInstalledType != 'TLImwDish' && selectedInstalledType != 'TLImwODU' && selectedInstalledType != 'TLImwOther' && selectedInstalledType != 'TLIradioAntenna'
+                && selectedInstalledType != 'TLIradioRRU' && selectedInstalledType != 'TLIradioOther' && selectedInstalledType != 'TLIloadOther'  && selectedInstalledType != 'TLImwRFU' && selectedInstalledType != 'TLImwBU')">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row">
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label
+                                            *ngIf="selectedInstalledType == 'TLIcivilWithLegs' || selectedInstalledType == 'TLIcivilWithoutLeg' || selectedInstalledType == 'TLIcivilNonSteel'">Civil
+                                            Type</label>
+
+                                        <label *ngIf="selectedInstalledType == 'TLIsideArm'">Side Arm Type</label>
+                                        <label
+                                            *ngIf="selectedInstalledType == 'TLIsolar' || selectedInstalledType == 'TLIgenerator' || selectedInstalledType == 'TLIcabinet'">Inventory
+                                            Type</label>
+
+                                        <p-dropdown [(ngModel)]="type" #name="ngModel" [disabled]="true"
+                                            [placeholder]="type_name" placeholder="Select one option"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label
+                                            *ngIf="selectedInstalledType == 'TLIcivilWithLegs' || selectedInstalledType == 'TLIcivilWithoutLeg' || selectedInstalledType == 'TLIcivilNonSteel'">Civil
+                                            Support Library</label>
+
+                                        <label *ngIf="selectedInstalledType == 'TLIsideArm'">Side Arm Library</label>
+                                        <label
+                                            *ngIf="selectedInstalledType == 'TLIsolar' || selectedInstalledType == 'TLIgenerator' || selectedInstalledType == 'TLIcabinet'">Inventory
+                                            Library</label>
+
+                                        <p-dropdown [(ngModel)]="type" #name="ngModel" [disabled]="true"
+                                            [placeholder]="loadLibraryValue" placeholder="Select one option"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="myForm.invalid" (onClick)="next()" icon="pi pi-angle-right"
+                                    iconPos="right"></p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+            <div class="tab-content" id="cardPillContent"
+                *ngIf="activeIndex == 0 && selectedInstalledType == 'TLIsideArm'">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row p-mb-6">
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf="selectedInstalledType == 'TLIsideArm'">Side Arm Library</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="sideArmLibraryValue"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div *ngFor="let attr of sideArmInstallationInfoList" class="col-md-6">
+                                    <div *ngIf="attr.key == 'Select civil support type' || attr.key == 'Select civil without legs support items'
+                                    ||attr.key == 'Select civil with legs support items' ||attr.key == 'Select civil non steel support items'"
+                                        class="p-field">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="attr.value" optionLabel="name">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select side arm type'" class="p-field">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" optionLabel="name" name="ngModel"
+                                            [options]="infoSideArmTypes" [filter]="true" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoSideType"
+                                            (onChange)=getSideArmInstallPlaceBasedonSideArmType($event.value.id)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select side arm installtion type'" class="p-field">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" name="ngModel" [options]="civilPlace"
+                                            [(ngModel)]="selectedInfoInstallTypeBasedOnSide" [required]=attr.required
+                                            optionLabel="name" [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=getInfoSideArmInstallPlaceId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select leg' || attr.key == 'Select two legs'">
+                                        <div *ngIf="multiChoices==false" class="p-field">
+                                            <label for="name">Select leg</label>
+                                            <p-dropdown [options]="civilLegs" name="selectedLeg"
+                                                (onChange)=getCivilLegIdForSideArm($event.value) [filter]="true"
+                                                filterMatchMode="startsWith" [(ngModel)]="selectedLeg"
+                                                [placeholder]="ss" [filter]="true" filterMatchMode="startsWith"
+                                                optionLabel="civiLegName" [showClear]="true" scrollHeight="125px">
+                                            </p-dropdown>
+                                        </div>
+                                        <div *ngIf="multiChoices==true" class="p-field">
+                                            <label>Select two legs </label>
+                                            <p-multiSelect [displaySelectedLabel]=true name="selectedLegList"
+                                                [options]="civilLegs" (onChange)=getCivilLegIdForSideArm($event.value)
+                                                [(ngModel)]="selectedLegList" [placeholder]="ss" optionValue="id"
+                                                optionLabel="civiLegName" [selectionLimit]="2">
+                                                <ng-template let-option pTemplate="item">
+                                                    <div class="p-multiselect-representative-option">
+                                                        <span class="p-ml-1" pTooltip="">{{option.label}}</span>
+                                                    </div>
+                                                </ng-template>
+                                            </p-multiSelect>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="disabledSideArmNext == true || myForm.invalid" (onClick)="next()"
+                                    icon="pi pi-angle-right" iconPos="right"></p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+            <div class="tab-content" id="cardPillContent"
+                *ngIf="activeIndex == 0 && (selectedInstalledType == 'TLIpower' || selectedInstalledType == 'TLImwDish' || selectedInstalledType == 'TLImwOther' || selectedInstalledType == 'TLIradioAntenna' || selectedInstalledType == 'TLIradioRRU' || selectedInstalledType == 'TLIradioOther' || selectedInstalledType == 'TLIloadOther')">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row p-mb-6">
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label
+                                            *ngIf="selectedInstalledType == 'TLIradioAntenna' || selectedInstalledType == 'TLIradioRRU' || selectedInstalledType == 'TLImwOther'
+                                         || selectedInstalledType == 'TLImwDish'  || selectedInstalledType == 'TLImwODU'  || selectedInstalledType == 'TLIradioOther' 
+                                         || selectedInstalledType == 'TLImwBU' || selectedInstalledType == 'TLImwRFU' || selectedInstalledType == 'TLIloadOther' || selectedInstalledType == 'TLIpower'  ">Load
+                                            Type</label>
+                                        <p-dropdown [(ngModel)]="type" #name="ngModel" [disabled]="true"
+                                            [placeholder]="type_name" placeholder="Select one option"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label
+                                            *ngIf="selectedInstalledType == 'TLIpower' || selectedInstalledType == 'TLImwDish' || selectedInstalledType == 'TLImwOther' || selectedInstalledType == 'TLIradioAntenna' || selectedInstalledType == 'TLIradioRRU' || selectedInstalledType == 'TLIradioOther' || selectedInstalledType == 'TLIloadOther'">{{type_name}}
+                                            Library</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="loadLibraryValue"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div *ngFor="let attr of info" class="col-md-6 p-field">
+                                    <div
+                                        *ngIf="attr.key == 'Select civil support type' || attr.key == 'Select civil without legs support items'
+                                            ||attr.key == 'Select civil with legs support items' ||attr.key == 'Select civil non steel support items'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="attr.value" optionLabel="name">
+                                        </p-dropdown>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select the installation place type' && attr.value != 'Direct'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" optionLabel="name" name="ngModel"
+                                            [options]="infoInstalltionPlaces" [filter]="true" appendTo="body"
+                                            scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstType"
+                                            (onChange)=getInstalltionPlaceBasedonInstPlaceType($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the sidearm' || attr.key == 'Select the leg'">
+                                        <div *ngIf="onSideArm == true && changetoSideArm == false" class="p-field">
+                                            <label for="name">Select the sidearm</label>
+                                            <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                                [placeholder]="attr.value" [options]="civilSideArms" appendTo="body"
+                                                scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                                [required]=attr.required optionLabel="name" [filter]="true"
+                                                filterMatchMode="startsWith" (onChange)=getSideArmId($event.value)>
+                                            </p-dropdown>
+                                        </div>
+                                        <div *ngIf="onSideArm == true && changetoSideArm == true" class="p-field">
+                                            <label for="name">Select the sidearm</label>
+                                            <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                                placeholder="Select side arm" [options]="civilSideArms" appendTo="body"
+                                                scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                                [required]=attr.required optionLabel="name" [filter]="true"
+                                                filterMatchMode="startsWith" (onChange)=getSideArmId($event.value)>
+                                            </p-dropdown>
+                                        </div>
+                                        <div *ngIf="onLeg == true && changeToLeg == false">
+                                            <label for="name">Select the leg</label>
+                                            <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                                scrollHeight="120px" [placeholder]="attr.value"
+                                                (onChange)=getLoadLegId($event.value) [filter]="true"
+                                                filterMatchMode="startsWith" [(ngModel)]="selectedLeg" [filter]="true"
+                                                filterMatchMode="startsWith" optionLabel="civiLegName"
+                                                [showClear]="true" scrollHeight="125px">
+                                            </p-dropdown>
+
+                                        </div>
+                                        <div *ngIf="onLeg == true && changeToLeg == true">
+                                            <label for="name">Select the leg</label>
+                                            <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                                scrollHeight="120px" placeholder="select the leg"
+                                                (onChange)=getLoadLegId($event.value) [filter]="true"
+                                                filterMatchMode="startsWith" [(ngModel)]="selectedLeg" [filter]="true"
+                                                filterMatchMode="startsWith" optionLabel="civiLegName"
+                                                [showClear]="true" scrollHeight="125px">
+                                            </p-dropdown>
+
+                                        </div>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select the installation place type' && attr.value == 'Direct'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" optionLabel="name" name="ngModel"
+                                            [options]="infoInstalltionPlaces" [filter]="true" appendTo="body"
+                                            scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstType"
+                                            (onChange)=getInstalltionPlaceBasedonInstPlaceType($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                </div> <!-- end for -->
+                                <div *ngIf="(onSideArm == true && changetoSideArm == true && onLeg==true) || (onSideArm == true && changetoSideArm == true && Direct ==true)"
+                                    class="col-md-6 p-field">
+                                    <label for="name">Select the sidearm</label>
+                                    <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                        placeholder="Select the sidearm" [options]="civilSideArms" appendTo="body"
+                                        scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                        optionLabel="name" [filter]="true" filterMatchMode="startsWith"
+                                        (onChange)=getSideArmId($event.value)>
+                                    </p-dropdown>
+                                </div>
+                                <div *ngIf="onSideArm == true && changetoSideArm == false && installedOnSide ==false">
+                                    <label for="name">Select the sidearm</label>
+                                    <p-dropdown name="selectedInfoInstallTypeBasedOnSide" [placeholder]="attr.value"
+                                        [options]="civilSideArms" appendTo="body" scrollHeight="120px"
+                                        [(ngModel)]="selectedInfoInstallTypeBasedOnSide" [required]=attr.required
+                                        optionLabel="name" [filter]="true" filterMatchMode="startsWith"
+                                        (onChange)=getSideArmId($event.value)>
+                                    </p-dropdown>
+                                </div>
+                                <div class="col-md-6 p-field"
+                                    *ngIf="(onLeg == true && changeToLeg == true && onSideArm == true) || (onLeg == true && changeToLeg == true && Direct ==true)">
+                                    <label for="name">Select the leg</label>
+                                    <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                        scrollHeight="120px" placeholder="Select the leg"
+                                        (onChange)=getLoadLegId($event.value) [filter]="true"
+                                        filterMatchMode="startsWith" [(ngModel)]="selectedLeg" optionLabel="civiLegName"
+                                        [showClear]="true">
+                                    </p-dropdown>
+                                </div>
+                                <div *ngIf="onLeg == true && changeToLeg == false && installedOnLeg ==true"
+                                    class="col-md-6 p-field">
+                                    <label for="name">Select the leg</label>
+                                    <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                        scrollHeight="120px" [placeholder]="attr.value"
+                                        (onChange)=getLoadLegId($event.value) [filter]="true"
+                                        filterMatchMode="startsWith" [(ngModel)]="selectedLeg" [filter]="true"
+                                        filterMatchMode="startsWith" optionLabel="civiLegName" [showClear]="true"
+                                        scrollHeight="125px">
+                                    </p-dropdown>
+                                </div>
+                                <!-- above is for -->
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="disabledLoadNext == true || myForm.invalid" (onClick)="next()"
+                                    icon="pi pi-angle-right" iconPos="right">
+                                </p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+            <!-- ODU -->
+            <div class="tab-content" id="cardPillContent"
+                *ngIf="activeIndex == 0 && selectedInstalledType == 'TLImwODU'">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row p-mb-6">
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf=" selectedInstalledType == 'TLImwODU' ">Load
+                                            Type</label>
+                                        <p-dropdown [(ngModel)]="type" #name="ngModel" [disabled]="true"
+                                            [placeholder]="type_name" placeholder="Select one option"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf="selectedInstalledType == 'TLImwODU'">{{type_name}}
+                                            Library</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="loadLibraryValue"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div *ngFor="let attr of info" class="col-md-6 p-field">
+                                    <div
+                                        *ngIf="attr.key == 'Select civil support type' || attr.key == 'Select civil without legs support items'
+                                            ||attr.key == 'Select civil with legs support items' ||attr.key == 'Select civil non steel support items'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="attr.value" optionLabel="name">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the installation place type'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" optionLabel="name"
+                                            name="selectedInfoInstT" [options]="infoInstalltionPlaces" [filter]="true"
+                                            appendTo="body" scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstT"
+                                            (onChange)=getInstalltionPlaceBasedonInstPlaceType($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select the seperate place' && (separateMount == true)">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" optionLabel="name" name="ngModel"
+                                            [options]="separateOptions" [filter]="true" appendTo="body"
+                                            scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstType" (onChange)=getSeparateLegs($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <!-- <div
+                                        *ngIf="attr.key == 'Select the seperate place' && (changeToSeparateMount == true)">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [placeholder]="attr.value" optionLabel="name" name="ngModel"
+                                            [options]="separateOptions" [filter]="true" appendTo="body"
+                                            scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstType" (onChange)=getSeparateLegs($event.value)>
+                                        </p-dropdown>
+                                    </div> -->
+                                    <div *ngIf="attr.key == 'Select the seperate place' && changetoDirectMount == true">
+                                        <label for="name">Select the dish</label>
+                                        <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                            placeholder="Select the dish" [options]="civilDish" appendTo="body"
+                                            scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                             optionLabel="name" [filter]="true"
+                                            filterMatchMode="startsWith" (onChange)=getDishId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the seperate place' && changetoSideArm == true">
+                                        <label for="name">Select the sidearm</label>
+                                        <p-dropdown name="emptySideArm" placeholder="Select the sidearm"
+                                            [options]="civilSideArms" appendTo="body" scrollHeight="120px"
+                                            [(ngModel)]="emptySideArm"  optionLabel="name"
+                                            [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=getSideArmId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the dish' && changetoSideArm == true">
+                                        <label for="name">Select the sidearm</label>
+                                        <p-dropdown name="emptySideArm" placeholder="Select the sidearm"
+                                            [options]="civilSideArms" appendTo="body" scrollHeight="120px"
+                                            [(ngModel)]="emptySideArm"  optionLabel="name"
+                                            [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=getSideArmId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the dish' && changeToSeparateMount == true">
+                                        <label for="name">Select the seperate place</label>
+                                        <p-dropdown placeholder="Select the seperate place" optionLabel="name" name="ngModel"
+                                            [options]="separateOptions" [filter]="true" appendTo="body"
+                                            scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstType" (onChange)=getSeparateLegs($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the sidearm' && onSideArm == true">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown name="emptySideArm" [placeholder]="attr.value"
+                                            [options]="civilSideArms" appendTo="body" scrollHeight="120px"
+                                            [(ngModel)]="emptySideArm" [required]=attr.required optionLabel="name"
+                                            [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=getSideArmId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the sidearm' && changetoDirectMount == true">
+                                        <label for="name">Select the dish</label>
+                                        <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                            placeholder="Select the dish" [options]="civilDish" appendTo="body"
+                                            scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                             optionLabel="name" [filter]="true"
+                                            filterMatchMode="startsWith" (onChange)=getDishId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the sidearm' && changeToSeparateMount == true">
+                                        <label for="name">Select the seperate place</label>
+                                        <p-dropdown placeholder="Select the seperate place" optionLabel="name" name="ngModel"
+                                            [options]="separateOptions" [filter]="true" appendTo="body"
+                                            scrollHeight="120px" filterMatchMode="startsWith"
+                                            [(ngModel)]="selectedInfoInstType" (onChange)=getSeparateLegs($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                    <!-- <div *ngIf="attr.key == 'Select the sidearm' && changeToSeparateMount == true && changeToSeparateLeg == true">
+                                        <label for="name">Select the leg</label>
+                                        <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                             placeholder="Select the leg"
+                                            (onChange)=getLoadLegId($event.value) [filter]="true"
+                                            filterMatchMode="startsWith" [(ngModel)]="selectedLeg" 
+                                            optionLabel="civiLegName" [showClear]="true"
+                                            scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div> -->
+                                    <div *ngIf="attr.key == 'Select the leg' && onLeg == true && changeToSeparateMount==false">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                            scrollHeight="120px" [placeholder]="attr.value"
+                                            (onChange)=getLoadLegId($event.value) [filter]="true"
+                                            filterMatchMode="startsWith" [(ngModel)]="selectedLeg" [filter]="true"
+                                            filterMatchMode="startsWith" optionLabel="civiLegName" [showClear]="true"
+                                            scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the leg' && onLeg == true && changeToSeparateMount==true">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                            scrollHeight="120px" [placeholder]="attr.value"
+                                            (onChange)=getLoadLegId($event.value) [filter]="true"
+                                            filterMatchMode="startsWith" [(ngModel)]="selectedLeg" [filter]="true"
+                                            filterMatchMode="startsWith" optionLabel="civiLegName" [showClear]="true"
+                                            scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the dish' && behindDish==true">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown name="selectedInfoInstallTypeBasedOnSide" [placeholder]="attr.value"
+                                            [options]="civilDish" appendTo="body" scrollHeight="120px"
+                                            [(ngModel)]="selectedInfoInstallTypeBasedOnSide" [required]=attr.required
+                                            optionLabel="name" [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=getDishId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+                                </div> <!-- end for -->
+                                <div *ngIf="changeToSeparateMount == true && changeToSeparateLeg == true && separateMount==false" class="col-md-6 p-field">
+                                    <label for="name">Select the legff</label>
+                                    <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                         placeholder="Select the leg"
+                                        (onChange)=getLoadLegId($event.value) [filter]="true"
+                                        filterMatchMode="startsWith" [(ngModel)]="selectedLeg" 
+                                        optionLabel="civiLegName" [showClear]="true"
+                                        scrollHeight="125px">
+                                    </p-dropdown>
+                                </div>
+                                
+
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="disabledOduNext == true ||  myForm.invalid" (onClick)="next()"
+                                    icon="pi pi-angle-right" iconPos="right">
+                                </p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+            <!-- ODU -->
+            <!-- RFU -->
+            <div class="tab-content" id="cardPillContent"
+                *ngIf="activeIndex == 0 && selectedInstalledType == 'TLImwRFU' ">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row p-mb-6">
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf="selectedInstalledType == 'TLImwRFU' ">Load
+                                            Type</label>
+                                        <p-dropdown [(ngModel)]="type" #name="ngModel" [disabled]="true"
+                                            [placeholder]="type_name" placeholder="Select one option"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf="selectedInstalledType == 'TLImwRFU' ">{{type_name}}
+                                            Library</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="loadLibraryValue"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div *ngFor="let attr of sideArmInstallationInfoList" class="col-md-6 p-field">
+                                    <div
+                                        *ngIf="attr.key == 'Select civil support type' || attr.key == 'Select civil without legs support items'
+                                            ||attr.key == 'Select civil with legs support items' ||attr.key == 'Select civil non steel support items'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="attr.value" optionLabel="name">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the BU'" style="padding-bottom: 50px;">
+                                        <label>{{attr.label}}</label>
+                                        <p-dropdown [options]="availableBUs" name="selectedBU"
+                                            (onChange)=getBUFreePorts($event.value) [(ngModel)]="selectedBU"
+                                            [placeholder]="attr.value" [filter]="true" filterMatchMode="startsWith"
+                                            optionLabel="buInstName" [showClear]="true" scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the port of BU'" style="padding-bottom: 50px;">
+                                        <label>{{attr.label}}</label>
+                                        <p-dropdown [options]="availableBUPorts" name="selectedBUPort"
+                                            (onChange)=getBUFreePortId($event.value) [(ngModel)]="selectedBUPort"
+                                            [placeholder]="attr.value" [filter]="true" filterMatchMode="startsWith"
+                                            optionLabel="name" [showClear]="true" scrollHeight="125px"></p-dropdown>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </ng-template>
+
+
+
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="disabledRfuNext == true || myForm.invalid" (onClick)="next()"
+                                    icon="pi pi-angle-right" iconPos="right">
+                                </p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+            <!-- RFU -->
+            <!-- BU-->
+            <div class="tab-content" id="cardPillContent"
+                *ngIf="activeIndex == 0 && selectedInstalledType == 'TLImwBU' ">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row p-mb-6">
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf="selectedInstalledType == 'TLImwBU' ">Load
+                                            Type</label>
+                                        <p-dropdown [(ngModel)]="type" #name="ngModel" [disabled]="true"
+                                            [placeholder]="type_name" placeholder="Select one option"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-field">
+                                        <label *ngIf="selectedInstalledType == 'TLImwBU' ">{{type_name}}
+                                            Library</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="loadLibraryValue"
+                                            optionLabel="name"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div *ngFor="let attr of info" class="col-md-6 p-field">
+                                    <div
+                                        *ngIf="attr.key == 'Select civil support type' || attr.key == 'Select civil without legs support items'
+                                        ||attr.key == 'Select civil with legs support items' ||attr.key == 'Select civil non steel support items'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [disabled]="true" [placeholder]="attr.value" optionLabel="name">
+                                        </p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the installation place type' ">
+                                        <label>{{attr.label}}</label>
+                                        <p-dropdown [options]="infoInstalltionPlaces" name="selectedBUPort"
+                                            (onChange)=getInstalltionPlaceBasedonInstPlaceType($event.value)
+                                            [(ngModel)]="selectedBUPort" [placeholder]="attr.value" [filter]="true"
+                                            filterMatchMode="startsWith" optionLabel="name" [showClear]="true"
+                                            scrollHeight="125px"></p-dropdown>
+                                    </div>
+                                    <div *ngIf="attr.key == 'Select the sidearm' || attr.key == 'Select the leg'">
+                                        <div *ngIf="onSideArm == true && onLeg==false" class="p-field">
+                                            <label for="name">Select the sidearm</label>
+                                            <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                                [placeholder]="attr.value" [options]="civilSideArms" appendTo="body"
+                                                scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                                [required]=attr.required optionLabel="name" [filter]="true"
+                                                filterMatchMode="startsWith" (onChange)=getSideArmId($event.value)>
+                                            </p-dropdown>
+                                        </div>
+                                        <div *ngIf="onLeg == true && onSideArm == false">
+                                            <label for="name">Select the leg</label>
+                                            <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                                scrollHeight="120px" [placeholder]="attr.value"
+                                                (onChange)=getLoadLegId($event.value) [filter]="true"
+                                                filterMatchMode="startsWith" [(ngModel)]="selectedLeg" [filter]="true"
+                                                filterMatchMode="startsWith" optionLabel="civiLegName"
+                                                [showClear]="true" scrollHeight="125px">
+                                            </p-dropdown>
+                                        </div>
+                                    </div>
+                                    <div
+                                        *ngIf="(attr.key == 'Select the sidearm' || attr.key == 'Select the leg') && changeToDirect">
+                                        <label>Select BU installtion type direct</label>
+                                        <p-dropdown [options]="BUInstalltionTypes" name="selectedBU"
+                                            (onChange)=getListBasedOnInstalltionType($event.value)
+                                            [(ngModel)]="selectedBU" placeholder="select BU installtion type"
+                                            [filter]="true" filterMatchMode="startsWith" optionLabel="name"
+                                            [showClear]="true" scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select BU installtion type' && sis == true && directBu==false">
+                                        <label>Select BU installtion type</label>
+                                        <p-dropdown [options]="BUInstalltionTypes" name="selectedBU"
+                                            (onChange)=getListBasedOnInstalltionType($event.value)
+                                            [(ngModel)]="selectedBU" placeholder="select BU installtion type"
+                                            [filter]="true" filterMatchMode="startsWith" optionLabel="name"
+                                            [showClear]="true" scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select BU installtion type' && changetoSideArm == false && changeToLeg == false  && changeToDirect==false">
+                                        <label>{{attr.label}}</label>
+                                        <p-dropdown [options]="BUInstalltionTypes" name="selectedBU"
+                                            (onChange)=getListBasedOnInstalltionType1($event.value)
+                                            [(ngModel)]="selectedBU" [placeholder]="attr.value" [filter]="true"
+                                            filterMatchMode="startsWith" optionLabel="name" [showClear]="true"
+                                            scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select BU installtion type' && changeToDirect == true && directBu">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [options]="BUInstalltionTypes" name="selectedBU"
+                                            (onChange)=getListBasedOnInstalltionType1($event.value)
+                                            [(ngModel)]="selectedBU" [placeholder]="attr.value" [filter]="true"
+                                            filterMatchMode="startsWith" optionLabel="name" [showClear]="true"
+                                            scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+
+                                    <div
+                                        *ngIf="attr.key == 'Select BU installtion type' && changeToDirect == true && showcascade && !directBu">
+                                        <label>Select cascaded BU</label>
+                                        <p-dropdown [options]="CascadedBUs" name="selectedCascadedBU"
+                                            (onChange)=getBUFreeCascadedPorts($event.value)
+                                            [(ngModel)]="selectedCascadedBU" placeholder="Select cascaded BU"
+                                            [filter]="true" filterMatchMode="startsWith" optionLabel="buInstName"
+                                            [showClear]="true" scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                    <div
+                                        *ngIf="attr.key == 'Select BU installtion type' && changetoSideArm == true && directBu">
+                                        <label for="name">Select the sidearm</label>
+                                        <p-dropdown name="selectedInfoInstallTypeBasedOnSide"
+                                            placeholder="Select the side arm" [options]="civilSideArms" appendTo="body"
+                                            scrollHeight="120px" [(ngModel)]="selectedInfoInstallTypeBasedOnSide"
+                                            optionLabel="name" [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=getSideArmId($event.value)>
+                                        </p-dropdown>
+                                    </div>
+
+
+                                    <div
+                                        *ngIf="attr.key == 'Select BU installtion type' && changeToLeg == true && directBu">
+                                        <label for="name">Select the leg</label>
+                                        <p-dropdown [options]="civilLegs" name="selectedLeg" appendTo="body"
+                                            scrollHeight="120px" placeholder="Select the leg"
+                                            (onChange)=getLoadLegId($event.value) [filter]="true"
+                                            filterMatchMode="startsWith" [(ngModel)]="selectedLeg"
+                                            optionLabel="civiLegName" [showClear]="true">
+                                        </p-dropdown>
+                                    </div>
+
+                                    <div *ngIf="attr.key == 'Select the cascaded BU'">
+                                        <label>{{attr.label}}</label>
+                                        <p-dropdown [options]="CascadedBUs" name="selectedCascadedBU"
+                                            (onChange)=getBUFreeCascadedPorts($event.value)
+                                            [(ngModel)]="selectedCascadedBU" [placeholder]="attr.value" [filter]="true"
+                                            filterMatchMode="startsWith" optionLabel="buInstName" [showClear]="true"
+                                            scrollHeight="125px">
+                                        </p-dropdown>
+                                    </div>
+                                </div><!-- end for -->
+                                <div *ngIf="displayBUInstalltionTypeList && (changetoSideArm == true || changeToLeg == true) && sis==true && directBu"
+                                    class="col-md-6 p-field">
+                                    <label>Select BU installtion type</label>
+                                    <p-dropdown [options]="BUInstalltionTypes" name="selectedBU"
+                                        (onChange)=getListBasedOnInstalltionType($event.value) [(ngModel)]="selectedBU"
+                                        placeholder="select BU installtion type" [filter]="true"
+                                        filterMatchMode="startsWith" optionLabel="name" [showClear]="true"
+                                        scrollHeight="125px">
+                                    </p-dropdown>
+                                </div>
+                                <div *ngIf="displayBUInstalltionTypeList && (changetoSideArm == true || changeToLeg == true) && sis==false"
+                                    class="col-md-6 p-field">
+                                    <label>Select BU installtion type</label>
+                                    <p-dropdown [options]="BUInstalltionTypes" name="selectedBU"
+                                        (onChange)=getListBasedOnInstalltionType($event.value) [(ngModel)]="selectedBU"
+                                        placeholder="select BU installtion type" [filter]="true"
+                                        filterMatchMode="startsWith" optionLabel="name" [showClear]="true"
+                                        scrollHeight="125px">
+                                    </p-dropdown>
+                                </div>
+                                <div *ngIf="(displayFreeCascadedBUs && changeToDirect == false) "
+                                    class="col-md-6 p-field">
+                                    <label>Select cascaded BU</label>
+                                    <p-dropdown [options]="CascadedBUs" name="selectedCascadedBU"
+                                        (onChange)=getBUFreeCascadedPorts($event.value) [(ngModel)]="selectedCascadedBU"
+                                        placeholder="Select cascaded BU" [filter]="true" filterMatchMode="startsWith"
+                                        optionLabel="buInstName" [showClear]="true" scrollHeight="125px">
+                                    </p-dropdown>
+                                </div>
+                                <div *ngIf="displayFreeCascadedBUsAfterChange" class="col-md-6 p-field">
+                                    <label>Select cascaded BU</label>
+                                    <p-dropdown [options]="CascadedBUs" name="selectedCascadedBU"
+                                        (onChange)=getBUFreeCascadedPorts($event.value) [(ngModel)]="selectedCascadedBU"
+                                        placeholder="Select cascaded BU" [filter]="true" filterMatchMode="startsWith"
+                                        optionLabel="buInstName" [showClear]="true" scrollHeight="125px">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="disabledBuNext == true || myForm.invalid" (onClick)="next()"
+                                    icon="pi pi-angle-right" iconPos="right">
+                                </p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+            <!-- BU-->
+
+            <div class="tab-content" id="cardPillContent" *ngIf="activeIndex == 1">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="title">
+                            General Attributes Information
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row">
+                                <div *ngFor="let attr of _tempAttributes" class="col-md-6">
+                                    <div class="p-field" *ngIf="attr.dataType=='string'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <input disabled #name="ngModel" [name]="attr.key" [(ngModel)]="attr.value"
+                                            type="text" [id]="attr.key" [required]=attr.required pInputText
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field" *ngIf="attr.dataType=='List'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <input disabled #name="ngModel" [name]="attr.key" [id]="attr.key"
+                                            [required]=attr.required pattern="[0-9]*" pInputText
+                                            [(ngModel)]="attr.value"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field"
+                                        *ngIf="attr.dataType=='int' || attr.dataType=='float' || attr.dataType=='double'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <input disabled #name="ngModel" [name]="attr.key" type="number" [id]="attr.key"
+                                            [required]=attr.required pattern="[0-9]*" pInputText
+                                            [(ngModel)]="attr.value"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field" *ngIf="attr.dataType == 'DateTime'">
+                                        <label for="name">{{attr.label}}</label>
+                                        <input #name="ngModel" [name]="attr.key" disabled type="date"
+                                            [value]="attr.value" [required]=attr.required pInputText
+                                            [(ngModel)]="attr.value"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                        <small *ngIf="(name.invalid && name.touched) || (name.dirty && name.invalid)"
+                                            class="p-error">Should enter valid value</small>
+                                    </div>
+
+                                </div>
+                                <div *ngFor="let attr of _boolTempAttributes" class="col-md-2 checkbok-pos">
+                                    <div class="p-field-checkbox" *ngIf="attr.dataType=='bool'">
+                                        <p-checkbox disabled [name]="attr.key" [(ngModel)]="attr.value" binary="true"
+                                            inputId="binary" class="checkbok-lable"></p-checkbox>
+                                        {{attr.label}}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="myForm.invalid" (onClick)="next()" icon="pi pi-angle-right"
+                                    iconPos="right">
+                                </p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="tab-content" id="cardPillContent" *ngIf="activeIndex == 2">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="title">
+                            Installtion Attributes Information
+                        </ng-template>
+                        <ng-template pTemplate="content">
+
+                            <div class="p-fluid row">
+                                <div *ngFor="let attr of _tempInstallationAttributes" class="col-md-6">
+                                    <div class="p-field" *ngIf="attr.dataType=='string'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                        <input #name="ngModel" [name]="attr.key" [(ngModel)]="attr.value" type="text"
+                                            [id]="attr.key" pInputText
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field"
+                                        *ngIf="attr.dataType=='List' && (attr.key !='CivilWithLegsLibId' && attr.key !='CivilWithoutlegsLibId' && attr.key !='CivilNonSteelLibraryId' && attr.key !='powerLibraryId' && attr.key !='MwBULibraryId' && attr.key !='MwRFULibraryId' && attr.key !='MwDishLibraryId'  && attr.key !='MwODULibraryId' && attr.key !='mwOtherLibraryId' && attr.key !='radioAntennaLibraryId'  && attr.key !='radioRRULibraryId' && attr.key !='radioOtherLibraryId' && attr.key !='loadOtherLibraryId' && attr.key !='CabinetTelecomLibraryId' && attr.key !='CabinetPowerLibraryId' && attr.key !='GeneratorLibraryId' && attr.key !='SolarLibraryId' && attr.key !='sideArmLibraryId')">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                        <p-dropdown [name]="attr.key" [filter]="true" appendTo="body"
+                                            filterMatchMode="startsWith" [options]="listOfFilterCivil1Types[attr.key]"
+                                            [(ngModel)]="attributeValueShow[attr.key]" optionLabel="value"
+                                            [placeholder]="attr.value" [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=setValueInst($event.value,attr.key) [showClear]="false"
+                                            scrollHeight="120px"></p-dropdown>
+                                        <!-- <p-dropdown [name]="attr.key" [options]="listValues[attr.key]" [required]=attr.required [placeholder]="attr.value" optionLabel="name" (onChange)=setValueInst($event.value,attr.key) [showClear]="true" scrollHeight="120px" [placeholder]="attr.desc"  [(ngModel)]="attributeValueShow[attr.key]"
+                                        [filter]="true" filterMatchMode="startsWith"  ></p-dropdown> -->
+
+                                    </div>
+                                    <div class="p-field"
+                                        *ngIf="attr.key=='CivilWithLegsLibId' || attr.key=='CivilWithoutlegsLibId' || attr.key=='powerLibraryId' || attr.key=='CivilNonSteelLibraryId' || attr.key=='MwBULibraryId' || attr.key=='MwRFULibraryId' || attr.key=='MwDishLibraryId' || attr.key=='MwODULibraryId' || attr.key=='mwOtherLibraryId' || attr.key=='radioAntennaLibraryId' || attr.key=='radioRRULibraryId' || attr.key=='radioOtherLibraryId' || attr.key=='loadOtherLibraryId' || attr.key=='CabinetPowerLibraryId'|| attr.key=='CabinetTelecomLibraryId' || attr.key=='GeneratorLibraryId' || attr.key=='SolarLibraryId' || attr.key=='sideArmLibraryId' ">
+                                        <label for="name">{{attr.label}}</label>
+                                        <p-dropdown [name]="attr.key" [filter]="true" [readonly]="true" appendTo="body"
+                                            filterMatchMode="startsWith" [options]="listOfFilterCivil1Types[attr.key]"
+                                            [(ngModel)]="attributeValueShow[attr.key]" optionLabel="value"
+                                            [placeholder]="attr.value" [filter]="true" filterMatchMode="startsWith"
+                                            (onChange)=setValueInst($event.value,attr.key) [showClear]="false"
+                                            scrollHeight="120px"></p-dropdown>
+                                        <!-- <p-dropdown [name]="attr.key" [options]="listValues[attr.key]" [required]=attr.required [placeholder]="attr.value" optionLabel="name" (onChange)=setValueInst($event.value,attr.key) [showClear]="true" scrollHeight="120px" [placeholder]="attr.desc"  [(ngModel)]="attributeValueShow[attr.key]"
+                                        [filter]="true" filterMatchMode="startsWith"  ></p-dropdown> -->
+                                    </div>
+
+                                    <div class="p-field"
+                                        *ngIf="(attr.dataType=='int' || attr.dataType=='float' || attr.dataType=='double' )&& (attr.key!='CenterHigh' && attr.key!='HBA' && attr.key!='EquivalentSpace' && attr.key!='CurrentLoads')">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                        <input #name="ngModel" [name]="attr.key" type="number" [id]="attr.key"
+                                            pattern="[0-9]*" pInputText [(ngModel)]="attr.value"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field"
+                                        *ngIf="(attr.dataType=='int' || attr.dataType=='float' || attr.dataType=='double') && (attr.key=='CenterHigh' || attr.key=='HBA' || attr.key=='EquivalentSpace' || attr.key=='CurrentLoads')">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                        <input #name="ngModel" [name]="attr.key" type="number" [id]="attr.key"
+                                            pattern="[0-9]*" pInputText [(ngModel)]="attr.value" disabled
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field" *ngIf="attr.dataType == 'DateTime'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                        <input #name="ngModel" [name]="attr.key" type="date" [id]="attr.key"
+                                            autocomplete="off" type="date" [(ngModel)]="attr.value " pInputText
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                        <small *ngIf="(name.invalid && name.touched) || (name.dirty && name.invalid)"
+                                            class="p-error">Should enter valid value</small>
+                                    </div>
+
+                                </div>
+                                <div *ngFor="let attr of _boolInstallationAttributes" class="col-md-2 checkbok-pos">
+                                    <div class="p-field-checkbox" *ngIf="attr.enable && attr.dataType=='bool'">
+                                        <p-checkbox [name]="attr.key" [(ngModel)]="attr.value" binary="true"
+                                            inputId="binary" class="checkbok-lable"></p-checkbox>
+                                        <!-- <label for="binary">{{attr.label}}</label> -->
+                                        {{attr.label}}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="myForm.invalid" (onClick)="next()" icon="pi pi-angle-right"
+                                    iconPos="right">
+                                </p-button>
+
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+
+            <div class="tab-content" id="cardPillContent" *ngIf="activeIndex == 3">
+                <div class="stepsdemo-content">
+                    <p-card>
+                        <ng-template pTemplate="title">
+                            Dynamic Attributes Information
+                        </ng-template>
+                        <ng-template pTemplate="content">
+
+                            <div class="p-fluid row">
+                                <div *ngFor="let attr of _dynamicAttributes" class="col-md-6">
+                                    <div class="p-field" *ngIf="attr.dataType=='string'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.key}}</label>
+                                        <input #name="ngModel" [name]="attr.key" [(ngModel)]="attr.valueString"
+                                            type="text" [id]="attr.key" [required]=attr.required pInputText
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field" *ngIf="attr.dataType=='List'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.key}}</label>
+                                        <p-dropdown #name="ngModel" [name]="attr.key" [filter]="true"
+                                            filterMatchMode="startsWith" [(ngModel)]="attributeValueShow[attr.key]"
+                                            [options]="listOfFilterCivil1Types[attr.key]" [required]=attr.required
+                                            optionLabel="value" [placeholder]="attr.value" [filter]="true"
+                                            filterMatchMode="startsWith"
+                                            (onChange)=setValueDynamic($event.value,attr.key) [showClear]="false"
+                                            scrollHeight="120px"></p-dropdown>
+
+                                        <!-- <input   #name="ngModel" [name]="attr.key"  [id]="attr.key" [required]=attr.required   pInputText [(ngModel)]="attr.valueString" [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">  -->
+                                    </div>
+                                    <div class="p-field" *ngIf="attr.dataType=='int'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.key}}</label>
+                                        <input #name="ngModel" [name]="attr.key" type="number" [id]="attr.key"
+                                            [value]="attr.valueDouble" [required]=attr.required pattern="[0-9]*"
+                                            pInputText [(ngModel)]="attr.valueDouble"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field" *ngIf=" attr.dataType=='float' || attr.dataType=='double'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.key}}</label>
+                                        <input #name="ngModel" [name]="attr.key" type="number" [id]="attr.key"
+                                            [value]="attr.valueDouble" [required]=attr.required pInputText
+                                            [(ngModel)]="attr.valueDouble"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                    </div>
+                                    <div class="p-field" *ngIf=" attr.dataType=='datetime'">
+                                        <label for="name" [ngClass]="{'required':attr.required}">{{attr.key}}</label>
+                                        <input #name="ngModel" [name]="attr.key" type="date"
+                                            [value]="attr.valueDateTime" [required]=attr.required pInputText
+                                            [(ngModel)]="attr.valueDateTime"
+                                            [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}">
+                                        <small *ngIf="(name.invalid && name.touched) || (name.dirty && name.invalid)"
+                                            class="p-error">Should enter valid value</small>
+                                    </div>
+
+                                </div>
+                                <div *ngFor="let attr of _boolDynamicAttributes" class="col-md-2 checkbok-pos">
+                                    <div class="p-field-checkbox" *ngIf="attr.dataType=='boolean'">
+                                        <p-checkbox [name]="attr.key" [(ngModel)]="attr.valueBoolean" binary="true"
+                                            inputId="binary" class="checkbok-lable"></p-checkbox>
+                                        {{attr.key}}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <!-- <div class="p-grid p-nogutter p-justify-end"> -->
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <p-button label="Next"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    [disabled]="myForm.invalid" (onClick)="next()" icon="pi pi-angle-right"
+                                    iconPos="right">
+                                </p-button>
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+
+            <div class="tab-content" id="cardPillContent" *ngIf="activeIndex == 4">
+                <div class="stepsdemo-content">
+                    <p-card>
+
+                        <ng-template pTemplate="content">
+                            <div class="p-fluid row">
+                                <div *ngFor="let label of otherAttributesLabelNames" class="col-md-12">
+                                    <h4 class="card-titel" style="margin-bottom: 3.5rem;"
+                                        *ngIf="otherAttributes[label].length > 0">{{label}}</h4>
+                                    <div class="p-fluid row">
+                                        <div *ngFor="let attr of _tempOtherAttributes[label]" class="col-md-6">
+                                            <div class="p-field" *ngIf="attr.dataType=='string'">
+                                                <label for="name"
+                                                    [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                                <input #name="ngModel" [name]="attr.key" type="text" [id]="attr.key"
+                                                    [required]=attr.required pInputText [(ngModel)]="attr.value"
+                                                    [autocomplete]="off"
+                                                    [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}"
+                                                    [placeholder]="attr.value">
+                                                <small
+                                                    *ngIf="(name.invalid && name.touched) || (name.dirty && name.invalid)"
+                                                    class="p-error">Should enter avalid value</small>
+                                            </div>
+                                            <div class="p-field"
+                                                *ngIf="attr.dataType=='int' || attr.dataType=='float' || attr.dataType=='double'">
+                                                <label for="name"
+                                                    [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                                <input #name="ngModel" [value]="attr.value" [name]="attr.key"
+                                                    type="number" [id]="attr.key" [required]=attr.required
+                                                    pattern="[0-9]*" pInputText [(ngModel)]="attr.value"
+                                                    [autocomplete]="off"
+                                                    [ngClass]="{'p-invalid': (name.invalid && submitted) || (name.dirty && name.invalid)}"
+                                                    [placeholder]="attr.value">
+                                                <small
+                                                    *ngIf="(name.invalid && name.touched) || (name.dirty && name.invalid)"
+                                                    class="p-error">Should enter a valid value</small>
+                                            </div>
+                                            <div class="p-field" *ngIf="attr.dataType=='DateTime'">
+                                                <label for="name"
+                                                    [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                                <input type="date" id="start" [autocomplete]="off" name="trip-start"
+                                                    pInputText min="1900-01-01" max="2100-12-31"
+                                                    [(ngModel)]="attr.value">
+                                            </div>
+                                            <div class="p-field" *ngIf="attr.dataType=='List' ">
+                                                <label for="name"
+                                                    [ngClass]="{'required':attr.required}">{{attr.label}}</label>
+                                                <p-dropdown [name]="attr.key" [filter]="true" appendTo="body"
+                                                    filterMatchMode="startsWith"
+                                                    [options]="listOfFilterCivil1Types[attr.key]"
+                                                    [(ngModel)]="attributeValueShow[attr.key]" [required]=attr.required
+                                                    optionLabel="value" [placeholder]="attr.value"
+                                                    (onChange)=setValueOther($event.value,attr.key) [showClear]="false"
+                                                    scrollHeight="120px"></p-dropdown>
+                                            </div>
+                                        </div>
+                                        <div *ngFor="let attr of _tempOtherAttributes2[label]"
+                                            class="col-md-2 checkbok-pos">
+                                            <div class="p-field-checkbox" *ngIf="attr.dataType=='bool'"
+                                                [ngClass]="{'required':attr.required}">
+                                                <p-checkbox [name]="attr.key" [(ngModel)]="attr.value" binary="true"
+                                                    inputId="binary" class="checkbok-lable"
+                                                    [ngClass]="{'required':attr.required}"></p-checkbox>
+                                                {{attr.label}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="p-d-flex p-jc-between">
+                                <p-button label="Back" (onClick)="back()"
+                                    [style]="{'font-size':'18px','font-style':'italic','font-weight':'600', 'color':'rgb(81, 79, 79)'}"
+                                    icon="pi pi-angle-left" iconPos="left"></p-button>
+                                <button pButton pRipple (click)="submit()" [disabled]="buttonDisable || myForm.invalid"
+                                    type="button" label="Save" icon="pi pi-check-circle" iconPos="right"
+                                    class="p-button-success"></button>
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

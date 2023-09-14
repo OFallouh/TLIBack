@@ -1,0 +1,824 @@
+{
+  "data": {
+    "libraryActivatedAttributes": [
+      {
+        "key": "Model",
+        "value": "sliman test",
+        "desc": "Modelddss",
+        "label": "Modelss",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Description",
+        "value": null,
+        "desc": "Description",
+        "label": "Description",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Note",
+        "value": null,
+        "desc": "Note",
+        "label": "Note1",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Weight",
+        "value": 0,
+        "desc": "Weight",
+        "label": "Weight",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "dimensions",
+        "value": null,
+        "desc": "dimensions",
+        "label": "dimensions",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Length",
+        "value": 0,
+        "desc": "Length",
+        "label": "Length",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "Width",
+        "value": 0,
+        "desc": "Width",
+        "label": "Width",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "Height",
+        "value": 0,
+        "desc": "Height",
+        "label": "Height",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "diameter",
+        "value": 0,
+        "desc": "diameter",
+        "label": "diameter",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "frequency_band",
+        "value": null,
+        "desc": "frequency_band",
+        "label": "frequency_band",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "SpaceLibrary",
+        "value": 0,
+        "desc": "SpaceLibrary",
+        "label": "SpaceLibrary",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "polarityTypeId",
+        "value": "NA",
+        "desc": "TLIpolarityType",
+        "label": "polarityType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "asTypeId",
+        "value": "NA",
+        "desc": "TLIasType",
+        "label": "asType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "NA",
+        "value": "NA",
+        "desc": "NA",
+        "label": "NA",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      }
+    ],
+    "attributesActivated": [
+      {
+        "id": 0,
+        "key": "DishName",
+        "value": "op67",
+        "desc": "DishName",
+        "label": "DishName",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "PolarityOnLocationId",
+        "value": "Test1",
+        "desc": "TLIpolarityOnLocation",
+        "label": "PolarityOnLocation_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "RepeaterTypeId",
+        "value": "Test1",
+        "desc": "TLIrepeaterType",
+        "label": "RepeaterType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "ownerId",
+        "value": "NA",
+        "desc": "TLIowner",
+        "label": "owner_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "HeightBase",
+        "value": 0,
+        "desc": "HeightBase",
+        "label": "HeightBase",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "SpaceInstallation",
+        "value": 0,
+        "desc": "SpaceInstallation",
+        "label": "SpaceInstallation",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "MW_LinkId",
+        "value": "op",
+        "desc": "MW_LinkId",
+        "label": "MW_Link_Name",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ItemConnectToId",
+        "value": "repeater",
+        "desc": "TLIitemConnectTo",
+        "label": "ItemConnectTo_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "Serial_Number",
+        "value": "op",
+        "desc": "Serial_Number",
+        "label": "Serial_Number",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "Far_End_Site_Code",
+        "value": null,
+        "desc": "Far_End_Site_Code",
+        "label": "Far_End_Site_Code",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "Notes",
+        "value": null,
+        "desc": "Notes",
+        "label": "Notes",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "Azimuth",
+        "value": 8,
+        "desc": "Azimuth",
+        "label": "Azimuth",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "MwDishLibraryId",
+        "value": "sliman test",
+        "desc": "TLImwDishLibrary",
+        "label": "MwDishLibrary_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "EquivalentSpace",
+        "value": 0,
+        "desc": "EquivalentSpace",
+        "label": "EquivalentSpace",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HieghFromLand",
+        "value": 0,
+        "desc": "HieghFromLand",
+        "label": "HieghFromLand",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "CenterHigh",
+        "value": 0,
+        "desc": "CenterHigh",
+        "label": "CenterHigh",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HBA",
+        "value": 0,
+        "desc": "HBA",
+        "label": "HBA",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      }
+    ],
+    "civilSiteDate": [],
+    "civilSupportDistance": [],
+    "civilLoads": [
+      {
+        "id": 0,
+        "key": "InstallationDate",
+        "value": "2001-01-01T00:00:00",
+        "desc": "InstallationDate",
+        "label": "InstallationDate",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "DateTime"
+      },
+      {
+        "id": 0,
+        "key": "ItemOnCivilStatus",
+        "value": null,
+        "desc": "ItemOnCivilStatus",
+        "label": "ItemOnCivilStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ItemStatus",
+        "value": null,
+        "desc": "ItemStatus",
+        "label": "ItemStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ReservedSpace",
+        "value": false,
+        "desc": "ReservedSpace",
+        "label": "ReservedSpace",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "bool"
+      }
+    ],
+    "otherInSite": [],
+    "otherInventoryDistance": [],
+    "dynamicAtts": [],
+    "relatedTables": [
+      {
+        "key": "RepeaterTypeId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 61,
+            "value": "Test1"
+          },
+          {
+            "id": 81,
+            "value": "tt"
+          }
+        ]
+      },
+      {
+        "key": "PolarityOnLocationId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 21,
+            "value": "Test1"
+          },
+          {
+            "id": 41,
+            "value": "rtgytt"
+          }
+        ]
+      },
+      {
+        "key": "ItemConnectToId",
+        "value": [
+          {
+            "id": 61,
+            "value": "t"
+          },
+          {
+            "id": 81,
+            "value": "farsitedish"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 41,
+            "value": "Test1"
+          },
+          {
+            "id": 82,
+            "value": "repeater"
+          }
+        ]
+      },
+      {
+        "key": "MwDishLibraryId",
+        "value": [
+          {
+            "id": 161,
+            "value": "DDDISJH"
+          },
+          {
+            "id": 122,
+            "value": "testDish"
+          },
+          {
+            "id": 121,
+            "value": "test"
+          },
+          {
+            "id": 141,
+            "value": "sliman test"
+          },
+          {
+            "id": 162,
+            "value": "diish"
+          },
+          {
+            "id": 181,
+            "value": "DDDISJH"
+          }
+        ]
+      },
+      {
+        "key": "InstallationPlaceId",
+        "value": [
+          {
+            "id": 41,
+            "value": "Direct"
+          },
+          {
+            "id": 42,
+            "value": "SideArm"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 61,
+            "value": "Leg"
+          }
+        ]
+      },
+      {
+        "key": "ownerId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          }
+        ]
+      },
+      {
+        "key": "sideArmId",
+        "value": [
+          {
+            "id": 148,
+            "value": "newnew455"
+          },
+          {
+            "id": 151,
+            "value": "as"
+          },
+          {
+            "id": 142,
+            "value": "1"
+          },
+          {
+            "id": 144,
+            "value": "WLN"
+          },
+          {
+            "id": 150,
+            "value": "ghhhhhhhhhhhhhhhh"
+          },
+          {
+            "id": 152,
+            "value": "yy"
+          },
+          {
+            "id": 154,
+            "value": "yyyyyyyyyyyyy"
+          },
+          {
+            "id": 155,
+            "value": "without344"
+          },
+          {
+            "id": 158,
+            "value": "88888"
+          },
+          {
+            "id": 121,
+            "value": "yy"
+          },
+          {
+            "id": 146,
+            "value": "gh"
+          },
+          {
+            "id": 147,
+            "value": "without"
+          },
+          {
+            "id": 153,
+            "value": "ad"
+          },
+          {
+            "id": 156,
+            "value": "without09999999"
+          },
+          {
+            "id": 143,
+            "value": "2"
+          },
+          {
+            "id": 145,
+            "value": "SNW"
+          },
+          {
+            "id": 141,
+            "value": "6676"
+          },
+          {
+            "id": 149,
+            "value": "bubu"
+          },
+          {
+            "id": 157,
+            "value": "12345"
+          }
+        ]
+      },
+      {
+        "key": "allCivilInstId",
+        "value": [
+          {
+            "id": 183,
+            "value": "276"
+          },
+          {
+            "id": 231,
+            "value": "ghoson"
+          },
+          {
+            "id": 241,
+            "value": "6544444444"
+          },
+          {
+            "id": 217,
+            "value": "trv"
+          },
+          {
+            "id": 227,
+            "value": "hhhhhhhhhhhhhhhhhh"
+          },
+          {
+            "id": 228,
+            "value": "mast111"
+          },
+          {
+            "id": 181,
+            "value": "new"
+          },
+          {
+            "id": 196,
+            "value": "e"
+          },
+          {
+            "id": 230,
+            "value": "1234"
+          },
+          {
+            "id": 209,
+            "value": "MohamadInst"
+          },
+          {
+            "id": 213,
+            "value": "ghoson"
+          },
+          {
+            "id": 214,
+            "value": "NEWGH2"
+          },
+          {
+            "id": 229,
+            "value": "mast09999999"
+          },
+          {
+            "id": 215,
+            "value": "tbn"
+          },
+          {
+            "id": 216,
+            "value": "trm"
+          },
+          {
+            "id": 223,
+            "value": "Test Non Steel 1"
+          },
+          {
+            "id": 224,
+            "value": "Test Non Steel 2"
+          },
+          {
+            "id": 225,
+            "value": "654444444"
+          },
+          {
+            "id": 193,
+            "value": "EEEEd"
+          },
+          {
+            "id": 194,
+            "value": "45"
+          },
+          {
+            "id": 195,
+            "value": "43"
+          }
+        ]
+      },
+      {
+        "key": "civilSteelSupportCategoryId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 2,
+            "value": "Mast"
+          },
+          {
+            "id": 1,
+            "value": "Tower"
+          },
+          {
+            "id": 3,
+            "value": "Monopole"
+          },
+          {
+            "id": 4,
+            "value": "Capsule"
+          }
+        ]
+      },
+      {
+        "key": "Leg1Id",
+        "value": []
+      },
+      {
+        "key": "Leg2Id",
+        "value": []
+      }
+    ],
+    "sideArmInstallationInfo": [
+      {
+        "id": -1,
+        "key": "Select civil support type",
+        "value": "Civil with legs",
+        "desc": "Select civil support type",
+        "label": "Select civil support type",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 181,
+        "key": "Select civil with legs support items",
+        "value": "new",
+        "desc": "Select civil with legs support items",
+        "label": "Select civil with legs support items",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": -1,
+        "key": "Select the installation place type",
+        "value": "Direct",
+        "desc": "Select the installation place type",
+        "label": "Select the installation place type",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 211,
+        "key": "allLoadInstId",
+        "value": 211,
+        "desc": "allLoadInstId",
+        "label": "allLoadInstId",
+        "manage": false,
+        "required": false,
+        "enable": false,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      }
+    ]
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": null,
+  "code": 0,
+  "count": 0
+}

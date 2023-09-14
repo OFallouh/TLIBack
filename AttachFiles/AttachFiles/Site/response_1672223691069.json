@@ -1,0 +1,504 @@
+{
+  "data": {
+    
+    "attributesActivated": [
+      {
+        "id": 0,
+        "key": "DishName",
+        "value": null,
+        "desc": "DishName",
+        "label": "DishName",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "PolarityOnLocationId",
+        "value": [
+          {
+            "id": 0,
+            "name": "NA"
+          },
+          {
+            "id": 21,
+            "name": "Test1"
+          },
+          {
+            "id": 41,
+            "name": "rtgytt"
+          }
+        ],
+        "desc": "TLIpolarityOnLocation",
+        "label": "PolarityOnLocation_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "RepeaterTypeId",
+        "value": [
+          {
+            "id": 0,
+            "name": "NA"
+          },
+          {
+            "id": 61,
+            "name": "Test1"
+          },
+          {
+            "id": 81,
+            "name": "tt"
+          }
+        ],
+        "desc": "TLIrepeaterType",
+        "label": "RepeaterType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "ownerId",
+        "value": [
+          {
+            "id": 0,
+            "name": "NA",
+            "remark": "2"
+          }
+        ],
+        "desc": "TLIowner",
+        "label": "owner_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "HeightBase",
+        "value": null,
+        "desc": "HeightBase",
+        "label": "HeightBase",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "SpaceInstallation",
+        "value": null,
+        "desc": "SpaceInstallation",
+        "label": "SpaceInstallation",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "MW_LinkId",
+        "value": null,
+        "desc": "MW_LinkId",
+        "label": "MW_Link_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ItemConnectToId",
+        "value": [
+          {
+            "id": 61,
+            "name": "t"
+          },
+          {
+            "id": 81,
+            "name": "farsitedish"
+          },
+          {
+            "id": 0,
+            "name": "NA"
+          },
+          {
+            "id": 41,
+            "name": "Test1"
+          },
+          {
+            "id": 82,
+            "name": "repeater"
+          }
+        ],
+        "desc": "TLIitemConnectTo",
+        "label": "ItemConnectTo_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "Serial_Number",
+        "value": null,
+        "desc": "Serial_Number",
+        "label": "Serial_Number",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "Far_End_Site_Code",
+        "value": null,
+        "desc": "Far_End_Site_Code",
+        "label": "Far_End_Site_Code",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "Notes",
+        "value": null,
+        "desc": "Notes",
+        "label": "Notes",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "Azimuth",
+        "value": null,
+        "desc": "Azimuth",
+        "label": "Azimuth",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HieghFromLand",
+        "value": null,
+        "desc": "HieghFromLand",
+        "label": "HieghFromLand",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "CenterHigh",
+        "value": null,
+        "desc": "CenterHigh",
+        "label": "CenterHigh",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HBA",
+        "value": null,
+        "desc": "HBA",
+        "label": "HBA",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      }
+    ],
+    "civilSiteDate": [],
+    "civilSupportDistance": [],
+    "civilLoads": [
+      {
+        "id": 0,
+        "key": "InstallationDate",
+        "value": null,
+        "desc": "InstallationDate",
+        "label": "InstallationDate",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "DateTime"
+      },
+      {
+        "id": 0,
+        "key": "ItemOnCivilStatus",
+        "value": null,
+        "desc": "ItemOnCivilStatus",
+        "label": "ItemOnCivilStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ItemStatus",
+        "value": null,
+        "desc": "ItemStatus",
+        "label": "ItemStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ReservedSpace",
+        "value": false,
+        "desc": "ReservedSpace",
+        "label": "ReservedSpace",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "bool"
+      }
+    ],
+    "otherInSite": [],
+    "otherInventoryDistance": [],
+    "dynamicAtts": [],
+    "relatedTables": [
+      {
+        "key": "sideArmId",
+        "value": [
+          {
+            "id": 148,
+            "value": "newnew455"
+          },
+          {
+            "id": 142,
+            "value": "1"
+          },
+          {
+            "id": 144,
+            "value": "WLN"
+          },
+          {
+            "id": 150,
+            "value": "ghhhhhhhhhhhhhhhh"
+          },
+          {
+            "id": 121,
+            "value": "yy"
+          },
+          {
+            "id": 146,
+            "value": "gh"
+          },
+          {
+            "id": 147,
+            "value": "without"
+          },
+          {
+            "id": 143,
+            "value": "2"
+          },
+          {
+            "id": 145,
+            "value": "SNW"
+          },
+          {
+            "id": 141,
+            "value": "6676"
+          },
+          {
+            "id": 149,
+            "value": "bubu"
+          }
+        ]
+      },
+      {
+        "key": "allCivilInstId",
+        "value": [
+          {
+            "id": 197,
+            "value": "1"
+          },
+          {
+            "id": 127,
+            "value": "Test E"
+          },
+          {
+            "id": 183,
+            "value": "276"
+          },
+          {
+            "id": 219,
+            "value": "ghhhhhhhhhhhhhh"
+          },
+          {
+            "id": 202,
+            "value": "33"
+          },
+          {
+            "id": 204,
+            "value": "11"
+          },
+          {
+            "id": 207,
+            "value": "gh"
+          },
+          {
+            "id": 217,
+            "value": "trv"
+          },
+          {
+            "id": 181,
+            "value": "new"
+          },
+          {
+            "id": 196,
+            "value": "e"
+          },
+          {
+            "id": 209,
+            "value": "MohamadInst"
+          },
+          {
+            "id": 213,
+            "value": "ghoson"
+          },
+          {
+            "id": 214,
+            "value": "NEWGH2"
+          },
+          {
+            "id": 161,
+            "value": "Date"
+          },
+          {
+            "id": 215,
+            "value": "tbn"
+          },
+          {
+            "id": 216,
+            "value": "trm"
+          },
+          {
+            "id": 218,
+            "value": "ghnewww"
+          },
+          {
+            "id": 223,
+            "value": "Test Non Steel 1"
+          },
+          {
+            "id": 224,
+            "value": "Test Non Steel 2"
+          },
+          {
+            "id": 225,
+            "value": "654444444"
+          },
+          {
+            "id": 226,
+            "value": "Test Eman"
+          },
+          {
+            "id": 193,
+            "value": "EEEEd"
+          },
+          {
+            "id": 194,
+            "value": "45"
+          },
+          {
+            "id": 195,
+            "value": "43"
+          },
+          {
+            "id": 200,
+            "value": "2"
+          },
+          {
+            "id": 208,
+            "value": "ghoson"
+          }
+        ]
+      },
+      {
+        "key": "civilSteelSupportCategoryId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 2,
+            "value": "Mast"
+          },
+          {
+            "id": 1,
+            "value": "Tower"
+          },
+          {
+            "id": 3,
+            "value": "Monopole"
+          },
+          {
+            "id": 4,
+            "value": "Capsule"
+          }
+        ]
+      }
+    ]
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": "",
+  "code": 0,
+  "count": 0
+}

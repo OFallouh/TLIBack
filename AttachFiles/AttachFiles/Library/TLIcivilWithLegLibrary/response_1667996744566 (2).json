@@ -1,0 +1,734 @@
+{
+  "data": {
+    "libraryActivatedAttributes": [
+      {
+        "key": "Model",
+        "value": "string",
+        "desc": "Model",
+        "label": "Model",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Note",
+        "value": "string",
+        "desc": "Noterr",
+        "label": "Noterr",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "FrequencyRange",
+        "value": "string",
+        "desc": "FrequencyRange",
+        "label": "FrequencyRange",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Type",
+        "value": "string",
+        "desc": "Type",
+        "label": "Type",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Size",
+        "value": 1,
+        "desc": "Size",
+        "label": "Size",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "L_W_H",
+        "value": "string",
+        "desc": "L_W_H",
+        "label": "L_W_H",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "string"
+      },
+      {
+        "key": "Weight",
+        "value": 1,
+        "desc": "Weight",
+        "label": "Weight",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "width",
+        "value": 12,
+        "desc": "width",
+        "label": "width",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "Length",
+        "value": 12,
+        "desc": "Length",
+        "label": "Length",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "Depth",
+        "value": 1,
+        "desc": "Depth",
+        "label": "Depth",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "SpaceLibrary",
+        "value": 12,
+        "desc": "SpaceLibrary",
+        "label": "SpaceLibrary",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "float"
+      },
+      {
+        "key": "Vendor",
+        "value": "NA",
+        "desc": "Vendor",
+        "label": "Vendor",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Designer",
+        "value": "NA",
+        "desc": "Designer",
+        "label": "Designer",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Supplier",
+        "value": "NA",
+        "desc": "Supplier",
+        "label": "Supplier",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      },
+      {
+        "key": "Manufacturer",
+        "value": "NA",
+        "desc": "Manufacturer",
+        "label": "Manufacturer",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataType": "List"
+      }
+    ],
+    "attributesActivated": [
+      {
+        "id": 0,
+        "key": "Name",
+        "value": "Direct 2",
+        "desc": "Name",
+        "label": "Name",
+        "manage": false,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "SerialNumber",
+        "value": "10",
+        "desc": "SerialNumber",
+        "label": "SerialNumber",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "HeightBase",
+        "value": 0,
+        "desc": "HeightBase",
+        "label": "HeightBase",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HeightLand",
+        "value": 0,
+        "desc": "HeightLand",
+        "label": "HeightLand",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "SpaceInstallation",
+        "value": 0,
+        "desc": "SpaceInstallation",
+        "label": "SpaceInstallation",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "Azimuth",
+        "value": 0,
+        "desc": "Azimuth",
+        "label": "Azimuth",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "Height",
+        "value": 0,
+        "desc": "Height",
+        "label": "Height",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "Notes",
+        "value": null,
+        "desc": "Notes",
+        "label": "Notes",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ownerId",
+        "value": "NA",
+        "desc": "TLIowner",
+        "label": "owner_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "installationPlaceId",
+        "value": "Direct",
+        "desc": "TLIinstallationPlace",
+        "label": "installationPlace_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "powerLibraryId",
+        "value": "string",
+        "desc": "TLIpowerLibrary",
+        "label": "powerLibrary_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "powerTypeId",
+        "value": "NA",
+        "desc": "TLIpowerType",
+        "label": "powerType_Name",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 0,
+        "key": "VisibleStatus",
+        "value": null,
+        "desc": "VisibleStatus",
+        "label": "VisibleStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "EquivalentSpace",
+        "value": 0,
+        "desc": "EquivalentSpace",
+        "label": "EquivalentSpace",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HieghFromLand",
+        "value": 0,
+        "desc": "HieghFromLand",
+        "label": "HieghFromLand",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "CenterHigh",
+        "value": 6,
+        "desc": "CenterHigh",
+        "label": "CenterHigh",
+        "manage": true,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      },
+      {
+        "id": 0,
+        "key": "HBA",
+        "value": 0,
+        "desc": "HBA",
+        "label": "HBA",
+        "manage": true,
+        "required": true,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "float"
+      }
+    ],
+    "civilSiteDate": [],
+    "civilSupportDistance": [],
+    "civilLoads": [
+      {
+        "id": 0,
+        "key": "InstallationDate",
+        "value": "0001-01-01T00:00:00",
+        "desc": "InstallationDate",
+        "label": "InstallationDate",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "DateTime"
+      },
+      {
+        "id": 0,
+        "key": "ItemOnCivilStatus",
+        "value": null,
+        "desc": "ItemOnCivilStatus",
+        "label": "ItemOnCivilStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ItemStatus",
+        "value": null,
+        "desc": "ItemStatus",
+        "label": "ItemStatus",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "string"
+      },
+      {
+        "id": 0,
+        "key": "ReservedSpace",
+        "value": false,
+        "desc": "ReservedSpace",
+        "label": "ReservedSpace",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "bool"
+      }
+    ],
+    "otherInSite": [],
+    "otherInventoryDistance": [],
+    "dynamicAtts": [
+      {
+        "id": 2488,
+        "key": "rri33ngss",
+        "dataTypeId": 22,
+        "dataType": "double",
+        "valueString": null,
+        "valueDateTime": null,
+        "valueDouble": 0,
+        "valueBoolean": null,
+        "required": false,
+        "disable": false
+      }
+    ],
+    "relatedTables": [
+      {
+        "key": "ownerId",
+        "value": [
+          {
+            "id": 1,
+            "value": "gf"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 2,
+            "value": "hh"
+          }
+        ]
+      },
+      {
+        "key": "installationPlaceId",
+        "value": [
+          {
+            "id": 41,
+            "value": "Direct"
+          },
+          {
+            "id": 42,
+            "value": "SideArm"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 61,
+            "value": "Leg"
+          }
+        ]
+      },
+      {
+        "key": "powerLibraryId",
+        "value": [
+          {
+            "id": 441,
+            "value": "string"
+          },
+          {
+            "id": 442,
+            "value": "Roquia"
+          }
+        ]
+      },
+      {
+        "key": "powerTypeId",
+        "value": []
+      },
+      {
+        "key": "sideArmId",
+        "value": [
+          {
+            "id": 501,
+            "value": "SideArm Test Dismantle 0"
+          },
+          {
+            "id": 521,
+            "value": "newside11"
+          },
+          {
+            "id": 522,
+            "value": "SideArm Test Dismantle 1"
+          },
+          {
+            "id": 523,
+            "value": "SideArm Test Dismantle 0"
+          },
+          {
+            "id": 524,
+            "value": "SideArm Test Dismantle 1"
+          },
+          {
+            "id": 527,
+            "value": "SideArm Test Dismantle 0"
+          },
+          {
+            "id": 528,
+            "value": "SideArm Test Dismantle 1"
+          },
+          {
+            "id": 525,
+            "value": "SideArm Test Dismantle 0"
+          },
+          {
+            "id": 526,
+            "value": "SideArm Test Dismantle 1"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          }
+        ]
+      },
+      {
+        "key": "allCivilInstId",
+        "value": [
+          {
+            "id": 1483,
+            "value": "site1 new NA 0111"
+          },
+          {
+            "id": 1507,
+            "value": "imaan11"
+          },
+          {
+            "id": 1521,
+            "value": "civilwithleg2"
+          },
+          {
+            "id": 1542,
+            "value": "e"
+          },
+          {
+            "id": 1543,
+            "value": "e"
+          },
+          {
+            "id": 1307,
+            "value": "SlimanIman"
+          },
+          {
+            "id": 1481,
+            "value": "site1 new NA 00"
+          },
+          {
+            "id": 1482,
+            "value": "site1 new NA 0"
+          },
+          {
+            "id": 1485,
+            "value": "iman"
+          },
+          {
+            "id": 1486,
+            "value": "site1 new NA 0"
+          },
+          {
+            "id": 1363,
+            "value": "slimantesttestttttttt"
+          },
+          {
+            "id": 1423,
+            "value": "string"
+          },
+          {
+            "id": 1506,
+            "value": "iman111"
+          },
+          {
+            "id": 1541,
+            "value": "Test by eman6"
+          }
+        ]
+      },
+      {
+        "key": "civilSteelSupportCategoryId",
+        "value": [
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 1,
+            "value": "Tower"
+          },
+          {
+            "id": 2,
+            "value": "Mast"
+          },
+          {
+            "id": 3,
+            "value": "Monopole"
+          },
+          {
+            "id": 4,
+            "value": "Capsule"
+          }
+        ]
+      },
+      {
+        "key": "Leg1Id",
+        "value": [
+          {
+            "id": 1,
+            "value": "ee"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 121,
+            "value": "new"
+          }
+        ]
+      },
+      {
+        "key": "Leg2Id",
+        "value": [
+          {
+            "id": 1,
+            "value": "ee"
+          },
+          {
+            "id": 0,
+            "value": "NA"
+          },
+          {
+            "id": 121,
+            "value": "new"
+          }
+        ]
+      }
+    ],
+    "sideArmInstallationInfo": [
+      {
+        "id": -1,
+        "key": "Select civil support type",
+        "value": "Civil with legs",
+        "desc": "Select civil support type",
+        "label": "Select civil support type",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": 1521,
+        "key": "Select civil with legs support items",
+        "value": "civilwithleg2",
+        "desc": "Select civil with legs support items",
+        "label": "Select civil with legs support items",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      },
+      {
+        "id": -1,
+        "key": "Select the installation place type",
+        "value": "Direct",
+        "desc": "Select the installation place type",
+        "label": "Select the installation place type",
+        "manage": false,
+        "required": false,
+        "enable": true,
+        "autoFill": false,
+        "dataTypeId": null,
+        "dataType": "List"
+      }
+    ]
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": null,
+  "code": 0,
+  "count": 0
+}

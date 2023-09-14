@@ -1,0 +1,62 @@
+drop index "IX_TLIsideArmLibrary_Model"
+drop index "IX_TLIradioRRULibrary_Model";
+drop index "IX_TLIradioOtherLibrary_Model";
+drop index "IX_TLIradioAntennaLibrary_Model";
+drop index "IX_TLIcabinetPowerLibrary_Model";
+drop index "IX_TLIcabinetTelecomLibrary_Model";
+drop index "IX_TLIcivilNonSteelLibrary_Model";
+drop index "IX_TLIcivilWithLegLibrary_Model";
+drop index "IX_TLIcivilWithoutLegLibrary_Model";
+drop index "IX_TLIgeneratorLibrary_Model";
+drop index "IX_TLIloadOtherLibrary_Model";
+drop index "IX_TLImwOtherLibrary_Model";
+drop index "IX_TLImwBULibrary_Model";
+drop index "IX_TLImwDishLibrary_Model";
+drop index "IX_TLImwODULibrary_Model";
+drop index "IX_TLImwRFULibrary_Model";
+drop index "IX_TLIsolarLibrary_Model";
+drop index "IX_TLIpowerLibrary_Model";
+-------------------------------------------------------------------
+alter table "TLIsubType" add "Disable" number(1) default 0;
+alter table "TLIasType" add "Disable" number(1) default 0;
+alter table "TLIpolarityType" add "Disable" number(1) default 0;
+alter table "TLIparity" add "Disable" number(1) default 0;
+alter table "TLIcabinetPowerType" add "Disable" number(1) default 0;
+alter table "TLIcapacity" add "Disable" number(1) default 0;
+alter table "TLIsubType" add "Delete" number(1) default 0;
+alter table "TLIasType" add "Delete" number(1) default 0;
+alter table "TLIpolarityType" add "Delete" number(1) default 0;
+alter table "TLIparity" add "Delete" number(1) default 0;
+alter table "TLIcabinetPowerType" add "Delete" number(1) default 0;
+alter table "TLIcapacity" add "Delete" number(1) default 0;
+--------------------------------------------------------------------
+update "TLIattActivatedCategory" set "enable"=0 where "attributeActivatedId" in (213,212);
+update "TLIattributeActivated" set "DataType"='int' where "Key"='VerticalMeasured';
+--------------------------------------------------------------------
+CHECK IF THE BELOW TABLAE HAVE "NA" REFERENCE TO ID=0
+SELECT * FROM "TLIasType";
+SELECT * FROM "TLIbaseBU";
+SELECT * FROM "TLIbaseCivilWithLegsType"
+SELECT * FROM "TLIbaseGeneratorType"
+SELECT * FROM "TLIbaseType"
+SELECT * FROM "TLIboardType"
+SELECT * FROM "TLIcabinetPowerType"
+SELECT * FROM "TLIcivilSteelSupportCategory"
+SELECT * FROM "TLIdiversityType"
+SELECT * FROM "TLIenforcmentCategory"
+SELECT * FROM "TLIguyLineType"
+SELECT * FROM "TLIinstallationCivilwithoutLegsType"
+SELECT * FROM "TLIinstallationPlace"
+SELECT * FROM "TLIinstallationType"
+SELECT * FROM "TLIlogisticalType" for update
+SELECT * FROM "TLIparity"
+SELECT * FROM "TLIpolarityOnLocation"
+SELECT * FROM "TLIpolarityType"
+SELECT * FROM "TLIrenewableCabinetType"
+SELECT * FROM "TLIsideArmType"
+select * from "TLIpart"
+----------------------------------------------------------------------
+check if "TLIpowerLibrary" include 2*Id in master data in "TLIattributeActivated"  table
+add store file location to appsetting  variable name:"StoreFiles"
+SELECT * FROM "TLIleg" should be pre inserted data
+SELECT * FROM "TLImwPort" should be pre inserted data

@@ -1,0 +1,5 @@
+create procedure using plsql to insert new site in TLI system with all properties
+and check all civil (with leg,without leg ) if  it can be install on this sitee based on 
+site size and civil space
+
+procedure output: print civil name and civil type for each civil with "true" if can installed or "false" if can not.
