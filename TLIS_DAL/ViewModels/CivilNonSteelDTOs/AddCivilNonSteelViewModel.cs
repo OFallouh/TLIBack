@@ -23,6 +23,7 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelDTOs
         public float BuildingMaxLoad { get; set; }
         public float CivilSupportCurrentLoad { get; set; }
         public float H2Height { get; set; }
+        public float HieghFromLand { get; set; }
         public float Support_Limited_Load { get; set; }
         public AddCivilSiteDateViewModel TLIcivilSiteDate { get; set; }
         public AddCivilSupportDistanceViewModel CivilSupportDistance { get; set; }

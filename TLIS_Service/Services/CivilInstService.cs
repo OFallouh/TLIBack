@@ -4940,12 +4940,12 @@ namespace TLIS_Service.Services
                     EditableMangmentCategoryViewName = Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationCapsule.ToString();
                 else if (CategoryName == "Monopole")
                     EditableMangmentCategoryViewName = Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMonopole.ToString();
-
+                var tempAtt = AttributeActivatedCategories.Select(x => x.attributeActivatedId).ToList();
                 List<TLIattributeViewManagment> AllAttributes = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
                    (x.Enable && x.EditableManagmentView.View == EditableMangmentCategoryViewName &&
                    (x.AttributeActivatedId != null ?
                         (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() && x.AttributeActivated.enable &&
-                            AttributeActivatedCategories.Exists(y => y.attributeActivatedId == x.AttributeActivatedId)) :
+                            tempAtt.Any(y => y == x.AttributeActivatedId)) :
                         (!x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString()))) ||
                     (x.AttributeActivated != null ?
                         ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString()) : false),
@@ -5103,7 +5103,7 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             x.InventoryId == CivilWithoutLegInstallationObject.Id && !x.disable &&
                            !x.DynamicAtt.LibraryAtt &&
-                            tempno.Any(y => y) == x.DynamicAtt.Key.ToLower()) &&
+                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString()
                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 

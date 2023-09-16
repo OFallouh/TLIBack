@@ -1585,6 +1585,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIradioRRULibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIsolarLibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIregion, RegionViewModel>().ReverseMap();
+            CreateMap<TLIattActivatedCategory, AttActivatedCategoryViewModel>().ReverseMap();
 
 
         }

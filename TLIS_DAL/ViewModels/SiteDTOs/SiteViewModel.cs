@@ -21,15 +21,14 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 
         public float Longitude { get; set; }
 
-        public int siteStatusId { get; set; }
         public string Status { get; set; }
 
         public string CityName { get; set; }
 
-        public int AreaId { get; set; }
+
         public string Area { get; set; }
 
-        public int RegionId { get; set; }
+
         public string Region { get; set; }
 
         public double RentedSpace { get; set; }
