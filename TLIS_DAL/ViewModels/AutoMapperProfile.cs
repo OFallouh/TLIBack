@@ -1586,8 +1586,13 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsolarLibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIregion, RegionViewModel>().ReverseMap();
             CreateMap<TLIattActivatedCategory, AttActivatedCategoryViewModel>().ReverseMap();
-
-
+            CreateMap<TLIdiversityType, DiversityTypeViewModel>().ReverseMap();
+            CreateMap<TLIasType, AsTypeViewModel>().ReverseMap();
+            CreateMap<TLIparity, ParityViewModel>().ReverseMap();
+            CreateMap<TLIsupportTypeDesigned, SupportTypeDesignedViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, InstallationCivilwithoutLegsTypeViewModel>().ReverseMap();
+            CreateMap<TLIsectionsLegType, SectionsLegTypeViewModel>().ReverseMap();
+            CreateMap<TLIstructureType, StructureTypeViewModel>().ReverseMap();
         }
 
     }

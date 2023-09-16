@@ -32,9 +32,8 @@ namespace TLIS_Repository.Repositories
                 List<TLIattActivatedCategory> AttActivatedCategoryStatus = _context.TLIattActivatedCategory
                     .Where(x => x.civilWithoutLegCategoryId == CategoryId && x.attributeActivated.Tabel == Type && x.enable  &&
                         x.attributeActivated.Key.ToLower() != "id" && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted")
-                    .Include(a => a.attributeActivated)
-                    .Except(Excepted).ToList();
-
+                    .Include(a => a.attributeActivated).ToList();
+                AttActivatedCategoryStatus= AttActivatedCategoryStatus.Except(Excepted).ToList();
                 List<BaseAttView> BaseAttsView = new List<BaseAttView>();
                 object value = null;
                 foreach (var AttributeActivated in AttActivatedCategoryStatus)
