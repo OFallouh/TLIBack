@@ -11749,7 +11749,7 @@ namespace TLIS_Service.Services
                 // If file exist then return error message 
                 if (FileExists != null)
                 {
-                    return new Response<string>(true, null, null, "The file is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<string>(false, null, null, "The file is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 var FullFileName = FileName;
                 var SplitFileName = FileName.Split('.');

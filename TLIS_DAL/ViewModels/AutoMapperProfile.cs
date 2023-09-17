@@ -136,6 +136,7 @@ using TLIS_DAL.ViewModels.InstallationPlaceDTOs;
 using TLIS_DAL.ViewModels.ImportSheetDtos;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.RegionDTOs;
+using TLIS_DAL.ViewModels.AreaDTOs;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -1586,6 +1587,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsolarLibrary, LibraryDataDto>().ReverseMap();
             CreateMap<TLIregion, RegionViewModel>().ReverseMap();
             CreateMap<TLIattActivatedCategory, AttActivatedCategoryViewModel>().ReverseMap();
+            CreateMap<TLIarea, AreaViewModel>().ReverseMap();
 
 
         }

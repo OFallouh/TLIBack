@@ -12,7 +12,6 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         [Required]
         public string SiteName { get; set; }
 
-        public int LocationTypeId { get; set; }
         public string LocationType { get; set; }
 
         public float LocationHieght { get; set; }

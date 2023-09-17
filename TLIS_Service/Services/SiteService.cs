@@ -568,19 +568,36 @@ namespace TLIS_Service.Services
         {
             try
             {
+                SiteViewModel siteViewModel = new SiteViewModel();
                 var siteInfo = _context.TLIsite.Include(x => x.Area).Include(x => x.Region).Include(x => x.siteStatus).
                     Where(x => x.SiteCode == SiteCode).FirstOrDefault();
+         
+                siteViewModel = new SiteViewModel()
+                {
+                    SiteCode = siteInfo.SiteCode,
+                    SiteName = siteInfo.SiteName,
+                    Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId).Name,
+                    LocationHieght = siteInfo.LocationHieght,
+                    Longitude = siteInfo.Longitude,
+                    LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id==Convert.ToInt64(siteInfo.LocationType)).Name,
+                    Latitude = siteInfo.Latitude,
+                    CityName = siteInfo.Zone,
+                    Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId).AreaName,
+                    Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode).RegionName,
+                    ReservedSpace = siteInfo.ReservedSpace,
+                    RentedSpace = siteInfo.RentedSpace,
+
+                };
                 if (siteInfo.SiteName == null)
                 {
                     siteInfo.SiteName = "";
                 }
-                var Site = _mapper.Map<SiteViewModel>(siteInfo);
-                return new Response<SiteViewModel>(true, Site, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<SiteViewModel>(true, siteViewModel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
 
-                return new Response<SiteViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<SiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         public async Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode)
