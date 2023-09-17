@@ -631,6 +631,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIrenewableCabinetType, DropDownListFilters>()
                 .ForMember(r => r.Value, r => r.MapFrom(s => s.Name));
 
+            CreateMap<LogisticalViewModel, TLIlogisticalType>().ReverseMap();
             CreateMap<LogisticalViewModel, DropDownListFilters>()
                 .ForMember(r => r.Value, r => r.MapFrom(s => s.Name));
 
@@ -667,6 +668,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIattActivatedCategory, ConfigurationAttsViewModel>().ReverseMap();
 
             CreateMap<TLIdiversityType, AddDiversityTypeViewModel>().ReverseMap();
+            CreateMap<TLIdiversityType, DiversityTypeViewModel>().ReverseMap();
 
             CreateMap<TLIdiversityType, EditDiversityTypeViewModel>().ReverseMap();
 
@@ -677,6 +679,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsupportTypeDesigned, ConfigurationAttsViewModel>().ReverseMap();
 
             CreateMap<TLIsupportTypeDesigned, AddSupportTypeDesignedViewModel>().ReverseMap();
+            CreateMap<TLIsupportTypeDesigned, SupportTypeDesignedViewModel>().ReverseMap();
 
             CreateMap<TLIsupportTypeDesigned, EditSupportTypeDesignedViewModel>().ReverseMap();
 
@@ -689,6 +692,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIstructureType, EditStructureTypeViewModel>().ReverseMap();
 
             CreateMap<TLIsectionsLegType, ConfigurationAttsViewModel>().ReverseMap();
+            CreateMap<TLIsectionsLegType, SectionsLegTypeViewModel>().ReverseMap();
 
             CreateMap<TLIsectionsLegType, AddSectionsLegTypeViewModel>().ReverseMap();
 
@@ -814,10 +818,12 @@ namespace TLIS_DAL.ViewModels
                 .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
             CreateMap<TLIsectionsLegType, DropDownListFilters>()
                .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
+            CreateMap<TLIstructureType, StructureTypeViewModel>().ReverseMap();
             CreateMap<TLIstructureType, DropDownListFilters>()
               .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
             CreateMap<TLIcivilSteelSupportCategory, DropDownListFilters>()
             .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
+            CreateMap<TLIinstallationCivilwithoutLegsType, InstallationCivilwithoutLegsTypeViewModel>().ReverseMap();
             CreateMap<TLIinstallationCivilwithoutLegsType, DropDownListFilters>()
             .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
             CreateMap<TLIbaseCivilWithLegsType, DropDownListFilters>()
@@ -1590,6 +1596,13 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIarea, AreaViewModel>().ReverseMap();
 
 
+            CreateMap<TLIdiversityType, DiversityTypeViewModel>().ReverseMap();
+            CreateMap<TLIasType, AsTypeViewModel>().ReverseMap();
+            CreateMap<TLIparity, ParityViewModel>().ReverseMap();
+            CreateMap<TLIsupportTypeDesigned, SupportTypeDesignedViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, InstallationCivilwithoutLegsTypeViewModel>().ReverseMap();
+            CreateMap<TLIsectionsLegType, SectionsLegTypeViewModel>().ReverseMap();
+            CreateMap<TLIstructureType, StructureTypeViewModel>().ReverseMap();
         }
 
     }

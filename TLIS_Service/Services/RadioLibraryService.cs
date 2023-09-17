@@ -519,7 +519,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames, x => x.DataType).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -586,7 +586,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
@@ -988,7 +988,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames, x => x.DataType).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -1055,7 +1055,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
@@ -1456,7 +1456,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames, x => x.DataType).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -1523,7 +1523,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {

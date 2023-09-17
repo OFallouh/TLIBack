@@ -37,7 +37,7 @@ namespace TLIS_Service.Services
         private readonly IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        public LoadOtherLibraryService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper)
+        public LoadOtherLibraryService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
@@ -1464,7 +1464,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames, x => x.DataType).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -1531,7 +1531,7 @@ namespace TLIS_Service.Services
                     List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                        !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString() &&
                         x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.Exists(y => y.DynamicAttId == x.Id), x => x.tablesNames).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
