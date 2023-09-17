@@ -14,13 +14,13 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public float LocationHieght { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }
-        public int siteStatusId { get; set; }
         public float RentedSpace { get; set; }
         public float ReservedSpace { get; set; }
         // public DateTime SiteVisiteDate { get; set; }
         public string Zone { get; set; }
         public string SubArea { get; set; }
         public string RegionCode { get; set; }
+        public int siteStatusId { get; set; }
         public int AreaId { get; set; }
     }
 }
