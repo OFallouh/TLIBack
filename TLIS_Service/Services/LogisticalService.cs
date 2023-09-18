@@ -20,7 +20,7 @@ namespace TLIS_Service.Services
     {
         IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public LogisticalService(IUnitOfWork unitOfWork,IMapper mapper)
+        public LogisticalService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -100,7 +100,7 @@ namespace TLIS_Service.Services
 
             TLIlogistical CheckLogistical = _unitOfWork.LogistcalRepository
                 .GetWhereFirst(x => x.Name.ToLower() == EditLogisticalViewModel.Name.ToLower() && !x.Deleted &&
-                    x.tablePartNameId == Logistical.tablePartNameId && x.logisticalTypeId == Logistical.logisticalTypeId && 
+                    x.tablePartNameId == Logistical.tablePartNameId && x.logisticalTypeId == Logistical.logisticalTypeId &&
                     x.Id != Logistical.Id);
 
             if (CheckLogistical != null)
@@ -112,7 +112,7 @@ namespace TLIS_Service.Services
         public Response<List<LogisticalViewModel>> GetLogisticalTypes()
         {
             List<LogisticalViewModel> LogisticalTypes = _mapper.Map<List<LogisticalViewModel>>(_unitOfWork.logisticalTypeRepository
-                .GetAllWithoutCount().ToList());
+                .GetWhere(x => !x.Disable && !x.Deleted).ToList());
 
             return new Response<List<LogisticalViewModel>>(true, LogisticalTypes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }

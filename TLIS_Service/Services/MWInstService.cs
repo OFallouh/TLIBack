@@ -8922,10 +8922,10 @@ namespace TLIS_Service.Services
             try
             {
                 var CiviBUs = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst)
-                    .ThenInclude(x => x.mwBU).Where(x => x.allCivilInstId == AllCivilInstId && x.allLoadInst.mwBUId != null && !x.Dismantle &&
+                    .ThenInclude(x => x.mwBU).Where(x=>x.allCivilInstId == AllCivilInstId && x.allLoadInst.mwBUId != null && !x.Dismantle &&
                         !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwBUId).ToList();
 
-                if (CiviBUs == null)
+                if (CiviBUs == null || CiviBUs.Count == 0)
                 {
                     return new Response<List<MW_Free_BUInstDto>>(false, null, null, "Not found any BU on this civil", (int)ApiReturnCode.success);
                 }
@@ -8948,7 +8948,7 @@ namespace TLIS_Service.Services
                     BuInstName = x.Name
                 }).ToList();
 
-                return new Response<List<MW_Free_BUInstDto>>(true, AvailableBus, null, null, (int)ApiReturnCode.success);
+                return new Response<List<MW_Free_BUInstDto>>(true, AvailableBus, null, null, (int)ApiReturnCode.success, AvailableBus.Count());
             }
             catch (Exception ex)
             {

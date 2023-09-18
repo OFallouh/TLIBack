@@ -26,14 +26,15 @@ namespace TLIS_Repository.Repositories
         }
         public IEnumerable<BaseAttView> GetAttributeActivated(string Type, object Library = null, int? CategoryId = null, params string[] ExceptAtrributes)
         {
-            if(CategoryId != null)
+            if (CategoryId != null)
             {
                 List<TLIattActivatedCategory> Excepted = _context.TLIattActivatedCategory.Where(x => ExceptAtrributes.Contains(x.attributeActivated.Key) && x.attributeActivated.Tabel == Type && x.civilWithoutLegCategoryId == CategoryId).ToList();
                 List<TLIattActivatedCategory> AttActivatedCategoryStatus = _context.TLIattActivatedCategory
-                    .Where(x => x.civilWithoutLegCategoryId == CategoryId && x.attributeActivated.Tabel == Type && x.enable  &&
+                    .Where(x => (x.civilWithoutLegCategoryId != null ? (x.civilWithoutLegCategoryId.Value == CategoryId.Value) : false) && x.attributeActivated.Tabel == Type && x.enable &&
                         x.attributeActivated.Key.ToLower() != "id" && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted")
-                    .Include(a => a.attributeActivated).ToList();
-                AttActivatedCategoryStatus= AttActivatedCategoryStatus.Except(Excepted).ToList();
+                    .Include(a => a.attributeActivated)
+                    .AsEnumerable().Except(Excepted).ToList();
+
                 List<BaseAttView> BaseAttsView = new List<BaseAttView>();
                 object value = null;
                 foreach (var AttributeActivated in AttActivatedCategoryStatus)
@@ -55,17 +56,17 @@ namespace TLIS_Repository.Repositories
                     item.enable = Test.enable;
                     item.Label = Test.Label;
 
-                    if(item.DataType.ToLower() != "list")
+                    if (item.DataType.ToLower() != "list")
                         item.Desc = Test.Description;
                 }
                 return BaseAttsView;
             }
             else
             {
-                List<TLIattributeActivated> Excepted = _context.TLIattributeActivated.Where(x => 
+                List<TLIattributeActivated> Excepted = _context.TLIattributeActivated.Where(x =>
                     ExceptAtrributes.Contains(x.Key) && x.Tabel == Type && x.enable).ToList();
 
-                List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x => 
+                List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x =>
                     x.enable && x.Tabel == Type && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" &&
                     x.Key.ToLower() != "deleted").ToList().Except(Excepted).ToList();
 
@@ -126,7 +127,7 @@ namespace TLIS_Repository.Repositories
                         .FirstOrDefault(x => x.attributeActivatedId == AttributeActivated.Id);
 
                     object value = Installation.GetType().GetProperty(AttributeActivated.Key).GetValue(Installation);
-                    if (AttributeActivated.Key == "equipmentsLocation" || AttributeActivated.Key == "reinforced"||AttributeActivated.Key == "availabilityOfWorkPlatforms" || AttributeActivated.Key == "ladderSteps")
+                    if (AttributeActivated.Key == "equipmentsLocation" || AttributeActivated.Key == "reinforced" || AttributeActivated.Key == "availabilityOfWorkPlatforms" || AttributeActivated.Key == "ladderSteps")
                     {
                         value = value.ToString();
                     }
@@ -150,11 +151,11 @@ namespace TLIS_Repository.Repositories
 
         public IEnumerable<BaseInstAttView> GetInstAttributeActivated(string Type, object Installation = null, params string[] ExceptAtrributes)
         {
-            List<TLIattributeActivated> Excepted = _context.TLIattributeActivated.Where(x => 
+            List<TLIattributeActivated> Excepted = _context.TLIattributeActivated.Where(x =>
                 ExceptAtrributes.Contains(x.Key)).ToList();
 
-            List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x => 
-                x.Tabel == Type && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && 
+            List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x =>
+                x.Tabel == Type && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" &&
                 x.Key.ToLower() != "deleted" && x.enable).ToList().Except(Excepted).ToList();
 
             List<BaseInstAttView> BaseAttsView = new List<BaseInstAttView>();
@@ -164,13 +165,13 @@ namespace TLIS_Repository.Repositories
                 {
                     if (AttributeActivated.Key.ToLower() == "reservedspace")
                     {
-                        BaseAttsView.Add(new BaseInstAttView { Key = AttributeActivated.Key,Value = false ,Label = AttributeActivated.Label, Desc = AttributeActivated.Description, enable = AttributeActivated.enable, AutoFill = AttributeActivated.AutoFill, Manage = AttributeActivated.Manage, Required = AttributeActivated.Required, DataType = AttributeActivated.DataType });
+                        BaseAttsView.Add(new BaseInstAttView { Key = AttributeActivated.Key, Value = false, Label = AttributeActivated.Label, Desc = AttributeActivated.Description, enable = AttributeActivated.enable, AutoFill = AttributeActivated.AutoFill, Manage = AttributeActivated.Manage, Required = AttributeActivated.Required, DataType = AttributeActivated.DataType });
                     }
                     else
                     {
                         BaseAttsView.Add(new BaseInstAttView { Key = AttributeActivated.Key, Label = AttributeActivated.Label, Desc = AttributeActivated.Description, enable = AttributeActivated.enable, AutoFill = AttributeActivated.AutoFill, Manage = AttributeActivated.Manage, Required = AttributeActivated.Required, DataType = AttributeActivated.DataType });
                     }
-                    
+
                 }
             }
             else
