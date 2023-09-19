@@ -215,6 +215,11 @@ namespace TLIS_DAL
                 .WithMany(z => z.userPermissionss)
                 .HasForeignKey(c => c.Permission_Id);
 
+            builder.Entity<TLIticket>()
+                .HasOne(e => e.Site)
+                .WithMany(z => z.Tickets)
+                .HasForeignKey(c => c.SiteCode);
+
             //     builder.Entity<TLIdiversityType>().HasData(
             //new TLIdiversityType {  Name = "Di_s" }
             //new TLIdiversityType { BookId = 2, AuthorId = 1, Title = "King Lear" },

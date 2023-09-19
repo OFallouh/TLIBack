@@ -3379,7 +3379,7 @@ namespace TLIS_Service.Services
 
                     foreach (BaseInstAttView FKitem in ListAttributesActivated)
                     {
-                        if (FKitem.Desc.ToLower() == "tliowner")
+                        if (FKitem.Key.ToLower() == "OwnerId".ToLower())
                             FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                     }
                 }

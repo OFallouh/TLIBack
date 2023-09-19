@@ -51,10 +51,10 @@ namespace TLIS_Service.Services
                     if (CheckNameForAdd(Actor.Name))
                     {
                         TLIactor ActorEntity = _mapper.Map<TLIactor>(Actor);
-                        transaction.Complete();
+                        //transaction.Complete();
                         _unitOfWork.ActorRepository.Add(ActorEntity);
                         await _unitOfWork.SaveChangesAsync();
-                       // transaction.Complete();
+                        transaction.Complete();
                         return new Response<ActorViewModel>();
                     }
                     else

@@ -10,13 +10,13 @@ namespace TLIS_DAL.Models
     public class TLIsite
     {
         [Key]
-       //[DatabaseGenerated(DatabaseGeneratedOption.None)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string SiteCode { get; set; }
-        [Index(IsUnique =true)]
+        [Index(IsUnique = true)]
         public string SiteName { get; set; }
-       
+
         public string LocationType { get; set; }
-        
+
         public float LocationHieght { get; set; }
         [Required]
         public float Latitude { get; set; }
@@ -43,5 +43,6 @@ namespace TLIS_DAL.Models
         public IEnumerable<TLIcivilSupportDistance> civilSupportDistances { get; set; }
         public IEnumerable<TLIcivilLoads> CivilLoads { get; set; }
         public IEnumerable<TLIotherInventoryDistance> OtherInventoryDistances { get; set; }
+        public IEnumerable<TLIticket> Tickets { get; set; }
     }
 }
