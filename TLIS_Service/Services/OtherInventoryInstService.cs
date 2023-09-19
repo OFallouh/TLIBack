@@ -222,11 +222,9 @@ namespace TLIS_Service.Services
                             x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
                            
                             List<TLIcabinet> TLIcabinet = new List<TLIcabinet>();
-                            var Cabinets = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInstId).Where(x => !x.Dismantle && x.allOtherInventoryInstId != null &&
+                            var Cabinets = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInstId).Where(x =>x.SiteCode== SiteCode && !x.Dismantle && x.allOtherInventoryInstId != null &&
                                 x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
-                            var tlicabinet = _dbContext.TLIcabinet.Select(x => x.Id).ToList();
-                            var newList = tlicabinet.Where(v => !Cabinets.Contains(v)).ToList();
-                            foreach (var item in newList)
+                            foreach (var item in Cabinets)
                             {
 
                                 var cabinetname = _dbContext.TLIcabinet.Where(x => x.Id == item).FirstOrDefault();

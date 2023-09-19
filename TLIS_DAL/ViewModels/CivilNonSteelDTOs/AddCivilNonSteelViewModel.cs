@@ -13,7 +13,6 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelDTOs
     public class AddCivilNonSteelViewModel
     {
         public string Name { get; set; }
-        public double CurrentLoads { get; set; }
         public float SpaceInstallation { get; set; }
         public int CivilNonSteelLibraryId { get; set; }
         public int? ownerId { get; set; } = 0;
