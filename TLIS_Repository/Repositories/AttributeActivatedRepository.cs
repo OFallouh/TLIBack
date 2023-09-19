@@ -95,8 +95,11 @@ namespace TLIS_Repository.Repositories
                     x.attributeActivated.Key.ToLower() != "id" && x.attributeActivated.Key.ToLower() != "active" &&
                     x.attributeActivated.Key.ToLower() != "deleted").ToList().Except(Excepted).ToList();
 
-            List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated
-                .Where(x => AttActivatedCategories.FirstOrDefault(y => y.attributeActivatedId == x.Id) != null).ToList();
+            var temp = AttActivatedCategories.Select(x => x.attributeActivatedId).ToList();
+            List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x => temp.Any(y => y == x.Id) && x != null).ToList();
+
+            //List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated
+            //   .Where(x => AttActivatedCategories.ToList().FirstOrDefault(y => y.attributeActivatedId == x.Id) != null).ToList();
 
             List<BaseInstAttView> BaseAttsView = new List<BaseInstAttView>();
             if (Installation == null)

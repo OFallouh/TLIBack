@@ -1603,6 +1603,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIinstallationCivilwithoutLegsType, InstallationCivilwithoutLegsTypeViewModel>().ReverseMap();
             CreateMap<TLIsectionsLegType, SectionsLegTypeViewModel>().ReverseMap();
             CreateMap<TLIstructureType, StructureTypeViewModel>().ReverseMap();
+            CreateMap<DicMod, DropDownListFilters>().ReverseMap();
         }
 
     }
