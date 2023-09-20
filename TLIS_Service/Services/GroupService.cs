@@ -778,7 +778,7 @@ namespace TLIS_Service.Services
                         if (UpperLevelP != null)
                         {
                             Groups.Level2 = UpperLevelP;
-                            GroupViewModel UpperLevel3P = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel3P = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             if (UpperLevel3P != null)
                             {
                                 Groups.Level3 = UpperLevel3P;
