@@ -437,11 +437,11 @@ namespace TLIS_Service.Services
                 await UpdateGroupUsersHelperMethod(model.Users, groupEntity.Id);
 
                 await _unitOfWork.SaveChangesAsync();
-                return new Response<GroupViewModel>(true, model, null, null, (int)Constants.ApiReturnCode.success);
+                return new Response<GroupViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<GroupViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+                return new Response<GroupViewModel>(false, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
         private async Task UpdateGroupUsersHelperMethod(List<UserNameViewModel> Users, int GroupId)
