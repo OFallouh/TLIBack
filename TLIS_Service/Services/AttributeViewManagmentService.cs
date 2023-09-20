@@ -405,14 +405,14 @@ namespace TLIS_Service.Services
                                         x => x.attributeActivated)
                                 .ToList());
                         }
-                        //var temp = StaticAttributesInCategory.Select(x => x.attributeActivatedId).ToList();
-                        //List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                        //    .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id && x.AttributeActivated != null && temp.Any(y => y == x.AttributeActivatedId)).ToList());
-
+                        var temp = StaticAttributesInCategory.Select(x => x.attributeActivatedId).ToList();
                         List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                            .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
-                                x.AttributeActivated != null && StaticAttributesInCategory.Exists(y => y.attributeActivatedId == x.AttributeActivatedId))
-                            .ToList());
+                            .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id && x.AttributeActivated != null && temp.Any(y => y == x.AttributeActivatedId)).ToList());
+
+                        //List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
+                        //    .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
+                        //        x.AttributeActivated != null && StaticAttributesInCategory.Exists(y => y.attributeActivatedId == x.AttributeActivatedId))
+                        //    .ToList());
 
                         StaticAttributesInView.AddRange(DynamicAttributes);
                         AllEnableAttributes = StaticAttributesInView;
