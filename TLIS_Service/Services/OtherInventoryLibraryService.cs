@@ -3022,10 +3022,15 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
-                        x.LibraryAtt && !x.disable &&
+                    var temp = AttributeFilters.Select(x => x.key.ToLower()).ToList();
+                    List<TLIdynamicAtt> LibDynamicAttListIds=_unitOfWork.DynamicAttRepository.GetIncludeWhere(x => x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
+                    LibDynamicAttListIds = LibDynamicAttListIds.FindAll(x => temp.Any(y => y == x.Key.ToLower()));
+
+                    //List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x => temp.Any(y => y == x.Key) &&
+                    //    x.LibraryAtt && !x.disable &&
+                    //    x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
+                    
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -3060,6 +3065,10 @@ namespace TLIS_Service.Services
                         List<StringFilterObjectList> LibraryPropsAttributeFilters = AttributeFilters.Where(x =>
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
+
+                        var temp1 = NonStringLibraryProps.Select(x => x.Name.ToLower()).ToList();
+                        var temp2 = StringLibraryProps.Select(x => x.Name.ToLower()).ToList();
+
 
                         LibraryAttributeActivatedIds = _unitOfWork.CabinetPowerLibraryRepository.GetWhere(x =>
                              LibraryPropsAttributeFilters.All(z =>
