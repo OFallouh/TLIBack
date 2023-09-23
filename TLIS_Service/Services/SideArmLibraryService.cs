@@ -29,6 +29,7 @@ using TLIS_Service.IService;
 using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
+using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1215,12 +1216,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.SideArmLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.SideArmLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -1339,12 +1358,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.SideArmLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.SideArmLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
