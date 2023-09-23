@@ -635,6 +635,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LogisticalViewModel, DropDownListFilters>()
                 .ForMember(r => r.Value, r => r.MapFrom(s => s.Name));
 
+            CreateMap<SubTypeViewModel, TLIsubType>().ReverseMap();
+
             CreateMap<SubTypeViewModel, DropDownListFilters>()
                .ForMember(r => r.Value, r => r.MapFrom(s => s.Name));
             CreateMap<TLIsubType, DropDownListFilters>()
