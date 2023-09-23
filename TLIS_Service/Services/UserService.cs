@@ -461,13 +461,13 @@ namespace TLIS_Service.Services
                 UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
                 User.Password = DecryptPassword(User.Password);
 
-                User.Permissions = _unitOfWork.UserPermissionssRepository
-                    .GetIncludeWhere(x => x.User_Id == User.Id && x.IsActive, x => x.Permission)
-                    .Select(x => new NewPermissionsViewModel()
-                    {
-                        Id = x.Id,
-                        Page_URL = x.Permission.Page_URL
-                    }).ToList();
+                //User.Permissions = _unitOfWork.UserPermissionssRepository
+                //    .GetIncludeWhere(x => x.User_Id == User.Id && x.IsActive, x => x.Permission)
+                //    .Select(x => new NewPermissionsViewModel()
+                //    {
+                //        Id = x.Id,
+                //        Page_URL = x.Permission.Page_URL
+                //    }).ToList();
 
                 User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
                     .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
