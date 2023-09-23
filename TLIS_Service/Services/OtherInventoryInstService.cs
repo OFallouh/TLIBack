@@ -218,11 +218,11 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlicabinet")
                         {
 
-                            var cabinet = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInstId).Where(x => !x.Dismantle && x.allOtherInventoryInstId != null &&
-                            x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
+                            //var cabinet = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInst).Where(x => !x.Dismantle && x.allOtherInventoryInstId != null &&
+                            //    x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
                            
                             List<TLIcabinet> TLIcabinet = new List<TLIcabinet>();
-                            var Cabinets = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInstId).Where(x =>x.SiteCode== SiteCode && !x.Dismantle && x.allOtherInventoryInstId != null &&
+                            var Cabinets = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInst).Where(x =>x.SiteCode== SiteCode && !x.Dismantle && x.allOtherInventoryInstId != null &&
                                 x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
                             foreach (var item in Cabinets)
                             {
