@@ -3296,7 +3296,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -3427,7 +3427,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -3438,7 +3438,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -3830,7 +3830,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable && x.CivilWithoutLegCategoryId == CategoryId &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -3964,7 +3964,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -4365,7 +4365,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -4494,7 +4494,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -4505,7 +4505,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
