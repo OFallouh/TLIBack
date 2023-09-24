@@ -818,7 +818,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<MW_BULibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<MW_BULibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwBULibrary> Libraries = _unitOfWork.MW_BULibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLImwBULibrary> Libraries = _unitOfWork.MW_BULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -960,7 +960,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_BULibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwBULibrary> Libraries = _unitOfWork.MW_BULibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLImwBULibrary> Libraries = _unitOfWork.MW_BULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1317,7 +1317,7 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        IEnumerable<TLImwDishLibrary> Libraries = _unitOfWork.MW_DishLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLImwDishLibrary> Libraries = _unitOfWork.MW_DishLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1460,7 +1460,7 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        IEnumerable<TLImwDishLibrary> DishesLibraries = _unitOfWork.MW_DishLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLImwDishLibrary> DishesLibraries = _unitOfWork.MW_DishLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1830,7 +1830,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<MW_ODULibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<MW_ODULibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwODULibrary> Libraries = _unitOfWork.MW_ODULibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLImwODULibrary> Libraries = _unitOfWork.MW_ODULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1965,7 +1965,7 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        IEnumerable<TLImwODULibrary> Libraries = _unitOfWork.MW_ODULibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLImwODULibrary> Libraries = _unitOfWork.MW_ODULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -2335,7 +2335,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<MW_RFULibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<MW_RFULibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwRFULibrary> Libraries = _unitOfWork.MW_RFULibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLImwRFULibrary> Libraries = _unitOfWork.MW_RFULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -2477,7 +2477,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_RFULibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwRFULibrary> Libraries = _unitOfWork.MW_RFULibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLImwRFULibrary> Libraries = _unitOfWork.MW_RFULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -2840,7 +2840,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<MW_OtherLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<MW_OtherLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwOtherLibrary> Libraries = _unitOfWork.MW_OtherLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLImwOtherLibrary> Libraries = _unitOfWork.MW_OtherLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -2982,7 +2982,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_OtherLibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLImwOtherLibrary> Libraries = _unitOfWork.MW_OtherLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLImwOtherLibrary> Libraries = _unitOfWork.MW_OtherLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {

@@ -31,6 +31,7 @@ using static TLIS_Service.Helpers.Constants;
 using Microsoft.EntityFrameworkCore;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
+using TLIS_DAL.ViewModels.PowerDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -3066,16 +3067,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        var temp1 = NonStringLibraryProps.Select(x => x.Name.ToLower()).ToList();
-                        var temp2 = StringLibraryProps.Select(x => x.Name.ToLower()).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.CabinetPowerLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
 
+                        IEnumerable<TLIcabinetPowerLibrary> Libraries = _unitOfWork.CabinetPowerLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.CabinetPowerLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -3143,7 +3158,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -3154,7 +3169,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -3194,12 +3209,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.CabinetPowerLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.CabinetPowerLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIcabinetPowerLibrary> Libraries = _unitOfWork.CabinetPowerLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetPowerLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -3506,7 +3532,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -3544,12 +3570,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.CabinetTelecomLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.CabinetTelecomLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIcabinetTelecomLibrary> Libraries = _unitOfWork.CabinetTelecomLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -3617,7 +3661,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -3628,7 +3672,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -3668,12 +3712,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.CabinetTelecomLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.CabinetTelecomLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIcabinetTelecomLibrary> Libraries = _unitOfWork.CabinetTelecomLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetTelecomLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -3980,7 +4035,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -4018,12 +4073,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.SolarLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.SolarLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIsolarLibrary> Libraries = _unitOfWork.SolarLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -4091,7 +4164,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -4102,7 +4175,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -4142,12 +4215,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.SolarLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.SolarLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIsolarLibrary> Libraries = _unitOfWork.SolarLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -4454,7 +4538,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -4492,12 +4576,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.GeneratorLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.GeneratorLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIgeneratorLibrary> Libraries = _unitOfWork.GeneratorLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -4565,7 +4667,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -4576,7 +4678,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -4616,12 +4718,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.GeneratorLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.GeneratorLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIgeneratorLibrary> Libraries = _unitOfWork.GeneratorLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //

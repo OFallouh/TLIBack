@@ -3342,7 +3342,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -3485,7 +3485,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -3875,7 +3875,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<CivilWithoutLegLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CivilWithoutLegLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIcivilWithoutLegLibrary> Libraries = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLIcivilWithoutLegLibrary> Libraries = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -4022,7 +4022,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegLibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIcivilWithoutLegLibrary> Libraries = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIcivilWithoutLegLibrary> Libraries = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -4410,7 +4410,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<CivilNonSteelLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CivilNonSteelLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIcivilNonSteelLibrary> Libraries = _unitOfWork.CivilNonSteelLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLIcivilNonSteelLibrary> Libraries = _unitOfWork.CivilNonSteelLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -4552,7 +4552,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelLibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIcivilNonSteelLibrary> Libraries = _unitOfWork.CivilNonSteelLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIcivilNonSteelLibrary> Libraries = _unitOfWork.CivilNonSteelLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {

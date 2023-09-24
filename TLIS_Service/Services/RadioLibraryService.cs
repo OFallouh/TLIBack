@@ -32,6 +32,7 @@ using TLIS_Service.IService;
 using static TLIS_Repository.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
+using TLIS_DAL.ViewModels.PowerDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -220,7 +221,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -258,12 +259,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.RadioAntennaLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.RadioAntennaLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIradioAntennaLibrary> Libraries = _unitOfWork.RadioAntennaLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -331,7 +350,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -342,7 +361,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -382,12 +401,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.RadioAntennaLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.RadioAntennaLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIradioAntennaLibrary> Libraries = _unitOfWork.RadioAntennaLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -689,7 +719,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -727,12 +757,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.RadioRRULibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.RadioRRULibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIradioRRULibrary> Libraries = _unitOfWork.RadioRRULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -800,7 +848,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -811,7 +859,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -851,12 +899,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.RadioRRULibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.RadioRRULibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIradioRRULibrary> Libraries = _unitOfWork.RadioRRULibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRULibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -1157,7 +1216,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
@@ -1195,12 +1254,30 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.RadioOtherLibraryRepository.GetWhere(x =>
-                             LibraryPropsAttributeFilters.All(z =>
-                                NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.RadioOtherLibraryRepository.GetWhere(x =>
+                        //     LibraryPropsAttributeFilters.All(z =>
+                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIradioOtherLibrary> Libraries = _unitOfWork.RadioOtherLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            if (StringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => StringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (LibraryProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NonStringLibraryProps.Select(x => x.Name.ToLower()).Contains(LibraryProp.key.ToLower()))
+                            {
+                                Libraries = Libraries.Where(x => NonStringLibraryProps.AsEnumerable().FirstOrDefault(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null ?
+                                    LibraryProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -1268,7 +1345,7 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString(), x => x.tablesNames).ToList();
 
@@ -1279,7 +1356,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -1319,12 +1396,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        LibraryAttributeActivatedIds = _unitOfWork.RadioOtherLibraryRepository.GetIncludeWhere(x =>
-                            LibraryPropsAttributeFilters.All(z =>
-                                (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null) ?
-                                    ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null))) &&
-                                     (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //LibraryAttributeActivatedIds = _unitOfWork.RadioOtherLibraryRepository.GetIncludeWhere(x =>
+                        //    LibraryPropsAttributeFilters.All(z =>
+                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null))) &&
+                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIradioOtherLibrary> Libraries = _unitOfWork.RadioOtherLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+
+                        foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
+                        {
+                            Libraries = Libraries.Where(x => LibraryProps.Exists(y => (LibraryProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null) != null) ?
+                                ((LibraryProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null))) &&
+                                    (LibraryProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherLibraryViewModel>(x), null)))) : (false))));
+                        }
+
+                        LibraryAttributeActivatedIds = Libraries.Select(x => x.Id).ToList();
                     }
 
                     //

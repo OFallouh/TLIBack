@@ -1223,7 +1223,7 @@ namespace TLIS_Service.Services
                         //             y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
                         // ).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => !x.Deleted && x.Active).AsEnumerable();
+                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1365,7 +1365,7 @@ namespace TLIS_Service.Services
                         //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SideArmLibraryViewModel>(x), null)))) : (false)))))
                         //).Select(i => i.Id).ToList();
 
-                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => x.Active && !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
