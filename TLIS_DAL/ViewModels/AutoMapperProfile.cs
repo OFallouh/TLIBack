@@ -137,6 +137,7 @@ using TLIS_DAL.ViewModels.ImportSheetDtos;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.AreaDTOs;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -1606,6 +1607,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<DicMod, DropDownListFilters>().ReverseMap();
             CreateMap<TLIgroupUser, UserNameViewModel>()
             .ForMember(x => x.UserName, x => x.MapFrom(f => f.user.UserName));
+            CreateMap<TLIrole_Permissions, RolePermissionsViewModel>()
+                .ForMember(x => x.RoleName, x => x.MapFrom(f => f.Role.Name));
+            CreateMap<TLIuser_Permissions, NewPermissionsViewModel > ().ReverseMap();
+            CreateMap<TLIrole_Permissions, NewPermissionsViewModel>().ReverseMap();
         }
 
     }

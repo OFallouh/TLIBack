@@ -8,7 +8,7 @@ using TLIS_DAL.ViewModels.UserPermissionssDTOs;
 
 namespace TLIS_Repository.Repositories
 {
-    public class UserPermissionssRepository : RepositoryBase<TLIuserPermissions, UserPermissionsViewModel, int>, IUserPermissionssRepository
+    public class UserPermissionssRepository : RepositoryBase<TLIuser_Permissions, UserPermissionsViewModel, int>, IUserPermissionssRepository
     {
         private readonly ApplicationDbContext _context;
         IMapper _mapper;

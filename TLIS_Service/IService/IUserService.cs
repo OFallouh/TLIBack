@@ -6,6 +6,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
 
@@ -13,7 +14,7 @@ namespace TLIS_Service.IService
 {
     public interface IUserService
     {
-        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<PermissionViewModel> Permissions, string domain);
+        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<AddPerViewModel> Permissions, string domain);
         Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain);
         Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain);
         Response<bool> ValidateUserInAdAndDb(string UserName, string domain);

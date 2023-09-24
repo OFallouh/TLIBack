@@ -18,6 +18,7 @@ using TLIS_DAL.ViewModels.GroupDTOs;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 using Nancy;
 using AutoMapper;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 
 namespace TLIS_Service.Services
 {
@@ -38,35 +39,58 @@ namespace TLIS_Service.Services
         //else add role and permissions to the role
         public Response<RoleViewModel> AddRole(AddRoleViewModel addRole)
         {
-            TLIrole CheckRoleNameIfAlreadyExist = _unitOfWork.RoleRepository.GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == addRole.Name.ToLower());
-
-            if (CheckRoleNameIfAlreadyExist != null)
+            try
             {
-                return new Response<RoleViewModel>(true, null, null, $"Role {addRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
-            }
+                TLIrole CheckRoleNameIfAlreadyExist = _unitOfWork.RoleRepository.GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == addRole.Name.ToLower());
 
-            using (TransactionScope transaction = new TransactionScope())
-            {
-                TLIrole role = new TLIrole()
+                if (CheckRoleNameIfAlreadyExist != null)
                 {
-                    Name = addRole.Name,
-                    Deleted = false,
-                    Active = true
-                };
-
-                _unitOfWork.RoleRepository.Add(role);
-                _unitOfWork.SaveChanges();
-
-                RoleViewModel RoleModel = _mapper.Map<RoleViewModel>(role);
-
-                if (addRole.permissions != null ? addRole.permissions.Count != 0 : false)
-                {
-                    _unitOfWork.RolePermissionRepository.AddRolePermissionList(role.Id, addRole.permissions);
+                    return new Response<RoleViewModel>(true, null, null, $"Role {addRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
                 }
 
-                transaction.Complete();
-                return new Response<RoleViewModel>(true, RoleModel, null, null, (int)Constants.ApiReturnCode.success);
+
+                using (TransactionScope transaction = new TransactionScope())
+                {
+                    TLIrole role = new TLIrole()
+                    {
+                        Name = addRole.Name,
+                        Deleted = false,
+                        Active = true
+                    };
+
+                    _unitOfWork.RoleRepository.Add(role);
+                    _unitOfWork.SaveChanges();
+
+                    if (addRole.permissions != null)
+                    {
+                        var Rolepermission = new List<TLIrole_Permissions>();
+                        foreach (var Permission in addRole.permissions)
+                        {
+                            TLIrole_Permissions tLIrolePermissions = new TLIrole_Permissions();
+                            tLIrolePermissions = new TLIrole_Permissions()
+                            {
+                                RoleId = role.Id,
+                                PageUrl = Permission.PageUrl,
+                                Active = true,
+                                Delete = false
+                            };
+                            Rolepermission.Add(tLIrolePermissions);
+                        }
+                        _unitOfWork.RolePermissionsRepository.AddRange(Rolepermission);
+                        _unitOfWork.SaveChanges();
+                    }
+
+
+                    transaction.Complete();
+                    return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
+                }
             }
+            catch (Exception err)
+            {               
+                return new Response<RoleViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+            }
+           
+            
         }
         //Function check if there are groups take role 
         //Function return true or false
@@ -175,35 +199,31 @@ namespace TLIS_Service.Services
             _unitOfWork.RoleRepository.Update(RoleEntity);
             await _unitOfWork.SaveChangesAsync();
 
-            RoleViewModel RoleModel = _mapper.Map<RoleViewModel>(RoleEntity);
+            List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository
+                      .GetWhere(x => x.RoleId == editRole.Id && x.Delete==false && x.Active==true).Select(x => x.PageUrl).ToList();
 
-            List<int> NewPermissions = editRole.permissions.Select(x => x.Id).ToList();
-            List<int> OldPermissions = _unitOfWork.RolePermissionRepository.GetWhere(x => x.roleId == editRole.Id).Select(x => x.permissionId).ToList();
-            List<int> DeletePermissions = OldPermissions.Except(NewPermissions).ToList();
-            List<int> AddPermissions = NewPermissions.Except(OldPermissions).ToList();
+            List<string> Exi = AllRolePermissionsIn.Except(editRole.permissions.Select(x=>x.PageUrl)).Union(editRole.permissions.Select(x=>x.PageUrl).Except(AllRolePermissionsIn)).ToList();
+            foreach (var item in Exi)
+            {
+                TLIrole_Permissions tLIrolePermissions = new TLIrole_Permissions();
+                tLIrolePermissions = new TLIrole_Permissions()
+                {
+                    RoleId = editRole.Id,
+                    PageUrl = item,
+                    Active = true,
+                    Delete = false
+                };
+                _unitOfWork.RolePermissionsRepository.Add(tLIrolePermissions);
+            }
 
             using (TransactionScope transaction = new TransactionScope())
             {
-                if (DeletePermissions.Count > 0)
-                {
-                    List<TLIrolePermission> DeleteRolePermission = _unitOfWork.RolePermissionRepository.GetWhere(x =>
-                        x.roleId == editRole.Id && DeletePermissions.Contains(x.permissionId)).ToList();
-                    _unitOfWork.RolePermissionRepository.RemoveRangeItems(DeleteRolePermission);
-                }
-                if (AddPermissions.Count > 0)
-                {
-                    foreach (int PermissionId in AddPermissions)
-                    {
-                        TLIrolePermission NewRolePermission = new TLIrolePermission();
-                        NewRolePermission.permissionId = PermissionId;
-                        NewRolePermission.roleId = editRole.Id;
-                        await _unitOfWork.RolePermissionRepository.AddAsync(NewRolePermission);
-                    }
-                }
+               
+               
                 await _unitOfWork.SaveChangesAsync();
                 transaction.Complete();
             }
-            return new Response<RoleViewModel>(true, RoleModel, null, null, (int)Constants.ApiReturnCode.success);
+            return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
         }
         //Function take 1 parameter
         //Function return all roles depened on filters
@@ -262,13 +282,21 @@ namespace TLIS_Service.Services
         }
         public Response<RoleViewModel> GetRoleByRoleName(string RoleName)
         {
+            List<NewPermissionsViewModel> newPermissionsViewModels = new List<NewPermissionsViewModel>();
             RoleViewModel Response = _mapper.Map<RoleViewModel>(_unitOfWork.RoleRepository.GetWhereFirst(x =>
                 x.Name.ToLower() == RoleName.ToLower()));
-
-            Response.Permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.RolePermissionRepository
-                .GetIncludeWhere(x => x.roleId == Response.Id && !x.Deleted && x.Active,
-                    x => x.permission).ToList().Select(x => x.permission));
-
+            int  RoleId = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Name == RoleName).Id;
+            List<TLIrole_Permissions> Permissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == RoleId).ToList();
+            foreach (var item in Permissions)
+            {
+                newPermissionsViewModels.Add(new NewPermissionsViewModel()
+                {
+                    Id = item.Id,
+                    PageUrl = item.PageUrl
+                });
+            }
+          
+            Response.Permissions = newPermissionsViewModels;
             return new Response<RoleViewModel>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
     }

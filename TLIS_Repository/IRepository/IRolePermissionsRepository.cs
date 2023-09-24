@@ -10,7 +10,7 @@ using TLIS_Repository.Base;
 
 namespace TLIS_Repository.IRepository
 {
-    public interface IRolePermissionsRepository : IRepositoryBase<TLIrolePermissions, NewRolePermissionsViewModel, int>
+    public interface IRolePermissionsRepository : IRepositoryBase<TLIrole_Permissions, NewRolePermissionsViewModel, int>
     {
     }
 }

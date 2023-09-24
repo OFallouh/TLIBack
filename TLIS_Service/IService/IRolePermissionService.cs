@@ -13,7 +13,7 @@ namespace TLIS_Service.IService
     public interface IRolePermissionService
     {
         Task<IEnumerable<TLIrolePermission>> GetAllRolePermissions();
-        Response<RoleViewModel> GetAllPermissionsByRoleId(int RoleId);
+       // Response<RoleViewModel> GetAllPermissionsByRoleId(int RoleId);
         void AddRolePermissionList(int RoleId,List<PermissionViewModel> permissions);
         Task EditRolePermissionList(int RoleId,List<PermissionViewModel> permissions, List<int> AffectedGroupsIds);
         Response<List<RolePermissionViewModel>> GetAllPermissionForW_F();

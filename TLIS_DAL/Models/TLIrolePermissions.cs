@@ -8,15 +8,20 @@ using System.Threading.Tasks;
 
 namespace TLIS_DAL.Models
 {
-    public class TLIrolePermissions
+    public class TLIrole_Permissions
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         public int RoleId { get; set; }
+
+        public string PageUrl { get; set;}
+
         public TLIrole Role { get; set; }
-        public int PermissionId { get; set; }
-        public TLIpermissions Permission { get; set; }
-        public bool IsActive { get; set; } = true;
+
+        public bool Active { get; set; }
+
+        public bool Delete { get; set; } 
     }
 }

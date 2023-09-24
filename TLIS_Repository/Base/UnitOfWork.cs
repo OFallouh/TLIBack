@@ -194,10 +194,8 @@ namespace TLIS_Repository.Base
         IDocumentTypeRepository _DocumentTypeRepository;
         ILocationTypeRepository _LocationTypeRepository;
         IRegionRepository _RegionRepository;
-        IUserPermissionssRepository _UserPermissionssRepository;
-        IGroupPermissionsRepository _GroupPermissionsRepository;
+        IUserPermissionssRepository _UserPermissionssRepository;     
         IRolePermissionsRepository _RolePermissionsRepository;
-        IPermissionsRepository _PermissionsRepository;
         public UnitOfWork(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
@@ -2027,16 +2025,7 @@ namespace TLIS_Repository.Base
                 return _RegionRepository;
             }
         }
-        public IGroupPermissionsRepository GroupPermissionsRepository
-        {
-            get
-            {
-                if (_GroupPermissionsRepository == null)
-                    _GroupPermissionsRepository = new GroupPermissionsRepository(_context, _mapper);
-
-                return _GroupPermissionsRepository;
-            }
-        }
+        
         public IRolePermissionsRepository RolePermissionsRepository
         {
             get
@@ -2046,17 +2035,7 @@ namespace TLIS_Repository.Base
 
                 return _RolePermissionsRepository;
             }
-        }
-        public IPermissionsRepository PermissionsRepository
-        {
-            get
-            {
-                if (_PermissionsRepository == null)
-                    _PermissionsRepository = new PermissionsRepository(_context, _mapper);
-
-                return _PermissionsRepository;
-            }
-        }
+        }   
         public int SaveChanges()
         {
             return _context.SaveChanges();

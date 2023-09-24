@@ -13,7 +13,7 @@ using TLIS_DAL.ViewModels.NewPermissionsDTOs.RolePermissions;
 
 namespace TLIS_Repository.Repositories
 {
-    public class RolePermissionsRepository : RepositoryBase<TLIrolePermissions, NewRolePermissionsViewModel, int>, IRolePermissionsRepository
+    public class RolePermissionsRepository : RepositoryBase<TLIrole_Permissions, NewRolePermissionsViewModel, int>, IRolePermissionsRepository
     {
         private ApplicationDbContext _context = null;
         IMapper _mapper;

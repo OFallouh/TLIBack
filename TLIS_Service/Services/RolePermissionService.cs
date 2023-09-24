@@ -46,21 +46,21 @@ namespace TLIS_Service.Services
         }
         //Function take 1 parameter
         //get all permissions for specific role
-        public Response<RoleViewModel> GetAllPermissionsByRoleId(int RoleId)
-        {
-            try
-            {
-                var roleEnitiy = _unitOfWork.RoleRepository.GetByID(RoleId);
-                RoleViewModel role = _mapper.Map<RoleViewModel>(roleEnitiy);
-                role.Permissions = _unitOfWork.RolePermissionRepository.GetAllPermissionsByRoleId(RoleId);
-                return new Response<RoleViewModel>(true, role, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch(Exception err)
-            {
+        //public Response<RoleViewModel> GetAllPermissionsByRoleId(int RoleId)
+        //{
+        //    try
+        //    {
+        //        var roleEnitiy = _unitOfWork.RoleRepository.GetByID(RoleId);
+        //        RoleViewModel role = _mapper.Map<RoleViewModel>(roleEnitiy);
+        //        role.Permissions = _unitOfWork.RolePermissionRepository.GetAllPermissionsByRoleId(RoleId);
+        //        return new Response<RoleViewModel>(true, role, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+        //    }
+        //    catch(Exception err)
+        //    {
                   
-                return new Response<RoleViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-            } 
-        }
+        //        return new Response<RoleViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+        //    } 
+        //}
         //Function return all roles permissions
         public async Task<IEnumerable<TLIrolePermission>> GetAllRolePermissions()
         {

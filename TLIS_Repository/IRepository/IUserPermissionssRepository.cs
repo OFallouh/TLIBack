@@ -5,7 +5,7 @@ using TLIS_Repository.Base;
 
 namespace TLIS_Repository.IRepository
 {
-    public interface IUserPermissionssRepository : IRepositoryBase<TLIuserPermissions, UserPermissionsViewModel, int>
+    public interface IUserPermissionssRepository : IRepositoryBase<TLIuser_Permissions, UserPermissionsViewModel, int>
     {
     }
 }

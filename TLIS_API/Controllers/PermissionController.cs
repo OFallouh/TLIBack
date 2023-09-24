@@ -81,5 +81,6 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.PermissionService.GetAllModulesNames();
             return Ok(response);
         }
+       
     }
 }

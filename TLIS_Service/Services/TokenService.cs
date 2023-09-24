@@ -61,73 +61,23 @@ namespace TLIS_Service.Services
         //first authenticate the user
         //if user is authenticate build token for user and return the token
         //else give error message The login failed
-        public Response<UserPermissionsForLogin> CreateToken(LoginViewModel login, string secretKey, string domain, string domainGroup)
+        public Response<string> CreateToken(LoginViewModel login, string secretKey, string domain, string domainGroup)
         {
+            Response<string> response = null;
             string ErrorMessage;
-            UserViewModel CkeckUser = Authenticate(login, out ErrorMessage, domain, domainGroup);
+            var user = Authenticate(login, out ErrorMessage, domain, domainGroup);
 
-            List<NewPermissionsViewModel> AllUserPermissions = new List<NewPermissionsViewModel>();
-
-            if (CkeckUser != null)
+            if (user != null)
             {
-                string Token = BuildToken(CkeckUser, secretKey);
-
-                List<NewPermissionsViewModel> UserPermissionsURLs = _unitOfWork.UserPermissionssRepository
-                    .GetIncludeWhere(x => x.User_Id == CkeckUser.Id && x.IsActive, x => x.Permission)
-                    .Select(x => new NewPermissionsViewModel()
-                    {
-                        Id = x.Id,
-                        Page_URL = x.Permission.Page_URL
-                    }).ToList();
-
-                List<NewPermissionsViewModel> RolePermissionsURLs = new List<NewPermissionsViewModel>();
-                List<NewPermissionsViewModel> GroupPermissionsURLs = new List<NewPermissionsViewModel>();
-
-                List<TLIgroupUser> GroupUsers = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == CkeckUser.Id).ToList();
-
-                if (GroupUsers != null ? GroupUsers.Count() > 0 : false)
-                {
-                    foreach (TLIgroupUser GroupUser in GroupUsers)
-                    {
-                        GroupPermissionsURLs = _unitOfWork.GroupPermissionsRepository
-                            .GetIncludeWhere(x => x.GroupId == GroupUser.groupId && x.IsActive, x => x.Permission)
-                            .Select(x => new NewPermissionsViewModel()
-                            {
-                                Id = x.Id,
-                                Page_URL = x.Permission.Page_URL
-                            }).ToList();
-
-                        List<TLIgroupRole> GroupRoles = _unitOfWork.GroupRoleRepository.GetWhere(x => x.groupId == GroupUser.groupId).ToList();
-
-                        if (GroupRoles != null ? GroupRoles.Count() > 0 : false)
-                        {
-                            foreach (TLIgroupRole GroupRole in GroupRoles)
-                            {
-                                RolePermissionsURLs = _unitOfWork.RolePermissionsRepository
-                                    .GetIncludeWhere(x => x.RoleId == GroupRole.roleId && x.IsActive, x => x.Permission)
-                                    .Select(x => new NewPermissionsViewModel()
-                                    {
-                                        Id = x.Id,
-                                        Page_URL = x.Permission.Page_URL
-                                    }).ToList();
-                            }
-                        }
-                    }
-                }
-
-                AllUserPermissions = UserPermissionsURLs.Concat(GroupPermissionsURLs).Concat(RolePermissionsURLs)
-                    .Distinct().ToList();
-
-                return new Response<UserPermissionsForLogin>(true, new UserPermissionsForLogin()
-                {
-                    Token = Token,
-                    Permissions = AllUserPermissions
-                }, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                var tokenString = BuildToken(user, secretKey);
+                response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             else
             {
-                return new Response<UserPermissionsForLogin>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                response = new Response<string>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.uncompleted);
             }
+
+            return response;
         }
 
         public Response<string> CreateInternalToken(LoginViewModel login, string secretKey, string domain, string domainGroup)

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.GroupDTOs;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 
 namespace TLIS_DAL.ViewModels.RoleDTOs
@@ -18,6 +19,6 @@ namespace TLIS_DAL.ViewModels.RoleDTOs
         public bool Active { get; set; }
         [Required]
         public bool Deleted { get; set; }
-        public List<PermissionViewModel> permissions { get; set; }
+        public List<AddPerViewModel> permissions { get; set; }
     }
 }

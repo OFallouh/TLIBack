@@ -11,7 +11,7 @@ namespace TLIS_Service.IService
     {
         UserViewModel Authenticate(LoginViewModel login, out string ErrorMessage, string domain, string domainGroup);
         string BuildToken(UserViewModel user, string secretKey);
-        Response<UserPermissionsForLogin> CreateToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
+        Response<string> CreateToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
         Response<string> CreateInternalToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
 
     }

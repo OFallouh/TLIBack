@@ -24,13 +24,13 @@ namespace TLIS_API.Controllers
         {
             _unitOfWorkService = unitOfWorkService;
         }
-        [HttpGet("GetAllPermissionsByRoleId/{RoleId}")]
-        [ProducesResponseType(200, Type = typeof(List<string>))]
-        public IActionResult GetAllPermissionsByRoleId(int RoleId)
-        {
-            var response = _unitOfWorkService.RolePermissionService.GetAllPermissionsByRoleId(RoleId);
-            return Ok(response);
-        }
+        //[HttpGet("GetAllPermissionsByRoleId/{RoleId}")]
+        //[ProducesResponseType(200, Type = typeof(List<string>))]
+        //public IActionResult GetAllPermissionsByRoleId(int RoleId)
+        //{
+        //    var response = _unitOfWorkService.RolePermissionService.GetAllPermissionsByRoleId(RoleId);
+        //    return Ok(response);
+        //}
         [HttpGet("GetAllRolePermissionsForW_F")]
         [ProducesResponseType(200, Type = typeof(List<RolePermissionViewModel>))]
         public IActionResult GetAllRolePermissionsForW_F()

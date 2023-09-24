@@ -16,5 +16,6 @@ namespace TLIS_Service.IService
         Response<List<ModulesNamesViewModel>> GetAllModulesNames();
         Response<List<PermissionViewModel>> GetPermissionsByModuleName(string ModuleName);
         Response<List<PermissionFor_WFViewModel>> GetAllPermissionsFor_WF();
+       
     }
 }

@@ -8,6 +8,7 @@ using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.LogDTOs;
 using Toolbelt.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Xml;
 
 namespace TLIS_DAL
 {
@@ -162,11 +163,8 @@ namespace TLIS_DAL
         public virtual DbSet<TLIinternalApis> TLIinternalApis { get; set; }
         public virtual DbSet<TLIexternalSysPermissions> TLIexternalSysPermissions { get; set; }
         public virtual DbSet<TLIintegrationAccessLog> TLIintegrationAccessLog { get; set; }
-        public virtual DbSet<TLIpermissions> TLIpermissions { get; set; }
-        public virtual DbSet<TLIuserPermissions> TLIuserPermissions { get; set; }
-        public virtual DbSet<TLIgroupPermissions> TLIgroupPermissions { get; set; }
-        public virtual DbSet<TLIrolePermissions> TLIrolePermissions { get; set; }
-
+        public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
+        public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<TLIsite>()
@@ -205,26 +203,33 @@ namespace TLIS_DAL
                 .WithMany(z => z.OtherInventoryDistances)
                 .HasForeignKey(c => c.SiteCode);
 
-            builder.Entity<TLIuserPermissions>()
-                .HasOne(e => e.User)
+            builder.Entity<TLIuser_Permissions>()
+                .HasOne(e => e.user)
                 .WithMany(z => z.userPermissionss)
-                .HasForeignKey(c => c.User_Id);
+                .HasForeignKey(c => c.UserId);
 
-            builder.Entity<TLIuserPermissions>()
-                .HasOne(e => e.Permission)
-                .WithMany(z => z.userPermissionss)
-                .HasForeignKey(c => c.Permission_Id);
+            builder.Entity<TLIrole_Permissions>()
+               .HasOne(e => e.Role)
+               .WithMany(z => z.rolePermissions)
+               .HasForeignKey(c => c.RoleId);
 
             builder.Entity<TLIticket>()
                 .HasOne(e => e.Site)
                 .WithMany(z => z.Tickets)
                 .HasForeignKey(c => c.SiteCode);
 
-            //     builder.Entity<TLIdiversityType>().HasData(
-            //new TLIdiversityType {  Name = "Di_s" }
-            //new TLIdiversityType { BookId = 2, AuthorId = 1, Title = "King Lear" },
-            //new TLIdiversityType { BookId = 3, AuthorId = 1, Title = "Othello" }
-            // );
+
+            builder.Entity<TLIuser_Permissions>(entity =>
+            {
+                entity.HasIndex(e => new
+                { e.UserId, e.PageUrl }).IsUnique();
+            });
+
+            builder.Entity<TLIrole_Permissions>(entity =>
+            {
+                entity.HasIndex(e => new
+                { e.RoleId, e.PageUrl }).IsUnique();
+            });
 
             builder.BuildIndexesFromAnnotations();
             builder.seed();
@@ -241,6 +246,10 @@ namespace TLIS_DAL
             builder.Entity<TLIuser>().Property(x => x.Active).HasDefaultValue(true);
 
             builder.Entity<TLIuser>().Property(x => x.Deleted).HasDefaultValue(false);
+
+            builder.Entity<TLIuser_Permissions>().Property(x => x.Active).HasDefaultValue(true);
+
+            builder.Entity<TLIuser_Permissions>().Property(x => x.Delete).HasDefaultValue(false);
 
             builder.Entity<TLIrole>().Property(x => x.Active).HasDefaultValue(true);
 

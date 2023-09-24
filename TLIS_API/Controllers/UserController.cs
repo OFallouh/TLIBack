@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
 using TLIS_Service.Helpers;
@@ -31,7 +32,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddInternalUser")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<PermissionViewModel> Permissions)
+        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<AddPerViewModel> Permissions)
         {
             //var UserId = HttpContext.Session.GetString("UserId");
             var domain = _configuration["Domain"];
@@ -40,12 +41,12 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("Updateuser")]
         [ProducesResponseType(200, Type = typeof(EditUserViewModel))]
-        public async Task<IActionResult> Updateuser(EditUserViewModel User)
+        public async Task<IActionResult> Updateuser(EditUserViewModel model)
         {
-            if(TryValidateModel(User, nameof(EditUserViewModel)))
+            if (TryValidateModel(User, nameof(EditUserViewModel)))
             {
                 //var UserId = HttpContext.Session.GetString("UserId");
-                var response = await _unitOfWorkService.UserService.Updateuser(User);
+                var response = await _unitOfWorkService.UserService.Updateuser(model);
                 return Ok(response);
             }
             else

@@ -188,9 +188,7 @@ namespace TLIS_Repository.Base
         ILocationTypeRepository LocationTypeRepository { get; }
         IRegionRepository RegionRepository { get; }
         IUserPermissionssRepository UserPermissionssRepository { get; }
-        IGroupPermissionsRepository GroupPermissionsRepository { get; }
         IRolePermissionsRepository RolePermissionsRepository { get; }
-        IPermissionsRepository PermissionsRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
     }

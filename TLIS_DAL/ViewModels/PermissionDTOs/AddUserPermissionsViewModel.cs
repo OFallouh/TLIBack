@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions
+namespace TLIS_DAL.ViewModels.PermissionDTOs
 {
-    public class NewPermissionsViewModel
+    public class AddUserPermissionsViewModel
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
         public string PageUrl { get; set; }
+
     }
 }

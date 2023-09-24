@@ -302,7 +302,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_UserService == null)
-                    _UserService = new UserService(_unitOfWork, _config, _services,_mapper);
+                    _UserService = new UserService(_unitOfWork, _config, db, _services,_mapper);
                 return _UserService;
             }
         }

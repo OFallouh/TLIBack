@@ -27,6 +27,9 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using AutoMapper;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using TLIS_DAL;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 
 namespace TLIS_Service.Services
 {
@@ -36,16 +39,18 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IConfiguration _configuration;
         IServiceCollection _services;
+        private readonly ApplicationDbContext _dbContext;
         private IMapper _mapper;
         private byte[] key = new byte[16]; // 128-bit key
         private byte[] iv = new byte[16]; // 128-bit IV
-        public UserService(IUnitOfWork unitOfWork, IConfiguration configuration,
+        public UserService(IUnitOfWork unitOfWork, IConfiguration configuration, ApplicationDbContext context,
             IServiceCollection services, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _services = services;
             _mapper = mapper;
+            _dbContext = context;
         }
         //Function to add external user 
         //usually external user type is 2
@@ -83,46 +88,55 @@ namespace TLIS_Service.Services
                         //}
                         UserEntity.ValidateAccount = false;
                         UserEntity.UserType = 2;
-
                         await _unitOfWork.UserRepository.AddAsync(UserEntity);
                         await _unitOfWork.SaveChangesAsync();
-
-                        if (model.PermissionsIds != null)
+                        if (model.Permissions != null)
                         {
-                            foreach (int PermissionId in model.PermissionsIds)
+                            var userPermissionsList = new List<TLIuser_Permissions>();
+                            foreach (var Permission in model.Permissions)
                             {
-                                TLIuserPermissions UserPermission = new TLIuserPermissions();
-                                UserPermission.Permission_Id = PermissionId;
-                                UserPermission.User_Id = UserEntity.Id;
-                                _unitOfWork.UserPermissionssRepository.Add(UserPermission);
+                                TLIuser_Permissions UserPermission = new TLIuser_Permissions();
+                                UserPermission = new TLIuser_Permissions()
+                                {
+                                    UserId = UserEntity.Id,
+                                    PageUrl = Permission.PageUrl,
+                                    Active=true,
+                                    Delete=false,
+                                    user= UserEntity
+                                };
+                                userPermissionsList.Add(UserPermission);
+                               
                             }
+                            _dbContext.TLIuser_Permissions.AddRange(userPermissionsList);
+                            _dbContext.SaveChanges();
                         }
-
-                        if (model.Groups != null)
+                        if (model.Groups != null )
                         {
                             List<int> GroupsIds = model.Groups.Select(x => x.Id).ToList();
                             foreach (int GroupId in GroupsIds)
-                            {
-                                TLIgroupUser GroupUser = new TLIgroupUser();
-                                GroupUser.groupId = GroupId;
-                                GroupUser.userId = UserEntity.Id;
-                                _unitOfWork.GroupUserRepository.Add(GroupUser);
+                            { if (GroupId > 0)
+                                {
+                                    TLIgroupUser GroupUser = new TLIgroupUser();
+                                    GroupUser.groupId = GroupId;
+                                    GroupUser.userId = UserEntity.Id;
+                                    GroupUser.user= UserEntity;
+                                    _unitOfWork.GroupUserRepository.Add(GroupUser);
+                                }
                             }
                         }
-                        UserViewModel UserModel = _mapper.Map<UserViewModel>(UserEntity);
-                        await _unitOfWork.SaveChangesAsync();
+                        _dbContext.SaveChanges();
                         transaction.Complete();
-                        return new Response<UserViewModel>(true, UserModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+                        return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
                     }
                     else
                     {
-                        return new Response<UserViewModel>(true, null, null, test.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                        return new Response<UserViewModel>(false, null, null, test.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
                     }
                 }
             }
             catch (Exception err)
             {
-                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
             }
         }
 
@@ -193,9 +207,9 @@ namespace TLIS_Service.Services
             }
         }
 
-        //Function to add internal user
+        //Function to add internal userpublic 
         //usually internal user type is 1
-        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<PermissionViewModel> Permissions, string domain)
+        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<AddPerViewModel> Permissions, string domain)
         {
             try
             {
@@ -233,31 +247,37 @@ namespace TLIS_Service.Services
 
                             if (Permissions != null)
                             {
-                                List<int> permissionsIds = Permissions.Select(x => x.Id).ToList();
-                                foreach (int permissionId in permissionsIds)
+                                var userPermissionsList = new List<TLIuser_Permissions>();
+                                foreach (var Permission in Permissions)
                                 {
-                                    TLIuserPermission tLIuserPermission = new TLIuserPermission();
-                                    tLIuserPermission.userId = user.Id;
-                                    tLIuserPermission.permissionId = permissionId;
-                                    await _unitOfWork.UserPermissionRepository.AddAsync(tLIuserPermission);
+                                    TLIuser_Permissions UserPermission = new TLIuser_Permissions();
+                                    UserPermission = new TLIuser_Permissions()
+                                    {
+                                        UserId = user.Id,
+                                        PageUrl = Permission.PageUrl,
+                                        Active = true,
+                                        Delete = false,
+                                        user = user
+                                    };
+                                    userPermissionsList.Add(UserPermission);
+
                                 }
+                                _dbContext.TLIuser_Permissions.AddRange(userPermissionsList);
+                                _dbContext.SaveChanges();
                             }
 
-                            await _unitOfWork.SaveChangesAsync();
-
-                            userModel = _mapper.Map<UserViewModel>(user);
                         }
                         else
                         {
-                            return new Response<UserViewModel>(true, null, null, $"This User {UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
-                    return new Response<UserViewModel>(true, userModel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
             }
             catch (Exception err)
             {
-                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
@@ -440,8 +460,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                List<UserViewModel> Usermodel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository.GetWhere(x =>
-                    x.UserType == UserTypeId && x.Active && !x.Deleted &&
+                List<UserViewModel> Usermodel = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository.
+                    GetWhere(x => x.UserType == UserTypeId && x.Active && !x.Deleted &&
                     (!string.IsNullOrEmpty(UserName) ? x.UserName.ToLower().StartsWith(UserName.ToLower()) : true)).
                         Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                         .Take(parameterPagination.PageSize).AsQueryable().ToList());
@@ -458,20 +478,24 @@ namespace TLIS_Service.Services
         {
             try
             {
+                List<NewPermissionsViewModel> newPermissionsViewModels = new List<NewPermissionsViewModel>();
                 UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
-                User.Password = DecryptPassword(User.Password);
-
-                User.Permissions = _unitOfWork.UserPermissionssRepository
-                    .GetIncludeWhere(x => x.User_Id == User.Id && x.IsActive, x => x.Permission)
-                    .Select(x => new NewPermissionsViewModel()
-                    {
-                        Id = x.Id,
-                        Page_URL = x.Permission.Page_URL
-                    }).ToList();
-
-                User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
-                    .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
-
+                if (User != null)
+                {
+                    User.Password = DecryptPassword(User.Password);
+                    var UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
+                    x.UserId == Id && x.Active==true && x.Delete==false ).ToList();
+                    var UserP = _mapper.Map<List<NewPermissionsViewModel>>(UserPermissions);
+                    var GroupUser = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id).Select(x => x.groupId).ToList();
+                    var RoleGroup = _unitOfWork.GroupRoleRepository.GetIncludeWhere(x => GroupUser.Any(y => y == x.groupId)).Select(x => x.roleId).ToList();
+                    var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).ToList();
+                    var RoleP = _mapper.Map<List<NewPermissionsViewModel>>(Rolepermissions);
+                    User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
+                        .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
+                    newPermissionsViewModels.AddRange(UserP);
+                    newPermissionsViewModels.AddRange(RoleP);
+                    User.Permissions = newPermissionsViewModels;
+                }
                 return new Response<UserViewModel>(true, User, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
             }
             catch (Exception err)
@@ -536,29 +560,10 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    List<TLIuserPermissions> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                        .GetWhere(x => x.User_Id == model.Id).ToList();
-
-                    List<int> UserPermissionsToAdd = model.PermissionsIds.Where(x => !AllUserPermissionsInDB
-                        .Select(y => y.Permission_Id).Contains(x)).ToList();
-
+                 
                     TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
                     UserEntity.Password = null;
-
-                    foreach (int PermissionId in UserPermissionsToAdd)
-                    {
-                        TLIuserPermissions userPermission = new TLIuserPermissions();
-                        userPermission.User_Id = UserEntity.Id;
-                        userPermission.Permission_Id = PermissionId;
-                        _unitOfWork.UserPermissionssRepository.Add(userPermission);
-                    }
-
-                    List<TLIuserPermissions> UserPermissionsToDelete = AllUserPermissionsInDB.Where(x => !model.PermissionsIds
-                        .Contains(x.Permission_Id)).ToList();
-
-                    if (UserPermissionsToDelete.Count() > 0)
-                        _unitOfWork.UserPermissionssRepository.RemoveRangeItems(UserPermissionsToDelete);
 
                     string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
                     if (!string.IsNullOrEmpty(model.Password))
@@ -580,6 +585,24 @@ namespace TLIS_Service.Services
                         UserEntity.Password = OldPassword;
                     }
                     _unitOfWork.UserRepository.Update(UserEntity);
+
+
+                    List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
+                      .GetWhere(x => x.UserId == model.Id && x.Delete==false && x.Active==true).Select(x => x.PageUrl).ToList();
+
+                    List<string> Exi = AllUserPermissionsInDB.Except(model.permissions.Select(x=>x.PageUrl)).Union(model.permissions.Select(x=>x.PageUrl).Except(AllUserPermissionsInDB)).ToList();
+                    foreach (var item in Exi)
+                    {
+                        TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
+                        tLIuserPermissions = new TLIuser_Permissions()
+                        {
+                            UserId = model.Id,
+                            PageUrl = item,
+                            Active = true,
+                            Delete = false
+                        };
+                        _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
+                    }
 
                     List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
                         x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
@@ -604,11 +627,11 @@ namespace TLIS_Service.Services
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
 
-                    return new Response<UserViewModel>(true, _mapper.Map<UserViewModel>(UserEntity), null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    return new Response<UserViewModel>(true, null, null,null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
                 {
-                    return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
         }

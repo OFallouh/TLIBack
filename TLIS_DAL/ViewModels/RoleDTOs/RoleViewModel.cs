@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 
 namespace TLIS_DAL.ViewModels.RoleDTOs
@@ -11,6 +12,6 @@ namespace TLIS_DAL.ViewModels.RoleDTOs
         public string Name { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
-        public List<PermissionViewModel> Permissions { get; set; }
+        public List<NewPermissionsViewModel> Permissions { get; set; }
     }
 }

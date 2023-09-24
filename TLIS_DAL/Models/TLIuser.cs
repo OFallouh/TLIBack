@@ -35,7 +35,7 @@ namespace TLIS_DAL.Models
         public string ConfirmationCode { get; set; }
         public bool ValidateAccount { get; set; } = true;
         public IEnumerable<TLIuserPermission> userPermissions { get; set; }
-        public IEnumerable<TLIuserPermissions> userPermissionss { get; set; }
+        public IEnumerable<TLIuser_Permissions> userPermissionss { get; set; }
         public IEnumerable<TLIgroupUser> groupUser { get; set; }
     }
 }
