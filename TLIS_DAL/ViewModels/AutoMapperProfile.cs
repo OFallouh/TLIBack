@@ -1610,7 +1610,7 @@ namespace TLIS_DAL.ViewModels
             .ForMember(x => x.UserName, x => x.MapFrom(f => f.user.UserName));
             CreateMap<TLIuser, UserNameViewModel>().ReverseMap();
         }
-
+       
     }
 }
 
