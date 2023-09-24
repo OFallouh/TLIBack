@@ -3865,8 +3865,8 @@ namespace TLIS_Service.Services
                                 y.key.ToLower() == x.Name.ToLower())).ToList();
 
                         List<StringFilterObjectList> LibraryPropsAttributeFilters = AttributeFilters.Where(x =>
-                            NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
-                            StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
+                            NonStringLibraryProps.AsEnumerable().Select(y => y.Name.ToLower()).Contains(x.key.ToLower()) ||
+                            StringLibraryProps.AsEnumerable().Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         //LibraryAttributeActivated = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhere(x =>
                         //     LibraryPropsAttributeFilters.All(z =>
@@ -3975,7 +3975,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicLibExist = true;
                         List<DateFilterViewModel> DynamicLibAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeLibDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicLibValueListIds = new List<int>();
 
@@ -4107,9 +4107,9 @@ namespace TLIS_Service.Services
                    (x.Enable && x.EditableManagmentView.View == CategoryViewName &&
                    (x.AttributeActivatedId != null ?
                         (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString() &&
-                            AttributeActivatedCategories.Exists(y => y.attributeActivatedId == x.AttributeActivatedId)) :
+                            AttributeActivatedCategories.AsEnumerable().Select(y => y.attributeActivatedId).Contains(x.AttributeActivatedId)) :
                         (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString() &&
-                            DynamicAttViewModels.Exists(y => y.Id == x.DynamicAttId)))) ||
+                            (from y in DynamicAttViewModels select y.Id).ToList().Contains(x.DynamicAttId.Value)))) ||
                     (x.AttributeActivated != null ?
                         ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString() && x.EditableManagmentView.View == CategoryViewName) : false),
                        x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1, x => x.EditableManagmentView.TLItablesNames2,
