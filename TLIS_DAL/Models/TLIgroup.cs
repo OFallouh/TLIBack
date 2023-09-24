@@ -15,7 +15,7 @@ namespace TLIS_DAL.Models
         [Required]
         [Index(IsUnique = true)]
         public string Name { get; set; }
-        public ICollection<TLIgroup> Parent { get; set; }
+        public TLIgroup Parent { get; set; }
         public int? ParentId { get; set; }
         public TLIgroup Upper { get; set; }
         public int? UpperId { get; set; }
