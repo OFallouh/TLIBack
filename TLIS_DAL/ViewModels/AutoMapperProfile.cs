@@ -280,7 +280,7 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<TLIgroup, GroupViewModel>()
                  .ForMember(x => x.ActorName, x => x.MapFrom(s => s.Actor.Name))
-                 .ForMember(x => x.ParentName, x => x.MapFrom(s => s.ParentId != null ? s.Parent.Select(x => x.Name) : null))
+                 .ForMember(x => x.ParentName, x => x.MapFrom(s => s.ParentId != null ? s.Parent.Name : null))
                  .ForMember(x => x.UpperName, x => x.MapFrom(s => s.Upper.Name));
 
             CreateMap<TLIgroup, GroupNamesViewModel>()
@@ -635,6 +635,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LogisticalViewModel, TLIlogisticalType>().ReverseMap();
             CreateMap<LogisticalViewModel, DropDownListFilters>()
                 .ForMember(r => r.Value, r => r.MapFrom(s => s.Name));
+
+            CreateMap<SubTypeViewModel, TLIsubType>().ReverseMap();
 
             CreateMap<SubTypeViewModel, DropDownListFilters>()
                .ForMember(r => r.Value, r => r.MapFrom(s => s.Name));
@@ -1611,8 +1613,9 @@ namespace TLIS_DAL.ViewModels
                 .ForMember(x => x.RoleName, x => x.MapFrom(f => f.Role.Name));
             CreateMap<TLIuser_Permissions, NewPermissionsViewModel > ().ReverseMap();
             CreateMap<TLIrole_Permissions, NewPermissionsViewModel>().ReverseMap();
+            CreateMap<TLIuser, UserNameViewModel>().ReverseMap();
         }
-
+       
     }
 }
 
