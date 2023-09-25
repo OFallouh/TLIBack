@@ -99,7 +99,7 @@ namespace TLIS_Service.Services
                                 UserPermission = new TLIuser_Permissions()
                                 {
                                     UserId = UserEntity.Id,
-                                    PageUrl = Permission.PageUrl,
+                                    PageUrl = Permission,
                                     Active=true,
                                     Delete=false,
                                     user= UserEntity
@@ -209,7 +209,7 @@ namespace TLIS_Service.Services
 
         //Function to add internal userpublic 
         //usually internal user type is 1
-        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<AddPerViewModel> Permissions, string domain)
+        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<String> Permissions, string domain)
         {
             try
             {
@@ -254,7 +254,7 @@ namespace TLIS_Service.Services
                                     UserPermission = new TLIuser_Permissions()
                                     {
                                         UserId = user.Id,
-                                        PageUrl = Permission.PageUrl,
+                                        PageUrl = Permission,
                                         Active = true,
                                         Delete = false,
                                         user = user
@@ -478,23 +478,25 @@ namespace TLIS_Service.Services
         {
             try
             {
-                List<NewPermissionsViewModel> newPermissionsViewModels = new List<NewPermissionsViewModel>();
+                var newPermissionsViewModels = new List<string>();
                 UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
                 if (User != null)
                 {
                     User.Password = DecryptPassword(User.Password);
                     var UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
-                    x.UserId == Id && x.Active==true && x.Delete==false ).ToList();
-                    var UserP = _mapper.Map<List<NewPermissionsViewModel>>(UserPermissions);
+                    x.UserId == Id && x.Active==true && x.Delete==false ).Select(x=>x.PageUrl).ToList();
                     var GroupUser = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id).Select(x => x.groupId).ToList();
                     var RoleGroup = _unitOfWork.GroupRoleRepository.GetIncludeWhere(x => GroupUser.Any(y => y == x.groupId)).Select(x => x.roleId).ToList();
-                    var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).ToList();
-                    var RoleP = _mapper.Map<List<NewPermissionsViewModel>>(Rolepermissions);
+                    var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x=>x.PageUrl).ToList();
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
                         .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
-                    newPermissionsViewModels.AddRange(UserP);
-                    newPermissionsViewModels.AddRange(RoleP);
+                    newPermissionsViewModels.AddRange(UserPermissions);
+                    newPermissionsViewModels.AddRange(Rolepermissions);
                     User.Permissions = newPermissionsViewModels;
+                }
+                else
+                {
+                    return new Response<UserViewModel>(true, null, null, "The Id Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<UserViewModel>(true, User, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
             }
@@ -590,7 +592,7 @@ namespace TLIS_Service.Services
                     List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
                       .GetWhere(x => x.UserId == model.Id && x.Delete==false && x.Active==true).Select(x => x.PageUrl).ToList();
 
-                    List<string> Exi = AllUserPermissionsInDB.Except(model.permissions.Select(x=>x.PageUrl)).Union(model.permissions.Select(x=>x.PageUrl).Except(AllUserPermissionsInDB)).ToList();
+                    var Exi = AllUserPermissionsInDB.Except(model.permissions).Union(model.permissions).Except(AllUserPermissionsInDB).ToList();
                     foreach (var item in Exi)
                     {
                         TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
