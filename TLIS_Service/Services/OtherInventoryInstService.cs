@@ -113,8 +113,11 @@ namespace TLIS_Service.Services
                         {
                             if (LibraryAttribute.DataType.ToLower() == "list")
                             {
+                                if (CabinetTelecomLibrary != null)
+                                {
                                 LibraryAttribute.Value = CabinetTelecomLibrary.GetType().GetProperties()
                                     .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(CabinetTelecomLibrary);
+                                }
                             }
                         }
 
