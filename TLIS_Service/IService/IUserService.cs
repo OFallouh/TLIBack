@@ -14,7 +14,7 @@ namespace TLIS_Service.IService
 {
     public interface IUserService
     {
-        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<AddPerViewModel> Permissions, string domain);
+        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain);
         Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain);
         Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain);
         Response<bool> ValidateUserInAdAndDb(string UserName, string domain);

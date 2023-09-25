@@ -31,7 +31,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public int UserType { get; set; }
         public bool Active { get; set; } = true;
         public bool Deleted { get; set; } = false;
-        public List<AddPerViewModel> Permissions { get; set; }
+        public List<string> Permissions { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }
     }
 }

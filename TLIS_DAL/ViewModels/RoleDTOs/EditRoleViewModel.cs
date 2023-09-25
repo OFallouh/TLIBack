@@ -19,6 +19,6 @@ namespace TLIS_DAL.ViewModels.RoleDTOs
         public bool Active { get; set; }
         [Required]
         public bool Deleted { get; set; }
-        public List<AddPerViewModel> permissions { get; set; }
+        public List<string> permissions { get; set; }
     }
 }

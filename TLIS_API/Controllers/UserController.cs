@@ -32,7 +32,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddInternalUser")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<AddPerViewModel> Permissions)
+        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<string> Permissions)
         {
             //var UserId = HttpContext.Session.GetString("UserId");
             var domain = _configuration["Domain"];

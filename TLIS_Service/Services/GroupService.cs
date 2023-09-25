@@ -156,7 +156,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     TLIgroup DatabaseExists = _unitOfWork.GroupRepository.GetWhereFirst(x =>
-                        x.Name.ToLower() == model.Name.ToLower());
+                        x.Name.ToLower() == model.Name.ToLower() && !x.Deleted && x.Active);
 
                     TLIgroup Group = new TLIgroup();
 
