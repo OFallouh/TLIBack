@@ -4227,7 +4227,7 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAttInstValue> NotDateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             !x.DynamicAtt.LibraryAtt && !x.disable &&
                             x.InventoryId == CabinetInstallationObject.Id &&
-                            NotDateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            NotDateTimeInstallationDynamicAttributes.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == TablesNames.TLIcabinet.ToString()
                                 , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -4299,7 +4299,7 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
                             x.InventoryId == CabinetInstallationObject.Id && !x.disable &&
                            !x.DynamicAtt.LibraryAtt &&
-                            DateTimeInstallationDynamicAttributes.Exists(y => y.Key.ToLower() == x.DynamicAtt.Key.ToLower()) &&
+                            DateTimeInstallationDynamicAttributes.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.DynamicAtt.Key.ToLower()) &&
                             x.tablesNames.TableName == TablesNames.TLIcabinet.ToString()
                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
@@ -5107,7 +5107,7 @@ namespace TLIS_Service.Services
                     // Installation Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> InstDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         !x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == TablesNames.TLIcabinet.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -5144,12 +5144,30 @@ namespace TLIS_Service.Services
                             NotStringProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        InstallationAttributeActivated = _unitOfWork.CabinetRepository.GetWhere(x =>
-                             AttrInstAttributeFilters.All(z =>
-                                NotStringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CabinetViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //InstallationAttributeActivated = _unitOfWork.CabinetRepository.GetWhere(x =>
+                        //     AttrInstAttributeFilters.All(z =>
+                        //        NotStringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CabinetViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIcabinet> Installations = _unitOfWork.CabinetRepository.GetAllWithoutCount();
+
+                        foreach (StringFilterObjectList InstallationProp in AttrInstAttributeFilters)
+                        {
+                            if (StringProps.Select(x => x.Name.ToLower()).Contains(InstallationProp.key.ToLower()))
+                            {
+                                Installations = Installations.Where(x => StringProps.AsEnumerable().FirstOrDefault(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && (InstallationProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CabinetViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NotStringProps.Select(x => x.Name.ToLower()).Contains(InstallationProp.key.ToLower()))
+                            {
+                                Installations = Installations.Where(x => NotStringProps.AsEnumerable().FirstOrDefault(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null ?
+                                    InstallationProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<CabinetViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        InstallationAttributeActivated = Installations.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -5172,7 +5190,7 @@ namespace TLIS_Service.Services
                 if (DateFilter != null ? DateFilter.Count() > 0 : false)
                 {
                     List<TLIdynamicAtt> DateTimeInstDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         !x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == TablesNames.TLIcabinet.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -5184,7 +5202,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicInstExist = true;
                         List<DateFilterViewModel> DynamicInstAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeInstDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeInstDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicInstValueListIds = new List<int>();
 
@@ -5224,12 +5242,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        InstallationAttributeActivatedIds = _unitOfWork.CabinetRepository.GetWhere(x =>
-                            InstallationPropsAttributeFilters.All(z =>
-                                (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null) ?
-                                    ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null))) &&
-                                     (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //InstallationAttributeActivatedIds = _unitOfWork.CabinetRepository.GetWhere(x =>
+                        //    InstallationPropsAttributeFilters.All(z =>
+                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null))) &&
+                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIcabinet> Installations = _unitOfWork.CabinetRepository.GetAllWithoutCount();
+
+                        foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
+                        {
+                            Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null) ?
+                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null))) &&
+                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null)))) : (false))));
+                        }
+
+                        InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -5386,7 +5415,7 @@ namespace TLIS_Service.Services
                     // Installation Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> InstDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         !x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == TablesNames.TLIsolar.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -5423,12 +5452,30 @@ namespace TLIS_Service.Services
                             NotStringProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        InstallationAttributeActivated = _unitOfWork.SolarRepository.GetWhere(x =>
-                             AttrInstAttributeFilters.All(z =>
-                                NotStringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<SolarViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SolarViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //InstallationAttributeActivated = _unitOfWork.SolarRepository.GetWhere(x =>
+                        //     AttrInstAttributeFilters.All(z =>
+                        //        NotStringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<SolarViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SolarViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIsolar> Installations = _unitOfWork.SolarRepository.GetAllWithoutCount();
+
+                        foreach (StringFilterObjectList InstallationProp in AttrInstAttributeFilters)
+                        {
+                            if (StringProps.Select(x => x.Name.ToLower()).Contains(InstallationProp.key.ToLower()))
+                            {
+                                Installations = Installations.Where(x => StringProps.AsEnumerable().FirstOrDefault(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && (InstallationProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null ? y.GetValue(_mapper.Map<SolarViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NotStringProps.Select(x => x.Name.ToLower()).Contains(InstallationProp.key.ToLower()))
+                            {
+                                Installations = Installations.Where(x => NotStringProps.AsEnumerable().FirstOrDefault(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null ?
+                                    InstallationProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<SolarViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        InstallationAttributeActivated = Installations.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -5451,7 +5498,7 @@ namespace TLIS_Service.Services
                 if (DateFilter != null ? DateFilter.Count() > 0 : false)
                 {
                     List<TLIdynamicAtt> DateTimeInstDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         !x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == TablesNames.TLIsolar.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -5463,7 +5510,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicInstExist = true;
                         List<DateFilterViewModel> DynamicInstAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeInstDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeInstDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicInstValueListIds = new List<int>();
 
@@ -5503,12 +5550,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        InstallationAttributeActivatedIds = _unitOfWork.SolarRepository.GetWhere(x =>
-                            InstallationPropsAttributeFilters.All(z =>
-                                (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null) ?
-                                    ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null))) &&
-                                     (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //InstallationAttributeActivatedIds = _unitOfWork.SolarRepository.GetWhere(x =>
+                        //    InstallationPropsAttributeFilters.All(z =>
+                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null))) &&
+                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIsolar> Installations = _unitOfWork.SolarRepository.GetAllWithoutCount();
+
+                        foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
+                        {
+                            Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null) ?
+                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null))) &&
+                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null)))) : (false))));
+                        }
+
+                        InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
                     }
 
                     //
@@ -5604,7 +5662,7 @@ namespace TLIS_Service.Services
                     // Installation Dynamic Attributes...
                     //
                     List<TLIdynamicAtt> InstDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         !x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == TablesNames.TLIgenerator.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -5641,12 +5699,31 @@ namespace TLIS_Service.Services
                             NotStringProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                             StringProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        InstallationAttributeActivated = _unitOfWork.GeneratorRepository.GetWhere(x =>
-                             AttrInstAttributeFilters.All(z =>
-                                NotStringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null).ToString().ToLower()) : false)) ||
-                                StringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                                     y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null ? y.GetValue(_mapper.Map<GeneratorViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                         ).Select(i => i.Id).ToList();
+                        //InstallationAttributeActivated = _unitOfWork.GeneratorRepository.GetWhere(x =>
+                        //     AttrInstAttributeFilters.All(z =>
+                        //        NotStringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null).ToString().ToLower()) : false)) ||
+                        //        StringProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
+                        //             y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null ? y.GetValue(_mapper.Map<GeneratorViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
+                        // ).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIgenerator> Installations = _unitOfWork.GeneratorRepository.GetAllWithoutCount();
+
+                        foreach (StringFilterObjectList InstallationProp in AttrInstAttributeFilters)
+                        {
+                            if (StringProps.Select(x => x.Name.ToLower()).Contains(InstallationProp.key.ToLower()))
+                            {
+                                Installations = Installations.Where(x => StringProps.AsEnumerable().FirstOrDefault(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && (InstallationProp.value.AsEnumerable().FirstOrDefault(w =>
+                                     y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null ? y.GetValue(_mapper.Map<GeneratorViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false) != null)) != null).AsEnumerable();
+                            }
+                            else if (NotStringProps.Select(x => x.Name.ToLower()).Contains(InstallationProp.key.ToLower()))
+                            {
+                                Installations = Installations.Where(x => NotStringProps.AsEnumerable().FirstOrDefault(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null ?
+                                    InstallationProp.value.AsEnumerable().Contains(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null).ToString().ToLower()) : false)) != null).AsEnumerable();
+                            }
+                        }
+
+                        InstallationAttributeActivated = Installations.Select(x => x.Id).ToList();
+
                     }
 
                     //
@@ -5669,7 +5746,7 @@ namespace TLIS_Service.Services
                 if (DateFilter != null ? DateFilter.Count() > 0 : false)
                 {
                     List<TLIdynamicAtt> DateTimeInstDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.Exists(y => y.key.ToLower() == x.Key.ToLower()) &&
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         !x.LibraryAtt && !x.disable &&
                         x.tablesNames.TableName == TablesNames.TLIgenerator.ToString()
                             , x => x.tablesNames, x => x.DataType).ToList();
@@ -5681,7 +5758,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicInstExist = true;
                         List<DateFilterViewModel> DynamicInstAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            DateTimeInstDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                            DateTimeInstDynamicAttListIds.AsEnumerable().Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         DynamicInstValueListIds = new List<int>();
 
@@ -5721,12 +5798,23 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                        InstallationAttributeActivatedIds = _unitOfWork.GeneratorRepository.GetWhere(x =>
-                            InstallationPropsAttributeFilters.All(z =>
-                                (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null) ?
-                                    ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null))) &&
-                                     (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null)))) : (false)))))
-                        ).Select(i => i.Id).ToList();
+                        //InstallationAttributeActivatedIds = _unitOfWork.GeneratorRepository.GetWhere(x =>
+                        //    InstallationPropsAttributeFilters.All(z =>
+                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null) ?
+                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null))) &&
+                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null)))) : (false)))))
+                        //).Select(i => i.Id).ToList();
+
+                        IEnumerable<TLIgenerator> Installations = _unitOfWork.GeneratorRepository.GetAllWithoutCount();
+
+                        foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
+                        {
+                            Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null) ?
+                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null))) &&
+                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null)))) : (false))));
+                        }
+
+                        InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
                     }
 
                     //
