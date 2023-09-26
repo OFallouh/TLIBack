@@ -1183,8 +1183,8 @@ namespace TLIS_Service.Services
                     // Library Attribute Activated...
                     //
                     bool AttrLibExist = typeof(LoadOtherLibraryViewModel).GetProperties().ToList().Exists(x =>
-                        AttributeFilters.Exists(y =>
-                            y.key.ToLower() == x.Name.ToLower() && y.key.ToLower() != "id"));
+                        AttributeFilters.Where(y => y.key.ToLower() != "id").Select(y =>
+                            y.key.ToLower()).Contains(x.Name.ToLower()));
 
                     List<int> LibraryAttributeActivatedIds = new List<int>();
 
@@ -1192,17 +1192,17 @@ namespace TLIS_Service.Services
                     {
                         List<PropertyInfo> NonStringLibraryProps = typeof(LoadOtherLibraryViewModel).GetProperties().Where(x =>
                             x.PropertyType.Name.ToLower() != "string" &&
-                            AttributeFilters.Exists(y =>
-                                y.key.ToLower() == x.Name.ToLower())).ToList();
+                            AttributeFilters.Select(y =>
+                                y.key.ToLower()).Contains(x.Name.ToLower())).ToList();
 
                         List<PropertyInfo> StringLibraryProps = typeof(LoadOtherLibraryViewModel).GetProperties().Where(x =>
                             x.PropertyType.Name.ToLower() == "string" &&
-                            AttributeFilters.Exists(y =>
-                                y.key.ToLower() == x.Name.ToLower())).ToList();
+                            AttributeFilters.Select(y =>
+                                y.key.ToLower()).Contains(x.Name.ToLower())).ToList();
 
                         List<StringFilterObjectList> LibraryPropsAttributeFilters = AttributeFilters.Where(x =>
-                            NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
-                            StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
+                            NonStringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower()) ||
+                            StringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         //LibraryAttributeActivatedIds = _unitOfWork.LoadOtherLibraryRepository.GetWhere(x =>
                         //     LibraryPropsAttributeFilters.All(z =>
@@ -1311,7 +1311,7 @@ namespace TLIS_Service.Services
                         DynamicLibValueListIds = new List<int>();
 
                         List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
-                            DateTimeLibDynamicAttListIds.Exists(y => y.Id == x.DynamicAttId) && !x.disable).ToList();
+                            DateTimeLibDynamicAttListIds.Select(y => y.Id).Contains(x.DynamicAttId) && !x.disable).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
 
@@ -1320,9 +1320,9 @@ namespace TLIS_Service.Services
                             List<TLIdynamicAttLibValue> DynamicLibValueListInventories = DynamicLibValueListObjects.Where(x =>
                                 x.InventoryId == InventoryId).ToList();
 
-                            if (DynamicLibAttributeFilters.All(y => DynamicLibValueListInventories.Exists(x =>
-                                 (x.ValueDateTime != null ?
-                                    (x.ValueDateTime >= y.DateFrom && x.ValueDateTime <= y.DateTo) : (false)))))
+                            if (DynamicLibAttributeFilters.All(y => DynamicLibValueListInventories.Select(x => x.ValueDateTime).Any(x =>
+                                 (x != null ?
+                                    (x >= y.DateFrom && x <= y.DateTo) : (false)))))
                             {
                                 DynamicLibValueListIds.Add(InventoryId);
                             }
@@ -1333,8 +1333,8 @@ namespace TLIS_Service.Services
                     // Library Attribute Activated...
                     //
                     List<PropertyInfo> LibraryProps = typeof(LoadOtherLibraryViewModel).GetProperties().Where(x =>
-                        AfterConvertDateFilters.Exists(y =>
-                            y.key.ToLower() == x.Name.ToLower())).ToList();
+                        AfterConvertDateFilters.Select(y =>
+                            y.key.ToLower()).Contains(x.Name.ToLower())).ToList();
 
                     List<int> LibraryAttributeActivatedIds = new List<int>();
                     bool AttrLibExist = false;
@@ -1344,7 +1344,7 @@ namespace TLIS_Service.Services
                         AttrLibExist = true;
 
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
-                            LibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
+                            LibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
                         //LibraryAttributeActivatedIds = _unitOfWork.LoadOtherLibraryRepository.GetIncludeWhere(x =>
                         //    LibraryPropsAttributeFilters.All(z =>
@@ -1456,14 +1456,14 @@ namespace TLIS_Service.Services
                         foreach (PropertyInfo prop in LibraryProps)
                         {
                             if (prop.Name.ToLower().Contains("_name") &&
-                                NotDateTimeLibraryAttributesViewModel.Exists(x =>
-                                    x.AttributeActivated.Label.ToLower() == prop.Name.ToLower()))
+                                NotDateTimeLibraryAttributesViewModel.Select(x =>
+                                    x.AttributeActivated.Label.ToLower()).Contains(prop.Name.ToLower()))
                             {
                                 object ForeignKeyNamePropObject = prop.GetValue(LoadOtherLibraryViewModel, null);
                                 ((IDictionary<String, Object>)DynamicOtherLoadLibrary).Add(new KeyValuePair<string, object>(prop.Name, ForeignKeyNamePropObject));
                             }
-                            else if (NotDateTimeLibraryAttributesViewModel.Exists(x =>
-                                 x.AttributeActivated.Key.ToLower() == prop.Name.ToLower()) &&
+                            else if (NotDateTimeLibraryAttributesViewModel.Select(x =>
+                                 x.AttributeActivated.Key.ToLower()).Contains(prop.Name.ToLower()) &&
                                 !prop.Name.ToLower().Contains("_name") &&
                                 (prop.Name.ToLower().Substring(Math.Max(0, prop.Name.Length - 2)) != "id" || prop.Name.ToLower() == "id"))
                             {
