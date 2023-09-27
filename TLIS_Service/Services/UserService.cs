@@ -30,6 +30,7 @@ using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using TLIS_DAL;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using System.IO;
 
 namespace TLIS_Service.Services
 {
@@ -73,7 +74,7 @@ namespace TLIS_Service.Services
                         //    iterationCount: 100000,
                         //    numBytesRequested: 256 / 8));
 
-                        model.Password = CryptPassword(model.Password);
+                         model.Password = EncryptPassword(model.Password);
 
                         TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
@@ -100,26 +101,27 @@ namespace TLIS_Service.Services
                                 {
                                     UserId = UserEntity.Id,
                                     PageUrl = Permission,
-                                    Active=true,
-                                    Delete=false,
-                                    user= UserEntity
+                                    Active = true,
+                                    Delete = false,
+                                    user = UserEntity
                                 };
                                 userPermissionsList.Add(UserPermission);
-                               
+
                             }
                             _dbContext.TLIuser_Permissions.AddRange(userPermissionsList);
                             _dbContext.SaveChanges();
                         }
-                        if (model.Groups != null )
+                        if (model.Groups != null)
                         {
                             List<int> GroupsIds = model.Groups.Select(x => x.Id).ToList();
                             foreach (int GroupId in GroupsIds)
-                            { if (GroupId > 0)
+                            {
+                                if (GroupId > 0)
                                 {
                                     TLIgroupUser GroupUser = new TLIgroupUser();
                                     GroupUser.groupId = GroupId;
                                     GroupUser.userId = UserEntity.Id;
-                                    GroupUser.user= UserEntity;
+                                    GroupUser.user = UserEntity;
                                     _unitOfWork.GroupUserRepository.Add(GroupUser);
                                 }
                             }
@@ -484,10 +486,10 @@ namespace TLIS_Service.Services
                 {
                     User.Password = DecryptPassword(User.Password);
                     var UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
-                    x.UserId == Id && x.Active==true && x.Delete==false ).Select(x=>x.PageUrl).ToList();
+                    x.UserId == Id && x.Active == true && x.Delete == false).Select(x => x.PageUrl).ToList();
                     var GroupUser = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id).Select(x => x.groupId).ToList();
                     var RoleGroup = _unitOfWork.GroupRoleRepository.GetIncludeWhere(x => GroupUser.Any(y => y == x.groupId)).Select(x => x.roleId).ToList();
-                    var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x=>x.PageUrl).ToList();
+                    var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x => x.PageUrl).ToList();
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
                         .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
                     newPermissionsViewModels.AddRange(UserPermissions);
@@ -496,13 +498,13 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    return new Response<UserViewModel>(true, null, null, "The Id Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<UserViewModel>(false, null, null, "The Id Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<UserViewModel>(true, User, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
             }
             catch (Exception err)
             {
-                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
             }
         }
 
@@ -562,7 +564,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                 
+
                     TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
                     UserEntity.Password = null;
@@ -590,9 +592,9 @@ namespace TLIS_Service.Services
 
 
                     List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                      .GetWhere(x => x.UserId == model.Id && x.Delete==false && x.Active==true).Select(x => x.PageUrl).ToList();
+                      .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                    var Exi = AllUserPermissionsInDB.Except(model.permissions).Union(model.permissions).Except(AllUserPermissionsInDB).ToList();
+                    var Exi = AllUserPermissionsInDB.Except(model.permissions).Union(model.permissions).Except(AllUserPermissionsInDB).Distinct().ToList();
                     foreach (var item in Exi)
                     {
                         TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
@@ -629,7 +631,7 @@ namespace TLIS_Service.Services
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
 
-                    return new Response<UserViewModel>(true, null, null,null, (int)Helpers.Constants.ApiReturnCode.success);
+                    return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
                 {
@@ -760,56 +762,131 @@ namespace TLIS_Service.Services
             }
         }
 
-        private string CryptPassword(string password)
+        //////private string CryptPassword(string password)
+        //////{
+        //////    byte[] plaintext = Encoding.UTF8.GetBytes(password);
+        //////    byte[] ciphertext;
+
+        //////    using (Aes aes = Aes.Create())
+        //////    {
+        //////        aes.Key = key;
+        //////        aes.IV = iv;
+        //////        aes.Padding = PaddingMode.PKCS7;
+        //////        using (ICryptoTransform encryptor = aes.CreateEncryptor())
+        //////        {
+        //////            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        //////        }
+        //////    }
+
+        //////    return Convert.ToBase64String(ciphertext);
+
+
+        //////}
+
+
+        //private string DecryptPassword(string CryptPassword)
+        //{
+        //    try
+        //    {
+
+        //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
+        //        byte[] plaintext;
+
+        //        using (Aes aes = Aes.Create())
+        //        {
+        //            aes.Key = key;
+        //            aes.IV = iv;
+        //            aes.Padding = PaddingMode.PKCS7;
+        //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
+        //            {
+        //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+        //            }
+        //        }
+
+        //        int paddingLength = plaintext[plaintext.Length - 1];
+        //        byte[] unpaddedPlaintext = new byte[plaintext.Length - paddingLength];
+        //        Array.Copy(plaintext, unpaddedPlaintext, unpaddedPlaintext.Length);
+
+        //        return Encoding.UTF8.GetString(unpaddedPlaintext);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
+        private static readonly byte[] keys = Generate256BitKey();
+        public static string EncryptPassword(string password)
         {
-            byte[] plaintext = Encoding.UTF8.GetBytes(password);
-            byte[] ciphertext;
-
-            using (Aes aes = Aes.Create())
+            using (Aes aesAlg = Aes.Create())
             {
-                aes.Key = key;
-                aes.IV = iv;
+                aesAlg.Key = keys;
+                aesAlg.GenerateIV(); // Generate a random IV
+                byte[] iv = aesAlg.IV; // Save the IV for later decryption
 
-                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                aesAlg.Mode = CipherMode.CFB; // You can change the mode as per your requirement.
+                aesAlg.Padding = PaddingMode.PKCS7;
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(password);
+                        }
+                    }
+                    // Combine IV and ciphertext for storage, and return as Base64 string
+                    byte[] ivAndCiphertext = new byte[iv.Length + msEncrypt.ToArray().Length];
+                    Array.Copy(iv, ivAndCiphertext, iv.Length);
+                    Array.Copy(msEncrypt.ToArray(), 0, ivAndCiphertext, iv.Length, msEncrypt.ToArray().Length);
+                    return Convert.ToBase64String(ivAndCiphertext);
                 }
             }
-
-            return Convert.ToBase64String(ciphertext);
-
-
         }
 
-
-        private string DecryptPassword(string CryptPassword)
+        public static string DecryptPassword(string encryptedPassword)
         {
-            try
+            byte[] ivAndCiphertext = Convert.FromBase64String(encryptedPassword);
+            byte[] iv = new byte[16];
+            byte[] ciphertext = new byte[ivAndCiphertext.Length - 16];
+
+            Array.Copy(ivAndCiphertext, iv, 16);
+            Array.Copy(ivAndCiphertext, 16, ciphertext, 0, ciphertext.Length);
+
+            using (Aes aesAlg = Aes.Create())
             {
+                aesAlg.Key = keys;
+                aesAlg.IV = iv;
 
-                byte[] ciphertext = Convert.FromBase64String(CryptPassword);
-                byte[] plaintext;
+                aesAlg.Mode = CipherMode.CFB; // You must use the same mode as used for encryption.
+                aesAlg.Padding = PaddingMode.PKCS7;
 
-                using (Aes aes = Aes.Create())
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(ciphertext))
                 {
-                    aes.Key = key;
-                    aes.IV = iv;
-
-                    using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
-                        plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
                     }
                 }
-
-                return Encoding.UTF8.GetString(plaintext);
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
             }
         }
 
-
+        private static byte[] Generate256BitKey()
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] key = new byte[32]; // 256 bits
+                rng.GetBytes(key);
+                return key;
+            }
+        }
 
     }
 }

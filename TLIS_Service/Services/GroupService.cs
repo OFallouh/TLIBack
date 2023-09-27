@@ -23,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL;
 using AutoMapper;
+using TLIS_DAL.ViewModels.RowDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -768,21 +769,31 @@ namespace TLIS_Service.Services
                         if (UpperLevelU != null)
                         {
                             Groups.Level2 = UpperLevelU;
-
+                            GroupViewModel UpperLevel3P = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelU.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             GroupViewModel UpperLevel3U = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelU.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             if (UpperLevel3U != null)
                             {
                                 Groups.Level3 = UpperLevel3U;
+                            }
+                            if (UpperLevel3P != null)
+                            {
+                                Groups.Level3 = UpperLevel3P;
+
                             }
                         }
                         if (UpperLevelP != null)
                         {
                             Groups.Level2 = UpperLevelP;
                             GroupViewModel UpperLevel3P = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel3U = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             if (UpperLevel3P != null)
                             {
                                 Groups.Level3 = UpperLevel3P;
 
+                            }
+                            if (UpperLevel3U != null)
+                            {
+                                Groups.Level3 = UpperLevel3U;
                             }
 
                         }
@@ -869,7 +880,13 @@ namespace TLIS_Service.Services
 
                     if (Group.UpperId != null)
                         exeptLowerGroups.Add(Group.UpperId.Value);
+                    List<int> Groups = GetLastSon(GroupId);
 
+                    if (Groups != null)
+                    {
+                        exeptLowerGroups.AddRange(Groups);
+                    }
+                  
                     AllGroups = _unitOfWork.GroupRepository.GetWhere(x => !exeptLowerGroups.Any(y => y == x.Id) && !x.Deleted && x.Active).ToList();
                 }
                 else if (Level == 2)
@@ -889,7 +906,12 @@ namespace TLIS_Service.Services
 
                     if (grouplevel1.UpperId != null)
                         exeptLowerGroups.Add(grouplevel1.UpperId.Value);
+                    List<int> Groups = GetLastSon(GroupId);
 
+                    if (Groups != null)
+                    {
+                        exeptLowerGroups.AddRange(Groups);
+                    }
                     AllGroups = _unitOfWork.GroupRepository.GetWhere(x => !exeptLowerGroups.Any(y => y == x.Id) && !x.Deleted && x.Active).ToList();
 
                 }
@@ -915,19 +937,24 @@ namespace TLIS_Service.Services
 
                     if (grouplevel2.UpperId != null)
                         exeptLowerGroups.Add(grouplevel2.UpperId.Value);
+                    List<int> Groups = GetLastSon(GroupId);
 
+                    if (Groups != null)
+                    {
+                        exeptLowerGroups.AddRange(Groups);
+                    }
                     AllGroups = _unitOfWork.GroupRepository.GetWhere(x => !exeptLowerGroups.Any(y => y == x.Id) && !x.Deleted && x.Active).ToList();
                 }
                 else
                 {
-                    return new Response<List<GroupViewModel>>(true, null, null, $"No Level Found For This Level {Level}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<List<GroupViewModel>>(false, null, null, $"No Level Found For This Level {Level}", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
 
                 return new Response<List<GroupViewModel>>(true, _mapper.Map<List<GroupViewModel>>(AllGroups), null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<List<GroupViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<List<GroupViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
@@ -1033,6 +1060,24 @@ namespace TLIS_Service.Services
             {
                 throw;
             }
+        }
+        public List<int> GetLastSon(int groupId)
+        {
+            int lastSon = 0;
+            List<int> Childs = new List<int>();
+            // Start with the initial group (specified by groupId)
+            TLIgroup currentGroup = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == groupId && !x.Deleted && x.Active);
+
+            while (currentGroup != null)
+            {
+                lastSon = currentGroup.Id;
+                Childs.Add(lastSon);
+
+                // Find the next child (if any)
+                currentGroup = _unitOfWork.GroupRepository.GetWhereFirst(x => x.ParentId == currentGroup.Id && !x.Deleted && x.Active);
+                
+            }
+            return Childs;
         }
     }
 }
