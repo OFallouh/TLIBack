@@ -8176,16 +8176,34 @@ namespace TLIS_Service.Services
                     List<int> DynamicAttBaseFilter = _unitOfWork.DynamicAttRepository.GetWhere(x =>
                         x.tablesNamesId == TableNameId && (CategoryId != null ? (x.CivilWithoutLegCategoryId == CategoryId) : true)).Select(x => x.Id).ToList();
 
-                    List<int> DynamicAttIds = _unitOfWork.DynamicAttRepository.GetWhere(x =>
-                        DynamicAttBaseFilter.Contains(x.Id) &&
-                        (LibraryPropsAttributeFilters.All(z =>
-                            NonStringLibraryProps.Exists(y =>
-                                ((y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null) != null) ?
-                                    (z.value.Any(w => w.ToLower() == y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null).ToString().ToLower())) : (false))) ||
-                            StringLibraryProps.Exists(y => z.value.Any(w =>
-                                ((y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null) != null) ?
-                                    (y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower())) : (false))))))
-                    ).Select(i => i.Id).ToList();
+                    IEnumerable<TLIdynamicAtt> DynamicAtts = _unitOfWork.DynamicAttRepository
+                        .GetWhere(x => DynamicAttBaseFilter.Contains(x.Id));
+
+                    foreach (StringFilterObjectList z in LibraryPropsAttributeFilters)
+                    {
+                        if (NonStringLibraryProps.Exists(y => y.Name.ToLower() == z.key.ToLower()))
+                        {
+                            DynamicAtts = DynamicAtts.Where(x => z.value.Any(w => NonStringLibraryProps.FirstOrDefault(y => y.Name.ToLower() == z.key.ToLower())
+                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)).ToString().ToLower() == w.ToLower()));
+                        }
+                        else
+                        {
+                            DynamicAtts = DynamicAtts.Where(x => z.value.Any(w => StringLibraryProps.FirstOrDefault(y => y.Name.ToLower() == z.key.ToLower())
+                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)).ToString().ToLower().StartsWith(w.ToLower())));
+                        }
+                    }
+
+                    List<int> DynamicAttIds = DynamicAtts.Select(x => x.Id).ToList();
+
+                    //List<int> DynamicAttIds = _unitOfWork.DynamicAttRepository.GetWhere(x =>
+                    //    (LibraryPropsAttributeFilters.All(z =>
+                    //        NonStringLibraryProps.Exists(y =>
+                    //            ((y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null) != null) ?
+                    //                (z.value.Any(w => w.ToLower() == y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null).ToString().ToLower())) : (false))) ||
+                    //        StringLibraryProps.Exists(y => z.value.Any(w =>
+                    //            ((y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null) != null) ?
+                    //                (y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower())) : (false))))))
+                    //).Select(i => i.Id).ToList();
 
                     DynamicAtt = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                         x.Id > 0 && x.tablesNamesId == TableNameId && DynamicAttIds.Contains(x.Id),

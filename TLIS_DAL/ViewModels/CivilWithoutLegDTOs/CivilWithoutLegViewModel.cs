@@ -75,5 +75,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float? BuildingHeightH3 { get; set; }
         public int? subTypeId { get; set; }
         public string subType_Name { get; set; }
+        public float HieghFromLand { get; set; }
+        public float CenterHigh { get; set; }
     }
 }
