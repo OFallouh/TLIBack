@@ -517,11 +517,11 @@ namespace TLIS_Service.Services
         //}
         //Function take 1 parameter filters
         //Function return filtered groups and with every group list of group users and list of group roles
-        public Response<IEnumerable<GroupViewModel>> GetAllGroups(List<FilterObjectList> filters)
+        public Response<IEnumerable<AddGroupsViewModel>> GetAllGroups(List<FilterObjectList> filters)
         {
             try
             {
-                List<GroupViewModel> Groups = new List<GroupViewModel>();
+                List<AddGroupsViewModel> Groups = new List<AddGroupsViewModel>();
                 int? L1=null;
                 int? L2 = null;
                 int? L3 = null;
@@ -564,7 +564,7 @@ namespace TLIS_Service.Services
                         {
                             ActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId).Name;
                         }
-                        Groups.Add(new GroupViewModel()
+                        Groups.Add(new AddGroupsViewModel()
                         {
                             Id = item.Id,
                             Name = item.Name,
@@ -622,7 +622,7 @@ namespace TLIS_Service.Services
                         {
                             ActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId).Name;
                         }
-                        Groups.Add(new GroupViewModel()
+                        Groups.Add(new AddGroupsViewModel()
                         {
                             Id = item.Id,
                             Name = item.Name,   
@@ -664,11 +664,11 @@ namespace TLIS_Service.Services
                         x => new RoleViewModel { Id = x.roleId, Name = x.role.Name, Active = x.role.Active, Deleted = x.role.Deleted }).ToList();
                 }
 
-                return new Response<IEnumerable<GroupViewModel>>(true, Groups, null, null, (int)Helpers.Constants.ApiReturnCode.success, Groups.Count());
+                return new Response<IEnumerable<AddGroupsViewModel>>(true, Groups.OrderBy(x=>x.Name), null, null, (int)Helpers.Constants.ApiReturnCode.success, Groups.Count());
             }
             catch (Exception err)
             {
-                return new Response<IEnumerable<GroupViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<IEnumerable<AddGroupsViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
 
         }
@@ -863,19 +863,19 @@ namespace TLIS_Service.Services
                 }
                 if (MainGroup.UpperId != null)
                 {
-                    AddGroupsViewModel UpperLevel1 = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == MainGroup.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                    GroupViewModel UpperLevel1 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == MainGroup.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                     if (UpperLevel1 != null)
                     {
                         Groups.Level1 = UpperLevel1;
                         if (UpperLevel1.UpperId != null)
                         {
-                            AddGroupsViewModel UpperLevel2 = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel2 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             if (UpperLevel2 != null)
                             {
                                 Groups.Level2 = UpperLevel2;
                                 if (UpperLevel2.UpperId != null)
                                 {
-                                    AddGroupsViewModel UpperLevel3 = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel2.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                                    GroupViewModel UpperLevel3 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel2.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                                     if (UpperLevel3 != null)
                                     {
                                         Groups.Level3 = UpperLevel3;
@@ -887,19 +887,19 @@ namespace TLIS_Service.Services
                 }
                 if (MainGroup.ParentId != null)
                 {
-                    AddGroupsViewModel UpperLevel1 = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == MainGroup.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                    GroupViewModel UpperLevel1 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == MainGroup.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
 
                     if (UpperLevel1 != null)
                     {
                         Groups.Level1 = UpperLevel1;
-                        AddGroupsViewModel UpperLevelU = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
-                        AddGroupsViewModel UpperLevelP = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                        GroupViewModel UpperLevelU = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                        GroupViewModel UpperLevelP = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
 
                         if (UpperLevelU != null)
                         {
                             Groups.Level2 = UpperLevelU;
-                            AddGroupsViewModel UpperLevel3P = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelU.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
-                            AddGroupsViewModel UpperLevel3U = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelU.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel3P = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelU.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel3U = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelU.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             if (UpperLevel3U != null)
                             {
                                 Groups.Level3 = UpperLevel3U;
@@ -913,8 +913,8 @@ namespace TLIS_Service.Services
                         if (UpperLevelP != null)
                         {
                             Groups.Level2 = UpperLevelP;
-                            AddGroupsViewModel UpperLevel3P = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
-                            AddGroupsViewModel UpperLevel3U = _mapper.Map<AddGroupsViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel3P = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.ParentId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            GroupViewModel UpperLevel3U = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevelP.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                             if (UpperLevel3P != null)
                             {
                                 Groups.Level3 = UpperLevel3P;

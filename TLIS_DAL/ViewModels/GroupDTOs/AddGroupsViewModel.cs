@@ -17,8 +17,6 @@ namespace TLIS_DAL.ViewModels.GroupDTOs
         public string Name { get; set; }
         public int? ParentId { get; set; }
         public string ParentName { get; set; }
-        public int? UpperId { get; set; }
-        public string UpperName { get; set; }
         [Required]
         public int GroupType { get; set; }
         [Required]
@@ -27,6 +25,12 @@ namespace TLIS_DAL.ViewModels.GroupDTOs
         public bool Deleted { get; set; }
         public int? ActorId { get; set; }
         public string ActorName { get; set; }
+        public int? UpperLevel1Id { get; set; }
+        public string UpperLevel1Name { get; set; }
+        public int? UpperLevel2Id { get; set; }
+        public string UpperLevel2Name { get; set; }
+        public int? UpperLevel3Id { get; set; }
+        public string UpperLevel3Name { get; set; }
         public List<UserNameViewModel> Users { get; set; } = new List<UserNameViewModel>();
         public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
     }
