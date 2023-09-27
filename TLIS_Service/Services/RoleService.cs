@@ -203,7 +203,11 @@ namespace TLIS_Service.Services
             List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository
                       .GetWhere(x => x.RoleId == editRole.Id && x.Delete==false && x.Active==true).Select(x => x.PageUrl).ToList();
 
-            List<string> Exi = AllRolePermissionsIn.Except(editRole.permissions).Union(editRole.permissions.Except(AllRolePermissionsIn)).ToList();
+            var Exi = AllRolePermissionsIn.Select(s => s.ToLower())
+                .Except(editRole.permissions.Select(s => s.ToLower()))
+                .Union(editRole.permissions.Select(s => s.ToLower()))
+                .Except(AllRolePermissionsIn.Select(s => s.ToLower()))
+                .Distinct().ToList();
             foreach (var item in Exi)
             {
                 TLIrole_Permissions tLIrolePermissions = new TLIrole_Permissions();
