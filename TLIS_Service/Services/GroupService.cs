@@ -24,6 +24,9 @@ using TLIS_DAL.ViewModelBase;
 using TLIS_DAL;
 using AutoMapper;
 using TLIS_DAL.ViewModels.RowDTOs;
+using TLIS_Repository.Repositories;
+using System.ComponentModel;
+using TLIS_DAL.ViewModels.StepActionDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -256,7 +259,7 @@ namespace TLIS_Service.Services
                 }
                 catch (Exception err)
                 {
-                    return new Response<AddGroupViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+                    return new Response<AddGroupViewModel>(false, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
                 }
             }
         }
@@ -514,32 +517,158 @@ namespace TLIS_Service.Services
         //}
         //Function take 1 parameter filters
         //Function return filtered groups and with every group list of group users and list of group roles
-        public Response<IEnumerable<GroupViewModel>> GetAllGroups(List<FilterObjectList> filters)
+        public Response<IEnumerable<AddGroupsViewModel>> GetAllGroups(List<FilterObjectList> filters)
         {
             try
             {
-                List<GroupViewModel> Groups = new List<GroupViewModel>();
+                List<AddGroupsViewModel> Groups = new List<AddGroupsViewModel>();
+                int? L1=null;
+                int? L2 = null;
+                int? L3 = null;
+                string L1Name = null;
+                string L2Name = null;
+                string L3Name = null;
+                string ParentName = null;
+                string ActorName = null;
                 if (filters != null ? filters.Count() > 0 : false)
-                    Groups = _mapper.Map<List<GroupViewModel>>(_unitOfWork.GroupRepository
-                        .GetWhere(x => x.Active && !x.Deleted &&
-                            x.Name.ToLower().StartsWith(filters.FirstOrDefault().value.FirstOrDefault().ToString().ToLower()))).ToList().OrderBy(x => x.Name).ToList();
-                else
-                    Groups = _mapper.Map<List<GroupViewModel>>(_unitOfWork.GroupRepository
-                        .GetWhere(x => x.Active && !x.Deleted)).ToList().OrderBy(x => x.Name).ToList();
+                {
+                    List<TLIgroup> GroupAll = _unitOfWork.GroupRepository.GetWhere(x => !x.Deleted && x.Active).ToList();
+                    foreach (var item in GroupAll)
+                    {
+                        if (item.UpperId != null)
+                        {
+                            L1 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.UpperId).UpperId;
 
+                        }
+                        if (L1 != null)
+                        {
+                            L1Name = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1).Name;
+                            L2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1).UpperId;
+
+                        }
+                        if (L2 != null)
+                        {
+                            L2Name = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2).Name;
+                            L3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2).UpperId;
+
+                        }
+                        if (L3 != null)
+                        {
+                            L3Name = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L3).Name;
+                        }
+                        if (item.ParentId != null)
+                        {
+                            ParentName = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.ParentId).Name;
+                        }
+                        if (item.ActorId != null)
+                        {
+                            ActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId).Name;
+                        }
+                        Groups.Add(new AddGroupsViewModel()
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            ParentId = item.ParentId,
+                            ParentName = ParentName,
+                            GroupType = item.GroupType,
+                            Active = item.Active,
+                            Deleted = item.Deleted,
+                            ActorId = item.ActorId,
+                            ActorName = ActorName,
+                            UpperLevel1Id = L1,
+                            UpperLevel1Name = L1Name,
+                            UpperLevel2Id = L2,
+                            UpperLevel2Name = L2Name,
+                            UpperLevel3Id = L3,
+                            UpperLevel3Name = L3Name
+
+                        });
+                    }
+
+                   Groups = Groups.Where(x => x.Name.ToLower().StartsWith(filters.FirstOrDefault().value.FirstOrDefault().ToString().ToLower())).ToList().OrderBy(x => x.Name).ToList();
+
+                }
+                else
+                {
+                    List<TLIgroup> GroupAll = _unitOfWork.GroupRepository.GetWhere(x=>!x.Deleted && x.Active).ToList();
+                    foreach (var item in GroupAll)
+                    {
+                        if (item.UpperId != null)
+                        {
+                            L1 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.UpperId).UpperId;
+                            
+                        }
+                        if (L1 != null)
+                        {
+                            L1Name = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1).Name;
+                            L2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1).UpperId;
+                           
+                        }
+                        if (L2 != null) 
+                        {
+                            L2Name = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2).Name;
+                            L3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2).UpperId;
+                          
+                        }
+                        if (L3 != null)
+                        {
+                            L3Name = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L3).Name;
+                        }
+                        if (item.ParentId != null)
+                        {
+                             ParentName = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.ParentId).Name;
+                        }
+                        if (item.ActorId != null)
+                        {
+                            ActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId).Name;
+                        }
+                        Groups.Add(new AddGroupsViewModel()
+                        {
+                            Id = item.Id,
+                            Name = item.Name,   
+                            ParentId=item.ParentId,
+                            ParentName= ParentName,
+                            GroupType =item.GroupType,
+                            Active=item.Active,
+                            Deleted=item.Deleted,
+                            ActorId=item.ActorId,
+                            ActorName= ActorName,
+                            UpperLevel1Id =L1,
+                            UpperLevel1Name= L1Name,
+                            UpperLevel2Id = L2,
+                            UpperLevel2Name = L2Name,
+                            UpperLevel3Id=L3,
+                            UpperLevel3Name=L3Name
+
+                        });
+                    }
+                   
+                }
                 foreach (var Group in Groups)
                 {
-                    Group.Users = _unitOfWork.GroupUserRepository.GetWhereAndSelect(x => x.groupId == Group.Id && x.Active && !x.Deleted,
-                        x => new UserNameViewModel { Id = x.userId, UserName = x.user.UserName }).ToList();
+                    List<UserNameViewModel> userNameViewModels = new List<UserNameViewModel>();
+                    List<TLIgroupUser> Users = _unitOfWork.GroupUserRepository.GetWhere
+                        (x => x.groupId == Group.Id && x.Active && !x.Deleted).ToList();
+                    foreach (var item in Users)
+                    {
+                        int UserType = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == item.userId).UserType;
+                        userNameViewModels.Add(new UserNameViewModel()
+                        {
+                            Id = item.userId,
+                            UserName = item.user.UserName,
+                            UserType = UserType
+                        });
+                    }
+                    Group.Users = userNameViewModels;
                     Group.Roles = _unitOfWork.GroupRoleRepository.GetWhereAndSelect(x => x.groupId == Group.Id && x.Active && !x.Deleted,
                         x => new RoleViewModel { Id = x.roleId, Name = x.role.Name, Active = x.role.Active, Deleted = x.role.Deleted }).ToList();
                 }
 
-                return new Response<IEnumerable<GroupViewModel>>(true, Groups, null, null, (int)Helpers.Constants.ApiReturnCode.success, Groups.Count());
+                return new Response<IEnumerable<AddGroupsViewModel>>(true, Groups.OrderBy(x=>x.Name), null, null, (int)Helpers.Constants.ApiReturnCode.success, Groups.Count());
             }
             catch (Exception err)
             {
-                return new Response<IEnumerable<GroupViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<IEnumerable<AddGroupsViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
 
         }

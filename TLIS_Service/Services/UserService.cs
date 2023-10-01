@@ -74,7 +74,7 @@ namespace TLIS_Service.Services
                         //    iterationCount: 100000,
                         //    numBytesRequested: 256 / 8));
 
-                         model.Password = EncryptPassword(model.Password);
+                         model.Password = CryptPassword(model.Password);
 
                         TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
@@ -594,7 +594,12 @@ namespace TLIS_Service.Services
                     List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
                       .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                    var Exi = AllUserPermissionsInDB.Except(model.permissions).Union(model.permissions).Except(AllUserPermissionsInDB).Distinct().ToList();
+
+                    var Exi = AllUserPermissionsInDB.Select(s => s.ToLower())
+                        .Except(model.permissions.Select(s => s.ToLower()))
+                        .Union(model.permissions.Select(s => s.ToLower()))
+                        .Except(AllUserPermissionsInDB.Select(s => s.ToLower()))
+                        .Distinct().ToList();
                     foreach (var item in Exi)
                     {
                         TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
@@ -762,131 +767,55 @@ namespace TLIS_Service.Services
             }
         }
 
-        //////private string CryptPassword(string password)
-        //////{
-        //////    byte[] plaintext = Encoding.UTF8.GetBytes(password);
-        //////    byte[] ciphertext;
-
-        //////    using (Aes aes = Aes.Create())
-        //////    {
-        //////        aes.Key = key;
-        //////        aes.IV = iv;
-        //////        aes.Padding = PaddingMode.PKCS7;
-        //////        using (ICryptoTransform encryptor = aes.CreateEncryptor())
-        //////        {
-        //////            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
-        //////        }
-        //////    }
-
-        //////    return Convert.ToBase64String(ciphertext);
-
-
-        //////}
-
-
-        //private string DecryptPassword(string CryptPassword)
-        //{
-        //    try
-        //    {
-
-        //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
-        //        byte[] plaintext;
-
-        //        using (Aes aes = Aes.Create())
-        //        {
-        //            aes.Key = key;
-        //            aes.IV = iv;
-        //            aes.Padding = PaddingMode.PKCS7;
-        //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
-        //            {
-        //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-        //            }
-        //        }
-
-        //        int paddingLength = plaintext[plaintext.Length - 1];
-        //        byte[] unpaddedPlaintext = new byte[plaintext.Length - paddingLength];
-        //        Array.Copy(plaintext, unpaddedPlaintext, unpaddedPlaintext.Length);
-
-        //        return Encoding.UTF8.GetString(unpaddedPlaintext);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ex.Message;
-        //    }
-        //}
-        private static readonly byte[] keys = Generate256BitKey();
-        public static string EncryptPassword(string password)
+        private string CryptPassword(string password)
         {
-            using (Aes aesAlg = Aes.Create())
+            byte[] plaintext = Encoding.UTF8.GetBytes(password);
+            byte[] ciphertext;
+
+            using (Aes aes = Aes.Create())
             {
-                aesAlg.Key = keys;
-                aesAlg.GenerateIV(); // Generate a random IV
-                byte[] iv = aesAlg.IV; // Save the IV for later decryption
+                aes.Key = key;
+                aes.IV = iv;
 
-                aesAlg.Mode = CipherMode.CFB; // You can change the mode as per your requirement.
-                aesAlg.Padding = PaddingMode.PKCS7;
-
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
+                using (ICryptoTransform encryptor = aes.CreateEncryptor())
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            swEncrypt.Write(password);
-                        }
-                    }
-                    // Combine IV and ciphertext for storage, and return as Base64 string
-                    byte[] ivAndCiphertext = new byte[iv.Length + msEncrypt.ToArray().Length];
-                    Array.Copy(iv, ivAndCiphertext, iv.Length);
-                    Array.Copy(msEncrypt.ToArray(), 0, ivAndCiphertext, iv.Length, msEncrypt.ToArray().Length);
-                    return Convert.ToBase64String(ivAndCiphertext);
+                    ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
                 }
             }
+
+            return Convert.ToBase64String(ciphertext);
+
+
         }
 
-        public static string DecryptPassword(string encryptedPassword)
+        private string DecryptPassword(string CryptPassword)
         {
-            byte[] ivAndCiphertext = Convert.FromBase64String(encryptedPassword);
-            byte[] iv = new byte[16];
-            byte[] ciphertext = new byte[ivAndCiphertext.Length - 16];
-
-            Array.Copy(ivAndCiphertext, iv, 16);
-            Array.Copy(ivAndCiphertext, 16, ciphertext, 0, ciphertext.Length);
-
-            using (Aes aesAlg = Aes.Create())
+            try
             {
-                aesAlg.Key = keys;
-                aesAlg.IV = iv;
 
-                aesAlg.Mode = CipherMode.CFB; // You must use the same mode as used for encryption.
-                aesAlg.Padding = PaddingMode.PKCS7;
+                byte[] ciphertext = Convert.FromBase64String(CryptPassword);
+                byte[] plaintext;
 
-                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msDecrypt = new MemoryStream(ciphertext))
+                using (Aes aes = Aes.Create())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    aes.Key = key;
+                    aes.IV = iv;
+
+                    using (ICryptoTransform decryptor = aes.CreateDecryptor())
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                        {
-                            return srDecrypt.ReadToEnd();
-                        }
+                        plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
                     }
                 }
+
+                return Encoding.UTF8.GetString(plaintext);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
 
-        private static byte[] Generate256BitKey()
-        {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                byte[] key = new byte[32]; // 256 bits
-                rng.GetBytes(key);
-                return key;
-            }
-        }
+
 
     }
 }

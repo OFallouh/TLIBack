@@ -477,15 +477,7 @@ namespace TLIS_DAL
 
             builder.Entity<TLIattachedFiles>().Property(x => x.UnAttached).HasDefaultValue(false);
 
-            builder.Entity<TLIgroup>()
-              .HasOne(a => a.Parent)
-              .WithOne()
-              .HasForeignKey<TLIgroup>(e => e.ParentId);
-
-            builder.Entity<TLIgroup>()
-              .HasOne(a => a.Upper)
-              .WithOne()
-              .HasForeignKey<TLIgroup>(e => e.UpperId);
+            
 
 
         }
