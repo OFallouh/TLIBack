@@ -4743,7 +4743,27 @@ namespace TLIS_Service.Services
                                 !prop.Name.ToLower().Contains("_name") &&
                                 (prop.Name.ToLower().Substring(Math.Max(0, prop.Name.Length - 2)) != "id" || prop.Name.ToLower() == "id"))
                             {
-                                if (prop.Name.ToLower() != "id" && prop.Name.ToLower() != "active")
+                                if (prop.Name.ToLower() == "StructureType".ToLower() ||
+                                    prop.Name.ToLower() == "SectionsLegType".ToLower())
+                                {
+                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
+                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
+                                        x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
+
+                                    if (LabelName != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(prop.GetValue(CivilWithLegInstallationObject, null).ToString()))
+                                        {
+                                            object PropObject = prop.GetValue(CivilWithLegInstallationObject, null);
+                                            ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject.ToString()));
+                                        }
+                                        else
+                                        {
+                                            ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, null));
+                                        }
+                                    }
+                                }
+                                else if (prop.Name.ToLower() != "id" && prop.Name.ToLower() != "active")
                                 {
                                     TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
                                         x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
@@ -4995,64 +5015,10 @@ namespace TLIS_Service.Services
                                 !prop.Name.ToLower().Contains("_name") &&
                                 (prop.Name.ToLower().Substring(Math.Max(0, prop.Name.Length - 2)) != "id" || prop.Name.ToLower() == "id"))
                             {
-                                if (prop.Name.ToLower() == "ladderSteps".ToLower())
-                                {
-                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() &&
-                                        x.Enable && x.Id != 0);
-
-                                    if (LabelName != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(prop.GetValue(CivilWithoutLegInstallationObject, null).ToString()))
-                                        {
-                                            object PropObject = prop.GetValue(CivilWithoutLegInstallationObject, null);
-                                            ((IDictionary<String, Object>)DynamicCivilWithoutLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject.ToString()));
-                                        }
-                                        else
-                                        {
-                                            ((IDictionary<String, Object>)DynamicCivilWithoutLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, null));
-                                        }
-                                    }
-                                }
-                                else if (prop.Name.ToLower() == "availabilityOfWorkPlatforms".ToLower())
-                                {
-                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() &&
-                                        x.Enable && x.Id != 0);
-
-                                    if (LabelName != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(prop.GetValue(CivilWithoutLegInstallationObject, null).ToString()))
-                                        {
-                                            object PropObject = prop.GetValue(CivilWithoutLegInstallationObject, null);
-                                            ((IDictionary<String, Object>)DynamicCivilWithoutLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject.ToString()));
-                                        }
-                                        else
-                                        {
-                                            ((IDictionary<String, Object>)DynamicCivilWithoutLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, null));
-                                        }
-                                    }
-                                }
-                                else if (prop.Name.ToLower() == "reinforced".ToLower())
-                                {
-                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() &&
-                                        x.Enable && x.Id != 0);
-
-                                    if (LabelName != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(prop.GetValue(CivilWithoutLegInstallationObject, null).ToString()))
-                                        {
-                                            object PropObject = prop.GetValue(CivilWithoutLegInstallationObject, null);
-                                            ((IDictionary<String, Object>)DynamicCivilWithoutLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject.ToString()));
-                                        }
-                                        else
-                                        {
-                                            ((IDictionary<String, Object>)DynamicCivilWithoutLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, null));
-                                        }
-                                    }
-                                }
-                                else if (prop.Name.ToLower() == "equipmentsLocation".ToLower())
+                                if (prop.Name.ToLower() == "ladderSteps".ToLower() ||
+                                    prop.Name.ToLower() == "availabilityOfWorkPlatforms".ToLower() ||
+                                    prop.Name.ToLower() == "reinforced".ToLower() ||
+                                    prop.Name.ToLower() == "equipmentsLocation".ToLower())
                                 {
                                     TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
                                         x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString() &&

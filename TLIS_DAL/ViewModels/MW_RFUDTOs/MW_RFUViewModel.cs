@@ -21,5 +21,8 @@ namespace TLIS_DAL.ViewModels.MW_RFUDTOs
         public float EquivalentSpace { get; set; }
         public int? OwnerId { get; set; }
         public string Owner_Name { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
     }
 }
