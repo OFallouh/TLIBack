@@ -16,5 +16,8 @@ namespace TLIS_DAL.ViewModels.LoadOtherDTOs
         public int loadOtherLibraryId { get; set; }
         public string loadOtherLibrary_Name { get; set; }
         public float SpaceInstallation { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
     }
 }

@@ -62,6 +62,10 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public int CivilWithoutlegsLibId { get; set; }
         public int? OwnerId { get; set; } = 0;
         public float Support_Limited_Load { get; set; }
+        public float HieghFromLand { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float EquivalentSpace { get; set; }
         public AddCivilSiteDateViewModel TLIcivilSiteDate { get; set; }
         public AddCivilSupportDistanceViewModel TLIcivilSupportDistance { get; set; }
         public List<AddDynamicAttInstValueViewModel> TLIdynamicAttInstValue { get; set; }

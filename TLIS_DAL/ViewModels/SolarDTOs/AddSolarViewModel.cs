@@ -29,6 +29,10 @@ namespace TLIS_DAL.ViewModels.SolarDTOs
         public string VisibleStatus { get; set; }
         public int SolarLibraryId { get; set; }
         public int? CabinetId { get; set; } = 0;
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
         public AddOtherInSiteViewModel TLIotherInSite { get; set; }
         public AddOtherInventoryDistanceViewModel TLIotherInventoryDistance { get; set; }
         public List<AddDynamicAttInstValueViewModel> TLIdynamicAttInstValue { get; set; }
