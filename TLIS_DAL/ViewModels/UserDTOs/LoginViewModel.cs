@@ -11,5 +11,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public string UserName { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public byte[] SecretKey { get; set; }
+        public byte[] IV { get; set; }
     }
 }

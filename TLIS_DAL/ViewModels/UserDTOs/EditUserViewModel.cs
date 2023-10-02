@@ -20,12 +20,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public string MobileNumber { get; set; }
         [Required]
         public string UserName { get; set; }
-        //[Required]
-        //[Required]
-        [DataType(DataType.Password)]
-        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            ErrorMessage = "Your password must contain at least eight characters, a capital letter," +
-            " a lowercase letter, a number, and a special character.")]
+
         public string Password { get; set; }
         //public string ConfirmPassword { get; set; }
 
@@ -38,6 +33,8 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         [Required]
         public bool Deleted { get; set; }
         public List<string> permissions { get; set; }
+
+        public DateTime ChangedPasswordDate { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }
     }
 }

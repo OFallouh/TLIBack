@@ -206,5 +206,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.CheckPasswordExpiryDate(Id);
             return Ok(response);
         }
+        [HttpGet("GetAllUserWithoutGroup")]
+        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        public IActionResult GetAllUserWithoutGroup()
+        {
+            var response = _unitOfWorkService.UserService.GetAllUserWithoutGroup();
+            return Ok(response);
+        }
     }
 }

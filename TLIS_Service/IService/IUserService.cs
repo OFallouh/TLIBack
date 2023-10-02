@@ -32,5 +32,6 @@ namespace TLIS_Service.IService
         Response<List<UserViewModel>> GetExternalUsersByName(string UserName, ParameterPagination parameterPagination);
         Response<List<UserViewModel>> GetInternalUsersByName(string UserName, ParameterPagination parameter);
         Response<List<UserViewModel>> GetUsersByUserType(int UserTypeId, string UserName, ParameterPagination parameterPagination);
+        Response<List<UserWithoutGroupViewModel>> GetAllUserWithoutGroup();
     }
 }

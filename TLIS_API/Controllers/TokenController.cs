@@ -117,5 +117,38 @@ namespace TLIS_API.Controllers
             }
 
         }
+
+        //--------------------------------------------------Login----------------------------
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Login")]
+        [ProducesResponseType(200, Type = typeof(UserViewModel))]
+        public IActionResult Login([FromBody] LoginViewModel login)
+        {
+            try
+            {
+                if (TryValidateModel(login, nameof(LoginViewModel)))
+                {
+                    var secretKey = _config["JWT:Key"];
+                    var domainName = _config["Domain"];
+                    var domainGroup = _config["DomainGroup"];
+
+                    var response = _unitOfWork.TokenService.Login(login, secretKey, domainName, domainGroup);
+                    return Ok(response);
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<LoginViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

@@ -13,6 +13,6 @@ namespace TLIS_Service.IService
         string BuildToken(UserViewModel user, string secretKey);
         Response<string> CreateToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
         Response<string> CreateInternalToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
-
+        Response<string> Login(LoginViewModel login, string secretKey, string domain, string domainGroup);
     }
 }

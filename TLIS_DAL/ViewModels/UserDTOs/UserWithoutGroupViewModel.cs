@@ -1,33 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
-using TLIS_DAL.ViewModels.GroupDTOs;
-using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
-using TLIS_DAL.ViewModels.PermissionDTOs;
+using System.Threading.Tasks;
 
 namespace TLIS_DAL.ViewModels.UserDTOs
 {
-    public class AddUserViewModel
+    public class UserWithoutGroupViewModel
     {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
         public string MobileNumber { get; set; }
-        [Required]
+
         public string UserName { get; set; }
-        [Required]  
         public string Password { get; set; }
         public string Domain { get; set; }
         public string AdGUID { get; set; }
-        [Required]
         public int UserType { get; set; }
-        public bool Active { get; set; } = true;
-        public bool Deleted { get; set; } = false;
-        public List<string> Permissions { get; set; }
-        public List<GroupNamesViewModel> Groups { get; set; }
+        public bool Active { get; set; }
+        public bool Deleted { get; set; }
+        public string ConfirmationCode { get; set; }
+        public bool ValidateAccount { get; set; }
+        public List<String> Permissions { get; set; }
     }
 }
