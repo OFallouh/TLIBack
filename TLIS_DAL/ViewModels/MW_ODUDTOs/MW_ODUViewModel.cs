@@ -25,5 +25,9 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
         public int MwODULibraryId { get; set; }
         public string MwODULibrary_Name { get; set; }
         public ODUConnections ODUConnections { get; set; }
+
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
     }
 }
