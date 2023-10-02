@@ -55,7 +55,10 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public float EnforcementHeightBase { get; set; }
         public float Enforcementlevel { get; set; }
         public float Support_Limited_Load { get; set; }
-
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
         public StructureTypeCompatibleWithDesign StructureType { get; set; }
         public SectionsLegTypeCompatibleWithDesign SectionsLegType { get; set; }
         public List<BaseInstAttView> DynamicInstAttsValue { get; set; }

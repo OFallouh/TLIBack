@@ -20,6 +20,10 @@ namespace TLIS_DAL.ViewModels.GeneratorDTOs
         public string VisibleStatus { get; set; }
         public int? BaseGeneratorTypeId { get; set; }
         public int? GeneratorLibraryId { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
         public EditOtherInSiteViewModel TLIotherInSite { get; set; }
         public EditOtherInventoryDistanceViewModel TLIotherInventoryDistance { get; set; }
         public List<BaseInstAttView> DynamicInstAttsValue { get; set; }

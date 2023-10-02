@@ -3054,7 +3054,26 @@ namespace TLIS_Service.Services
                                 !prop.Name.ToLower().Contains("_name") &&
                                 (prop.Name.ToLower().Substring(Math.Max(0, prop.Name.Length - 2)) != "id" || prop.Name.ToLower() == "id"))
                             {
-                                if (prop.Name.ToLower() != "id" && prop.Name.ToLower() != "active")
+                                if (prop.Name.ToLower() == "ODUConnections".ToLower())
+                                {
+                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
+                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLImwODU.ToString() &&
+                                        x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
+
+                                    if (LabelName != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(prop.GetValue(ODUsInstallationObject, null).ToString()))
+                                        {
+                                            object PropObject = prop.GetValue(ODUsInstallationObject, null);
+                                            ((IDictionary<String, Object>)DynamiMW_ODUInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject.ToString()));
+                                        }
+                                        else
+                                        {
+                                            ((IDictionary<String, Object>)DynamiMW_ODUInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, null));
+                                        }
+                                    }
+                                }
+                                else if (prop.Name.ToLower() != "id" && prop.Name.ToLower() != "active")
                                 {
                                     TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
                                         x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLImwODU.ToString() &&

@@ -280,7 +280,7 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<TLIgroup, GroupViewModel>()
                  .ForMember(x => x.ActorName, x => x.MapFrom(s => s.Actor.Name))
-                 .ForMember(x => x.ParentName, x => x.MapFrom(s => s.ParentId != null ? s.Parent.Name : null))
+                 .ForMember(x => x.ParentName, x => x.MapFrom(s => s.ParentId != null ? s.Parent.Select(x=>x.Name) : null))
                  .ForMember(x => x.UpperName, x => x.MapFrom(s => s.Upper.Name));
 
             CreateMap<TLIgroup, GroupNamesViewModel>()

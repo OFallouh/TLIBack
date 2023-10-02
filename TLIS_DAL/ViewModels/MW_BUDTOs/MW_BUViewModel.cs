@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.MW_BUDTOs
 {
@@ -30,5 +31,9 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
         public int BaseBUId { get; set; }
         public string InstallationPlace_Name { get; set; }
         public int InstallationPlaceId { get; set; }
+
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
     }
 }

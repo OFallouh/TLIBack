@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.RadioOtherDTOs
 {
@@ -20,5 +21,8 @@ namespace TLIS_DAL.ViewModels.RadioOtherDTOs
         public int radioOtherLibraryId { get; set; }
         public string radioOtherLibrary_Name { get; set; }
         public float Spaceinstallation { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
     }
 }

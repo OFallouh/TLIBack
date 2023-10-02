@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.RadioRRUDTOs
 {
@@ -26,5 +27,10 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
         public string installationPlace_Name { get; set; }
         public bool enable { get; set; }
         public string VisibleStatus { get; set; }
+
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float Azimuth { get; set; }
     }
 }

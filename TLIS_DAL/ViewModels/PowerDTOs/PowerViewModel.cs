@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.PowerDTOs
 {
@@ -25,5 +26,9 @@ namespace TLIS_DAL.ViewModels.PowerDTOs
         public string VisibleStatus { get; set; }
         public float Azimuth { get; set; }
         public float? Height { get; set; }
+
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
     }
 }
