@@ -3348,7 +3348,7 @@ namespace TLIS_Service.Services
                 ObjectInstAtts objectInst = new ObjectInstAtts();
 
                 List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivated(TableName, null, "installationPlaceId", "EquivalentSpace", "radioAntennaLibraryId", "radioRRULibraryId",
+                    GetInstAttributeActivated(TableName, null, "installationPlaceId", /*"EquivalentSpace",*/ "radioAntennaLibraryId", "radioRRULibraryId",
                         "radioOtherLibraryId").ToList();
 
                 BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
