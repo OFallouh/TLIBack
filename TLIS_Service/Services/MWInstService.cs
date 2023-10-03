@@ -104,7 +104,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -166,7 +166,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), null, "Name", "MwODULibraryId", "OduInstallationTypeId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), null, "Name", "MwODULibraryId", "OduInstallationTypeId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -220,7 +220,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwRFU.ToString(), null, "MwRFULibraryId", "MwPortId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwRFU.ToString(), null, "MwRFULibraryId", "MwPortId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -260,7 +260,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwDish.ToString(), null, "DishName", "InstallationPlaceId", "MwDishLibraryId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwDish.ToString(), null, "DishName", "InstallationPlaceId", "MwDishLibraryId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
                     if (NameAttribute != null)
@@ -300,7 +300,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwOther.ToString(), null, "mwOtherLibraryId", "EquivalentSpace",
+                        GetInstAttributeActivated(LoadSubType.TLImwOther.ToString(), null, "mwOtherLibraryId", /*"EquivalentSpace",*/
                             "InstallationPlaceId").ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
