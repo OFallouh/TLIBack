@@ -39,5 +39,7 @@ namespace TLIS_Service.IService
 
         Response<List<MW_PortViewModel>> GetFreePortOnBU(int BUid);
         Response<List<MW_DishGetForAddViewModel>> GetFreeDishesForMW_ODU(int AllCivilInstId);
+
+        Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId);
     }
 }
