@@ -45,9 +45,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetAttForAddMW_ODU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_ODU(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMW_ODU(int LibId, string SiteCode, int AllCivilInstId)
         {
-            var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode);
+            var response = _unitOfWorkService.MWInstService.GetAttForAddForMW_ODUOnly(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, AllCivilInstId);
             return Ok(response);
         }
         [HttpGet("GetAttForAddMW_Dish")]

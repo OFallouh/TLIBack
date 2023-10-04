@@ -80,7 +80,7 @@ namespace TLIS_Service.Services
 
                 List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
                     GetInstAttributeActivated(TablesNames.TLIsideArm.ToString(), null, "Name", "sideArmLibraryId",
-                        "sideArmInstallationPlaceId", "sideArmTypeId", "ItemStatusId", "TicketId", "Draft", "Active", "ReservedSpace", "EquivalentSpace").ToList();
+                        "sideArmInstallationPlaceId", "sideArmTypeId", "ItemStatusId", "TicketId", "Draft", "Active", "ReservedSpace"/*, "EquivalentSpace"*/).ToList();
 
                 BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                 if (NameAttribute != null)
@@ -523,7 +523,7 @@ namespace TLIS_Service.Services
                 objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                 List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                    .GetInstAttributeActivated(TablesNames.TLIsideArm.ToString(), side, "TicketId", "Draft", "EquivalentSpace",
+                    .GetInstAttributeActivated(TablesNames.TLIsideArm.ToString(), side, "TicketId", "Draft", /*"EquivalentSpace",*/
                         "HBA", "ItemStatusId", "ReservedSpace", "sideArmInstallationPlaceId", "sideArmTypeId").ToList();
 
                 BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());

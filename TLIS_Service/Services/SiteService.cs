@@ -64,6 +64,7 @@ using TLIS_DAL.ViewModels.LocationTypeDTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TLIS_Service.Services
 {
@@ -480,7 +481,8 @@ namespace TLIS_Service.Services
                 if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString().ToLower())
                 {
                     List<TLIallCivilInst> AllCivilInsts = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
-                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilWithLegsId != null,
+                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilWithLegsId != null &&
+                       !string.IsNullOrEmpty(x.allCivilInst.civilWithLegs.Name),
                         x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).AsQueryable().AsNoTracking().Select(x => x.allCivilInst).ToList();
 
                     List<CivilWithLegsViewModel> CivilWithLegs = _mapper.Map<List<CivilWithLegsViewModel>>(AllCivilInsts.Where(x => x.civilWithLegsId != null).Select(x => x.civilWithLegs).ToList());
@@ -499,7 +501,8 @@ namespace TLIS_Service.Services
                 else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
                 {
                     List<TLIallCivilInst> AllCivilInsts = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
-                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilWithoutLegId != null,
+                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilWithoutLegId != null && 
+                       !string.IsNullOrEmpty(x.allCivilInst.civilWithoutLeg.Name),
                         x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).AsQueryable().AsNoTracking().Select(x => x.allCivilInst).ToList();
 
                     List<CivilWithoutLegViewModel> CivilWithoutLegs = _mapper.Map<List<CivilWithoutLegViewModel>>(AllCivilInsts.Where(x => x.civilWithoutLegId != null).Select(x => x.civilWithoutLeg).ToList());
@@ -518,7 +521,8 @@ namespace TLIS_Service.Services
                 else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString().ToLower())
                 {
                     List<TLIallCivilInst> AllCivilInsts = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
-                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilNonSteelId != null,
+                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilNonSteelId != null && 
+                       !string.IsNullOrEmpty(x.allCivilInst.civilNonSteel.Name),
                         x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).AsQueryable().AsNoTracking().Select(x => x.allCivilInst).ToList();
 
                     List<CivilNonSteelViewModel> CivilNonSteels = _mapper.Map<List<CivilNonSteelViewModel>>(AllCivilInsts.Where(x => x.civilNonSteelId != null).Select(x => x.civilNonSteel).ToList());

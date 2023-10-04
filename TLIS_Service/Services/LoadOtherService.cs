@@ -1407,7 +1407,7 @@ namespace TLIS_Service.Services
                 objectInst.LibraryActivatedAttributes = LibraryAttributeActivated;
 
                 List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivated(LoadSubType.TLIloadOther.ToString(), null, "loadOtherLibraryId", "EquivalentSpace", "InstallationPlaceId").ToList();
+                    GetInstAttributeActivated(LoadSubType.TLIloadOther.ToString(), null, "loadOtherLibraryId"/*, "EquivalentSpace"*/, "InstallationPlaceId").ToList();
 
                 BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                 if (NameAttribute != null)

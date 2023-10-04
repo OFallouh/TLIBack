@@ -28,6 +28,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public int? TicketId { get; set; }
         public bool Draft { get; set; }
         public bool Active { get; set; }
+        public float EquivalentSpace { get; set; }
         public EditCivilLoadsViewModel TLIcivilLoads { get; set; }
         public List<BaseInstAttView> DynamicInstAttsValue { get; set; }
     }

@@ -104,7 +104,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -166,7 +166,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), null, "Name", "MwODULibraryId", "OduInstallationTypeId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), null, "Name", "MwODULibraryId", "OduInstallationTypeId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -182,20 +182,15 @@ namespace TLIS_Service.Services
 
                         else if (FKitem.Desc.ToLower() == "tlimwdish")
                         {
-                            var Dish = _unitOfWork.CivilLoadsRepository
-                                .GetIncludeWhere(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle && x.allLoadInstId != null,
-                                    x => x.allLoadInst).Select(x => x.allLoadInst.mwDishId).ToList();
+                            List<int> UsedDishesIds = _unitOfWork.MW_ODURepository.GetWhere(x => x.Mw_DishId != null).Select(x => x.Mw_DishId.Value).ToList();
 
-                            List<TLImwDish> mwdishlist = new List<TLImwDish>();
-                            foreach (var item in Dish)
-                            {
-                                if (item != null)
-                                {
-                                    var dishname = _dbContext.TLImwDish.FirstOrDefault(x => x.Id == item);
-                                    mwdishlist.Add(dishname);
-                                }
-                            }
-                            FKitem.Value = _mapper.Map<List<MW_DishGetForAddViewModel>>(mwdishlist);
+                            List<MW_DishGetForAddViewModel> MW_Dishes = _mapper.Map<List<MW_DishGetForAddViewModel>>(_unitOfWork.CivilLoadsRepository
+                                .GetIncludeWhere(x => !x.Dismantle &&
+                                    (x.allLoadInstId != null ? x.allLoadInst.mwDishId != null : false) &&
+                                    !UsedDishesIds.Contains(x.allLoadInst.mwDishId.Value), x => x.allLoadInst, x => x.allLoadInst.mwDish)
+                                .Select(x => x.allLoadInst.mwDish).ToList());
+
+                            FKitem.Value = _mapper.Map<List<MW_DishGetForAddViewModel>>(MW_Dishes);
                         }
                     }
 
@@ -225,7 +220,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwRFU.ToString(), null, "MwRFULibraryId", "MwPortId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwRFU.ToString(), null, "MwRFULibraryId", "MwPortId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -265,7 +260,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwDish.ToString(), null, "DishName", "InstallationPlaceId", "MwDishLibraryId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwDish.ToString(), null, "DishName", "InstallationPlaceId", "MwDishLibraryId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
                     if (NameAttribute != null)
@@ -305,7 +300,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwOther.ToString(), null, "mwOtherLibraryId", "EquivalentSpace",
+                        GetInstAttributeActivated(LoadSubType.TLImwOther.ToString(), null, "mwOtherLibraryId", /*"EquivalentSpace",*/
                             "InstallationPlaceId").ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
@@ -9055,6 +9050,115 @@ namespace TLIS_Service.Services
             catch (Exception err)
             {
                 return new Response<List<MW_DishGetForAddViewModel>>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+            }
+        }
+        public Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
+                    x.TableName.ToLower() == TableName.ToLower());
+
+                ObjectInstAtts objectInst = new ObjectInstAtts();
+                List<BaseInstAttView> ListAttributesActivated = new List<BaseInstAttView>();
+
+                MW_ODULibraryViewModel mwODULibrary = _mapper.Map<MW_ODULibraryViewModel>(_unitOfWork.MW_ODULibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.parity));
+
+                List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                    .GetAttributeActivated(TablesNames.TLImwODULibrary.ToString(), mwODULibrary, null).ToList();
+
+                foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+                {
+                    if (LibraryAttribute.DataType.ToLower() == "list")
+                    {
+                        LibraryAttribute.Value = mwODULibrary.GetType().GetProperties()
+                            .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(mwODULibrary);
+                    }
+                }
+
+                List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+                    .GetLogistical(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwODULibrary.ToString(), mwODULibrary.Id).ToList());
+
+                LibraryAttributes.AddRange(LogisticalAttributes);
+
+                objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+                ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+                    GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), null, "Name", "MwODULibraryId", "OduInstallationTypeId", "EquivalentSpace").ToList();
+
+                BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                if (NameAttribute != null)
+                {
+                    BaseInstAttView Swap = ListAttributesActivated[0];
+                    ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                    ListAttributesActivated[0] = NameAttribute;
+                }
+                foreach (BaseInstAttView FKitem in ListAttributesActivated)
+                {
+                    if (FKitem.Desc.ToLower() == "tliowner")
+                        FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
+
+                    else if (FKitem.Desc.ToLower() == "tlimwdish")
+                    {
+                        List<int> UsedDishesIds = _unitOfWork.MW_ODURepository.GetWhere(x => x.Mw_DishId != null).Select(x => x.Mw_DishId.Value).ToList();
+
+                        List<MW_DishGetForAddViewModel> MW_Dishes = _mapper.Map<List<MW_DishGetForAddViewModel>>(_unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && x.allCivilInstId == AllCivilInstId &&
+                                (x.allLoadInstId != null ? x.allLoadInst.mwDishId != null : false) &&
+                                !UsedDishesIds.Contains(x.allLoadInst.mwDishId.Value), x => x.allLoadInst, x => x.allLoadInst.mwDish)
+                            .Select(x => x.allLoadInst.mwDish).ToList());
+
+                        FKitem.Value = _mapper.Map<List<MW_DishGetForAddViewModel>>(MW_Dishes);
+                    }
+                }
+
+                List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = _unitOfWork.CivilLoadsRepository.GetRelatedTables(SiteCode);
+                objectInst.RelatedTables = RelatedTables;
+
+                objectInst.AttributesActivated = ListAttributesActivated;
+
+                objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository.
+                    GetInstAttributeActivated(TablesNames.TLIcivilLoads.ToString(), null, "allLoadInstId", "Dismantle", "SiteCode", "legId", "Leg2Id",
+                        "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId");
+
+                IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                    .GetDynamicInstAtts(TableNameEntity.Id, null);
+
+                foreach (DynaminAttInstViewModel DynamicAttribute in DynamicAttributesWithoutValue)
+                {
+                    TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+
+                    if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                    {
+                        if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
+                            DynamicAttribute.ValueString = DynamicAttributeEntity.DefaultValue;
+
+                        else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
+                            DynamicAttribute.ValueDouble = int.Parse(DynamicAttributeEntity.DefaultValue);
+
+                        else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
+                            DynamicAttribute.ValueDouble = double.Parse(DynamicAttributeEntity.DefaultValue);
+
+                        else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
+                            DynamicAttribute.ValueBoolean = bool.Parse(DynamicAttributeEntity.DefaultValue);
+
+                        else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
+                            DynamicAttribute.ValueDateTime = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                    }
+                    else
+                    {
+                        DynamicAttribute.ValueString = " ".Split(' ')[0];
+                    }
+                }
+
+                objectInst.DynamicAtts = DynamicAttributesWithoutValue;
+
+                return new Response<ObjectInstAtts>(objectInst);
+            }
+            catch (Exception err)
+            {
+                return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
     }
