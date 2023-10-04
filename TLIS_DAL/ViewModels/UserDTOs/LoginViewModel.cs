@@ -8,10 +8,9 @@ namespace TLIS_DAL.ViewModels.UserDTOs
     public class LoginViewModel
     {
         [Required]
-        public string UserName { get; set; }
+        public string Wedcto { get; set; }
         [DataType(DataType.Password)]
-        public string Password { get; set; }
-        public byte[] SecretKey { get; set; }
-        public byte[] IV { get; set; }
+        public string beresd{ get; set; }
+        public string Yuqrgh { get; set; }
     }
 }

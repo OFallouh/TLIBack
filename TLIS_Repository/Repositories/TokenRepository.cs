@@ -38,7 +38,7 @@ namespace TLIS_Repository.Repositories
             // {
             //  UserPrincipal principal = new UserPrincipal(context);
 
-            TLIuser User = _context.TLIuser.FirstOrDefault(x => x.UserName == login.UserName && x.Active == true && x.Deleted == false);
+            TLIuser User = _context.TLIuser.FirstOrDefault(x => x.UserName == login.Wedcto && x.Active == true && x.Deleted == false);
             // principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.UserName);
 
             // GroupPrincipal group = GroupPrincipal.FindByIdentity(context, domainGroup);
@@ -61,7 +61,7 @@ namespace TLIS_Repository.Repositories
             if (User.UserType.Equals(2))
             {
 
-                if (string.IsNullOrEmpty(login.Password))
+                if (string.IsNullOrEmpty(login.beresd))
                 {
                     User = null;
 
@@ -82,10 +82,10 @@ namespace TLIS_Repository.Repositories
                     //    numBytesRequested: 256 / 8));
 
                     User.Password = DecryptPassword(User.Password);
-                    bool verified = (User.Password == login.Password);
+                    bool verified = (User.Password == login.beresd);
                     if (verified.Equals(false))
                     {
-                        var Attempt = _context.TLIuser.Where(x => x.UserName == login.UserName).Select(x => x.Domain).FirstOrDefault();
+                        var Attempt = _context.TLIuser.Where(x => x.UserName == login.Wedcto).Select(x => x.Domain).FirstOrDefault();
                         if (Attempt == null || Attempt == "")
                         {
                             Attempt = "0";
@@ -157,18 +157,18 @@ namespace TLIS_Repository.Repositories
                 //{
                 //    login.UserName = login.UserName.Substring(index+1);
                 //}
-                string UserWithouDomain = login.UserName;
-                TLIuser User = _context.TLIuser.FirstOrDefault(x => x.UserName == login.UserName && x.Active == true && x.Deleted == false && x.UserType == 1);
+                string UserWithouDomain = login.Wedcto;
+                TLIuser User = _context.TLIuser.FirstOrDefault(x => x.UserName == login.Wedcto && x.Active == true && x.Deleted == false && x.UserType == 1);
                 if (User == null)
                 {
-                    ErrorMessage = "This account is blocked or not found    " + login.UserName;
+                    ErrorMessage = "This account is blocked or not found    " + login.Wedcto;
                     return null;
                 }
 
-                if (IsPasswordValid(login.UserName, login.Password) == true)
+                if (IsPasswordValid(login.Wedcto, login.beresd) == true)
                 {
 
-                    principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.UserName);
+                    principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto);
                     GroupPrincipal group = GroupPrincipal.FindByIdentity(context, domainGroup);
 
                     //add check with TLI group 
@@ -185,7 +185,7 @@ namespace TLIS_Repository.Repositories
 
                 else
                 {
-                    ErrorMessage = "This account is blocked or not found    " + login.UserName;
+                    ErrorMessage = "This account is blocked or not found    " + login.Wedcto;
 
                     return null;
                 }
