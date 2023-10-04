@@ -233,9 +233,7 @@ namespace TLIS_Service.Services
             using (Aes aesAlg = Aes.Create())
             {
                 string Key = "9443a09ae2e433750868beaeec0fd681";
-                string iv = "abcdefghijklmnopq";
                 aesAlg.Key = Encoding.UTF8.GetBytes(Key);
-                aesAlg.IV = Encoding.UTF8.GetBytes(iv);
                 aesAlg.Mode = CipherMode.ECB; // Use ECB mode (no IV)
                 aesAlg.Padding = PaddingMode.PKCS7;
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
@@ -263,11 +261,12 @@ namespace TLIS_Service.Services
             }
         }
 
-        //public static string Encrypt(string plainText, string key)
+        //public static string Encrypt(string plainText)
         //{
         //    using (Aes aesAlg = Aes.Create())
         //    {
-        //        aesAlg.Key = Encoding.UTF8.GetBytes(key);
+        //        string Key = "9443a09ae2e433750868beaeec0fd681";
+        //        aesAlg.Key = Encoding.UTF8.GetBytes(Key);
         //        aesAlg.Mode = CipherMode.ECB;
         //        aesAlg.Padding = PaddingMode.PKCS7;
 
