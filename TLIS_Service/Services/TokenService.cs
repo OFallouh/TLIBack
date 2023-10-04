@@ -150,7 +150,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                      return  response = new Response<string>(true, null, null, $"This account is blocked or not found + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                      return  response = new Response<string>(false, null, null, $"This account is blocked or not found + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                 }
             }
@@ -158,7 +158,7 @@ namespace TLIS_Service.Services
             {
                 if (string.IsNullOrEmpty(login.beresd))
                 {
-                   return response = new Response<string>(true, null, null, "The Password coudn't be empty", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                   return response = new Response<string>(false, null, null, "The Password coudn't be empty", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                 }
                 User.Password = Decrypt(User.Password);
                 login.beresd = Decrypt(login.beresd);
@@ -171,11 +171,11 @@ namespace TLIS_Service.Services
                         User.Active = false;
                         _unitOfWork.UserRepository.Update(User);
                         _unitOfWork.SaveChanges();
-                       return response = new Response<string>(true, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                       return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                     else
                     {
-                        return response = new Response<string>(true, null, null, "Your Password Is Not Correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, "Your Password Is Not Correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
 
                 }
@@ -184,7 +184,7 @@ namespace TLIS_Service.Services
                     DateTime date = (DateTime)User.ChangedPasswordDate;
                     if (date.AddDays(90) < DateTime.Now)
                     {
-                        return response = new Response<string>(true, null, null, "You have to change your password, your password is out of date", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, "You have to change your password, your password is out of date", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                 }
                 if (verified.Equals(true))
@@ -200,7 +200,7 @@ namespace TLIS_Service.Services
             }
             else
             {
-                return response = new Response<string>(true, null, null, "The User Is Not Found", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                return response = new Response<string>(false, null, null, "The User Is Not Found", (int)Helpers.Constants.ApiReturnCode.uncompleted);
             }
             return response;
         }

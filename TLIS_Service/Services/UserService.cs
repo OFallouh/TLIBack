@@ -778,8 +778,9 @@ namespace TLIS_Service.Services
                 .ToList();
                 List<UserWithoutGroupViewModel> UserInfo = _mapper.Map<List<UserWithoutGroupViewModel>>(userIdsNotInGroupUser);
                 var temp = UserInfo.Select(x => x.Id).ToList();
-                List<string> userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId )).Select(x => x.PageUrl).ToList();
-                        
+                var userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId )).ToList();
+                //var map = UserInfo.Where(x => userPermission.Select(y => y.UserId == x.Id).Select(y=>y.PageUrl)).ToList();
+                //UserInfo.Select(x => x.Permissions.AddRange(map));
                 return new Response<List<UserWithoutGroupViewModel>>(true, UserInfo, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
             catch (Exception err)
@@ -795,9 +796,7 @@ namespace TLIS_Service.Services
             using (Aes aesAlg = Aes.Create())
             {
                 string Key = "9443a09ae2e433750868beaeec0fd681";
-                string iv = "abcdefghijklmnopq";
                 aesAlg.Key = Encoding.UTF8.GetBytes(Key);
-                aesAlg.IV = Encoding.UTF8.GetBytes(iv);
                 aesAlg.Mode = CipherMode.ECB; // Use ECB mode (no IV)
                 aesAlg.Padding = PaddingMode.PKCS7;
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
