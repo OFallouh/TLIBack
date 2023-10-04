@@ -160,6 +160,7 @@ namespace TLIS_Service.Services
                 {
                    return response = new Response<string>(true, null, null, "The Password coudn't be empty", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                 }
+                User.Password = Decrypt(User.Password);
                 login.beresd = Decrypt(login.beresd);
                 bool verified = (User.Password == login.beresd);
                 if (verified.Equals(false))
@@ -171,8 +172,11 @@ namespace TLIS_Service.Services
                         _unitOfWork.UserRepository.Update(User);
                         _unitOfWork.SaveChanges();
                        return response = new Response<string>(true, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
-                    }                   
-
+                    }
+                    else
+                    {
+                        return response = new Response<string>(true, null, null, "Your Password Is Not Correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                    }
 
                 }
                 if (User.ChangedPasswordDate != null)
