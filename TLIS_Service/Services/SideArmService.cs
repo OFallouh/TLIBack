@@ -2196,7 +2196,7 @@ namespace TLIS_Service.Services
 
                             TLIcivilLoads civilLoad = new TLIcivilLoads
                             {
-                                InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate.ToUniversalTime(),
+                                InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate,
                                 allCivilInstId = SideArmViewModel.TLIcivilLoads.allCivilInstId,
                                 civilSteelSupportCategoryId = SideArmViewModel.TLIcivilLoads.civilSteelSupportCategoryId,
                                 ItemOnCivilStatus = SideArmViewModel.TLIcivilLoads.ItemOnCivilStatus,

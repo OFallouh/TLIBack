@@ -2244,7 +2244,7 @@ namespace TLIS_Service.Services
                             TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
                             civilSiteDate.SiteCode = SiteCode;
                             civilSiteDate.allCivilInstId = allCivilInst.Id;
-                            civilSiteDate.InstallationDate = addCivilWithLegs.TLIcivilSiteDate.InstallationDate.ToUniversalTime();
+                            civilSiteDate.InstallationDate = addCivilWithLegs.TLIcivilSiteDate.InstallationDate;
                             civilSiteDate.LongitudinalSpindleLengthm = addCivilWithLegs.TLIcivilSiteDate.LongitudinalSpindleLengthm;
                             civilSiteDate.HorizontalSpindleLengthm = addCivilWithLegs.TLIcivilSiteDate.HorizontalSpindleLengthm;
                             civilSiteDate.ReservedSpace = addCivilWithLegs.TLIcivilSiteDate.ReservedSpace;
@@ -2414,7 +2414,7 @@ namespace TLIS_Service.Services
                                 TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
                                 civilSiteDate.SiteCode = SiteCode;
                                 civilSiteDate.allCivilInstId = allCivilInst.Id;
-                                civilSiteDate.InstallationDate = AddCivilWithoutLeg.TLIcivilSiteDate.InstallationDate.ToUniversalTime();
+                                civilSiteDate.InstallationDate = AddCivilWithoutLeg.TLIcivilSiteDate.InstallationDate;
                                 civilSiteDate.LongitudinalSpindleLengthm = AddCivilWithoutLeg.TLIcivilSiteDate.LongitudinalSpindleLengthm;
                                 civilSiteDate.HorizontalSpindleLengthm = AddCivilWithoutLeg.TLIcivilSiteDate.HorizontalSpindleLengthm;
                                 civilSiteDate.ReservedSpace = AddCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace;
@@ -2518,7 +2518,7 @@ namespace TLIS_Service.Services
                                 TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
                                 civilSiteDate.SiteCode = SiteCode;
                                 civilSiteDate.allCivilInstId = allCivilInst.Id;
-                                civilSiteDate.InstallationDate = AddCivilNonSteel.TLIcivilSiteDate.InstallationDate.ToUniversalTime();
+                                civilSiteDate.InstallationDate = AddCivilNonSteel.TLIcivilSiteDate.InstallationDate;
                                 civilSiteDate.LongitudinalSpindleLengthm = AddCivilNonSteel.TLIcivilSiteDate.LongitudinalSpindleLengthm;
                                 civilSiteDate.HorizontalSpindleLengthm = AddCivilNonSteel.TLIcivilSiteDate.HorizontalSpindleLengthm;
                                 civilSiteDate.ReservedSpace = AddCivilNonSteel.TLIcivilSiteDate.ReservedSpace;
