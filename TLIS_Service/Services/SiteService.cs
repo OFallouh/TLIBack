@@ -4133,7 +4133,8 @@ namespace TLIS_Service.Services
                         : true) &&
 
                         MW_OtherIds.Contains(x.allLoadInst.mwOtherId.Value),
-                    x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwOther.mwOtherLibrary).ToList();
+                    x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwOther.mwOtherLibrary,
+                    x => x.allLoadInst.mwOther.InstallationPlace).ToList();
                 }
                 else
                 {
@@ -4159,7 +4160,8 @@ namespace TLIS_Service.Services
                            (x.allCivilInstId == BaseFilter.AllCivilId)
                        : true),
 
-                    x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwOther.mwOtherLibrary).ToList();
+                    x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwOther.mwOtherLibrary,
+                    x => x.allLoadInst.mwOther.InstallationPlace).ToList();
                 }
 
                 // Delete Duplicated Objects Based On Installation Date...

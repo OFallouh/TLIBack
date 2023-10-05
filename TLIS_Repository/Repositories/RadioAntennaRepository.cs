@@ -33,7 +33,7 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ownerId", ownerLists));
 
             //var InstallationPlaces = _context.TLIinstallationPlace.Where(x => !x.Disable && !x.Deleted).ToList();
-            var InstallationPlaces = _context.TLIinstallationPlace.ToList();
+            var InstallationPlaces = _context.TLIinstallationPlace.Where(x => !x.Deleted && !x.Disable).ToList();
 
             List<DropDownListFilters> InstallationPlaceLists = _mapper.Map<List<DropDownListFilters>>(InstallationPlaces);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("installationPlaceId", InstallationPlaceLists));

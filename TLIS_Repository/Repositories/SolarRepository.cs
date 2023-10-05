@@ -29,15 +29,15 @@ namespace TLIS_Repository.Repositories
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
 
             List<TLIcabinet> TLIcabinet = new List<TLIcabinet>();
-            var temp = _context.TLIotherInSite.Include(x => x.allOtherInventoryInst).ToList();
-            var Cabinet = temp.Where(x => x.SiteCode == SiteCode && !x.Dismantle  && x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
-           
+
+            var Cabinet = _context.TLIotherInSite.Include(x => x.allOtherInventoryInst).Where(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
+                x.allOtherInventoryInst.cabinetId != null && x.SiteCode.ToLower() == SiteCode.ToLower())
+                .Select(x => x.allOtherInventoryInst.cabinetId).ToList();
+
             foreach (var item in Cabinet)
             {
-
                 var cabinetname = _context.TLIcabinet.Where(x => x.Id == item).FirstOrDefault();
                 TLIcabinet.Add(cabinetname);
-
             }
 
             List<DropDownListFilters> CabinetLists = _mapper.Map<List<DropDownListFilters>>(TLIcabinet);

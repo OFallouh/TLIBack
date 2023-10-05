@@ -3945,9 +3945,7 @@ namespace TLIS_Service.Services
                     {
                         if (FKitem.Desc.ToLower() == "tlicabinet")
                         {
-     
-                            FKitem.Value = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == SolarInst.Cabinet.Id).Name; ;
-
+                            FKitem.Value = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == SolarInst.Cabinet.Id).Name;
                         }
                         else if (FKitem.Desc.ToLower() == "tlisolarlibrary")
                         {

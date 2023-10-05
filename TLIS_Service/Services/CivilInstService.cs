@@ -237,7 +237,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivated(TableName, null,"Name","CivilWithLegsLibId", "CurrentLoads").ToList();
+                        .GetInstAttributeActivated(TableName, null,"Name", "CivilWithLegsLibId", "CurrentLoads").ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -531,7 +531,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(TableName, null, "CivilNonSteelLibraryId").ToList();
+                        GetInstAttributeActivated(TableName, null, "CivilNonSteelLibraryId", "CurrentLoads").ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -614,17 +614,26 @@ namespace TLIS_Service.Services
 
                 if (Civil.civilWithLegsId != null)
                 {
-                    Civil.civilWithLegs = _unitOfWork.CivilWithLegsRepository.GetByID(Civil.civilWithLegsId.Value);
+                    Civil.civilWithLegs = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
+                        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == Civil.civilWithLegsId.Value : false) &&
+                        !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).allCivilInst.civilWithLegs;
+
                     values.Add(new DropDownListFilters(Civil.civilWithLegs.Id, Civil.civilWithLegs.Name));
                 }
                 else if (Civil.civilWithoutLegId != null)
                 {
-                    Civil.civilWithoutLeg = _unitOfWork.CivilWithoutLegRepository.GetByID(Civil.civilWithoutLegId.Value);
+                    Civil.civilWithoutLeg = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
+                        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == Civil.civilWithoutLegId.Value : false) &&
+                        !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).allCivilInst.civilWithoutLeg;
+
                     values.Add(new DropDownListFilters(Civil.civilWithoutLeg.Id, Civil.civilWithoutLeg.Name));
                 }
                 else if (Civil.civilNonSteelId != null)
                 {
-                    Civil.civilNonSteel = _unitOfWork.CivilNonSteelRepository.GetByID(Civil.civilNonSteelId.Value);
+                    Civil.civilNonSteel = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
+                        (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == Civil.civilNonSteelId.Value : false) &&
+                        !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).allCivilInst.civilNonSteel;
+
                     values.Add(new DropDownListFilters(Civil.civilNonSteel.Id, Civil.civilNonSteel.Name));
                 }
             }
