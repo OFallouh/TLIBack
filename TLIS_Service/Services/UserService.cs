@@ -31,6 +31,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using TLIS_DAL;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using System.IO;
+using LinqToExcel.Extensions;
 
 namespace TLIS_Service.Services
 {
@@ -76,7 +77,7 @@ namespace TLIS_Service.Services
                         //    iterationCount: 100000,
                         //    numBytesRequested: 256 / 8));
 
-                        // model.Password = Encrypt(model.Password);
+                         //model.Password = Encrypt(model.Password);
 
                         TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
@@ -568,7 +569,6 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-
                     TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
                     UserEntity.Password = null;
@@ -582,6 +582,10 @@ namespace TLIS_Service.Services
                         {
                             UserEntity.Password = model.Password;
                             UserEntity.ChangedPasswordDate = DateTime.Now;
+                        }
+                        else
+                        {
+                            UserEntity.Password = OldPassword;
                         }
                     }
                     else
@@ -769,7 +773,8 @@ namespace TLIS_Service.Services
         public Response<List<UserWithoutGroupViewModel>> GetAllUserWithoutGroup()
         {
             try
-            {
+            {            
+                UserWithoutGroupViewModel userWithoutGroupViewModel = new UserWithoutGroupViewModel();
                 List<TLIuser> user = _unitOfWork.UserRepository.GetAllWithoutCount().ToList();
                 List<TLIgroupUser> GroupUser = _unitOfWork.GroupUserRepository.GetAllWithoutCount().ToList();
                 List<TLIuser> userIdsNotInGroupUser = user
@@ -778,8 +783,9 @@ namespace TLIS_Service.Services
                 .ToList();
                 List<UserWithoutGroupViewModel> UserInfo = _mapper.Map<List<UserWithoutGroupViewModel>>(userIdsNotInGroupUser);
                 var temp = UserInfo.Select(x => x.Id).ToList();
-                List<string> userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId )).Select(x => x.PageUrl).ToList();
-                        
+                var userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId)).ToList();
+                //userWithoutGroupViewModel.Permissions= userPermission.Where()
+
                 return new Response<List<UserWithoutGroupViewModel>>(true, UserInfo, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
             catch (Exception err)
@@ -790,173 +796,78 @@ namespace TLIS_Service.Services
             
 
         }
+        public static string Decrypt(string encryptedText)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                string Key = "9443a09ae2e433750868beaeec0fd681";
+                aesAlg.Key = Encoding.UTF8.GetBytes(Key);
+                aesAlg.Mode = CipherMode.ECB; // Use ECB mode (no IV)
+                aesAlg.Padding = PaddingMode.PKCS7;
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(encryptedText)))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+        }
 
         //private string CryptPassword(string password)
         //{
         //    byte[] plaintext = Encoding.UTF8.GetBytes(password);
         //    byte[] ciphertext;
 
-            //    using (Aes aes = Aes.Create())
-            //    {
-            //        aes.Key = key;
-            //        aes.IV = iv;
+        //    using (Aes aes = Aes.Create())
+        //    {
+        //        aes.Key = key;
+        //        aes.IV = iv;
 
-            //        using (ICryptoTransform encryptor = aes.CreateEncryptor())
-            //        {
-            //            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
-            //        }
-            //    }
+        //        using (ICryptoTransform encryptor = aes.CreateEncryptor())
+        //        {
+        //            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        //        }
+        //    }
 
-            //    return Convert.ToBase64String(ciphertext);
+        //    return Convert.ToBase64String(ciphertext);
 
 
-            //}
+        //}
 
-            //private string DecryptPassword(string CryptPassword)
-            //{
-            //    try
-            //    {
+        //private string DecryptPassword(string CryptPassword)
+        //{
+        //    try
+        //    {
 
-            //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
-            //        byte[] plaintext;
+        //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
+        //        byte[] plaintext;
 
-            //        using (Aes aes = Aes.Create())
-            //        {
-            //            aes.Key = key;
-            //            aes.IV = iv;
+        //        using (Aes aes = Aes.Create())
+        //        {
+        //            aes.Key = key;
+        //            aes.IV = iv;
 
-            //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
-            //            {
-            //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-            //            }
-            //        }
+        //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
+        //            {
+        //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+        //            }
+        //        }
 
-            //        return Encoding.UTF8.GetString(plaintext);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        return ex.Message;
-            //    }
-            //}
-        private static readonly string keys = "10b46145e54ce112ecc7a74e543877eaad61cf84c21bc6df99e698cc8fd70437";    
-        public static string Encrypt(string password)
-        {
-            // Generate a random salt
-            byte[] salt = GenerateSalt();
+        //        return Encoding.UTF8.GetString(plaintext);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
 
-            // Convert the static key string to a byte array
-            byte[] keyBytes = HexStringToByteArray(keys);
-
-            // Convert the password string to a byte array
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-
-            // Create a new Rijndael AES cipher with a 256-bit key
-            using (Aes aesAlg = Aes.Create())
-            {
-                aesAlg.KeySize = 256;
-                aesAlg.BlockSize = 128;
-                aesAlg.Mode = CipherMode.CFB; // Use the same mode as in CryptoJS
-                aesAlg.Padding = PaddingMode.Zeros; // Use the same padding as in CryptoJS
-
-                // Set the static key
-                aesAlg.Key = keyBytes;
-
-                // Set the randomly generated salt as the IV
-                aesAlg.IV = salt;
-
-                // Create a memory stream to write the encrypted data to
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    // Create a crypto stream to perform encryption
-                    using (ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV))
-                    {
-                        // Write the plaintext bytes to the crypto stream (in this case, it's the password)
-                        msEncrypt.Write(passwordBytes, 0, passwordBytes.Length);
-                    }
-
-                    // Combine the salt and encrypted bytes as a single byte array
-                    byte[] encryptedBytes = salt.Concat(msEncrypt.ToArray()).ToArray();
-
-                    // Convert the combined bytes to a Base64 string
-                    string encryptedText = Convert.ToBase64String(encryptedBytes);
-                    return encryptedText;
-                }
-            }
-        }
-        public static byte[] GenerateSalt()
-        {
-            // Generate a random salt of 16 bytes (128 bits)
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-            {
-                byte[] salt = new byte[16];
-                rng.GetBytes(salt);
-                return salt;
-            }
-        }
-        public static byte[] HexStringToByteArray(string hex)
-        {
-            int numberChars = hex.Length;
-            byte[] bytes = new byte[numberChars / 2];
-            for (int i = 0; i < numberChars; i += 2)
-            {
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            }
-            return bytes;
-        }
-        public static string Decrypt(string encryptedText)
-        {
-            // Convert the static key string to a byte array
-            byte[] keyBytes = HexStringToByteArrays(keys);
-
-            // Convert the Base64-encoded ciphertext back to a byte array
-            byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
-
-            // Extract the salt from the beginning of the encrypted data
-            byte[] salt = encryptedBytes.Take(16).ToArray();
-
-            // Create a new Rijndael AES cipher with a 256-bit key
-            using (Aes aesAlg = Aes.Create())
-            {
-                aesAlg.KeySize = 256;
-                aesAlg.BlockSize = 128;
-                aesAlg.Mode = CipherMode.CFB; // Use the same mode as in CryptoJS
-                aesAlg.Padding = PaddingMode.Zeros; // Use the same padding as in CryptoJS
-
-                // Set the static key
-                aesAlg.Key = keyBytes;
-
-                // Set the extracted salt as the IV
-                aesAlg.IV = salt;
-
-                // Create a memory stream to write the decrypted data to
-                using (MemoryStream msDecrypt = new MemoryStream())
-                {
-                    // Create a crypto stream to perform decryption
-                    using (ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV))
-                    {
-                        // Write the encrypted data (excluding the salt) to the crypto stream
-                        msDecrypt.Write(encryptedBytes, 16, encryptedBytes.Length - 16);
-                    }
-
-                    // Get the decrypted bytes
-                    byte[] decryptedBytes = msDecrypt.ToArray();
-
-                    // Convert the decrypted bytes to a UTF-8 string (in this case, the password)
-                    string decryptedPassword = Encoding.UTF8.GetString(decryptedBytes);
-                    return decryptedPassword;
-                }
-            }
-        }
-        public static byte[] HexStringToByteArrays(string hex)
-        {
-            int numberChars = hex.Length;
-            byte[] bytes = new byte[numberChars / 2];
-            for (int i = 0; i < numberChars; i += 2)
-            {
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            }
-            return bytes;
-        }
 
     }
 }
