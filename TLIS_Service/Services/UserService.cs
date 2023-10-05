@@ -31,6 +31,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using TLIS_DAL;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using System.IO;
+using LinqToExcel.Extensions;
 
 namespace TLIS_Service.Services
 {
@@ -783,8 +784,7 @@ namespace TLIS_Service.Services
                 List<UserWithoutGroupViewModel> UserInfo = _mapper.Map<List<UserWithoutGroupViewModel>>(userIdsNotInGroupUser);
                 var temp = UserInfo.Select(x => x.Id).ToList();
                 var userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId)).ToList();
-                var t = UserInfo.Where(y=> userPermission.Any(x => x.UserId == y.Id)).Select(y=>y.Permissions);
-
+                //userWithoutGroupViewModel.Permissions= userPermission.Where()
 
                 return new Response<List<UserWithoutGroupViewModel>>(true, UserInfo, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }

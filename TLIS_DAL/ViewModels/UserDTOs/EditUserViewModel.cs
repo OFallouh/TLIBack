@@ -34,7 +34,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public bool Deleted { get; set; }
         public List<string> permissions { get; set; }
 
-        public DateTime ChangedPasswordDate { get; set; }
+        //public DateTime ChangedPasswordDate { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }
     }
 }
