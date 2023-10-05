@@ -568,7 +568,6 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-
                     TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
                     UserEntity.Password = null;
@@ -582,6 +581,10 @@ namespace TLIS_Service.Services
                         {
                             UserEntity.Password = model.Password;
                             UserEntity.ChangedPasswordDate = DateTime.Now;
+                        }
+                        else
+                        {
+                            UserEntity.Password = OldPassword;
                         }
                     }
                     else
@@ -769,7 +772,8 @@ namespace TLIS_Service.Services
         public Response<List<UserWithoutGroupViewModel>> GetAllUserWithoutGroup()
         {
             try
-            {
+            {            
+                UserWithoutGroupViewModel userWithoutGroupViewModel = new UserWithoutGroupViewModel();
                 List<TLIuser> user = _unitOfWork.UserRepository.GetAllWithoutCount().ToList();
                 List<TLIgroupUser> GroupUser = _unitOfWork.GroupUserRepository.GetAllWithoutCount().ToList();
                 List<TLIuser> userIdsNotInGroupUser = user
@@ -778,9 +782,10 @@ namespace TLIS_Service.Services
                 .ToList();
                 List<UserWithoutGroupViewModel> UserInfo = _mapper.Map<List<UserWithoutGroupViewModel>>(userIdsNotInGroupUser);
                 var temp = UserInfo.Select(x => x.Id).ToList();
-                var userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId )).ToList();
-                //var map = UserInfo.Where(x => userPermission.Select(y => y.UserId == x.Id).Select(y=>y.PageUrl)).ToList();
-                //UserInfo.Select(x => x.Permissions.AddRange(map));
+                var userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId)).ToList();
+                var t = UserInfo.Where(y=> userPermission.Any(x => x.UserId == y.Id)).Select(y=>y.Permissions);
+
+
                 return new Response<List<UserWithoutGroupViewModel>>(true, UserInfo, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
             catch (Exception err)
