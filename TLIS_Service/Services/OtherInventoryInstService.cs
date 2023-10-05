@@ -5240,8 +5240,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CabinetViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<CabinetViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -5534,8 +5534,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<SolarViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<SolarViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -5768,8 +5768,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<GeneratorViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<GeneratorViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();

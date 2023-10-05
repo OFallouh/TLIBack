@@ -1631,8 +1631,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<MW_DishViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_DishViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_DishViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_DishViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_DishViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -2245,8 +2245,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<MW_BUViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_BUViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_BUViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_BUViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_BUViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -2853,8 +2853,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<MW_ODUViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_ODUViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_ODUViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_ODUViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_ODUViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -3471,8 +3471,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<MW_RFUViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_RFUViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_RFUViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_RFUViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<MW_RFUViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -4069,8 +4069,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<Mw_OtherViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<Mw_OtherViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<Mw_OtherViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<Mw_OtherViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<Mw_OtherViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -4665,8 +4665,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioAntennaViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioAntennaViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -5263,8 +5263,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioRRUViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRUViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRUViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRUViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioRRUViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -5861,8 +5861,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<RadioOtherViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<RadioOtherViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -6473,8 +6473,8 @@ namespace TLIS_Service.Services
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<PowerViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<PowerViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<PowerViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<PowerViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<PowerViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();

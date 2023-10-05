@@ -5837,20 +5837,13 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //InstallationAttributeActivatedIds = _unitOfWork.CivilWithLegsRepository.GetWhere(x =>
-                        //    InstallationPropsAttributeFilters.All(z =>
-                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null) != null) ?
-                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null))) &&
-                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null)))) : (false)))))
-                        //).Select(i => i.Id).ToList();
-
                         IEnumerable<TLIcivilWithLegs> Installations = _unitOfWork.CivilWithLegsRepository.GetAllWithoutCount();
 
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null)).Date) &&
+                                (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegsViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -6087,20 +6080,13 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //InstallationAttributeActivatedIds = _unitOfWork.CivilWithoutLegRepository.GetWhere(x =>
-                        //    InstallationPropsAttributeFilters.All(z =>
-                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null) != null) ?
-                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null))) &&
-                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null)))) : (false)))))
-                        //).Select(i => i.Id).ToList();
-
                         IEnumerable<TLIcivilWithoutLeg> Installations = _unitOfWork.CivilWithoutLegRepository.GetAllWithoutCount();
 
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithoutLegViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
@@ -6337,20 +6323,13 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //InstallationAttributeActivatedIds = _unitOfWork.CivilNonSteelRepository.GetWhere(x =>
-                        //    InstallationPropsAttributeFilters.All(z =>
-                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null) != null) ?
-                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null))) &&
-                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null)))) : (false)))))
-                        //).Select(i => i.Id).ToList();
-
                         IEnumerable<TLIcivilNonSteel> Installations = _unitOfWork.CivilNonSteelRepository.GetAllWithoutCount();
 
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilNonSteelViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
