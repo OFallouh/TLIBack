@@ -59,22 +59,18 @@ namespace TLIS_Repository.Repositories
         public List<KeyValuePair<string, List<DropDownListFilters>>> CabientGetRelatedTables(string SiteCode)
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
-            var OtherInventoriesInSite = _context.TLIotherInSite.Where(x => x.Dismantle == false).Select(x => x.allOtherInventoryInstId).ToList();
+            
+            var OtherInventoriesInSite = _context.TLIotherInSite
+                .Include(x => x.allOtherInventoryInst).Include(x => x.allOtherInventoryInst.cabinet)
+                .Where(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.cabinetId != null &&
+                    x.SiteCode.ToLower() == SiteCode.ToLower()).Select(x => x.allOtherInventoryInst).ToList();
+
             List<DropDownListFilters> OtherInventoriesInSiteFilter = new List<DropDownListFilters>();
             foreach (var OtherInventoryInSite in OtherInventoriesInSite)
             {
-                var Entity = _context.TLIallOtherInventoryInst
-                                .Where(x => x.Id == OtherInventoryInSite)
-                                .Include(x => x.cabinet)
-                                .Include(x => x.generator)
-                                .Include(x => x.solar)
-                                .FirstOrDefault();
-                if (Entity.cabinet != null)
-                {
-                    OtherInventoriesInSiteFilter.Add(new DropDownListFilters(Entity.cabinet.Id, Entity.cabinet.Name));
-                }
-               
+                OtherInventoriesInSiteFilter.Add(new DropDownListFilters(OtherInventoryInSite.cabinet.Id, OtherInventoryInSite.cabinet.Name));
             }
+
             OtherInventoriesInSiteFilter.Add(new DropDownListFilters(0, "NA"));
 
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceOtherInventoryId", OtherInventoriesInSiteFilter));
@@ -85,22 +81,18 @@ namespace TLIS_Repository.Repositories
         public List<KeyValuePair<string, List<DropDownListFilters>>> SolarGetRelatedTables(string SiteCode)
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
-            var OtherInventoriesInSite = _context.TLIotherInSite.Where(x => x.Dismantle == false).Select(x => x.allOtherInventoryInstId).ToList();
+
+            var OtherInventoriesInSite = _context.TLIotherInSite
+                .Include(x => x.allOtherInventoryInst).Include(x => x.allOtherInventoryInst.solar)
+                .Where(x => x.Dismantle == false && !x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.solarId != null && 
+                    x.SiteCode.ToLower() == SiteCode.ToLower()).Select(x => x.allOtherInventoryInst).ToList();
+
             List<DropDownListFilters> OtherInventoriesInSiteFilter = new List<DropDownListFilters>();
             foreach (var OtherInventoryInSite in OtherInventoriesInSite)
             {
-                var Entity = _context.TLIallOtherInventoryInst
-                                .Where(x => x.Id == OtherInventoryInSite)
-                                .Include(x => x.cabinet)
-                                .Include(x => x.generator)
-                                .Include(x => x.solar)
-                                .FirstOrDefault();
-                if (Entity.solar != null)
-                {
-                    OtherInventoriesInSiteFilter.Add(new DropDownListFilters(Entity.solar.Id, Entity.solar.Name));
-                }
-               
+                OtherInventoriesInSiteFilter.Add(new DropDownListFilters(OtherInventoryInSite.solar.Id, OtherInventoryInSite.solar.Name));
             }
+
             OtherInventoriesInSiteFilter.Add(new DropDownListFilters(0, "NA"));
 
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceOtherInventoryId", OtherInventoriesInSiteFilter));
@@ -110,23 +102,18 @@ namespace TLIS_Repository.Repositories
         public List<KeyValuePair<string, List<DropDownListFilters>>> GeneratorGetRelatedTables(string SiteCode)
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
-            var OtherInventoriesInSite = _context.TLIotherInSite.Where(x => x.Dismantle == false).Select(x => x.allOtherInventoryInstId).ToList();
+            
+            var OtherInventoriesInSite = _context.TLIotherInSite
+                .Include(x => x.allOtherInventoryInst).Include(x => x.allOtherInventoryInst.generator)
+                .Where(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.generatorId != null &&
+                    x.SiteCode.ToLower() == SiteCode.ToLower()).Select(x => x.allOtherInventoryInst).ToList();
+
             List<DropDownListFilters> OtherInventoriesInSiteFilter = new List<DropDownListFilters>();
             foreach (var OtherInventoryInSite in OtherInventoriesInSite)
             {
-                var Entity = _context.TLIallOtherInventoryInst
-                                .Where(x => x.Id == OtherInventoryInSite)
-                                .Include(x => x.cabinet)
-                                .Include(x => x.generator)
-                                .Include(x => x.solar)
-                                .FirstOrDefault();
-                if (Entity.generator != null)
-                {
-                    OtherInventoriesInSiteFilter.Add(new DropDownListFilters(Entity.generator.Id, Entity.generator.Name));
-
-                }
-
+                OtherInventoriesInSiteFilter.Add(new DropDownListFilters(OtherInventoryInSite.generator.Id, OtherInventoryInSite.generator.Name));
             }
+
             OtherInventoriesInSiteFilter.Add(new DropDownListFilters(0, "NA"));
 
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceOtherInventoryId", OtherInventoriesInSiteFilter));

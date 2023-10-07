@@ -1254,7 +1254,8 @@ namespace TLIS_DAL.ViewModels
             //new map
             CreateMap<TLImwOther, AddMw_OtherViewModel>().ReverseMap();
             CreateMap<TLImwOther, Mw_OtherViewModel>()
-                .ForMember(x => x.mwOtherLibrary_Name, x => x.MapFrom(f => f.mwOtherLibrary.Model));
+                .ForMember(x => x.mwOtherLibrary_Name, x => x.MapFrom(f => f.mwOtherLibrary.Model))
+                .ForMember(x => x.InstallationPlace_Name, x => x.MapFrom(f => f.InstallationPlace.Name));
             CreateMap<Mw_OtherViewModel, TLImwOther>();
 
             //--------------

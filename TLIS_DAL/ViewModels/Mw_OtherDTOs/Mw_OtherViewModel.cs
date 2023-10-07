@@ -22,5 +22,8 @@ namespace TLIS_DAL.ViewModels.Mw_OtherDTOs
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float Spaceinstallation { get; set; }
+
+        public int InstallationPlaceId { get; set; }
+        public string InstallationPlace_Name { get; set; }
     }
 }

@@ -306,20 +306,22 @@ namespace TLIS_Service.Services
         //Function to GetAll active users
         public Response<List<UserViewModel>> GetAll(List<FilterObjectList> filters, ParameterPagination parameter)
         {
-            try
-            {
-                int count = 0;
-                List<FilterObject> condition = new List<FilterObject>();
-                condition.Add(new FilterObject("Active", true));
-                condition.Add(new FilterObject("Deleted", false));
-                var Users = _unitOfWork.UserRepository.GetAllIncludeMultipleWithCondition(parameter, filters, condition, out count, null).ToList();
-                return new Response<List<UserViewModel>>(true, _mapper.Map<List<UserViewModel>>(Users), null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception err)
-            {
+            List<UserViewModel> Users = _mapper.Map<List<UserViewModel>>(_unitOfWork.UserRepository
+                .GetWhere(x => !x.Deleted && x.Active).ToList());
 
-                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            foreach (FilterObjectList Filter in filters)
+            {
+                string FilterKey = Filter.key;
+
+                foreach (object FilterValue in Filter.value)
+                {
+                    Users = Users.Where(x => x.GetType().GetProperties()
+                        .FirstOrDefault(Attribute => Attribute.Name.ToLower() == FilterKey.ToLower()).GetValue(x, null).ToString().ToLower()
+                            .StartsWith(FilterValue.ToString().ToLower())).ToList();
+                }
             }
+
+            return new Response<List<UserViewModel>>(true, Users, null, null, (int)Helpers.Constants.ApiReturnCode.success, Users.Count());
         }
 
         //Function to get all external users

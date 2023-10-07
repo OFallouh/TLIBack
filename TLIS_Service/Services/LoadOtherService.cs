@@ -3374,20 +3374,13 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> InstallationPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             InstallationProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //InstallationAttributeActivatedIds = _unitOfWork.LoadOtherRepository.GetWhere(x =>
-                        //    InstallationPropsAttributeFilters.All(z =>
-                        //        (InstallationProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null) != null) ?
-                        //            ((z.DateFrom <= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null))) &&
-                        //             (z.DateTo >= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null)))) : (false)))))
-                        //).Select(i => i.Id).ToList();
-
                         IEnumerable<TLIloadOther> Installations = _unitOfWork.LoadOtherRepository.GetAllWithoutCount();
 
                         foreach (DateFilterViewModel InstallationProp in InstallationPropsAttributeFilters)
                         {
                             Installations = Installations.Where(x => InstallationProps.Exists(y => (InstallationProp.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null) != null) ?
-                                ((InstallationProp.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null))) &&
-                                    (InstallationProp.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null)))) : (false))));
+                                ((InstallationProp.DateFrom.Date <= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null)).Date) &&
+                                    (InstallationProp.DateTo.Date >= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherViewModel>(x), null)).Date)) : (false))));
                         }
 
                         InstallationAttributeActivatedIds = Installations.Select(x => x.Id).ToList();
