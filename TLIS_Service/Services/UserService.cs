@@ -483,11 +483,11 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var newPermissionsViewModels = new List<string>();
+                var newPermissionsViewModelsUser = new List<string>();
+                var newPermissionsViewModelsRole = new List<string>();
                 UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
                 if (User != null)
                 {
-                    //User.Password = DecryptPassword(User.Password);
                     var UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
                     x.UserId == Id && x.Active == true && x.Delete == false).Select(x => x.PageUrl).ToList();
                     var GroupUser = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id).Select(x => x.groupId).ToList();
@@ -495,9 +495,10 @@ namespace TLIS_Service.Services
                     var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x => x.PageUrl).ToList();
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
                         .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
-                    newPermissionsViewModels.AddRange(UserPermissions);
-                    newPermissionsViewModels.AddRange(Rolepermissions);
-                    User.Permissions = newPermissionsViewModels;
+                    newPermissionsViewModelsUser.AddRange(UserPermissions);
+                    newPermissionsViewModelsRole.AddRange(Rolepermissions);
+                    User.PermissionsUser = newPermissionsViewModelsUser;
+                    User.PermissionsRole = newPermissionsViewModelsRole;
                 }
                 else
                 {
@@ -773,20 +774,39 @@ namespace TLIS_Service.Services
         public Response<List<UserWithoutGroupViewModel>> GetAllUserWithoutGroup()
         {
             try
-            {            
-                UserWithoutGroupViewModel userWithoutGroupViewModel = new UserWithoutGroupViewModel();
+            {
+                List<UserWithoutGroupViewModel> userWithoutGroupViewModel = new List<UserWithoutGroupViewModel>();
                 List<TLIuser> user = _unitOfWork.UserRepository.GetAllWithoutCount().ToList();
                 List<TLIgroupUser> GroupUser = _unitOfWork.GroupUserRepository.GetAllWithoutCount().ToList();
                 List<TLIuser> userIdsNotInGroupUser = user
                 .Where(user => !GroupUser.Any(groupUser => groupUser.userId == user.Id))
                 .Select(user => user)
                 .ToList();
-                List<UserWithoutGroupViewModel> UserInfo = _mapper.Map<List<UserWithoutGroupViewModel>>(userIdsNotInGroupUser);
-                var temp = UserInfo.Select(x => x.Id).ToList();
-                var userPermission = _unitOfWork.UserPermissionssRepository.GetWhere(x => temp.Any(y=>y==x.UserId)).ToList();
-                //userWithoutGroupViewModel.Permissions= userPermission.Where()
+                foreach (var item in userIdsNotInGroupUser)
+                {
+                    userWithoutGroupViewModel.Add(new UserWithoutGroupViewModel()
+                    {
+                        Id = item.Id,
+                        FirstName=item.FirstName,
+                        MiddleName=item.MiddleName,
+                        LastName=item.LastName,
+                        Email=item.Email,
+                        MobileNumber=item.MobileNumber,
+                        UserName=item.UserName,
+                        Password=item.Password,
+                        Domain=item.Domain,
+                        AdGUID=item.AdGUID,
+                        UserType=item.UserType,
+                        Active=item.Active,
+                        Deleted=item.Deleted,
+                        ConfirmationCode=item.ConfirmationCode,
+                        ValidateAccount=item.ValidateAccount,
+                        Permissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>x.UserId==item.Id).Select(x=>x.PageUrl).ToList()
 
-                return new Response<List<UserWithoutGroupViewModel>>(true, UserInfo, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+                    });
+                }
+                
+                return new Response<List<UserWithoutGroupViewModel>>(true, userWithoutGroupViewModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, userWithoutGroupViewModel.Count());
             }
             catch (Exception err)
             {
