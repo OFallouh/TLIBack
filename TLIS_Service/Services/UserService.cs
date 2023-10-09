@@ -604,8 +604,6 @@ namespace TLIS_Service.Services
 
                     var Exi = AllUserPermissionsInDB.Select(s => s.ToLower())
                         .Except(model.permissions.Select(s => s.ToLower()))
-                        .Union(model.permissions.Select(s => s.ToLower()))
-                        .Except(AllUserPermissionsInDB.Select(s => s.ToLower()))
                         .Distinct().ToList();
                     foreach (var item in Exi)
                     {

@@ -126,7 +126,7 @@ namespace TLIS_DAL.Models
                     NumberofBoltHoles = 0,
                     Manufactured_Max_Load = 0,
                     SpaceLibrary = 0,
-                    VerticalMeasured = 0
+                    VerticalMeasured = false
                 },
                 new TLIcivilNonSteelLibrary
                 {
@@ -140,7 +140,7 @@ namespace TLIS_DAL.Models
                     NumberofBoltHoles = 0,
                     Manufactured_Max_Load = 0,
                     SpaceLibrary = 0,
-                    VerticalMeasured = 0
+                    VerticalMeasured = false
                 },
                 new TLIcivilNonSteelLibrary
                 {
@@ -154,7 +154,7 @@ namespace TLIS_DAL.Models
                     NumberofBoltHoles = 0,
                     Manufactured_Max_Load = 0,
                     SpaceLibrary = 0,
-                    VerticalMeasured = 0
+                    VerticalMeasured = false
                 }
             );
             modelBuilder.Entity<TLIcivilNonSteelType>().HasData(

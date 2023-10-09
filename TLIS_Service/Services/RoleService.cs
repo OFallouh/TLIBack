@@ -205,8 +205,6 @@ namespace TLIS_Service.Services
 
             var Exi = AllRolePermissionsIn.Select(s => s.ToLower())
                 .Except(editRole.permissions.Select(s => s.ToLower()))
-                .Union(editRole.permissions.Select(s => s.ToLower()))
-                .Except(AllRolePermissionsIn.Select(s => s.ToLower()))
                 .Distinct().ToList();
             foreach (var item in Exi)
             {

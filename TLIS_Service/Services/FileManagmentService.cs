@@ -1065,6 +1065,30 @@ namespace TLIS_Service.Services
             {
                 RelatedTables = _unitOfWork.PowerLibraryRepository.GetRelatedTables();
             }
+            else if (Helpers.Constants.LoadSubType.TLIsideArmLibrary.ToString() == TableName)
+            {
+                RelatedTables = _unitOfWork.SideArmLibraryRepository.GetRelatedTables();
+            }
+            else if (Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString() == TableName)
+            {
+                RelatedTables = _unitOfWork.LoadOtherLibraryRepository.GetRelatedTables();
+            }
+            else if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
+            {
+                RelatedTables = _unitOfWork.RadioAntennaLibraryRepository.GetRelatedTables();
+            }
+            else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
+            {
+                RelatedTables = _unitOfWork.RadioRRULibraryRepository.GetRelatedTables();
+            }
+            else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
+            {
+                RelatedTables = _unitOfWork.RadioOtherLibraryRepository.GetRelatedTables();
+            }
+            else if (Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString() == TableName)
+            {
+                RelatedTables = _unitOfWork.MW_OtherLibraryRepository.GetRelatedTables();
+            }
             return RelatedTables;
         }
 

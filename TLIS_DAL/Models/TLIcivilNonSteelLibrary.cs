@@ -17,7 +17,7 @@ namespace TLIS_DAL.Models
         public string Note { get; set; }
         public float Hight { get; set; }
         public float SpaceLibrary { get; set; }
-        public int VerticalMeasured { get; set; }
+        public bool VerticalMeasured { get; set; }
         public TLIcivilNonSteelType civilNonSteelType { get; set; }
         public int civilNonSteelTypeId { get; set; }
         public float NumberofBoltHoles { get; set; }

@@ -21434,7 +21434,7 @@ namespace TLIS_Service.Services
                                         NumberofBoltHoles = 0,
                                         Manufactured_Max_Load = 0,
                                         SpaceLibrary = 0,
-                                        VerticalMeasured = 0
+                                        VerticalMeasured = false
                                     };
 
                                     _unitOfWork.CivilNonSteelLibraryRepository.Add(DefaultLibrary);

@@ -73,8 +73,8 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Suppliers", SuppliersFilters));
 
             var Designers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
-                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Designer.ToString().ToLower() && !x.logisticalType.Disable &&
-                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.Power.ToString().ToLower()).ToList();
+              .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Designer.ToString().ToLower() && !x.logisticalType.Disable &&
+                  !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.Power.ToString().ToLower()).ToList();
             List<DropDownListFilters> DesignersFilters = _mapper.Map<List<DropDownListFilters>>(Designers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Designers", DesignersFilters));
 

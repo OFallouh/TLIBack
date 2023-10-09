@@ -119,6 +119,7 @@ namespace TLIS_Service.Services
             UserViewModel user = null;
             login.Wedcto= Decrypt(login.Wedcto);
             login.Yuqrgh= Decrypt(login.Yuqrgh);
+            login.beresd = Decrypt(login.beresd);
             int Trycount= Convert.ToInt32(login.Yuqrgh);
             TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == login.Wedcto && !x.Deleted && x.Active);
             if (User != null && User.UserType == 1)
