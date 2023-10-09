@@ -162,7 +162,6 @@ namespace TLIS_Service.Services
                    return response = new Response<string>(false, null, null, "The Password coudn't be empty", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                 }
                 User.Password = Decrypt(User.Password);
-                login.beresd = Decrypt(login.beresd);
                 bool verified = (User.Password == login.beresd);
                 if (verified.Equals(false))
                 {
