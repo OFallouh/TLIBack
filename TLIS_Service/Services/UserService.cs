@@ -597,15 +597,14 @@ namespace TLIS_Service.Services
                     }
                     _unitOfWork.UserRepository.Update(UserEntity);
 
-
                     List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
                       .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
+                    var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
+                     _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
+                    await _unitOfWork.SaveChangesAsync();
 
-                    var Exi = AllUserPermissionsInDB.Select(s => s.ToLower())
-                        .Except(model.permissions.Select(s => s.ToLower()))
-                        .Distinct().ToList();
-                    foreach (var item in Exi)
+                    foreach (var item in model.permissions)
                     {
                         TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
                         tLIuserPermissions = new TLIuser_Permissions()
@@ -617,7 +616,7 @@ namespace TLIS_Service.Services
                         };
                         _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
                     }
-
+                    await _unitOfWork.SaveChangesAsync();
                     List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
                         x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
                     List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
