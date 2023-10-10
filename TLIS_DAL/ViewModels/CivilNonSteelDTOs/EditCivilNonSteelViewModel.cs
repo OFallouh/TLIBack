@@ -28,6 +28,7 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelDTOs
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
         public float Support_Limited_Load { get; set; }
+        public double CurrentLoads { get; set; }
         public List<BaseInstAttView> DynamicInstAttsValue { get; set; }
         public EditCivilSiteDateViewModel TLIcivilSiteDate { get; set; }
         public EditCivilSupportDistanceViewModel TLIcivilSupportDistance { get; set; }
