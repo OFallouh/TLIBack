@@ -35,7 +35,7 @@ namespace TLIS_Service.IService
         Task<Response<GroupViewModel>> DeleteAssingedUppers(int GroupId);
         Response<GroupUppersLevels> GetUppersOfGroup(int GroupId);
         Task<Response<GroupUppersLevels>> AssignUpperToGroup(int GroupId, int NewUpperId);
-        Response<List<GroupViewModel>> GetAllGroupsWithoutLowerLevelOfUppers(int GroupId, int Level);
+        Response<List<GroupViewModel>> GetAllGroupsWithoutLowerLevelOfUppers(int GroupId);
        // Response<GroupChildsViewModel> CheckGroupForParent(int GroupId);
         Response<List<GroupViewModel>> CheckGroup(int groupId);
         Response<string> DeleteGroupWithItsChildren(int GroupId, bool DeleteChilds);

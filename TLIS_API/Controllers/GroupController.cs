@@ -206,9 +206,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetAllGroupsWithoutLowerLevelOfUppers")]
         [ProducesResponseType(200, Type = typeof(Response<List<GroupViewModel>>))]
-        public IActionResult GetAllGroupsWithoutLowerLevelOfUppers(int GroupId, int Level)
+        public IActionResult GetAllGroupsWithoutLowerLevelOfUppers(int GroupId)
         {
-            var response = _unitOfWorkService.GroupService.GetAllGroupsWithoutLowerLevelOfUppers(GroupId, Level);
+            var response = _unitOfWorkService.GroupService.GetAllGroupsWithoutLowerLevelOfUppers(GroupId);
             return Ok(response);
         }
         [HttpGet("UnAssignParentRleation")]
