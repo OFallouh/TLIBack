@@ -29,7 +29,7 @@ namespace TLIS_Repository.Repositories
             var Entity = _mapper.Map<TLIcivilLoads>(civilLoadsViewModel);
             Entity.SiteCode = SiteCode;
             Entity.allLoadInstId = allLoadInstId;
-            Entity.InstallationDate = Entity.InstallationDate.ToUniversalTime();
+            Entity.InstallationDate = Entity.InstallationDate;
             _dbContext.TLIcivilLoads.Add(Entity);
             _dbContext.SaveChanges();
         }
