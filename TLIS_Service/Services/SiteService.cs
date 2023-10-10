@@ -4244,13 +4244,12 @@ namespace TLIS_Service.Services
                 List<TLIattributeViewManagment> DateTimeDynamicInstallationAttributesViewModel = AllAttributes.Where(x =>
                     x.DynamicAttId != null ? x.DynamicAtt.DataType.Name.ToLower() == "datetime" : false).ToList();
 
-
                 foreach (Mw_OtherViewModel OthersInstallationObject in Others)
                 {
                     dynamic DynamiMW_OtherInstallation = new ExpandoObject();
 
                     //
-                    // Installation Object ViewModel...
+                    // Installation Object ViewModel... (Not DateTime DataType Attribute)
                     //
                     if (NotDateTimeInstallationAttributesViewModel != null ? NotDateTimeInstallationAttributesViewModel.Count > 0 : false)
                     {
@@ -4266,8 +4265,44 @@ namespace TLIS_Service.Services
                                 NotDateTimeInstallationAttributesViewModel.Select(x =>
                                     x.AttributeActivated.Label.ToLower()).Contains(prop.Name.ToLower()))
                             {
-                                object ForeignKeyNamePropObject = prop.GetValue(OthersInstallationObject, null);
-                                ((IDictionary<String, Object>)DynamiMW_OtherInstallation).Add(new KeyValuePair<string, object>(prop.Name, ForeignKeyNamePropObject));
+                                if (prop.Name.ToLower().StartsWith("InstallationPlace_".ToLower()))
+                                {
+                                    int MW_OtherViewModelId = (int)DynamiMW_OtherInstallation.Id;
+
+                                    TLIcivilLoads? CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+                                        !x.allLoadInst.Draft && (x.allLoadInst.mwOtherId != null ? x.allLoadInst.mwOtherId == MW_OtherViewModelId : false) : false),
+                                            x => x.allLoadInst, x => x.allLoadInst.mwOther);
+
+                                    if (CivilLoads != null)
+                                    {
+                                        if (CivilLoads.sideArmId != null)
+                                        {
+                                            string InstallationPlaceName = _unitOfWork.InstallationPlaceRepository
+                                                .GetWhereFirst(x => x.Name.ToLower().StartsWith("Side".ToLower())).Name;
+
+                                            ((IDictionary<String, Object>)DynamiMW_OtherInstallation).Add(new KeyValuePair<string, object>(prop.Name, InstallationPlaceName));
+                                        }
+                                        else if (CivilLoads.legId != null)
+                                        {
+                                            string InstallationPlaceName = _unitOfWork.InstallationPlaceRepository
+                                                .GetWhereFirst(x => x.Name.ToLower().StartsWith("Leg".ToLower())).Name;
+
+                                            ((IDictionary<String, Object>)DynamiMW_OtherInstallation).Add(new KeyValuePair<string, object>(prop.Name, InstallationPlaceName));
+                                        }
+                                        else
+                                        {
+                                            string InstallationPlaceName = _unitOfWork.InstallationPlaceRepository
+                                                .GetWhereFirst(x => x.Name.ToLower().StartsWith("Direct".ToLower())).Name;
+
+                                            ((IDictionary<String, Object>)DynamiMW_OtherInstallation).Add(new KeyValuePair<string, object>(prop.Name, InstallationPlaceName));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    object ForeignKeyNamePropObject = prop.GetValue(OthersInstallationObject, null);
+                                    ((IDictionary<String, Object>)DynamiMW_OtherInstallation).Add(new KeyValuePair<string, object>(prop.Name, ForeignKeyNamePropObject));
+                                }
                             }
                             else if (NotDateTimeInstallationAttributesViewModel.Select(x =>
                                  x.AttributeActivated.Key.ToLower()).Contains(prop.Name.ToLower()) &&
@@ -4409,6 +4444,7 @@ namespace TLIS_Service.Services
 
                     OutPutList.Add(DynamiMW_OtherInstallation);
                 }
+
                 MW_OtheresTableDisplay.Model = OutPutList;
 
                 if (WithFilterData == true)

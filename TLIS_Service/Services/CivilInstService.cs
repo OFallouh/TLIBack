@@ -4543,7 +4543,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivated(Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(), CivilNonSteelInst, "CurrentLoads").ToList();
+                        .GetInstAttributeActivated(Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(), CivilNonSteelInst/*, "CurrentLoads"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
