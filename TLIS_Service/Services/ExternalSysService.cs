@@ -34,6 +34,7 @@ using System.Diagnostics.SymbolStore;
 using TLIS_DAL.ViewModels.ComplixFilter;
 using Microsoft.AspNetCore.Mvc;
 using TLIS_DAL.Helper.Filters;
+using System.IO;
 
 namespace TLIS_Service.Services
 {
@@ -43,8 +44,8 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        private  byte[] key = new byte[16]; // 128-bit key
-        private  byte[] iv = new byte[16]; // 128-bit IV
+        //private  byte[] key = new byte[16]; // 128-bit key
+        //private  byte[] iv = new byte[16]; // 128-bit IV
 
         public ExternalSysService(IUnitOfWork unitOfWork, IServiceCollection services,ApplicationDbContext _ApplicationDbContext,IMapper mapper)
         {
@@ -65,7 +66,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    TLIexternalSys ext = new TLIexternalSys(mod, CryptPassword(mod.Password));
+                    TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
                     if(mod.IsToken==true)
                     {
                         ext.Token = GenerateToken(mod.SysName, mod.UserName, mod.LifeTime);
@@ -125,7 +126,7 @@ namespace TLIS_Service.Services
 
                     }
 
-                    TLIexternalSys ext = new TLIexternalSys(mod, CryptPassword(mod.Password));
+                    TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
                     ext.IsActive = sys.IsActive;
                     if(mod.IsToken==true)
                     {
@@ -209,7 +210,7 @@ namespace TLIS_Service.Services
                 Id = x.Id,
                 SysName = x.SysName,
                 UserName = x.UserName,
-                Password = DecryptPassword(x.Password),
+                Password = Decrypt(x.Password),
                 IP = x.IP,
                 IsActive = x.IsActive,
                 Token = x.Token,
@@ -245,7 +246,7 @@ namespace TLIS_Service.Services
                     Id = x.Id,
                     SysName = x.SysName,
                     UserName = x.UserName,
-                    Password = DecryptPassword(x.Password),
+                    Password = Decrypt(x.Password),
                     IP = x.IP,
                     IsActive = x.IsActive,
                     Token = x.Token,
@@ -370,56 +371,58 @@ namespace TLIS_Service.Services
             }
         }
 
-        private string CryptPassword(string password)
+        
+        public static string Encrypt(string plainText)
         {
-            byte[] plaintext = Encoding.UTF8.GetBytes(password);
-            byte[] ciphertext;
-
-            using (Aes aes = Aes.Create())
+            using (Aes aesAlg = Aes.Create())
             {
-                aes.Key = key;
-                aes.IV = iv;
+                string key = "9443a09ae2e433750868beaeec0fd681";
+                aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                aesAlg.Mode = CipherMode.ECB;
+                aesAlg.Padding = PaddingMode.PKCS7;
 
-                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+
+                    return Convert.ToBase64String(msEncrypt.ToArray());
                 }
             }
-
-            return Convert.ToBase64String(ciphertext);
-
-
         }
 
-        private string DecryptPassword(string CryptPassword)
+        public static string Decrypt(string encryptedText)
         {
-            try
+            using (Aes aesAlg = Aes.Create())
             {
+                string Key = "9443a09ae2e433750868beaeec0fd681";
+                aesAlg.Key = Encoding.UTF8.GetBytes(Key);
+                aesAlg.Mode = CipherMode.ECB; // Use ECB mode (no IV)
+                aesAlg.Padding = PaddingMode.PKCS7;
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-                byte[] ciphertext = Convert.FromBase64String(CryptPassword);
-                byte[] plaintext;
-
-                using (Aes aes = Aes.Create())
+                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(encryptedText)))
                 {
-                    aes.Key = key;
-                    aes.IV = iv;
-
-                    using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
-                        plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
                     }
                 }
+            }
 
-                return Encoding.UTF8.GetString(plaintext);
-            }
-            catch(Exception ex)
-            {
-                return ex.Message;
-            }
         }
 
-
-       private bool CheckUnique(int id,string systemname)
+        private bool CheckUnique(int id,string systemname)
         {
             var sys = db.TLIexternalSys.Any(x => x.SysName == systemname && x.Id != id && x.IsDeleted==false);
             return sys;
