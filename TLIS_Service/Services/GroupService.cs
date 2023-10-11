@@ -319,6 +319,8 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
                     }
                     DeleteGroup.Deleted = true;
+                    DeleteGroup.ParentId = null;
+                    DeleteGroup.UpperId = null;
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -334,6 +336,8 @@ namespace TLIS_Service.Services
                     }
                   
                     DeleteGroup.Deleted = true;
+                    DeleteGroup.ParentId = null;
+                    DeleteGroup.UpperId = null;
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -341,6 +345,8 @@ namespace TLIS_Service.Services
                 {
 
                     DeleteGroup.Deleted = true;
+                    DeleteGroup.ParentId = null;
+                    DeleteGroup.UpperId = null;
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -559,17 +565,18 @@ namespace TLIS_Service.Services
                             TLIgroup objl3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L3 && x.Active && !x.Deleted);
                             L3Name = objl3?.Name;
                         }
-                        if (item.ParentId != null)
-                        {
-                            TLIgroup objparentname = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.ParentId && x.Active && !x.Deleted);
-                            ParentName = objparentname?.Name;
-                        }
-                        if (item.ActorId != null)
-                        {
-                          TLIactor ObjActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId);
-                            ActorName = ObjActorName?.Name;
+                        
+                    }
+                    if (item.ParentId != null)
+                    {
+                        TLIgroup objparentname = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.ParentId && x.Active && !x.Deleted);
+                        ParentName = objparentname?.Name;
+                    }
+                    if (item.ActorId != null)
+                    {
+                        TLIactor ObjActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId);
+                        ActorName = ObjActorName?.Name;
 
-                        }
                     }
                     Groups.Add(new AddGroupsViewModel()
                     {
@@ -1036,6 +1043,8 @@ namespace TLIS_Service.Services
                         _unitOfWork.GroupUserRepository.UpdateRange(Users);
 
                         GroupToDelete.Deleted = true;
+                        GroupToDelete.ParentId = null;
+                        GroupToDelete.UpperId = null;
                         _unitOfWork.GroupRepository.UpdateItem(GroupToDelete);
                         _unitOfWork.SaveChangesAsync();
 
@@ -1068,6 +1077,8 @@ namespace TLIS_Service.Services
                     foreach (TLIgroup Child in DeleteGroups)
                     {
                         Child.Deleted = true;
+                        Child.ParentId = null;
+                        Child.UpperId = null;
                     }
                     _unitOfWork.GroupRepository.UpdateRange(DeleteGroups);
                     _unitOfWork.SaveChangesAsync();
