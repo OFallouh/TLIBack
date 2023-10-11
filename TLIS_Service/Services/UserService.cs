@@ -486,21 +486,33 @@ namespace TLIS_Service.Services
             try
             {
                 var newPermissionsViewModelsUser = new List<string>();
-                var newPermissionsViewModelsRole = new List<string>();
                 UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
+                List <PermissionsGroup> Group = new List<PermissionsGroup>();
+ 
                 if (User != null)
                 {
-                    var UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
+                    List<string> UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
                     x.UserId == Id && x.Active == true && x.Delete == false).Select(x => x.PageUrl).ToList();
-                    var GroupUser = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id).Select(x => x.groupId).ToList();
-                    var RoleGroup = _unitOfWork.GroupRoleRepository.GetIncludeWhere(x => GroupUser.Any(y => y == x.groupId)).Select(x => x.roleId).ToList();
-                    var Rolepermissions = _unitOfWork.RolePermissionsRepository.GetIncludeWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x => x.PageUrl).ToList();
+                    List<int> GroupUserId = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id && x.Active && !x.Deleted).Select(x => x.groupId).ToList();
+                    List<int?> ParentGroup = GetParentGroup(GroupUserId);
+                    foreach (var item in ParentGroup)
+                    {
+                        List<int> RoleGroup = _unitOfWork.GroupRoleRepository.GetWhere(x => x.groupId==item && !x.Deleted && x.Active).Select(x => x.roleId).ToList();
+                        List<string> Rolepermissions = _unitOfWork.RolePermissionsRepository.GetWhere( x=> RoleGroup.Any(y=>y==x.RoleId)&&!x.Delete && x.Active).Select(x => x.PageUrl).ToList();
+                        TLIgroup ObjGroupName = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item);
+                        string GroupName = ObjGroupName?.Name;
+                        Group.Add(new PermissionsGroup()
+                        {
+                            GroupId = item,
+                            GroupName = GroupName,
+                            PermissionsOfGroup = Rolepermissions
+                        }) ;
+                    }
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
-                        .Where(x => x.userId == User.Id).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
+                        .Where(x => x.userId == User.Id && x.Active && !x.Deleted).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
                     newPermissionsViewModelsUser.AddRange(UserPermissions);
-                    newPermissionsViewModelsRole.AddRange(Rolepermissions);
                     User.PermissionsUser = newPermissionsViewModelsUser;
-                    User.PermissionsRole = newPermissionsViewModelsRole;
+                    User.PermissionsRole = Group;
                 }
                 else
                 {
@@ -838,7 +850,19 @@ namespace TLIS_Service.Services
             }
 
         }
+        public List<int?> GetParentGroup(List<int> GroupId)
+        {
+            List<int?> Childs = new List<int?>();
+            List<int?> currentGroup = _unitOfWork.GroupRepository.GetWhere(x => GroupId.Any(y=>y==x.Id) && !x.Deleted && x.Active).Select(x => x.Id).Cast<int?>().ToList();
+            List<TLIgroup> Group = _unitOfWork.GroupRepository.GetWhere(x => x.Active && !x.Deleted).ToList();
+            while (currentGroup.Count != 0)
+            {
+                Childs.AddRange(currentGroup);
 
+                currentGroup = Group.Where(x => currentGroup.Any(y => y == x.Id && x.ParentId !=null)).Select(x => x.ParentId).ToList();
+            }
+            return Childs;
+        }
         //private string CryptPassword(string password)
         //{
         //    byte[] plaintext = Encoding.UTF8.GetBytes(password);

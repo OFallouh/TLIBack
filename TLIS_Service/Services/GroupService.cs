@@ -1117,14 +1117,11 @@ namespace TLIS_Service.Services
         }
         public List<int> GetLastSon(int groupId)
         {
-            int lastSon = 0;
             List<int> Childs = new List<int>();
             var currentGroup = _unitOfWork.GroupRepository.GetWhere(x => x.Id == groupId && !x.Deleted && x.Active).Select(x=>x.Id).ToList();
             var Group = _unitOfWork.GroupRepository.GetWhere(x => x.Active && !x.Deleted).ToList();
             while ( currentGroup.Count != 0)
-            {
-                
-                   // lastSon = currentGroup;
+            {           
                     Childs.AddRange(currentGroup);
                 
                     currentGroup = Group.Where(x => currentGroup.Any(y=>y==x.ParentId)).Select(x=>x.Id).ToList();
