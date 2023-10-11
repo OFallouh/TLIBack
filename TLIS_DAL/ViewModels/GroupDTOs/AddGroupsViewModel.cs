@@ -18,7 +18,7 @@ namespace TLIS_DAL.ViewModels.GroupDTOs
         public int? ParentId { get; set; }
         public string ParentName { get; set; }
         [Required]
-        public int GroupType { get; set; }
+        public int? GroupType { get; set; }
         [Required]
         public bool Active { get; set; }
         [Required]

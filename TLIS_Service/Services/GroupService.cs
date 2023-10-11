@@ -581,10 +581,10 @@ namespace TLIS_Service.Services
                     Groups.Add(new AddGroupsViewModel()
                     {
                         Id = item.Id,
-                        Name = item.Name,
-                        ParentId = item.ParentId,
+                        Name = item?.Name,
+                        ParentId = item?.ParentId,
                         ParentName = ParentName,
-                        GroupType = item.GroupType,
+                        GroupType = item?.GroupType,
                         Active = item.Active,
                         Deleted = item.Deleted,
                         ActorId = item.ActorId,
@@ -614,7 +614,7 @@ namespace TLIS_Service.Services
                         (x => x.groupId == Group.Id && x.Active && !x.Deleted).ToList();
                     foreach (var item in Users)
                     {
-                        int UserType = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == item.userId).UserType;
+                        int? UserType = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == item.userId).UserType;
                         userNameViewModels.Add(new UserNameViewModel()
                         {
                             Id = item.userId,
