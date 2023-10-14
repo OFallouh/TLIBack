@@ -8184,12 +8184,14 @@ namespace TLIS_Service.Services
                         if (NonStringLibraryProps.Exists(y => y.Name.ToLower() == z.key.ToLower()))
                         {
                             DynamicAtts = DynamicAtts.Where(x => z.value.Any(w => NonStringLibraryProps.FirstOrDefault(y => y.Name.ToLower() == z.key.ToLower())
-                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)).ToString().ToLower() == w.ToLower()));
+                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)) != null ? NonStringLibraryProps.FirstOrDefault(y => y.Name.ToLower() == z.key.ToLower())
+                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)).ToString().ToLower() == w.ToLower() : false));
                         }
                         else
                         {
                             DynamicAtts = DynamicAtts.Where(x => z.value.Any(w => StringLibraryProps.FirstOrDefault(y => y.Name.ToLower() == z.key.ToLower())
-                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)).ToString().ToLower().StartsWith(w.ToLower())));
+                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)) != null ? StringLibraryProps.FirstOrDefault(y => y.Name.ToLower() == z.key.ToLower())
+                                .GetValue(_mapper.Map<DynamicAttViewModel>(x)).ToString().ToLower().StartsWith(w.ToLower()) : false));
                         }
                     }
 

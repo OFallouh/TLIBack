@@ -26,7 +26,15 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public string ConfirmationCode { get; set; }
         public bool ValidateAccount { get; set; }
         public List<String> PermissionsUser { get; set; }
-        public List<String> PermissionsRole { get; set; }
+        public List<PermissionsGroup> PermissionsRole { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }
+    }
+
+    public class PermissionsGroup
+    {
+        public int? GroupId { get; set; }
+        public string GroupName { get; set; }
+        public List<string> PermissionsOfGroup { get; set; }
+
     }
 }
