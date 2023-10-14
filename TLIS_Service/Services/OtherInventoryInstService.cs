@@ -3872,7 +3872,15 @@ namespace TLIS_Service.Services
                             x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet).SiteCode;
 
                     List<KeyValuePair<string, List<DropDownListFilters>>> OtherInventoryDistanceRelatedTables = _unitOfWork.OtherInventoryDistanceRepository.CabientGetRelatedTables(SiteCode);
+
                     RelatedTables.AddRange(OtherInventoryDistanceRelatedTables);
+
+                    DropDownListFilters ReferenceToDelete = RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower())
+                        .Value.FirstOrDefault(x => x.Id == OtherInventoryInsId);
+                    
+                    if (ReferenceToDelete != null)
+                        RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Value.Remove(ReferenceToDelete);
+
                     objectInst.RelatedTables = RelatedTables;
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _dbContext.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == OtherInventoryInsId);
@@ -3969,7 +3977,15 @@ namespace TLIS_Service.Services
 
                     List<KeyValuePair<string, List<DropDownListFilters>>> OtherInventoryDistanceRelatedTables = _unitOfWork.OtherInventoryDistanceRepository.SolarGetRelatedTables(SiteCode);
                     RelatedTables.AddRange(OtherInventoryDistanceRelatedTables);
-                    objectInst.RelatedTables = RelatedTables;
+
+                  
+
+                    DropDownListFilters ReferenceToDelete = RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower())
+                        .Value.FirstOrDefault(x => x.Id == OtherInventoryInsId);
+
+                    if (ReferenceToDelete != null)
+                        RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Value.Remove(ReferenceToDelete);
+objectInst.RelatedTables = RelatedTables;
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _dbContext.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == OtherInventoryInsId);
                     TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
@@ -4070,6 +4086,13 @@ namespace TLIS_Service.Services
 
                     List<KeyValuePair<string, List<DropDownListFilters>>> OtherInventoryDistanceRelatedTables = _unitOfWork.OtherInventoryDistanceRepository.GeneratorGetRelatedTables(SiteCode);
                     RelatedTables.AddRange(OtherInventoryDistanceRelatedTables);
+
+                    DropDownListFilters ReferenceToDelete = RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower())
+                        .Value.FirstOrDefault(x => x.Id == OtherInventoryInsId);
+
+                    if (ReferenceToDelete != null)
+                        RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Value.Remove(ReferenceToDelete);
+
                     objectInst.RelatedTables = RelatedTables;
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _dbContext.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == OtherInventoryInsId);
