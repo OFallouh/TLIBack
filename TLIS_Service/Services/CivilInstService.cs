@@ -347,6 +347,13 @@ namespace TLIS_Service.Services
                     List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
                     List<DropDownListFilters> RelatedToSite = GetRelatedToSite(SiteCode, TableName);
                     RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceCivilId", RelatedToSite));
+
+                    BaseInstAttView ReferenceCivilIdObjectInCivilSupportDistance = objectInst.CivilSupportDistance
+                        .FirstOrDefault(x => x.Key.ToLower() == "ReferenceCivilId".ToLower());
+
+                    if (ReferenceCivilIdObjectInCivilSupportDistance != null)
+                        objectInst.CivilSupportDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceCivilId".ToLower()).Value = RelatedToSite;
+
                     objectInst.RelatedTables = RelatedTables;
                 }
                 else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
@@ -4346,6 +4353,12 @@ namespace TLIS_Service.Services
                             x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).SiteCode;
 
                     List<DropDownListFilters> RelatedToSite = GetRelatedToSiteToEdit(SiteCode, TableName , CivilInsId);
+
+                    DropDownListFilters EditRecordReferenceToDelete = RelatedToSite.FirstOrDefault(x => x.Id == CivilInsId);
+
+                    if (EditRecordReferenceToDelete != null)
+                        RelatedToSite.Remove(EditRecordReferenceToDelete);
+
                     RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceCivilId", RelatedToSite));
                     objectInst.RelatedTables = RelatedTables;
 
@@ -4470,6 +4483,12 @@ namespace TLIS_Service.Services
                             x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).SiteCode;
 
                     List<DropDownListFilters> RelatedToSite = GetRelatedToSiteToEdit(SiteCode, TableName, CivilInsId);
+
+                    DropDownListFilters EditRecordReferenceToDelete = RelatedToSite.FirstOrDefault(x => x.Id == CivilInsId);
+
+                    if (EditRecordReferenceToDelete != null)
+                        RelatedToSite.Remove(EditRecordReferenceToDelete);
+
                     RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceCivilId", RelatedToSite));
                     objectInst.RelatedTables = RelatedTables;
 
@@ -4601,6 +4620,12 @@ namespace TLIS_Service.Services
                             x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).SiteCode;
 
                     List<DropDownListFilters> RelatedToSite = GetRelatedToSiteToEdit(SiteCode, TableName, CivilInsId);
+
+                    DropDownListFilters EditRecordReferenceToDelete = RelatedToSite.FirstOrDefault(x => x.Id == CivilInsId);
+
+                    if (EditRecordReferenceToDelete != null)
+                        RelatedToSite.Remove(EditRecordReferenceToDelete);
+
                     RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ReferenceCivilId", RelatedToSite));
                     objectInst.RelatedTables = RelatedTables;
 
