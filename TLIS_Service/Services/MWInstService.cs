@@ -104,8 +104,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId",
-                            "PortCascadeId"/*, "EquivalentSpace"*/).ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId" /*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -360,6 +359,19 @@ namespace TLIS_Service.Services
             {
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
+        }
+        public Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId)
+        {
+            List<int> UsedPorts = _unitOfWork.MW_BURepository
+                .GetWhere(x => x.PortCascadeId > 0).Select(x => x.PortCascadeId).ToList();
+
+            var xxx = _unitOfWork.MW_PortRepository
+                .GetIncludeWhere(x => x.MwBUId == BUId && !UsedPorts.Contains(x.Id), x => x.MwBU, x => x.MwBULibrary).ToList();
+
+            List<MW_PortViewModel> Ports = _mapper.Map<List<MW_PortViewModel>>(_unitOfWork.MW_PortRepository
+                .GetIncludeWhere(x => x.MwBUId == BUId && !UsedPorts.Contains(x.Id), x => x.MwBU, x => x.MwBULibrary).ToList());
+
+            return new Response<List<MW_PortViewModel>>(Ports);
         }
         //Function take 3 parameters MWInstallationViewModel, TableName, SiteCode
         //First get table name Entity depened on TableName

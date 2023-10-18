@@ -425,10 +425,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetFreeDishesForMW_ODU(AllCivilInstId);
             return Ok(response);
         }
-
-
-
-
-
+        [HttpGet("GetPortCascadedByBUId")]
+        [ProducesResponseType(200, Type = typeof(List<MW_PortViewModel>))]
+        public IActionResult GetPortCascadedByBUId(int BUId)
+        {
+            var response = _unitOfWorkService.MWInstService.GetPortCascadedByBUId(BUId);
+            return Ok(response);
+        }
     }
 }

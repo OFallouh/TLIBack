@@ -1032,7 +1032,9 @@ namespace TLIS_DAL.ViewModels
                 .ForMember(x => x.Port_Name, x => x.MapFrom(f => f.Name));
 
             CreateMap<TLImwPort, MW_PortViewModel>()
-                .ForMember(x => x.Name, x => x.MapFrom(f => f.Port_Name));
+                .ForMember(x => x.Name, x => x.MapFrom(f => f.Port_Name))
+                .ForMember(x => x.MwBULibrary_Name, x => x.MapFrom(f => f.MwBULibrary.Model))
+                .ForMember(x => x.MwBU_Name, x => x.MapFrom(f => f.MwBU.Name));
 
             CreateMap<TLImwPort, AddMW_PortViewModel>().ReverseMap();
 
