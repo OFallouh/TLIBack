@@ -27,6 +27,8 @@ using TLIS_DAL.ViewModels.RowDTOs;
 using TLIS_Repository.Repositories;
 using System.ComponentModel;
 using TLIS_DAL.ViewModels.StepActionDTOs;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Text.RegularExpressions;
 
 namespace TLIS_Service.Services
 {
@@ -619,7 +621,10 @@ namespace TLIS_Service.Services
                         {
                             Id = item.userId,
                             UserName = item.user.UserName,
-                            UserType = UserType
+                            UserType = UserType,
+                            Deleted=item.Deleted,
+                            Active=item.Active
+                            
                         });
                     }
                     Group.Users = userNameViewModels;
@@ -1020,6 +1025,7 @@ namespace TLIS_Service.Services
                         {
                             List<TLIgroup> Childs = _unitOfWork.GroupRepository.GetWhere(x =>
                                 x.ParentId == GroupId && x.Active && !x.Deleted).ToList();
+                           
                             foreach (TLIgroup Child in Childs)
                             {
                                 Child.ParentId = null;
@@ -1041,6 +1047,15 @@ namespace TLIS_Service.Services
                             x.groupId == GroupId).ToList();
                         Users.Any(x => x.Deleted).Equals(true);
                         _unitOfWork.GroupUserRepository.UpdateRange(Users);
+
+                        List<TLIgroup> Uppers = _unitOfWork.GroupRepository.GetWhere(x =>
+                              x.UpperId == GroupId && x.Active && !x.Deleted).ToList();
+
+                        foreach (TLIgroup upper in Uppers)
+                        {
+                            upper.UpperId = null;
+                        }
+                        _unitOfWork.GroupRepository.UpdateRange(Uppers);
 
                         GroupToDelete.Deleted = true;
                         GroupToDelete.ParentId = null;
@@ -1079,10 +1094,18 @@ namespace TLIS_Service.Services
                         Child.Deleted = true;
                         Child.ParentId = null;
                         Child.UpperId = null;
+                       
                     }
                     _unitOfWork.GroupRepository.UpdateRange(DeleteGroups);
-                    _unitOfWork.SaveChangesAsync();
+                    List<TLIgroup> GroupS = _unitOfWork.GroupRepository.GetWhere(x=>!x.Deleted && x.Active).ToList();
+                    List<TLIgroup> Uppers = GroupS.Where(x=> DeleteGroups.Any(y=>y.Id==x.UpperId)).ToList();
 
+                    foreach (var upper in Uppers)
+                    {
+                        upper.UpperId = null;
+                    }
+                    _unitOfWork.GroupRepository.UpdateRange(Uppers);
+                    _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
                 }
                 return new Response<string>(true, "Succeed", null, null, (int)Helpers.Constants.ApiReturnCode.fail);
