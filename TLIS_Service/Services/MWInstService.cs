@@ -6749,6 +6749,9 @@ namespace TLIS_Service.Services
                                     Required = false,
                                     Value = "Cascaded"
                                 });
+
+                                TLImwPort CascadedBu = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
                                 MWInstallationInfo.Add(new BaseInstAttView
                                 {
                                     AutoFill = false,
@@ -6756,12 +6759,12 @@ namespace TLIS_Service.Services
                                     DataTypeId = null,
                                     Desc = "Select the cascaded BU",
                                     enable = true,
-                                    Id = mw_BU.PortCascadeId,
+                                    Id = CascadedBu.MwBUId,
                                     Key = "Select the cascaded BU",
                                     Label = "Select the cascaded BU",
                                     Manage = false,
                                     Required = false,
-                                    Value = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU).MwBU.Name
+                                    Value = CascadedBu.MwBU.Name
                                 });
                             }
                             else
@@ -6876,6 +6879,10 @@ namespace TLIS_Service.Services
                                     Required = false,
                                     Value = "Cascaded"
                                 });
+
+                                TLImwPort CascadedBU = _unitOfWork.MW_PortRepository
+                                    .GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
                                 MWInstallationInfo.Add(new BaseInstAttView
                                 {
                                     AutoFill = false,
@@ -6883,12 +6890,12 @@ namespace TLIS_Service.Services
                                     DataTypeId = null,
                                     Desc = "Select the cascaded BU",
                                     enable = true,
-                                    Id = mw_BU.PortCascadeId,
+                                    Id = CascadedBU.MwBUId,
                                     Key = "Select the cascaded BU",
                                     Label = "Select the cascaded BU",
                                     Manage = false,
                                     Required = false,
-                                    Value = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU).MwBU.Name
+                                    Value = CascadedBU.MwBU.Name
                                 });
                             }
                             else
@@ -7004,6 +7011,9 @@ namespace TLIS_Service.Services
                                     Required = false,
                                     Value = "Cascaded"
                                 });
+
+                                TLImwPort CascadedBU = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
                                 MWInstallationInfo.Add(new BaseInstAttView
                                 {
                                     AutoFill = false,
@@ -7011,12 +7021,12 @@ namespace TLIS_Service.Services
                                     DataTypeId = null,
                                     Desc = "Select the cascaded BU",
                                     enable = true,
-                                    Id = mw_BU.PortCascadeId,
+                                    Id = CascadedBU.MwBUId,
                                     Key = "Select the cascaded BU",
                                     Label = "Select the cascaded BU",
                                     Manage = false,
                                     Required = false,
-                                    Value = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU).MwBU.Name
+                                    Value = CascadedBU.MwBU.Name
                                 });
                             }
                             else
