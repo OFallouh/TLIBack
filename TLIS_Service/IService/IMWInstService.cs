@@ -29,7 +29,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<MW_RFUViewModel>> getMW_RFU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         public Response<ObjectInstAttsForSideArm> GetById(int MWInsId, string TableName);
         public Response<List<InstallationPlaceViewModel>> GetInstallationType(string TableName);
-        Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName);
+        Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName, string LoadType);
         Response<List<MW_PortViewModel>> GetMW_PortsForMW_RFUInstallation(int AllCivilInstId);
         Response<List<MW_BULibraryViewModel>> GetMW_BULibrariesForMW_BUInstallation();
 

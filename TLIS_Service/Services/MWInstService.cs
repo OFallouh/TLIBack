@@ -6570,7 +6570,11 @@ namespace TLIS_Service.Services
                                 FKitem.Value = "NA";
 
                             else
+                            {
                                 FKitem.Value = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id == mw_BU.PortCascadeId).Port_Name;
+                                FKitem.Id = mw_BU.PortCascadeId;
+
+                            }
                         }
                     }
                     objectInst.AttributesActivated = ListAttributesActivated;
@@ -8845,7 +8849,7 @@ namespace TLIS_Service.Services
         //}
         #endregion
 
-        public Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName)
+        public Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName, string LoadType)
         {
             try
             {
@@ -8860,9 +8864,12 @@ namespace TLIS_Service.Services
                     if (LegInstallationPlace != null)
                         InstallationPlaces.Remove(LegInstallationPlace);
                 }
-                else if (TableName.ToLower() == TablesNames.TLIpower.ToString().ToLower())
+                if (!string.IsNullOrEmpty(LoadType) ? LoadType.ToLower() == TablesNames.TLIpower.ToString().ToLower() : false)
                 {
-                    InstallationPlaceViewModel LegInstallationPlace = InstallationPlaces.FirstOrDefault(x => x.Name.ToLower() == "Leg".ToLower());
+                    InstallationPlaceViewModel LegInstallationPlace = InstallationPlaces.FirstOrDefault(x => x.Name.ToLower() == "Direct".ToLower());
+
+                    if (LegInstallationPlace != null)
+                        InstallationPlaces.Remove(LegInstallationPlace);
                 }
 
                 return new Response<List<InstallationPlaceViewModel>>(true, InstallationPlaces, null, null, (int)ApiReturnCode.success);

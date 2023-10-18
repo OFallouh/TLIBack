@@ -364,9 +364,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetInstallationPlaces")]
         [ProducesResponseType(200, Type = typeof(List<InstallationPlaceViewModel>))]
-        public IActionResult GetInstallationPlace(string TableName)
+        public IActionResult GetInstallationPlaces(string TableName, string? LoadType)
         {
-            var response = _unitOfWorkService.MWInstService.GetInstallationPlaces(TableName);
+            var response = _unitOfWorkService.MWInstService.GetInstallationPlaces(TableName, LoadType);
             return Ok(response);
         }
         [HttpGet("GetInstallationType")]
