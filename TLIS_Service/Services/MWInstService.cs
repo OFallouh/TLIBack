@@ -104,7 +104,8 @@ namespace TLIS_Service.Services
                     objectInst.LibraryActivatedAttributes = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId"/*, "EquivalentSpace"*/).ToList();
+                        GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId",
+                            "PortCascadeId"/*, "EquivalentSpace"*/).ToList();
 
                     BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
