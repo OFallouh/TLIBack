@@ -1049,7 +1049,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.GroupUserRepository.UpdateRange(Users);
 
                         List<TLIgroup> Uppers = _unitOfWork.GroupRepository.GetWhere(x =>
-                              x.UpperId == GroupId && x.Active && !x.Deleted).ToList();
+                              x.UpperId == GroupId).ToList();
 
                         foreach (TLIgroup upper in Uppers)
                         {
@@ -1082,12 +1082,12 @@ namespace TLIS_Service.Services
                 using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(60)))
                 {
                     List<int> FirstLevelOfChildsIds = _unitOfWork.GroupRepository.GetWhere(x =>
-                        x.ParentId == GroupId && x.Active && !x.Deleted).Select(x => x.Id).ToList();
+                        x.ParentId == GroupId).Select(x => x.Id).ToList();
                     List<int> AllChildsLevels = new List<int>();
 
                     GetAllChildsIds(FirstLevelOfChildsIds, AllChildsLevels);
 
-                    List<TLIgroup> DeleteGroups = _unitOfWork.GroupRepository.GetWhere(x => AllChildsLevels.Any(y => y == x.Id) && x.Active && !x.Deleted).ToList();
+                    List<TLIgroup> DeleteGroups = _unitOfWork.GroupRepository.GetWhere(x => AllChildsLevels.Any(y => y == x.Id)&&!x.Deleted).ToList();
 
                     foreach (TLIgroup Child in DeleteGroups)
                     {
@@ -1097,7 +1097,7 @@ namespace TLIS_Service.Services
                        
                     }
                     _unitOfWork.GroupRepository.UpdateRange(DeleteGroups);
-                    List<TLIgroup> GroupS = _unitOfWork.GroupRepository.GetWhere(x=>!x.Deleted && x.Active).ToList();
+                    List<TLIgroup> GroupS = _unitOfWork.GroupRepository.GetAllWithoutCount().ToList();
                     List<TLIgroup> Uppers = GroupS.Where(x=> DeleteGroups.Any(y=>y.Id==x.UpperId)).ToList();
 
                     foreach (var upper in Uppers)
