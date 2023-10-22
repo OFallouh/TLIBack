@@ -323,6 +323,7 @@ namespace TLIS_Service.Services
                     DeleteGroup.Deleted = true;
                     DeleteGroup.ParentId = null;
                     DeleteGroup.UpperId = null;
+                    DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -340,15 +341,16 @@ namespace TLIS_Service.Services
                     DeleteGroup.Deleted = true;
                     DeleteGroup.ParentId = null;
                     DeleteGroup.UpperId = null;
+                    DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 else if (GroupLowers.Count == 0 && GroupCildrens.Count == 0)
                 {
-
                     DeleteGroup.Deleted = true;
                     DeleteGroup.ParentId = null;
                     DeleteGroup.UpperId = null;
+                    DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -913,11 +915,12 @@ namespace TLIS_Service.Services
                 throw;
             }
         }
-        public Response<List<GroupViewModel>> GetAllGroupsWithoutLowerLevelOfUppers(int GroupId)
+        public Response<List<GroupViewModel>> GetAllGroupsWithoutLowerLevelOfUppers(int GroupId, List<FilterObjectList> filters)
         {
             try
             {
                 TLIgroup Group = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == GroupId && !x.Deleted && x.Active);
+
                 if (Group == null)
                     return new Response<List<GroupViewModel>>(true, null, null, $"No Group is found with this Id {GroupId}", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -925,20 +928,27 @@ namespace TLIS_Service.Services
                 List<int> exeptLowerGroups = new List<int>();
                 List<int> LowersIds = new List<int>();
     
-                    LowersIds = _unitOfWork.GroupRepository.GetWhere(x => (x.UpperId == GroupId || x.Id == GroupId) && x.Active && !x.Deleted).Select(x => x.Id).ToList();
-                    LoopForLowerGroups(LowersIds, exeptLowerGroups);
+                LowersIds = _unitOfWork.GroupRepository.GetWhere(x => (x.UpperId == GroupId || x.Id == GroupId) && x.Active && !x.Deleted).Select(x => x.Id).ToList();
+                LoopForLowerGroups(LowersIds, exeptLowerGroups);
 
-                    if (Group.UpperId != null)
-                        exeptLowerGroups.Add(Group.UpperId.Value);
-                    //List<int> Groups = GetLastSon(GroupId);
+                if (Group.UpperId != null)
+                    exeptLowerGroups.Add(Group.UpperId.Value);
+                //List<int> Groups = GetLastSon(GroupId);
 
-                    //if (Groups != null)
-                    //{
-                    //    exeptLowerGroups.AddRange(Groups);
-                    //}
-                  
+                //if (Groups != null)
+                //{
+                //    exeptLowerGroups.AddRange(Groups);
+                //}
+
+                if (filters != null ? filters.Count() > 0 : false)
+                {
+                    AllGroups = _unitOfWork.GroupRepository.GetWhere(x => !exeptLowerGroups.Any(y => y == x.Id) && !x.Deleted && x.Active &&
+                        x.Name.ToLower().StartsWith(filters.FirstOrDefault().value.FirstOrDefault().ToString().ToLower())).OrderBy(x => x.Name).ToList();
+                }
+                else
+                {
                     AllGroups = _unitOfWork.GroupRepository.GetWhere(x => !exeptLowerGroups.Any(y => y == x.Id) && !x.Deleted && x.Active).ToList();
-              
+                }
                 //else if (Level == 2)
                 //{
                 //    if (Group.UpperId == null)
@@ -1060,13 +1070,14 @@ namespace TLIS_Service.Services
                         GroupToDelete.Deleted = true;
                         GroupToDelete.ParentId = null;
                         GroupToDelete.UpperId = null;
+                        GroupToDelete.Name = GroupToDelete.Name + DateTime.Now.ToString();
                         _unitOfWork.GroupRepository.UpdateItem(GroupToDelete);
                         _unitOfWork.SaveChangesAsync();
 
                         transaction.Complete();
                     }
-
                 }
+
                 return new Response<string>(true, "Succeed", null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -1094,7 +1105,7 @@ namespace TLIS_Service.Services
                         Child.Deleted = true;
                         Child.ParentId = null;
                         Child.UpperId = null;
-                       
+                        Child.Name = Child.Name + DateTime.Now.ToString();
                     }
                     _unitOfWork.GroupRepository.UpdateRange(DeleteGroups);
                     List<TLIgroup> GroupS = _unitOfWork.GroupRepository.GetWhere(x=>!x.Deleted && x.Active).ToList();
