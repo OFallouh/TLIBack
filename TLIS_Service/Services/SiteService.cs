@@ -413,8 +413,6 @@ namespace TLIS_Service.Services
         //}
         public Response<IEnumerable<SiteViewModel>> GetSites(ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
         {
-            DateTime Start = DateTime.Now;
-
             List<TLIlocationType> Locations = _context.TLIlocationType.ToList();
 
             if (filters != null ? filters.Count() > 0 : false)
@@ -465,9 +463,7 @@ namespace TLIS_Service.Services
                         SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
                 }
 
-                DateTime End = DateTime.Now;
-
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, (int)(End - Start).TotalSeconds);
+                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             else
             {
@@ -487,9 +483,7 @@ namespace TLIS_Service.Services
                         SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
                 }
 
-                DateTime End = DateTime.Now;
-
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, (int)(End - Start).TotalSeconds);
+                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _context.TLIsite.Count());
             }
         }
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
