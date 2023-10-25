@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -29,9 +30,12 @@ namespace TLIS_API.Controllers
     public class SiteController : Controller
     {
         private IUnitOfWorkService _unitOfWorkService;
-        public SiteController(IUnitOfWorkService unitOfWorkService)
+        private readonly IConfiguration _configuration;
+
+        public SiteController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration)
         {
             _unitOfWorkService = unitOfWorkService;
+            _configuration = configuration;
         }
         [HttpPost("AddSite")]
         [ProducesResponseType(200, Type = typeof(AddSiteViewModel))]
@@ -79,7 +83,8 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(List<SiteViewModel>))]
         public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters)
         {
-            var response = _unitOfWorkService.SiteService.GetSites(parameterPagination, filters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.GetSites(ConnectionString, parameterPagination, filters);
             return Ok(response);
         }
         [HttpPost("GetSiteMainSpaces")]

@@ -411,59 +411,119 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModel>> GetSites(ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
         {
             List<TLIlocationType> Locations = _context.TLIlocationType.ToList();
+            List<TLIarea> Areas = _context.TLIarea.ToList();
+            List<TLIregion> Regions = _context.TLIregion.ToList();
+            List<TLIsiteStatus> SiteStatus = _context.TLIsiteStatus.ToList();
 
             if (filters != null ? filters.Count() > 0 : false)
             {
+                DateTime start = DateTime.Now;
+
                 List<TLIsite> SitesModels = _context.TLIsite.ToList();
 
-                IEnumerable<SiteViewModel> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_unitOfWork.SiteRepository
-                    .GetIncludeWhere(x => true, x => x.Region, x => x.Area, x => x.siteStatus)).AsEnumerable();
+                OracleConnection OracleConnectionConnectionString = new OracleConnection(ConnectionString);
+                OracleCommand CMD = OracleConnectionConnectionString.CreateCommand();
 
-                foreach (FilterObjectList Filter in filters)
+                CMD.CommandText = "SELECT * FROM \"TLIsite\" Where ";
+                foreach (FilterObjectList filter in filters)
                 {
-                    PropertyInfo PropertyType = typeof(SiteViewModel).GetProperties()
-                        .FirstOrDefault(x => x.Name.ToLower() == Filter.key.ToLower());
+                    PropertyInfo Attribute = typeof(SiteViewModel).GetProperties()
+                        .FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
 
-                    if (PropertyType.PropertyType == typeof(string))
+                    string AttributeName = Attribute.Name;
+
+                    if (Attribute.PropertyType == typeof(string))
                     {
-                        List<string> StringValues = Filter.value.Select(x => x.ToString().ToLower()).ToList();
-
-                        foreach (string FilterValues in StringValues)
+                        foreach (object FilterValue in filter.value)
                         {
-                            SitesViewModels = SitesViewModels.Where(x => PropertyType.GetValue(x).ToString().ToLower()
-                                .StartsWith(FilterValues));
+                            if (filter.value.FirstOrDefault() == FilterValue)
+                            {
+                                CMD.CommandText = CMD.CommandText + "(";
+                            }
+
+                            CMD.CommandText = CMD.CommandText + $"\"TLIsite\".\"{AttributeName}\" LIKE ";
+
+                            if (filter.value.LastOrDefault() != FilterValue)
+                            {
+                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}%' OR ";
+                            }
+                            else
+                            {
+                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}%')";
+                            }
                         }
                     }
-                    else if (PropertyType.PropertyType == typeof(double) ||
-                        (PropertyType.PropertyType == typeof(float)))
+                    else
                     {
-                        List<string> StringValues = Filter.value.Select(x => x.ToString().ToLower()).ToList();
-
-                        foreach (string FilterValues in StringValues)
+                        foreach (object FilterValue in filter.value)
                         {
-                            SitesViewModels = SitesViewModels.Where(x => PropertyType.GetValue(x).ToString() == FilterValues);
+                            if (filter.value.FirstOrDefault() == FilterValue)
+                            {
+                                CMD.CommandText = CMD.CommandText + "(";
+                            }
+
+                            CMD.CommandText = CMD.CommandText + $"\"TLIsite\".\"{AttributeName}\" = ";
+
+                            if (filter.value.LastOrDefault() != FilterValue)
+                            {
+                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}' OR ";
+                            }
+                            else
+                            {
+                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}' )";
+                            }
                         }
                     }
+
+                    if (filters.LastOrDefault() != filter)
+                        CMD.CommandText = CMD.CommandText + "AND ";
                 }
 
-                int Count = SitesViewModels.Count();
+                OracleConnectionConnectionString.Open();
+                OracleDataReader ODR = CMD.ExecuteReader();
+                List<SiteViewModel> MySites = new List<SiteViewModel>();
 
-                SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                    .Take(parameterPagination.PageSize);
+                int StartIndex = 1;
+                int StartIndexAsPagination = (parameterPagination.PageNumber - 1) * (parameterPagination.PageSize);
+                int EndIndexAsPagination = StartIndexAsPagination + parameterPagination.PageSize;
 
-                foreach (SiteViewModel SitesViewModel in SitesViewModels)
+                while (ODR.Read())
                 {
-                    string? LocationTypeInModel = SitesModels.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
-                        .LocationType;
+                    if (StartIndex >= StartIndexAsPagination && StartIndex <= EndIndexAsPagination)
+                    {
+                        MySites.Add(new SiteViewModel()
+                        {
+                            SiteCode = ODR["SiteCode"].ToString(),
+                            SiteName = ODR["SiteName"].ToString(),
+                            Area = !string.IsNullOrEmpty(ODR["AreaId"].ToString()) ?
+                            Areas.FirstOrDefault(x => x.Id == int.Parse(ODR["AreaId"].ToString())).AreaName : null,
+                            Region = !string.IsNullOrEmpty(ODR["RegionCode"].ToString()) ?
+                            Regions.FirstOrDefault(x => x.RegionCode.ToLower() == ODR["RegionCode"].ToString().ToLower()).RegionName : null,
+                            Longitude = float.Parse(ODR["Longitude"].ToString()),
+                            Latitude = float.Parse(ODR["Latitude"].ToString()),
+                            Status = !string.IsNullOrEmpty(ODR["siteStatusId"].ToString()) ?
+                            SiteStatus.FirstOrDefault(x => x.Id == int.Parse(ODR["siteStatusId"].ToString())).Name : null,
+                            LocationType = !string.IsNullOrEmpty(ODR["LocationType"].ToString()) ?
+                            Locations.FirstOrDefault(x => x.Id.ToString() == ODR["LocationType"].ToString()).Name : null,
+                            LocationHieght = float.Parse(ODR["LocationHieght"].ToString()),
+                            RentedSpace = float.Parse(ODR["RentedSpace"].ToString()),
+                            ReservedSpace = float.Parse(ODR["ReservedSpace"].ToString())
+                        });
+                    }
 
-                    if (!string.IsNullOrEmpty(LocationTypeInModel))
-                        SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
+                    StartIndex++;
                 }
 
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                int Count = MySites.Count;
+
+                OracleConnectionConnectionString.Close();
+
+                DateTime end = DateTime.Now;
+
+                return new Response<IEnumerable<SiteViewModel>>(true, MySites, null, null, (int)Helpers.Constants.ApiReturnCode.success, (int)(end - start).TotalSeconds);
             }
             else
             {
@@ -486,6 +546,7 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _context.TLIsite.Count());
             }
         }
+
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
         {
             return _mapper.Map<List<SiteViewModel>>(_unitOfWork.SiteRepository
