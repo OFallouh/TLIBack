@@ -5065,7 +5065,7 @@ namespace TLIS_Service.Services
                         float Diameter_test = 0;
                         if (dt.Columns.Contains("Diameter"))
                         {
-                            test = float.TryParse(dt.Rows[j]["Diameter"].ToString(), out height_test);
+                            test = float.TryParse(dt.Rows[j]["Diameter"].ToString(), out Diameter_test);
                             if (test == false)
                             {
                                 UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Diameter Wrong Input DataType In The Row {j + 2}"));
