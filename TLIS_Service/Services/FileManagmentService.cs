@@ -2743,12 +2743,10 @@ namespace TLIS_Service.Services
                                 goto ERROR;
                             }
                         }
-
-                        int vertical_test;
                         int verticalMeasured_test = 0;
                         if (dt.Columns.Contains("VerticalMeasured"))
                         {
-                            test = int.TryParse(dt.Rows[j]["VerticalMeasured"].ToString(), out vertical_test);
+                            test = int.TryParse(dt.Rows[j]["VerticalMeasured"].ToString(), out verticalMeasured_test);
                             if (test == false)
                             {
                                 UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"VerticalMeasured Wrong Input DataType in the row {j + 2}"));
