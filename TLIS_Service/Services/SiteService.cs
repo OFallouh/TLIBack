@@ -74,12 +74,13 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         ApplicationDbContext _context;
         private IMapper _mapper;
+        ServiceProvider _serviceProvider;
+        public static List<TLIsite> _MySites;
         public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _services = services;
-            ServiceProvider serviceProvider = _services.BuildServiceProvider();
             _mapper = mapper;
         }
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel)
@@ -102,6 +103,9 @@ namespace TLIS_Service.Services
 
                 TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
                 _unitOfWork.SiteRepository.Add(NewSiteEntity);
+
+                _MySites.Add(NewSiteEntity);
+
                 _unitOfWork.SaveChanges();
 
                 return new Response<AddSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -123,6 +127,10 @@ namespace TLIS_Service.Services
                 }
                 TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
                 _unitOfWork.SiteRepository.Update(Site);
+                
+                _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
+                _MySites.Add(Site);
+
                 _unitOfWork.SaveChanges();
 
                 return new Response<EditSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -414,136 +422,51 @@ namespace TLIS_Service.Services
         public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
         {
             List<TLIlocationType> Locations = _context.TLIlocationType.ToList();
-            List<TLIarea> Areas = _context.TLIarea.ToList();
-            List<TLIregion> Regions = _context.TLIregion.ToList();
-            List<TLIsiteStatus> SiteStatus = _context.TLIsiteStatus.ToList();
 
             if (filters != null ? filters.Count() > 0 : false)
             {
-                DateTime start = DateTime.Now;
-
-                List<TLIsite> SitesModels = _context.TLIsite.ToList();
-
-                OracleConnection OracleConnectionConnectionString = new OracleConnection(ConnectionString);
-                OracleCommand CMD = OracleConnectionConnectionString.CreateCommand();
-
-                CMD.CommandText = "SELECT * FROM \"TLIsite\" Where ";
+                IEnumerable<SiteViewModel> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
                 foreach (FilterObjectList filter in filters)
                 {
-                    PropertyInfo Attribute = typeof(SiteViewModel).GetProperties()
-                        .FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
+                    PropertyInfo Property = typeof(SiteViewModel).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
 
-                    string AttributeName = Attribute.Name;
-
-                    if (Attribute.PropertyType == typeof(string))
+                    foreach (object FilterValues in filter.value)
                     {
-                        foreach (object FilterValue in filter.value)
-                        {
-                            if (filter.value.FirstOrDefault() == FilterValue)
-                            {
-                                CMD.CommandText = CMD.CommandText + "(";
-                            }
-
-                            CMD.CommandText = CMD.CommandText + $"\"TLIsite\".\"{AttributeName}\" LIKE ";
-
-                            if (filter.value.LastOrDefault() != FilterValue)
-                            {
-                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}%' OR ";
-                            }
-                            else
-                            {
-                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}%')";
-                            }
-                        }
+                        SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x).ToString().ToLower().StartsWith(FilterValues.ToString().ToLower())).ToList();
                     }
-                    else
-                    {
-                        foreach (object FilterValue in filter.value)
-                        {
-                            if (filter.value.FirstOrDefault() == FilterValue)
-                            {
-                                CMD.CommandText = CMD.CommandText + "(";
-                            }
-
-                            CMD.CommandText = CMD.CommandText + $"\"TLIsite\".\"{AttributeName}\" = ";
-
-                            if (filter.value.LastOrDefault() != FilterValue)
-                            {
-                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}' OR ";
-                            }
-                            else
-                            {
-                                CMD.CommandText = CMD.CommandText + $"'{FilterValue}' )";
-                            }
-                        }
-                    }
-
-                    if (filters.LastOrDefault() != filter)
-                        CMD.CommandText = CMD.CommandText + "AND ";
                 }
 
-                OracleConnectionConnectionString.Open();
-                OracleDataReader ODR = CMD.ExecuteReader();
-                List<SiteViewModel> MySites = new List<SiteViewModel>();
+                int Count = SitesViewModels.Count();
 
-                int StartIndex = 1;
-                int StartIndexAsPagination = (parameterPagination.PageNumber - 1) * (parameterPagination.PageSize);
-                int EndIndexAsPagination = StartIndexAsPagination + parameterPagination.PageSize;
-
-                while (ODR.Read())
-                {
-                    if (StartIndex >= StartIndexAsPagination && StartIndex <= EndIndexAsPagination)
-                    {
-                        MySites.Add(new SiteViewModel()
-                        {
-                            SiteCode = ODR["SiteCode"].ToString(),
-                            SiteName = ODR["SiteName"].ToString(),
-                            Area = !string.IsNullOrEmpty(ODR["AreaId"].ToString()) ?
-                            Areas.FirstOrDefault(x => x.Id == int.Parse(ODR["AreaId"].ToString())).AreaName : null,
-                            Region = !string.IsNullOrEmpty(ODR["RegionCode"].ToString()) ?
-                            Regions.FirstOrDefault(x => x.RegionCode.ToLower() == ODR["RegionCode"].ToString().ToLower()).RegionName : null,
-                            Longitude = float.Parse(ODR["Longitude"].ToString()),
-                            Latitude = float.Parse(ODR["Latitude"].ToString()),
-                            Status = !string.IsNullOrEmpty(ODR["siteStatusId"].ToString()) ?
-                            SiteStatus.FirstOrDefault(x => x.Id == int.Parse(ODR["siteStatusId"].ToString())).Name : null,
-                            LocationType = !string.IsNullOrEmpty(ODR["LocationType"].ToString()) ?
-                            Locations.FirstOrDefault(x => x.Id.ToString() == ODR["LocationType"].ToString()).Name : null,
-                            LocationHieght = float.Parse(ODR["LocationHieght"].ToString()),
-                            RentedSpace = float.Parse(ODR["RentedSpace"].ToString()),
-                            ReservedSpace = float.Parse(ODR["ReservedSpace"].ToString())
-                        });
-                    }
-
-                    StartIndex++;
-                }
-
-                int Count = MySites.Count;
-
-                OracleConnectionConnectionString.Close();
-
-                DateTime end = DateTime.Now;
-
-                return new Response<IEnumerable<SiteViewModel>>(true, MySites, null, null, (int)Helpers.Constants.ApiReturnCode.success, (int)(end - start).TotalSeconds);
-            }
-            else
-            {
-                IEnumerable<TLIsite> SitesModels = _context.TLIsite
-                    .Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                    .Take(parameterPagination.PageSize)
-                    .Include(x => x.Region).Include(x => x.Area).Include(x => x.siteStatus);
-
-                IEnumerable<SiteViewModel> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(SitesModels);
+                SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                    .Take(parameterPagination.PageSize);
 
                 foreach (SiteViewModel SitesViewModel in SitesViewModels)
                 {
-                    string? LocationTypeInModel = SitesModels.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
+                    string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
                         .LocationType;
 
                     if (!string.IsNullOrEmpty(LocationTypeInModel))
                         SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
                 }
 
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _context.TLIsite.Count());
+                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+            }
+            else
+            {
+                IEnumerable<SiteViewModel> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                    .Take(parameterPagination.PageSize));
+
+                foreach (SiteViewModel SitesViewModel in SitesViewModels)
+                {
+                    string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
+                        .LocationType;
+
+                    if (!string.IsNullOrEmpty(LocationTypeInModel))
+                        SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
+                }
+
+                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
 
@@ -579,6 +502,9 @@ namespace TLIS_Service.Services
             {
                 var Site = _unitOfWork.SiteRepository.GetAllAsQueryable().Where(s => s.SiteCode == SiteCode).FirstOrDefault();
                 Site.RentedSpace = RentedSpaceValue;
+
+                _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower()).RentedSpace = RentedSpaceValue;
+
                 await _unitOfWork.SiteRepository.UpdateItem(Site);
                 await _unitOfWork.SaveChangesAsync();
                 return new Response<SiteViewModel>();
@@ -642,7 +568,7 @@ namespace TLIS_Service.Services
                 else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
                 {
                     List<TLIallCivilInst> AllCivilInsts = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
-                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilWithoutLegId != null && 
+                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilWithoutLegId != null &&
                        !string.IsNullOrEmpty(x.allCivilInst.civilWithoutLeg.Name),
                         x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).AsQueryable().AsNoTracking().Select(x => x.allCivilInst).ToList();
 
@@ -662,7 +588,7 @@ namespace TLIS_Service.Services
                 else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString().ToLower())
                 {
                     List<TLIallCivilInst> AllCivilInsts = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
-                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilNonSteelId != null && 
+                       !x.Dismantle && x.SiteCode == SiteCode && x.allCivilInst.civilNonSteelId != null &&
                        !string.IsNullOrEmpty(x.allCivilInst.civilNonSteel.Name),
                         x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).AsQueryable().AsNoTracking().Select(x => x.allCivilInst).ToList();
 
@@ -716,7 +642,7 @@ namespace TLIS_Service.Services
                 SiteViewModel siteViewModel = new SiteViewModel();
                 var siteInfo = _context.TLIsite.Include(x => x.Area).Include(x => x.Region).Include(x => x.siteStatus).
                     Where(x => x.SiteCode == SiteCode).FirstOrDefault();
-         
+
                 siteViewModel = new SiteViewModel()
                 {
                     SiteCode = siteInfo.SiteCode,
@@ -724,7 +650,7 @@ namespace TLIS_Service.Services
                     Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId).Name,
                     LocationHieght = siteInfo.LocationHieght,
                     Longitude = siteInfo.Longitude,
-                    LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id==Convert.ToInt64(siteInfo.LocationType)).Name,
+                    LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id == Convert.ToInt64(siteInfo.LocationType)).Name,
                     Latitude = siteInfo.Latitude,
                     CityName = siteInfo.Zone,
                     Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId).AreaName,
@@ -752,6 +678,11 @@ namespace TLIS_Service.Services
                 TLIsite site = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == SiteCode);
                 site.RentedSpace = RentedSpace;
                 site.ReservedSpace = ReservedSpace;
+
+                TLIsite OldSiteData = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
+                _MySites.Remove(OldSiteData);
+                _MySites.Add(site);
+
                 _unitOfWork.SiteRepository.Update(site);
                 _unitOfWork.SaveChanges();
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);

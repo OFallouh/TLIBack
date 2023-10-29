@@ -45,7 +45,7 @@ using TLIS_API.Middleware.ActionFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using OfficeOpenXml.ConditionalFormatting;
-
+using TLIS_DAL.ViewModels.SiteDTOs;
 
 namespace TLIS_API
 {
@@ -57,7 +57,7 @@ namespace TLIS_API
         public ApplicationDbContext _DbContext { get; set; }
         public IMapper _Mapper { get; set; }
         public IHostEnvironment HostingEnvironment { get; private set; }
-
+        public static List<SiteViewModel> MySitesViewModels = new List<SiteViewModel>(); 
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             this.HostingEnvironment = env;
@@ -83,8 +83,6 @@ namespace TLIS_API
             {
                 options.UseOracle(Configuration["ConnectionStrings:ActiveConnection"]);
             });
-
-
 
             var domainSettingsSection = Configuration.GetSection("Domain");
 
@@ -166,7 +164,6 @@ namespace TLIS_API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
             app.UseCors(x => x
            .AllowAnyOrigin()
            .AllowAnyMethod()
@@ -175,7 +172,6 @@ namespace TLIS_API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-              
             }
 
             app.UseSwagger();
@@ -186,9 +182,7 @@ namespace TLIS_API
                 c.DisplayRequestDuration();
             });
             app.UseSession();
-
-
-
+            
             app.UseAuthentication();
 
             app.UseRouting();
@@ -208,11 +202,20 @@ namespace TLIS_API
             //        template: "{controller}/{action=Index}/{id?}");
             //});
 
-#region Windows Authentication
-                        /*------------------------------------------------------------------------------------*/
+            #region Windows Authentication
+            /*------------------------------------------------------------------------------------*/
             /*                              Windows Authentication                                */
             /*------------------------------------------------------------------------------------*/
-            
+            app.Use(async (Runcontext, next) =>
+            {
+                ApplicationDbContext _Context = Runcontext.RequestServices.GetService<ApplicationDbContext>();
+                IMapper _Mapper = Runcontext.RequestServices.GetService<IMapper>();
+
+                SiteService._MySites = await _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                    .Include(x => x.siteStatus).ToListAsync();
+
+                await next();
+            });
             //app.Use(async (Runcontext, next) =>
             //{
             //    ApplicationDbContext _context = Runcontext.RequestServices.GetService<ApplicationDbContext>();
@@ -269,101 +272,9 @@ namespace TLIS_API
             //                }
             //            }
             //        }
-            //            //else
-            //            //{
-            //            //    string UserName = Environment.UserName;
-            //            //    string domain = Configuration["Domain"];
-            //            //    using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind))
-            //            //    {
-            //            //        UserPrincipal principal = new UserPrincipal(context);
-
-            //            //        if (context != null)
-            //            //        {
-            //            //            principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
-            //            //            if (principal != null)
-            //            //            {
-            //            //                // Check The UserName If It is Exist In The DataBase..
-            //            //                TLIuser CheckUserIfExist = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName);
-            //            //                if (CheckUserIfExist != null)
-            //            //                {
-            //            //                    string secretKey = Configuration["JWT:Key"];
-            //            //                    string TokenValue = _unitOfWorkService.TokenService.CreateToken(
-            //            //                        new LoginViewModel
-            //            //                        {
-            //            //                            UserName = UserName
-            //            //                        }, secretKey, null, null).Data;
-
-            //            //JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            //            //JwtSecurityToken tokenInstance = handler.ReadJwtToken(TokenValue);
-            //            //List<Claim> tokenClaims = tokenInstance.Claims.ToList();
-            //            //string FirstClaim = tokenClaims[0].Value;
-            //            //string UserId = "UserId";
-            //            //Runcontext.Session.SetString(UserId, FirstClaim);
-            //            //TLIpermission Permission = _context.TLIpermission.FirstOrDefault(p => p.ControllerName.Equals(test[2]) && p.ActionName.Equals(test[3]));
-            //            //bool TestAccess = false;
-            //            //if (Permission != null)
-            //            //{
-            //            //    TestAccess = _context.TLIuserPermission.Any(u => u.userId.Equals(Int32.Parse(FirstClaim)) && u.permissionId.Equals(Permission.Id));
-            //            //}
-            //            //if (TestAccess.Equals(true))
-            //            //{
-            //            //await next.Invoke();
-
-            //            //string expected = JsonConvert.SerializeObject(new { Token = TokenValue });
-            //            //await Runcontext.Response.WriteAsync(expected);
-            //            //}
-            //            //else
-            //            //{
-            //            //    Runcontext.Response.Clear();
-            //            //    Runcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
-            //            //    string expected = JsonConvert.SerializeObject(new { UserState = "Unauthorized", Token = TokenValue });
-            //            //    await Runcontext.Response.WriteAsync(expected);
-            //            //}
-            //            //  }
-            //            //    else
-            //            //    {
-            //            //        Runcontext.Response.Clear();
-            //            //        Runcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
-            //            //        string expected = JsonConvert.SerializeObject(new { UserState = "Unauthenticated" });
-            //            //        await Runcontext.Response.WriteAsync(expected);
-            //            //    }
-            //            //}
-            //            //else
-            //            //{
-            //            //    Runcontext.Response.Clear();
-            //            //    Runcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
-            //            //    string expected = JsonConvert.SerializeObject(new { UserState = "Unauthorized" });
-            //            //    await Runcontext.Response.WriteAsync(expected);
-            //            //}
-            //            // }
-            //            // }
-            //            // }
-            //            // }
-
-            //            // Else If (TokenController) Has Been Called -->> Go Straight To (TokenController)
-            //            // No Need To Check User's Token...
-            //            //else
-            //            //{
-            //            //    await next.Invoke();
-            //            //}
-            //        }
-
             //        //else
             //        //{
-            //        //    await next.Invoke();
-            //        //}
-            //   // }
-            //        // else If The Request Is Sent When The Browser Is Opened (No Api) Then Check Windows Authentication...
-            //        //else
-            //        //{
-            //        //    // var identity = WindowsIdentity.GetCurrent();
-            //        //    var windowsIdentity = _httpContextAccessor.HttpContext.User.Identity as WindowsIdentity;
-            //        //    // Get the username from the Windows identity
-            //        //    var UserName = windowsIdentity?.Name;
-            //        //    // If The User Is Exist And Doesn't Has Token In The DataBase...
+            //        //    string UserName = Environment.UserName;
             //        //    string domain = Configuration["Domain"];
             //        //    using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind))
             //        //    {
@@ -384,27 +295,119 @@ namespace TLIS_API
             //        //                        {
             //        //                            UserName = UserName
             //        //                        }, secretKey, null, null).Data;
-            //        //                    string expected = JsonConvert.SerializeObject(new { UserState = "authenticated", Token = TokenValue });
 
-            //        //                    await Runcontext.Response.WriteAsync(expected);
-            //        //                }
+            //        //JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            //        //JwtSecurityToken tokenInstance = handler.ReadJwtToken(TokenValue);
+            //        //List<Claim> tokenClaims = tokenInstance.Claims.ToList();
+            //        //string FirstClaim = tokenClaims[0].Value;
+            //        //string UserId = "UserId";
+            //        //Runcontext.Session.SetString(UserId, FirstClaim);
+            //        //TLIpermission Permission = _context.TLIpermission.FirstOrDefault(p => p.ControllerName.Equals(test[2]) && p.ActionName.Equals(test[3]));
+            //        //bool TestAccess = false;
+            //        //if (Permission != null)
+            //        //{
+            //        //    TestAccess = _context.TLIuserPermission.Any(u => u.userId.Equals(Int32.Parse(FirstClaim)) && u.permissionId.Equals(Permission.Id));
+            //        //}
+            //        //if (TestAccess.Equals(true))
+            //        //{
+            //        //await next.Invoke();
 
-            //        //                // If The User Isn't Exist In The DataBase Then Return Response 
-            //        //                else
-            //        //                {
-            //        //                    string expected = JsonConvert.SerializeObject(new { UserState = "Unauthenticated" });
-            //        //                    await Runcontext.Response.WriteAsync(expected);
-            //        //                }
-            //        //            }
-
-            //        // Else If The User Is Not Exist In The Domain..
+            //        //string expected = JsonConvert.SerializeObject(new { Token = TokenValue });
+            //        //await Runcontext.Response.WriteAsync(expected);
+            //        //}
             //        //else
             //        //{
-            //        //    string expected = JsonConvert.SerializeObject(new { UserState = "External User" });
+            //        //    Runcontext.Response.Clear();
+            //        //    Runcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+            //        //    string expected = JsonConvert.SerializeObject(new { UserState = "Unauthorized", Token = TokenValue });
+            //        //    await Runcontext.Response.WriteAsync(expected);
+            //        //}
+            //        //  }
+            //        //    else
+            //        //    {
+            //        //        Runcontext.Response.Clear();
+            //        //        Runcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+            //        //        string expected = JsonConvert.SerializeObject(new { UserState = "Unauthenticated" });
+            //        //        await Runcontext.Response.WriteAsync(expected);
+            //        //    }
+            //        //}
+            //        //else
+            //        //{
+            //        //    Runcontext.Response.Clear();
+            //        //    Runcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+            //        //    string expected = JsonConvert.SerializeObject(new { UserState = "Unauthorized" });
             //        //    await Runcontext.Response.WriteAsync(expected);
             //        //}
             //        // }
             //        // }
+            //        // }
+            //        // }
+
+            //        // Else If (TokenController) Has Been Called -->> Go Straight To (TokenController)
+            //        // No Need To Check User's Token...
+            //        //else
+            //        //{
+            //        //    await next.Invoke();
+            //        //}
+            //    }
+
+            //    //else
+            //    //{
+            //    //    await next.Invoke();
+            //    //}
+            //    // }
+            //    // else If The Request Is Sent When The Browser Is Opened (No Api) Then Check Windows Authentication...
+            //    //else
+            //    //{
+            //    //    // var identity = WindowsIdentity.GetCurrent();
+            //    //    var windowsIdentity = _httpContextAccessor.HttpContext.User.Identity as WindowsIdentity;
+            //    //    // Get the username from the Windows identity
+            //    //    var UserName = windowsIdentity?.Name;
+            //    //    // If The User Is Exist And Doesn't Has Token In The DataBase...
+            //    //    string domain = Configuration["Domain"];
+            //    //    using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind))
+            //    //    {
+            //    //        UserPrincipal principal = new UserPrincipal(context);
+
+            //    //        if (context != null)
+            //    //        {
+            //    //            principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
+            //    //            if (principal != null)
+            //    //            {
+            //    //                // Check The UserName If It is Exist In The DataBase..
+            //    //                TLIuser CheckUserIfExist = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName);
+            //    //                if (CheckUserIfExist != null)
+            //    //                {
+            //    //                    string secretKey = Configuration["JWT:Key"];
+            //    //                    string TokenValue = _unitOfWorkService.TokenService.CreateToken(
+            //    //                        new LoginViewModel
+            //    //                        {
+            //    //                            UserName = UserName
+            //    //                        }, secretKey, null, null).Data;
+            //    //                    string expected = JsonConvert.SerializeObject(new { UserState = "authenticated", Token = TokenValue });
+
+            //    //                    await Runcontext.Response.WriteAsync(expected);
+            //    //                }
+
+            //    //                // If The User Isn't Exist In The DataBase Then Return Response 
+            //    //                else
+            //    //                {
+            //    //                    string expected = JsonConvert.SerializeObject(new { UserState = "Unauthenticated" });
+            //    //                    await Runcontext.Response.WriteAsync(expected);
+            //    //                }
+            //    //            }
+
+            //    // Else If The User Is Not Exist In The Domain..
+            //    //else
+            //    //{
+            //    //    string expected = JsonConvert.SerializeObject(new { UserState = "External User" });
+            //    //    await Runcontext.Response.WriteAsync(expected);
+            //    //}
+            //    // }
+            //    // }
             //    //}
             //});
             #endregion
