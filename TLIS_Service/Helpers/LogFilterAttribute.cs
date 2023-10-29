@@ -52,66 +52,66 @@ namespace TLIS_Service.Helpers
         {
             try
             {
-                UnitOfWork UnitOfWork = _serviceProvider.GetService<UnitOfWork>();
-                TLIlogUsersActions NewLog = new TLIlogUsersActions();
+                //UnitOfWork UnitOfWork = _serviceProvider.GetService<UnitOfWork>();
+                //TLIlogUsersActions NewLog = new TLIlogUsersActions();
 
-                // 1. Date..
-                NewLog.Date = DateTime.UtcNow;
+                //// 1. Date..
+                //NewLog.Date = DateTime.UtcNow;
 
-                // 2. User Id..
-                if (UserId != null)
-                    NewLog.UserId = UserId.Value;
+                //// 2. User Id..
+                //if (UserId != null)
+                //    NewLog.UserId = UserId.Value;
 
-                // 3. Controller Name..
-                List<object> Controller_Function_Name = filterContext.RouteData.Values.Values.ToList();
-                NewLog.ControllerName = Controller_Function_Name[1].ToString();
+                //// 3. Controller Name..
+                //List<object> Controller_Function_Name = filterContext.RouteData.Values.Values.ToList();
+                //NewLog.ControllerName = Controller_Function_Name[1].ToString();
 
-                // 4. Function Name..
-                NewLog.FunctionName = Controller_Function_Name[0].ToString();
+                //// 4. Function Name..
+                //NewLog.FunctionName = Controller_Function_Name[0].ToString();
 
-                // 5. Body Parameters..
-                IDictionary<string, object> Parameters = MyParametersList.Where(x =>
-                    x.GuidId == Guid.Parse(filterContext.HttpContext.TraceIdentifier)).Select(x => x.Parameters).FirstOrDefault();
-                NewLog.BodyParameters = Newtonsoft.Json.JsonConvert.SerializeObject(Parameters);
+                //// 5. Body Parameters..
+                //IDictionary<string, object> Parameters = MyParametersList.Where(x =>
+                //    x.GuidId == Guid.Parse(filterContext.HttpContext.TraceIdentifier)).Select(x => x.Parameters).FirstOrDefault();
+                //NewLog.BodyParameters = Newtonsoft.Json.JsonConvert.SerializeObject(Parameters);
 
-                // 6. Header Paramaters..
-                NewLog.HeaderParameters = Newtonsoft.Json.JsonConvert.SerializeObject(filterContext.HttpContext.Request.Headers);
+                //// 6. Header Paramaters..
+                //NewLog.HeaderParameters = Newtonsoft.Json.JsonConvert.SerializeObject(filterContext.HttpContext.Request.Headers);
 
-                // Check If There Any Exception In API Response..
-                Exception Exceptions = filterContext.Exception;
-                if(Exceptions != null)
-                {
-                    // 7. Response Status..
-                    NewLog.ResponseStatus = "Failed";
+                //// Check If There Any Exception In API Response..
+                //Exception Exceptions = filterContext.Exception;
+                //if(Exceptions != null)
+                //{
+                //    // 7. Response Status..
+                //    NewLog.ResponseStatus = "Failed";
 
-                    // 8. Result...
-                    NewLog.Result = Exceptions.Message;
-                }
-                else
-                {
-                    IActionResult ActionResult = filterContext.Result;
-                    if (ActionResult is OkObjectResult json)
-                    {
-                        dynamic DynamicObject = new ExpandoObject();
-                        DynamicObject = json.Value;
-                        if (!string.IsNullOrEmpty(DynamicObject.Errors))
-                        {
-                            // 7. Response Status..
-                            NewLog.ResponseStatus = "Failed";
+                //    // 8. Result...
+                //    NewLog.Result = Exceptions.Message;
+                //}
+                //else
+                //{
+                //    IActionResult ActionResult = filterContext.Result;
+                //    if (ActionResult is OkObjectResult json)
+                //    {
+                //        dynamic DynamicObject = new ExpandoObject();
+                //        DynamicObject = json.Value;
+                //        if (!string.IsNullOrEmpty(DynamicObject.Errors))
+                //        {
+                //            // 7. Response Status..
+                //            NewLog.ResponseStatus = "Failed";
 
-                            // 8. Result...
-                            NewLog.Result = DynamicObject.Errors;
-                        }
-                        else if (DynamicObject.Code == 0)
-                        {
-                            // 7. Response Status..
-                            NewLog.ResponseStatus = "Success";
+                //            // 8. Result...
+                //            NewLog.Result = DynamicObject.Errors;
+                //        }
+                //        else if (DynamicObject.Code == 0)
+                //        {
+                //            // 7. Response Status..
+                //            NewLog.ResponseStatus = "Success";
 
-                            // 8. Result...
-                            NewLog.Result = Newtonsoft.Json.JsonConvert.SerializeObject(DynamicObject);
-                        }
-                    }
-                }
+                //            // 8. Result...
+                //            // NewLog.Result = Newtonsoft.Json.JsonConvert.SerializeObject(DynamicObject);
+                //        }
+                //    }
+                //}
                 //UnitOfWork.LogUsersActionsRepository.AddAsync(NewLog);
                 //UnitOfWork.SaveChangesAsync();
             }

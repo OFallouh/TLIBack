@@ -516,6 +516,8 @@ namespace TLIS_Service.Services
                             }
 
                             _unitOfWork.SiteRepository.Add(NewSite);
+                            SiteService._MySites.Add(NewSite);
+
                             _unitOfWork.SaveChanges();
 
                             SiteTransaction.Complete();
@@ -649,6 +651,8 @@ namespace TLIS_Service.Services
 
 
                         _unitOfWork.SiteRepository.Add(site);
+                        SiteService._MySites.Add(site);
+
                         siteCodeList.Add(new SiteValidation(sitecode, siteName));
                         _unitOfWork.SaveChanges();
                     }

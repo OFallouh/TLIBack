@@ -451,7 +451,7 @@ namespace TLIS_Service.Services
                         }
                         List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
                             .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
-                                x.AttributeActivated != null && StaticAttributesInCategory.Exists(y => y.attributeActivatedId == x.AttributeActivatedId))
+                                x.AttributeActivated != null && StaticAttributesInCategory.Select(y => y.attributeActivatedId).Contains(x.AttributeActivatedId))
                             .ToList());
 
                         StaticAttributesInView.AddRange(DynamicAttributes);
