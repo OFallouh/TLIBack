@@ -584,6 +584,11 @@ namespace TLIS_Service.Services
             {
                 try
                 {
+                    var UserName = _unitOfWork.UserRepository.GetWhereFirst(x=>x.UserName==model.UserName && x.Id !=model.Id);
+                    if(UserName != null)
+                    {
+                        return new Response<UserViewModel>(false, null, null, $"This User Name {UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                     TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
                     UserEntity.Password = null;
@@ -608,6 +613,7 @@ namespace TLIS_Service.Services
                         UserEntity.Password = OldPassword;
                     }
                     _unitOfWork.UserRepository.Update(UserEntity);
+                    await _unitOfWork.SaveChangesAsync();
 
                     List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
                       .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
