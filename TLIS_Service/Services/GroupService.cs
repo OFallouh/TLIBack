@@ -170,7 +170,7 @@ namespace TLIS_Service.Services
                     {
                         if (!DatabaseExists.Deleted)
                         {
-                            return new Response<AddGroupViewModel>(true, null, null, $"This Group {model.Name} is already exists in TLIS", (int)Constants.ApiReturnCode.fail);
+                            return new Response<AddGroupViewModel>(false, null, null, $"This Group {model.Name} is already exists in TLIS", (int)Constants.ApiReturnCode.fail);
                         }
                         else if (DatabaseExists.Deleted)
                         {
@@ -440,7 +440,7 @@ namespace TLIS_Service.Services
             bool DatabaseExists = await ValidateGroupNameFromDatabaseUpdate(model.Name, model.Id);
             if (DatabaseExists)
             {
-                return new Response<GroupViewModel>(true, null, null, $"The Group {model.Name} is already exists in Database", (int)Constants.ApiReturnCode.fail);
+                return new Response<GroupViewModel>(false, null, null, $"The Group {model.Name} is already exists in Database", (int)Constants.ApiReturnCode.fail);
             }
             //bool DomainExists = ValidateGroupNameFromADAdd(model.Name, domain);
             //if (DomainExists == true)
