@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using NLog.Fluent;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Transactions;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.LegDTOs;
@@ -112,7 +114,7 @@ namespace TLIS_Service.Services
 
             return response;
         }
-
+      
         public Response<string> Login(LoginViewModel login, string secretKey, string domain, string domainGroup)
         {
             Response<string> response = null;
@@ -231,9 +233,9 @@ namespace TLIS_Service.Services
         //        }
         //    }
         //}
-
-        public static string Decrypt(string encryptedText)
-        {
+      
+            public static string Decrypt(string encryptedText)
+             {
             using (Aes aesAlg = Aes.Create())
             {
                 string Key = "9443a09ae2e433750868beaeec0fd681";
