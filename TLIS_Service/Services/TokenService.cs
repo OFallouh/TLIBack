@@ -161,16 +161,15 @@ namespace TLIS_Service.Services
                 {
                    return response = new Response<string>(false, null, null, "The Password coudn't be empty", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                 }
-                User.Password = Decrypt(User.Password);
-                bool verified = (User.Password == login.beresd);
+                var OldPass = Decrypt(User.Password);
+                bool verified = (OldPass == login.beresd);
                 if (verified.Equals(false))
                 {
 
                     if (Trycount == 3)
                     {
-                        TLIuser Users = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == login.Wedcto && !x.Deleted && x.Active);
-                        Users.Active = false;
-                        _unitOfWork.UserRepository.Update(Users);
+                        User.Active = false;
+                        _unitOfWork.UserRepository.Update(User);
                         _unitOfWork.SaveChanges();
                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }

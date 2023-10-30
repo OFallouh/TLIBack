@@ -301,7 +301,7 @@ namespace TLIS_Service.Services
         //Function take 2 parameters 
         //First FilePath refer to document i deal with
         //Second TableName refer to table i deal with
-        public Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, string ConnectionString)
+        public Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString)
         {
 
             using (var connection = new OracleConnection(ConnectionString))
@@ -347,7 +347,7 @@ namespace TLIS_Service.Services
                         //int TableNameId = _unitOfWork.TablesNamesRepository.GetWhere(x => x.TableName == TableName).Select(x => x.Id).FirstOrDefault();
                         //get dynamic attributes depened on table name Id
                         List<string> DynamicAtts = _unitOfWork.DynamicAttRepository.GetWhereAndSelect(x =>
-                            x.tablesNamesId == TableNameEntity.Id && !x.disable, x => x.Key).ToList();
+                            x.tablesNamesId == TableNameEntity.Id && x.CivilWithoutLegCategoryId==CategoryId && !x.disable, x => x.Key).ToList();
                         List<string> RelatedAtt = new List<string>();
                         string Related = "";
                         foreach (var item in RelatedTables)

@@ -87,11 +87,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("ImportFile")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult ImportFile(string TableName = null)
+        public IActionResult ImportFile(string TableName = null, int? CategoryId = null)
         {
             var file = Request.Form.Files[0];
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.FileManagmentService.ImportFile(file, TableName, ConnectionString);
+            var response = _unitOfWorkService.FileManagmentService.ImportFile(file, TableName,CategoryId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("AttachFile")]
