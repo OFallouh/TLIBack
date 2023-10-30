@@ -57,7 +57,6 @@ namespace TLIS_API
         public ApplicationDbContext _DbContext { get; set; }
         public IMapper _Mapper { get; set; }
         public IHostEnvironment HostingEnvironment { get; private set; }
-        public static List<SiteViewModel> MySitesViewModels = new List<SiteViewModel>(); 
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             this.HostingEnvironment = env;
@@ -213,6 +212,20 @@ namespace TLIS_API
 
                 SiteService._MySites = await _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
                     .Include(x => x.siteStatus).ToListAsync();
+
+                //List<TLIattributeActivated> AllAttributeActivated = await _Context.TLIattributeActivated.ToListAsync();
+                //List<TLIdynamicAtt> AllDynamicAttributes = await _Context.TLIdynamicAtt.Include(x => x.CivilWithoutLegCategory)
+                //    .Include(x => x.DataType).Include(x => x.tablesNames).ToListAsync();
+                //List<TLIdynamicAttInstValue> AllDynamicAttributesInstallationValues = await _Context.TLIdynamicAttInstValue
+                //    .Include(x => x.DynamicAtt).ToListAsync();
+
+                //SideArmService._AttributeActivated = AllAttributeActivated.Where(x => x.Tabel.ToLower() == "TLIsideArm".ToLower()).ToList();
+                //SideArmService._DynamicAttributes = AllDynamicAttributes.Where(x => x.tablesNames.TableName.ToLower() == "TLIsideArm".ToLower()).ToList();
+                //SideArmService._DynamicAttributesInstallationValue = AllDynamicAttributesInstallationValues
+                //    .Where(x => AllDynamicAttributes.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
+
+                //SideArmService._SideArmCivilLoads = await _Context.TLIcivilLoads.Include(x => x.allCivilInst).Include(x => x.sideArm)
+                //    .Include(x => x.leg).Include(x => x.SiteCode).ToListAsync();
 
                 await next();
             });

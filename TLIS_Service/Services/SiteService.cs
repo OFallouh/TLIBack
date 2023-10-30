@@ -430,9 +430,30 @@ namespace TLIS_Service.Services
                 {
                     PropertyInfo Property = typeof(SiteViewModel).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
 
-                    foreach (object FilterValues in filter.value)
+                    if (Property.PropertyType == typeof(string))
                     {
-                        SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x).ToString().ToLower().StartsWith(FilterValues.ToString().ToLower())).ToList();
+                        foreach (object FilterValues in filter.value)
+                        {
+                            if (Property.Name.ToLower() == "LocationType".ToLower())
+                            {
+                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                                    (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
+                                        Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower().StartsWith(FilterValues.ToString().ToLower()) : false) : false);
+                            }
+                            else
+                            {
+                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                                    Property.GetValue(x).ToString().ToLower().StartsWith(FilterValues.ToString().ToLower()) : false).ToList();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (object FilterValues in filter.value)
+                        {
+                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ? 
+                                Property.GetValue(x).ToString().ToLower() == FilterValues.ToString().ToLower() : false).ToList();
+                        }
                     }
                 }
 

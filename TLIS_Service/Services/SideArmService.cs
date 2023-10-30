@@ -50,6 +50,11 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         private readonly ApplicationDbContext _dbContext;
         private IMapper _mapper;
+        //public static List<TLIcivilLoads> _SideArmCivilLoads; 
+        //public static List<TLIattributeActivated> _AttributeActivated; 
+        //public static List<TLIdynamicAtt> _DynamicAttributes; 
+        //public static List<TLIdynamicAttInstValue> _DynamicAttributesInstallationValue; 
+
         public SideArmService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper)
         {
             _unitOfWork = unitOfWork;

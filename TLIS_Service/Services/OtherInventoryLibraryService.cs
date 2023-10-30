@@ -1800,17 +1800,32 @@ namespace TLIS_Service.Services
                                     .GetByID(OldLogisticalItemIds.VendorId);
 
                                 int CivilId = MainEntity.Id;
-                                int x = 1;
-                                TLIlogisticalitem LogisticalItem = _unitOfWork.LogisticalitemRepository
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
                                     .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
                                         x.tablesNamesId == TableNameEntityId);
 
-                                //int NewLogisiticalId = LogisticalItemIds.LogisticalItems.VendorId;
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.VendorId;
 
-                                LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.VendorId;
+                                    _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.LogisticalItems.VendorId,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
 
-                                _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    _unitOfWork.LogisticalitemRepository.Add(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                             else
                             {
@@ -1838,16 +1853,31 @@ namespace TLIS_Service.Services
 
                                 int CivilId = MainEntity.Id;
 
-                                TLIlogisticalitem LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
                                     .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
                                         x.tablesNamesId == TableNameEntityId);
 
-                                int NewLogisiticalId = LogisticalItemIds.LogisticalItems.SupplierId;
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.SupplierId;
 
-                                LogisticalItem.logisticalId = NewLogisiticalId;
+                                    _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.LogisticalItems.SupplierId,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
 
-                                _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    _unitOfWork.LogisticalitemRepository.Add(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                             else
                             {
@@ -1875,16 +1905,31 @@ namespace TLIS_Service.Services
 
                                 int CivilId = MainEntity.Id;
 
-                                TLIlogisticalitem LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
                                     .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
                                         x.tablesNamesId == TableNameEntityId);
 
-                                int NewLogisiticalId = LogisticalItemIds.LogisticalItems.DesignerId;
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.DesignerId;
 
-                                LogisticalItem.logisticalId = NewLogisiticalId;
+                                    _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.LogisticalItems.DesignerId,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
 
-                                _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    _unitOfWork.LogisticalitemRepository.Add(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                             else
                             {
@@ -1912,16 +1957,31 @@ namespace TLIS_Service.Services
 
                                 int CivilId = MainEntity.Id;
 
-                                TLIlogisticalitem LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
                                     .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
                                         x.tablesNamesId == TableNameEntityId);
 
-                                int NewLogisiticalId = LogisticalItemIds.LogisticalItems.ManufacturerId;
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.ManufacturerId;
 
-                                LogisticalItem.logisticalId = NewLogisiticalId;
+                                    _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.LogisticalItems.ManufacturerId,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
 
-                                _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    _unitOfWork.LogisticalitemRepository.Add(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                             else
                             {
