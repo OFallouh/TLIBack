@@ -2008,7 +2008,7 @@ namespace TLIS_Service.Services
 
                     object FK_CivilSteelSupportCategory_Name = CivilWithLegLibrary.civilSteelSupportCategory != null ? CivilWithLegLibrary.civilSteelSupportCategory.Name : null;
 
-                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, CivilWithLegLibrary, null).ToList();
+                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, CivilWithLegLibrary, null, "civilSteelSupportCategoryId").ToList();
 
                     foreach (BaseAttView FKitem in ListAttributesActivated)
                     {
@@ -2355,7 +2355,7 @@ namespace TLIS_Service.Services
                 }
                 else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                 {
-                    List<BaseAttView> ListOfAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId, "CivilWithoutLegCategoryId", "CivilSteelSupportCategoryId", "InstallationCivilwithoutLegsTypeId").ToList();
+                    List<BaseAttView> ListOfAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId, "CivilWithoutLegCategoryId", "CivilSteelSupportCategoryId").ToList();
                     foreach (BaseAttView item in ListOfAttributesActivated)
                     {
                         if (item.DataType.ToLower() == "list" && !string.IsNullOrEmpty(item.Desc))
@@ -2365,7 +2365,7 @@ namespace TLIS_Service.Services
 
                             if (item.Desc.ToLower() == "tlistructuretype")
                                 item.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
-
+                            
                             else if (item.Desc.ToLower() == "tliinstallationcivilwithoutlegstype")
                                 item.Value = _mapper.Map<List<InstallationCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
 
