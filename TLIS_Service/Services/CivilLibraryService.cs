@@ -2061,19 +2061,19 @@ namespace TLIS_Service.Services
 
                     object FK_structureType_Name = CivilWithoutLegLibrary.structureType != null ? CivilWithoutLegLibrary.structureType.Name : null;
 
-                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, CivilWithoutLegLibrary, CivilWithoutLegLibrary.CivilWithoutLegCategoryId).ToList();
+                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, CivilWithoutLegLibrary, CivilWithoutLegLibrary.CivilWithoutLegCategoryId, "CivilSteelSupportCategoryId").ToList();
 
                     foreach (BaseAttView FKitem in ListAttributesActivated)
                     {
-                        if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
-                        {
-                            if (FK_CivilSteelSupportCategory_Name == null)
-                                FKitem.Value = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+                        //if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
+                        //{
+                        //    if (FK_CivilSteelSupportCategory_Name == null)
+                        //        FKitem.Value = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
 
-                            else
-                                FKitem.Value = FK_CivilSteelSupportCategory_Name;
-                        }
-                        else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
+                        //    else
+                        //        FKitem.Value = FK_CivilSteelSupportCategory_Name;
+                        //}
+                        /*else*/ if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                         {
                             if (FK_CivilWithoutLegCategory_Name == null)
                                 FKitem.Value = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
@@ -2355,7 +2355,7 @@ namespace TLIS_Service.Services
                 }
                 else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                 {
-                    List<BaseAttView> ListOfAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId, "CivilWithoutLegCategoryId", "CivilSteelSupportCategoryId").ToList();
+                    List<BaseAttView> ListOfAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId, "CivilWithoutLegCategoryId", "CivilSteelSupportCategoryId", "InstallationCivilwithoutLegsTypeId").ToList();
                     foreach (BaseAttView item in ListOfAttributesActivated)
                     {
                         if (item.DataType.ToLower() == "list" && !string.IsNullOrEmpty(item.Desc))
