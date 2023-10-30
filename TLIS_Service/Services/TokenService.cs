@@ -168,8 +168,9 @@ namespace TLIS_Service.Services
 
                     if (Trycount == 3)
                     {
-                        User.Active = false;
-                        _unitOfWork.UserRepository.Update(User);
+                        TLIuser Users = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == login.Wedcto && !x.Deleted && x.Active);
+                        Users.Active = false;
+                        _unitOfWork.UserRepository.Update(Users);
                         _unitOfWork.SaveChanges();
                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }

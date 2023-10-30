@@ -587,7 +587,7 @@ namespace TLIS_Service.Services
                     var UserName = _unitOfWork.UserRepository.GetWhereFirst(x=>x.UserName==model.UserName && x.Id !=model.Id);
                     if(UserName != null)
                     {
-                        return new Response<UserViewModel>(false, null, null, $"This User Name {UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<UserViewModel>(false, null, null, $"This User Name {model.UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     TLIuser UserEntity = _mapper.Map<TLIuser>(model);
 
