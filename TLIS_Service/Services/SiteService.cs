@@ -425,7 +425,20 @@ namespace TLIS_Service.Services
 
             if (filters != null ? filters.Count() > 0 : false)
             {
-                IEnumerable<SiteViewModel> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                IEnumerable<SiteViewModel> SitesViewModels;
+
+                try
+                {
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                }
+                catch (ArgumentNullException Ex)
+                {
+                    _MySites = _context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                        .Include(x => x.siteStatus).ToList();
+
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                }
+
                 foreach (FilterObjectList filter in filters)
                 {
                     PropertyInfo Property = typeof(SiteViewModel).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
@@ -475,8 +488,21 @@ namespace TLIS_Service.Services
             }
             else
             {
-                IEnumerable<SiteViewModel> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                    .Take(parameterPagination.PageSize));
+                IEnumerable<SiteViewModel> SitesViewModels;
+
+                try
+                {
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        .Take(parameterPagination.PageSize));
+                }
+                catch (ArgumentNullException Ex)
+                {
+                    _MySites = _context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                        .Include(x => x.siteStatus).ToList();
+
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        .Take(parameterPagination.PageSize));
+                }
 
                 foreach (SiteViewModel SitesViewModel in SitesViewModels)
                 {

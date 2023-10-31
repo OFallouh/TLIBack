@@ -11752,6 +11752,10 @@ namespace TLIS_Service.Services
         {
             try
             {
+                string OldValueOfTableName = TableName;
+                if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
+                    TableName = "TLIcabinet";
+
                 if (RecordId == "undefined")
                     RecordId = "0";
 
@@ -11818,7 +11822,7 @@ namespace TLIS_Service.Services
 
                 else
                 {
-                    DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Installation", TableName);
+                    DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Installation", OldValueOfTableName);
                     FilePath = Path.Combine(DirectoryPath, $"{FileName}_{RecordId.ToString()}_{Name}_{DateTime.Now.ToString("yyyy_MM_dd")}.{FileType}");
                 }
                 //Check if DirectoryPath not exist then create it
@@ -11886,6 +11890,9 @@ namespace TLIS_Service.Services
         {
             try
             {
+                if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
+                    TableName = "TLIcabinet";
+
                 if (RecordId != 0 || !string.IsNullOrEmpty(TableName))
                 {
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
@@ -11926,6 +11933,9 @@ namespace TLIS_Service.Services
         {
             try
             {
+                if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
+                    TableName = "TLIcabinet";
+
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetIncludeWhereFirst(x => x.TableName == TableName);
                 var AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.RecordId == RecordId && x.tablesNamesId == TableNameEntity.Id).ToList();
 
@@ -12030,6 +12040,9 @@ namespace TLIS_Service.Services
         {
             try
             {
+                if (tablename.ToLower() == "TLIcabinetPower".ToLower() || tablename.ToLower() == "TLIcabinetTelecom".ToLower())
+                    tablename = "TLIcabinet";
+
                 var table = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == tablename);
 
                 if (recordid >= 0)
