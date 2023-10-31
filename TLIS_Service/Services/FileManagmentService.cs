@@ -356,7 +356,7 @@ namespace TLIS_Service.Services
                             RelatedAtt.Add(Related);
                         }
                         var StaticAttribute = ActivatedAtts.Union(RelatedAtt);
-                        using (ExcelPackage package = new ExcelPackage(existingFile))
+                        using ( ExcelPackage package = new ExcelPackage(existingFile))
                         {
                             //Get the first sheet in excel file
                             ExcelWorksheet sheet = package.Workbook.Worksheets[0];

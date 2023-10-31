@@ -833,6 +833,64 @@ namespace TLIS_Service.Services
             
 
         }
+        public Response<string> EncryptAllUserPassword(string UserName)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    var AllUser = _unitOfWork.UserRepository.GetWhere(x=>x.Password == null);
+                    foreach (var item in AllUser)
+                    {
+                        item.Password = "Password123@";
+                        _unitOfWork.UserRepository.Update(item);
+                    }
+                    _unitOfWork.SaveChanges();
+
+                    var AllUsers = _unitOfWork.UserRepository.GetWhere(x => x.UserName != UserName);
+                    foreach (var item1 in AllUsers)
+                    {
+                        item1.Password = Encrypt(item1.Password);
+                        _unitOfWork.UserRepository.Update(item1);
+
+                    }
+                    _unitOfWork.SaveChanges();
+                    scope.Complete();
+                    return new Response<string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception ex)
+                {
+                    return new Response<string>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+
+
+            }
+        }
+        public static string Encrypt(string plainText)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                string Key = "9443a09ae2e433750868beaeec0fd681";
+                aesAlg.Key = Encoding.UTF8.GetBytes(Key);
+                aesAlg.Mode = CipherMode.ECB;
+                aesAlg.Padding = PaddingMode.PKCS7;
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+
+                    return Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+        }
         public static string Decrypt(string encryptedText)
         {
             using (Aes aesAlg = Aes.Create())

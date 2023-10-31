@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
+using TLIS_DAL.ViewModels.MW_PortDTOs;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
@@ -211,6 +212,13 @@ namespace TLIS_API.Controllers
         public IActionResult GetAllUserWithoutGroup()
         {
             var response = _unitOfWorkService.UserService.GetAllUserWithoutGroup();
+            return Ok(response);
+        }
+        [HttpPost("EncryptAllUserPassword")]
+        [ProducesResponseType(200, Type = typeof(Response<string>))]
+        public async Task<IActionResult> EncryptAllUserPassword(string UserName)
+        {
+            var response = _unitOfWorkService.UserService.EncryptAllUserPassword(UserName);
             return Ok(response);
         }
     }
