@@ -810,6 +810,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsubType, AddTLIsubTypeViewModel>().ReverseMap();
 
             CreateMap<TLIcivilSteelSupportCategory, AddCivilSteelSupportCategoryViewModel>().ReverseMap();
+            CreateMap<TLIcivilSteelSupportCategory, CivilSteelSupportCategoryViewModel>().ReverseMap();
 
 
             CreateMap<TLIpowerType, EditPowerTypeViewModel>().ReverseMap();
