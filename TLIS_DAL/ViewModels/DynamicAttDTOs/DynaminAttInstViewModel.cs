@@ -17,7 +17,7 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public bool ? ValueBoolean { get; set; }
 
         public bool Required { get; set; }
-        public bool disable { get; set; }
+        public bool Active { get; set; }
         //public List<ValidationViewModel> Validations { get; set; }
         //public List<DependencyViewModel> Dependencies { get; set; }
     }

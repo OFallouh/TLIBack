@@ -114,7 +114,7 @@ namespace TLIS_Repository.Repositories
                     DataTypeId = DynamicAtt.DataTypeId,
                     DataType = DynamicAtt.DataType.Name,
                     Required = DynamicAtt.Required,
-                    disable = DynamicAtt.disable
+                    Active = !DynamicAtt.disable
                 };
 
                 if (DynamicAttValue != null)

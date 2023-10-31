@@ -304,27 +304,33 @@ namespace TLIS_DAL.ViewModels
             CreateMap<UserViewModel, TLIuser>().ReverseMap();
 
             CreateMap<TLIdynamicAtt, AddDynamicAttViewModel>()
-                .ForMember(x => x.dynamicListValues, x => x.Ignore());
+                .ForMember(x => x.dynamicListValues, x => x.Ignore())
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
 
             CreateMap<AddDynamicAttViewModel, TLIdynamicAtt>()
                 .ForMember(x => x.dependencies, x => x.Ignore())
                 .ForMember(x => x.dynamicAttInstValues, x => x.Ignore())
                 .ForMember(x => x.dynamicAttLibValues, x => x.Ignore())
-                .ForMember(x => x.dynamicListValues, x => x.Ignore());
+                .ForMember(x => x.dynamicListValues, x => x.Ignore())
+                .ForMember(x => x.disable, x => x.MapFrom(s => !s.Active));
 
             CreateMap<TLIdynamicAtt, EditDynamicAttViewModel>()
                 .ForMember(x => x.CivilWithoutLegCategory_Name, x => x.MapFrom(d => d.CivilWithoutLegCategory.Name))
                 .ForMember(x => x.DataType_Name, x => x.MapFrom(d => d.DataType.Name))
-                .ForMember(x => x.tablesNames_Name, x => x.MapFrom(d => d.tablesNames.TableName));
+                .ForMember(x => x.tablesNames_Name, x => x.MapFrom(d => d.tablesNames.TableName))
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
 
-            CreateMap<EditDynamicAttViewModel, TLIdynamicAtt>();
+            CreateMap<EditDynamicAttViewModel, TLIdynamicAtt>()
+                .ForMember(x => x.disable, x => x.MapFrom(s => s.Active));
 
             CreateMap<TLIdynamicAtt, DynamicAttViewModel>()
                 .ForMember(x => x.DataType_Name, x => x.MapFrom(d => d.DataType.Name))
                 .ForMember(x => x.CivilWithoutLegCategory_Name, x => x.MapFrom(d => d.CivilWithoutLegCategory.Name))
-                .ForMember(x => x.tablesNames_Name, x => x.MapFrom(d => d.tablesNames.TableName));
+                .ForMember(x => x.tablesNames_Name, x => x.MapFrom(d => d.tablesNames.TableName))
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
             CreateMap<DynamicAttViewModel, TLIdynamicAtt>()
-                .ForMember(x => x.DataType, x => x.Ignore());
+                .ForMember(x => x.DataType, x => x.Ignore())
+                .ForMember(x => x.disable, x => x.MapFrom(s => !s.Active));
 
             CreateMap<AddDynamicAttViewModel, TLIdynamicAtt>()
                 .ForMember(x => x.dynamicListValues, x => x.Ignore());
@@ -339,7 +345,11 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<DynamicAttLibValueViewMdodel, TLIdynamicAttLibValue>().ReverseMap();
 
-            CreateMap<DynamicAttLibViewModel, TLIdynamicAttLibValue>().ReverseMap();
+            CreateMap<DynamicAttLibViewModel, TLIdynamicAttLibValue>()
+                .ForMember(x => x.disable, x => x.MapFrom(s => !s.Active));
+
+            CreateMap<TLIdynamicAttLibValue, DynamicAttLibViewModel>()
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
 
             CreateMap<AddUserViewModel, TLIuser>().ReverseMap();
 
@@ -1052,8 +1062,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIattributeActivated, BaseAttView>()
                 .ForMember(a => a.Desc, a => a.MapFrom(s => s.Description));
 
-            CreateMap<TLIdynamicAtt, DynamicAttLibViewModel>();
-            CreateMap<TLIdynamicAtt, DynaminAttInstViewModel>();
+            CreateMap<TLIdynamicAtt, DynamicAttLibViewModel>()
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
+            CreateMap<TLIdynamicAtt, DynaminAttInstViewModel>()
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
 
             CreateMap<TLImwPort, AddMW_PortViewModel>();
 
@@ -1523,8 +1535,10 @@ namespace TLIS_DAL.ViewModels
                 .ForMember(x => x.dynamicAttInstValues, x => x.Ignore())
                 .ForMember(x => x.dynamicAttLibValues, x => x.Ignore())
                 .ForMember(x => x.dependencies, x => x.Ignore())
-                .ForMember(x => x.validations, x => x.Ignore());
-
+                .ForMember(x => x.validations, x => x.Ignore())
+                .ForMember(x => x.disable, x => x.MapFrom(s => !s.Active));
+            CreateMap<TLIdynamicAtt, AddDependencyInstViewModel>()
+                .ForMember(x => x.Active, x => x.MapFrom(s => !s.disable));
             // Table Managment View
             CreateMap<AddAttributeViewManagmentDTO, TLIattributeViewManagment>().ReverseMap();
             CreateMap<TLIattributeViewManagment, AttributeViewManagmentViewModel>().

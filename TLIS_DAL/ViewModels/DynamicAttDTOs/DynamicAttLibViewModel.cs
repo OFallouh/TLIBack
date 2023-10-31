@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public string DataType { get; set; }
         public object Value { get; set; }
         public bool Required { get; set; }
-        public bool disable { get; set; }
+        public bool Active { get; set; }
 
     }
 }
