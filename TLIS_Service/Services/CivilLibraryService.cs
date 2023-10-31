@@ -2355,7 +2355,7 @@ namespace TLIS_Service.Services
                 }
                 else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                 {
-                    List<BaseAttView> ListOfAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId, "CivilWithoutLegCategoryId", "InstallationCivilwithoutLegsTypeId").ToList();
+                    List<BaseAttView> ListOfAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId, "CivilWithoutLegCategoryId").ToList();
                     foreach (BaseAttView item in ListOfAttributesActivated)
                     {
                         if (item.DataType.ToLower() == "list" && !string.IsNullOrEmpty(item.Desc))
