@@ -674,12 +674,12 @@ namespace TLIS_Service.Services
             try
             {
                 List<StringFilterObjectList> DynamicLibAttributeFilters = AttributeFilters.Where(x =>
-                    LibDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                    LibDynamicAttListIds.Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                 DynamicLibValueListIds = new List<int>();
 
                 List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
-                    LibDynamicAttListIds.Exists(y => y.Id == x.DynamicAttId) && !x.disable).ToList();
+                    LibDynamicAttListIds.Select(y => y.Id).Contains(x.DynamicAttId) && !x.disable).ToList();
 
                 List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
 
