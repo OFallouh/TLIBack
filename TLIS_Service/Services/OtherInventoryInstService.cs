@@ -4962,12 +4962,12 @@ objectInst.RelatedTables = RelatedTables;
             try
             {
                 List<StringFilterObjectList> DynamicInstAttributeFilters = AttributeFilters.Where(x =>
-                    InstDynamicAttListIds.Exists(y => y.Key.ToLower() == x.key.ToLower())).ToList();
+                    InstDynamicAttListIds.Select(y => y.Key.ToLower()).Contains(x.key.ToLower())).ToList();
 
                 DynamicInstValueListIds = new List<int>();
 
                 List<TLIdynamicAttInstValue> DynamicInstValueListObjects = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
-                    InstDynamicAttListIds.Exists(y => y.Id == x.DynamicAttId) && !x.disable).ToList();
+                    InstDynamicAttListIds.Select(y => y.Id).Contains(x.DynamicAttId) && !x.disable).ToList();
 
                 List<int> InventoriesIds = DynamicInstValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
 
