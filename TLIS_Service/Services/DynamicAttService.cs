@@ -332,7 +332,7 @@ namespace TLIS_Service.Services
                                             Rule.tablesNamesId = TableNameEntity.Id;
                                             //TableName = _unitOfWork.AttributeActivatedRepository.GetAllAsQueryable().Where(x => x.Id == Rule.attributeActivatedId).FirstOrDefault().Tabel;
                                             _unitOfWork.RuleRepository.Add(Rule);
-                                            //_unitOfWork.SaveChanges();
+                                            _unitOfWork.SaveChanges();
                                             TLIrowRule RowRuleEntity = new TLIrowRule();
                                             RowRuleEntity.RuleId = Rule.Id;
                                             RowRuleEntity.RowId = row.Id;
