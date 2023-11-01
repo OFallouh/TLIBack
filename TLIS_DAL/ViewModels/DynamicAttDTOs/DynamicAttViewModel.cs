@@ -17,6 +17,6 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public int tablesNamesId { get; set; }
         public string tablesNames_Name { get; set; }
         public bool Required { get; set; }
-        public bool Active { get; set; }
+        public bool disable { get; set; }
     }
 }

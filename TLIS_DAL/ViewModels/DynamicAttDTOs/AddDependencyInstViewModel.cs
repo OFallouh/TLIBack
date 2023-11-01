@@ -15,7 +15,7 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public int tablesNamesId { get; set; }
         public int? CivilWithoutLegCategoryId { get; set; }
         public bool Required { get; set; }
-        public bool Active { get; set; }
+        public bool disable { get; set; }
         public string TableName { get; set; }
         public List<ValidationViewModel> validations { get; set; }
         // General Default Value...

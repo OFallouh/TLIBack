@@ -136,7 +136,7 @@ namespace TLIS_Service.Services
                         j++;
                     }
                     //Get dynamic attributes depened on table name id and category id if i deal with civil without leg 
-                    var TableNameDynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, CategoryId).AsQueryable().Where(x => x.Active).ToList();
+                    var TableNameDynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, CategoryId).AsQueryable().Where(x => !x.disable).ToList();
                     //loop on each dynamic attribute in dynamic attributes list
                     foreach (var TableNameDynamicAtt in TableNameDynamicAtts)
                     {
