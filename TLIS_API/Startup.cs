@@ -66,7 +66,7 @@ namespace TLIS_API
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
-        {          
+        {
             services.AddControllers();
             services.AddSingleton(Configuration);
 
@@ -101,13 +101,13 @@ namespace TLIS_API
 
             //_unitOfWorkService = serviceProvider.GetRequiredService<IUnitOfWorkService>();
             _DbContext = serviceProvider.GetService<ApplicationDbContext>();
-            
+
             _unitOfWork = new UnitOfWork(_DbContext, _Mapper);
             _unitOfWorkService = new UnitOfWorkService(_unitOfWork, Configuration);
             /*------------------------------------------------------------------------------------*/
 
             services.AddSingleton(services);
-            
+
             services.AddSingleton<LogRepository>();
             services.AddSingleton<DbContextOptionsBuilder>();
             services.AddHttpContextAccessor();
@@ -134,7 +134,7 @@ namespace TLIS_API
                         ValidAudience = Configuration["JWT:Issuer"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"]))
                     };
-                });             
+                });
             services.AddMvc();
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -146,11 +146,11 @@ namespace TLIS_API
             //-----------------------------------------Add Auto Mapper
 
 
-             //_Mapper = serviceProvider.GetService<Mapper>();
+            //_Mapper = serviceProvider.GetService<Mapper>();
             // services.AddSingleton<Mapper>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-           
+
             //var config = new MapperConfiguration(cfg => {
             //    //cfg.AddProfile<AutoMapperProfile>();
             //    cfg.AddProfile(new AutoMapperProfile());
@@ -174,14 +174,14 @@ namespace TLIS_API
             }
 
             app.UseSwagger();
-          
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "TLIS Api Docs");
                 c.DisplayRequestDuration();
             });
             app.UseSession();
-            
+
             app.UseAuthentication();
 
             app.UseRouting();
@@ -210,22 +210,57 @@ namespace TLIS_API
                 ApplicationDbContext _Context = Runcontext.RequestServices.GetService<ApplicationDbContext>();
                 IMapper _Mapper = Runcontext.RequestServices.GetService<IMapper>();
 
-                SiteService._MySites = await _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
-                    .Include(x => x.siteStatus).ToListAsync();
+                SiteService._MySites = _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                    .Include(x => x.siteStatus).ToList();
 
-                //List<TLIattributeActivated> AllAttributeActivated = await _Context.TLIattributeActivated.ToListAsync();
-                //List<TLIdynamicAtt> AllDynamicAttributes = await _Context.TLIdynamicAtt.Include(x => x.CivilWithoutLegCategory)
-                //    .Include(x => x.DataType).Include(x => x.tablesNames).ToListAsync();
-                //List<TLIdynamicAttInstValue> AllDynamicAttributesInstallationValues = await _Context.TLIdynamicAttInstValue
-                //    .Include(x => x.DynamicAtt).ToListAsync();
+                // Attribute View Management
+                // All Attributes(AttributeActivated + DynamicAttributes)
+                List<TLIattributeViewManagment> AllAttributesViewManagement = _Context.TLIattributeViewManagment
+                    .Include(x => x.AttributeActivated)
+                    .Include(x => x.DynamicAtt).Include(x => x.DynamicAtt.DataType)
+                    .Include(x => x.DynamicAtt.CivilWithoutLegCategory).Include(x => x.DynamicAtt.tablesNames)
+                    .Include(x => x.EditableManagmentView).Include(x => x.EditableManagmentView.TLItablesNames1)
+                    .Where(x => x.Enable && (x.AttributeActivatedId != null ? x.AttributeActivated.enable : true) &&
+                        (x.DynamicAttId != null ? !x.DynamicAtt.disable : true)).ToList();
 
-                //SideArmService._AttributeActivated = AllAttributeActivated.Where(x => x.Tabel.ToLower() == "TLIsideArm".ToLower()).ToList();
-                //SideArmService._DynamicAttributes = AllDynamicAttributes.Where(x => x.tablesNames.TableName.ToLower() == "TLIsideArm".ToLower()).ToList();
-                //SideArmService._DynamicAttributesInstallationValue = AllDynamicAttributesInstallationValues
-                //    .Where(x => AllDynamicAttributes.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
+                List<TLIdynamicAttLibValue> AllDynamicAttribute_LibraryValue = _Context.TLIdynamicAttLibValue
+                    .Include(x => x.DynamicAtt).Where(x => !x.disable && !x.DynamicAtt.disable).Include(x => x.tablesNames).ToList();
 
-                //SideArmService._SideArmCivilLoads = await _Context.TLIcivilLoads.Include(x => x.allCivilInst).Include(x => x.sideArm)
-                //    .Include(x => x.leg).Include(x => x.SiteCode).ToListAsync();
+                // CivilWithLegLibrary
+                CivilLibraryService._CivilWithLegLibrary = _Context.TLIcivilWithLegLibrary.Where(x => !x.Deleted && x.Id > 0)
+                    .Include(x => x.sectionsLegType).Include(x => x.civilSteelSupportCategory)
+                    .Include(x => x.structureType).Include(x => x.supportTypeDesigned).ToList();
+
+                List<TLIattributeViewManagment> CivilWithLegLibrary_AllAttributesViewManagement = AllAttributesViewManagement
+                    .Where(x => (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CivilWithLegsLibrary.ToString() &&
+                        (x.AttributeActivatedId != null ?
+                            (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString() && x.AttributeActivated.enable) :
+                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()))) ||
+                        (x.AttributeActivated != null ?
+                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
+                            x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()) : false)).ToList();
+
+                CivilLibraryService._CivilWithLegLibrary_AllAttributesViewManagement = CivilWithLegLibrary_AllAttributesViewManagement;
+
+                List<TLIattributeActivated> CivilWithLegLibrary_AttributeActivated_All = CivilWithLegLibrary_AllAttributesViewManagement
+                    .Where(x => x.AttributeActivatedId != null ? x.AttributeActivated.Key.ToLower() != "deleted".ToLower() : false).Select(x => x.AttributeActivated).ToList();
+                CivilLibraryService._CivilWithLegLibrary_AttributeActivated_All = CivilWithLegLibrary_AttributeActivated_All;
+                CivilLibraryService._CivilWithLegLibrary_AttributeActivated_DateTime = CivilWithLegLibrary_AttributeActivated_All
+                    .Where(x => x.DataType.ToLower() == "DateTime".ToLower()).ToList();
+                CivilLibraryService._CivilWithLegLibrary_AttributeActivated_Not_DateTime = CivilWithLegLibrary_AttributeActivated_All
+                    .Where(x => x.DataType.ToLower() != "DateTime".ToLower()).ToList();
+
+                List<TLIdynamicAtt> CivilWithLegLibrary_DynamicAttributes_All = CivilWithLegLibrary_AllAttributesViewManagement
+                    .Where(x => x.DynamicAttId != null).Select(x => x.DynamicAtt).ToList();
+
+                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_All = CivilWithLegLibrary_DynamicAttributes_All;
+                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_DateTime = CivilWithLegLibrary_DynamicAttributes_All
+                    .Where(x => x.DataType.Name.ToLower() == "DateTime".ToLower()).ToList();
+                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_Not_DateTime = CivilWithLegLibrary_DynamicAttributes_All
+                    .Where(x => x.DataType.Name.ToLower() != "DateTime".ToLower()).ToList();
+
+                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_LibraryValue = AllDynamicAttribute_LibraryValue
+                    .Where(x => CivilWithLegLibrary_DynamicAttributes_All.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
 
                 await next();
             });

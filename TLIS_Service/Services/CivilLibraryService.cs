@@ -53,6 +53,7 @@ using Org.BouncyCastle.Asn1.Cms;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
+using Org.BouncyCastle.Bcpg;
 
 namespace TLIS_Service.Services
 {
@@ -62,6 +63,15 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         ApplicationDbContext db;
         private IMapper _mapper;
+        public static List<TLIattributeViewManagment> _CivilWithLegLibrary_AllAttributesViewManagement;
+        public static List<TLIcivilWithLegLibrary> _CivilWithLegLibrary;
+        public static List<TLIattributeActivated> _CivilWithLegLibrary_AttributeActivated_All;
+        public static List<TLIattributeActivated> _CivilWithLegLibrary_AttributeActivated_DateTime;
+        public static List<TLIattributeActivated> _CivilWithLegLibrary_AttributeActivated_Not_DateTime;
+        public static List<TLIdynamicAtt> _CivilWithLegLibrary_DynamicAttributes_All;
+        public static List<TLIdynamicAtt> _CivilWithLegLibrary_DynamicAttributes_DateTime;
+        public static List<TLIdynamicAtt> _CivilWithLegLibrary_DynamicAttributes_Not_DateTime;
+        public static List<TLIdynamicAttLibValue> _CivilWithLegLibrary_DynamicAttributes_LibraryValue;
         public CivilLibraryService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext _context, IMapper mapper)
         {
             db = _context;
@@ -1768,7 +1778,7 @@ namespace TLIS_Service.Services
                                     .GetByID(OldLogisticalItemIds.VendorId);
 
                                 int CivilId = MainEntity.Id;
-                                
+
                                 TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
                                     .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
                                         x.tablesNamesId == TableNameEntityId);
@@ -2365,7 +2375,7 @@ namespace TLIS_Service.Services
 
                             else if (item.Desc.ToLower() == "tlistructuretype")
                                 item.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
-                            
+
                             else if (item.Desc.ToLower() == "tliinstallationcivilwithoutlegstype")
                                 item.Value = _mapper.Map<List<InstallationCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
 
@@ -3261,14 +3271,12 @@ namespace TLIS_Service.Services
 
                 DynamicLibValueListIds = new List<int>();
 
-                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
-                    LibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
-
-                List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
+                List<int> InventoriesIds = _CivilWithLegLibrary_DynamicAttributes_LibraryValue.Select(x => x.InventoryId).Distinct().ToList();
 
                 foreach (int InventoryId in InventoriesIds)
                 {
-                    List<TLIdynamicAttLibValue> DynamicLibValueListInventories = DynamicLibValueListObjects.Where(x => x.InventoryId == InventoryId).ToList();
+                    List<TLIdynamicAttLibValue> DynamicLibValueListInventories = _CivilWithLegLibrary_DynamicAttributes_LibraryValue
+                        .Where(x => x.InventoryId == InventoryId).ToList();
 
                     if (DynamicLibAttributeFilters.All(y => DynamicLibValueListInventories.Exists(x =>
                          (x.ValueBoolean != null) ?
@@ -3314,13 +3322,7 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    CivilWithLegLibraryAttribute = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
-                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.CivilWithLegsLibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(),
-                            x => x.AttributeActivated, x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1)
-                    .Select(x => x.AttributeActivated).ToList();
+                    CivilWithLegLibraryAttribute = _CivilWithLegLibrary_AttributeActivated_Not_DateTime;
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -3355,11 +3357,8 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()
-                            , x => x.tablesNames, x => x.DataType).ToList();
+                    List<TLIdynamicAtt> LibDynamicAttListIds = _CivilWithLegLibrary_DynamicAttributes_Not_DateTime.Where(x =>
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -3395,14 +3394,7 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower()) ||
                             StringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //LibraryAttributeActivatedIds = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x =>
-                        //     LibraryPropsAttributeFilters.All(z =>
-                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                        //             y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                        // ).Select(i => i.Id).ToList();
-
-                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _CivilWithLegLibrary.AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -3438,9 +3430,8 @@ namespace TLIS_Service.Services
                         IntersectLibraryIds = DynamicLibValueListIds;
                     }
 
-                    WithoutDateFilterCivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted, x => x.supportTypeDesigned, x => x.sectionsLegType,
-                        x => x.structureType, x => x.civilSteelSupportCategory).ToList());
+                    WithoutDateFilterCivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_CivilWithLegLibrary.Where(x =>
+                        IntersectLibraryIds.Contains(x.Id)).ToList());
                 }
 
                 //
@@ -3486,10 +3477,8 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _CivilWithLegLibrary_DynamicAttributes_DateTime.Where(x =>
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -3502,8 +3491,8 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
-                            DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _CivilWithLegLibrary_DynamicAttributes_LibraryValue.Where(x =>
+                            DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId)).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
 
@@ -3538,14 +3527,7 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //LibraryAttributeActivatedIds = _unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhere(x =>
-                        //    LibraryPropsAttributeFilters.All(z =>
-                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null) != null) ?
-                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null))) &&
-                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<CivilWithLegLibraryViewModel>(x), null)))) : (false)))))
-                        //).Select(i => i.Id).ToList();
-
-                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIcivilWithLegLibrary> Libraries = _CivilWithLegLibrary.AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -3574,9 +3556,8 @@ namespace TLIS_Service.Services
                         IntersectLibraryIds = DynamicLibValueListIds;
                     }
 
-                    WithDateFilterCivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted, x => x.supportTypeDesigned, x => x.sectionsLegType,
-                        x => x.structureType, x => x.civilSteelSupportCategory).ToList());
+                    WithDateFilterCivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_CivilWithLegLibrary.Where(x =>
+                        IntersectLibraryIds.Contains(x.Id)).ToList());
                 }
 
                 //
@@ -3585,14 +3566,13 @@ namespace TLIS_Service.Services
                 if ((AttributeFilters != null ? AttributeFilters.Count() == 0 : true) &&
                     (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() == 0 : true))
                 {
-                    CivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && !x.Deleted, x => x.supportTypeDesigned, x => x.sectionsLegType, x => x.structureType, x => x.civilSteelSupportCategory).ToList());
+                    CivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_CivilWithLegLibrary).ToList();
                 }
                 else if ((AttributeFilters != null ? AttributeFilters.Count > 0 : false) &&
                         (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() > 0 : false))
                 {
                     List<int> CivilIds = WithoutDateFilterCivilWithLegsLibraries.Select(x => x.Id).Intersect(WithDateFilterCivilWithLegsLibraries.Select(x => x.Id)).ToList();
-                    CivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_unitOfWork.CivilWithLegLibraryRepository.GetWhere(x =>
+                    CivilWithLegsLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_CivilWithLegLibrary.Where(x =>
                         CivilIds.Contains(x.Id)).ToList());
                 }
                 else if (AttributeFilters != null ? AttributeFilters.Count > 0 : false)
@@ -3609,15 +3589,7 @@ namespace TLIS_Service.Services
                 CivilWithLegsLibraries = CivilWithLegsLibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                   (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.CivilWithLegsLibrary.ToString() &&
-                   (x.AttributeActivatedId != null ?
-                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString() && x.AttributeActivated.enable) :
-                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()))) ||
-                    (x.AttributeActivated != null ?
-                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()) : false),
-                       x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1, x => x.EditableManagmentView.TLItablesNames2,
-                       x => x.AttributeActivated, x => x.DynamicAtt, x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType).ToList();
+                List<TLIattributeViewManagment> AllAttributes = _CivilWithLegLibrary_AllAttributesViewManagement;
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -3684,19 +3656,15 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                       !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString() &&
-                        x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _CivilWithLegLibrary_DynamicAttributes_Not_DateTime.Where(x =>
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _CivilWithLegLibrary_DynamicAttributes_LibraryValue.FirstOrDefault(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilWithLegsLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key,
-                                x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType);
+                            x.InventoryId == CivilWithLegsLibraryViewModel.Id && 
+                            x.DynamicAtt.Key.ToLower() == LibraryDynamicAtt.Key.ToLower());
 
                         if (DynamicAttLibValue != null)
                         {
@@ -3751,19 +3719,15 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                       !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString() &&
-                        x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = _CivilWithLegLibrary_DynamicAttributes_DateTime.Where(x =>
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _CivilWithLegLibrary_DynamicAttributes_LibraryValue.FirstOrDefault(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilWithLegsLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key,
-                                x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType);
+                            x.InventoryId == CivilWithLegsLibraryViewModel.Id &&
+                            x.DynamicAtt.Key.ToLower() == LibraryDynamicAtt.Key.ToLower());
 
                         if (DynamicAttLibValue != null)
                         {
