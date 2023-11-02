@@ -679,8 +679,7 @@ namespace TLIS_Service.Services
                             // Civils..
                             if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                             {
-                                List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(_unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.civilSteelSupportCategory, x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned).ToList());
+                                List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(CivilLibraryService._CivilWithLegLibrary).ToList();
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -7622,8 +7621,7 @@ namespace TLIS_Service.Services
                 // Civils ...
                 if (TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.CivilWithLegLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    Records = CivilLibraryService._CivilWithLegLibrary.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                 {
