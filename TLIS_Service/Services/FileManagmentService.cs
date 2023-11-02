@@ -1723,6 +1723,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIcivilWithLegLibrary> InsertedivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    CivilLibraryService._CivilWithLegLibrary.AddRange(InsertedivilWithLegLibrary);
+
                     //loop on each dynamic attribute
                     foreach (var DynamicAtt in DynamicAtts)
                     {
@@ -1884,12 +1890,14 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
-
                     }
                     RecordId.AddRange(InsertedIds);
                 }
 
-
+                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_LibraryValue = _unitOfWork.DynamicAttLibRepository
+                    .GetIncludeWhere(x => !x.disable && !x.DynamicAtt.disable &&
+                        CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_All.Select(y => y.Id).Contains(x.DynamicAttId),
+                            x => x.DynamicAtt, x => x.tablesNames).ToList();
             }
             catch (Exception err)
             {

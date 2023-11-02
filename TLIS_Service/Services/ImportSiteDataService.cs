@@ -3763,6 +3763,8 @@ namespace TLIS_Service.Services
                                         NewCivilWithLegsLibraryEntity.Active = true;
 
                                         _unitOfWork.CivilWithLegLibraryRepository.Add(NewCivilWithLegsLibraryEntity);
+                                        CivilLibraryService._CivilWithLegLibrary.Add(NewCivilWithLegsLibraryEntity);
+
                                         _unitOfWork.SaveChanges();
 
                                         string Supplier = CivilWithLegsDataTable.Rows[j]["Supplier"].ToString();
