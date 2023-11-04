@@ -25,6 +25,52 @@ namespace TLIS_Repository.Repositories
             _mapper = mapper;
         }
 
+        public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTablesForEdit(string SiteCode, int? PortCascadeId)
+        {
+            List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
+
+            var Owners = _context.TLIowner.Where(x => !x.Deleted && !x.Disable).ToList();
+
+            List<DropDownListFilters> OwnerLists = _mapper.Map<List<DropDownListFilters>>(Owners);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("OwnerId", OwnerLists));
+
+            var MwBULibrary = _context.TLImwBULibrary.Where(x => x.Active && !x.Deleted).ToList();
+
+
+            List<DropDownListFilters> MwBULibraryLists = _mapper.Map<List<DropDownListFilters>>(MwBULibrary);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("MwBULibraryId", MwBULibraryLists));
+
+            var MW_DishesOnSite = _context.TLIcivilLoads.Include(x => x.allLoadInst).Where(x => !x.Dismantle && x.allLoadInstId != null &&
+                x.allLoadInst.mwDishId != null).Select(x => x.allLoadInst.mwDish).ToList();
+
+            List<DropDownListFilters> mwDishLists = _mapper.Map<List<DropDownListFilters>>(MW_DishesOnSite);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("MainDishId", mwDishLists));
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("SdDishId", mwDishLists));
+
+            //var BaseBU = _context.TLIbaseBU.Where(x => !x.Deleted && !x.Disable).ToList();
+            var BaseBU = _context.TLIbaseBU.ToList();
+
+            List<DropDownListFilters> BaseBULists = _mapper.Map<List<DropDownListFilters>>(BaseBU);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("BaseBUId", BaseBULists));
+
+            // var InstallationPlace = _context.TLIinstallationPlace.Where(x => !x.Deleted && !x.Disable).ToList();
+            var InstallationPlace = _context.TLIinstallationPlace.ToList();
+
+            List<DropDownListFilters> InstallationPlaceLists = _mapper.Map<List<DropDownListFilters>>(InstallationPlace);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("InstallationPlaceId", InstallationPlaceLists));
+
+            if (PortCascadeId != null && PortCascadeId != 0)
+            {
+                List<int> UsedPorts = _context.TLImwBU
+                    .Where(x => x.PortCascadeId > 0).Select(x => x.PortCascadeId).ToList();
+
+                List<DropDownListFilters> PortsLists = _mapper.Map<List<DropDownListFilters>>(_context.TLImwPort
+                    .Include(x => x.MwBU).Include(x => x.MwBULibrary).Where(x => x.MwBUId == PortCascadeId && !UsedPorts.Contains(x.Id)).ToList());
+
+                RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("PortCascadedBUId", PortsLists));
+            }
+            return RelatedTables;
+        }
         public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables(string SiteCode)
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
@@ -41,21 +87,11 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("MwBULibraryId", MwBULibraryLists));
 
             var MW_DishesOnSite = _context.TLIcivilLoads.Include(x => x.allLoadInst).Where(x => !x.Dismantle && x.allLoadInstId != null &&
-                            x.allLoadInst.mwDishId != null).Select(x => x.allLoadInst.mwDishId).ToList();
-            List<TLImwDish> b = new List<TLImwDish>();
-            foreach (var item in MW_DishesOnSite)
-            {
-                var dish = _context.TLImwDish.FirstOrDefault(x => x.Id==item);
-                b.Add(dish);
+                x.allLoadInst.mwDishId != null).Select(x => x.allLoadInst.mwDish).ToList();
 
-            }
-            List<DropDownListFilters> Mw_DishLists = _mapper.Map<List<DropDownListFilters>>(b);
-            List<DropDownListFilters> mwDishLists = _mapper.Map<List<DropDownListFilters>>(b);
+            List<DropDownListFilters> mwDishLists = _mapper.Map<List<DropDownListFilters>>(MW_DishesOnSite);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("MainDishId", mwDishLists));
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("SdDishId", mwDishLists));
-
-
-
 
             //var BaseBU = _context.TLIbaseBU.Where(x => !x.Deleted && !x.Disable).ToList();
             var BaseBU = _context.TLIbaseBU.ToList();
@@ -64,7 +100,7 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("BaseBUId", BaseBULists));
 
             // var InstallationPlace = _context.TLIinstallationPlace.Where(x => !x.Deleted && !x.Disable).ToList();
-             var InstallationPlace = _context.TLIinstallationPlace.ToList();
+            var InstallationPlace = _context.TLIinstallationPlace.ToList();
 
             List<DropDownListFilters> InstallationPlaceLists = _mapper.Map<List<DropDownListFilters>>(InstallationPlace);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("InstallationPlaceId", InstallationPlaceLists));

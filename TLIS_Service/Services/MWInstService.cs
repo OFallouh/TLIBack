@@ -6600,8 +6600,17 @@ namespace TLIS_Service.Services
 
                     if (CivilLoads != null)
                     {
-                        List<KeyValuePair<string, List<DropDownListFilters>>> mwbuRelatedTables = _unitOfWork.MW_BURepository
-                            .GetRelatedTables(CivilLoads.SiteCode);
+                        TLImwPort? CascadedBu_ForRelatedTables = _unitOfWork.MW_PortRepository
+                            .GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
+                        List<KeyValuePair<string, List<DropDownListFilters>>> mwbuRelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
+                        if (CascadedBu_ForRelatedTables != null)
+                            mwbuRelatedTables = _unitOfWork.MW_BURepository
+                                .GetRelatedTablesForEdit(CivilLoads.SiteCode, CascadedBu_ForRelatedTables.MwBUId);
+
+                        else
+                            mwbuRelatedTables = _unitOfWork.MW_BURepository
+                                .GetRelatedTablesForEdit(CivilLoads.SiteCode, null);
 
                         mwbuRelatedTables.AddRange(CivilLoadsRelatedTables);
 

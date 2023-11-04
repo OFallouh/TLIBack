@@ -11,5 +11,6 @@ namespace TLIS_Repository.IRepository
     public interface IMW_BURepository:IRepositoryBase<TLImwBU,MW_BUViewModel,int>
     {
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables(string SiteCode);
+        List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTablesForEdit(string SiteCode, int? PortCascadeId);
     }
 }
