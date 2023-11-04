@@ -7165,7 +7165,7 @@ namespace TLIS_Service.Services
                     if (CivilLoads != null)
                     {
                         List<KeyValuePair<string, List<DropDownListFilters>>> mwoduRelatedTables = _unitOfWork.MW_ODURepository
-                            .GetRelatedTables(CivilLoads.SiteCode);
+                            .GetRelatedTablesForEdit(CivilLoads.SiteCode, CivilLoads.allCivilInstId);
 
                         mwoduRelatedTables.AddRange(CivilLoadsRelatedTables);
 
@@ -8947,7 +8947,7 @@ namespace TLIS_Service.Services
             try
             {
                 var CiviBUs = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst)
-                    .ThenInclude(x => x.mwBU).Where(x=>x.allCivilInstId == AllCivilInstId && x.allLoadInst.mwBUId != null && !x.Dismantle &&
+                    .ThenInclude(x => x.mwBU).Where(x => x.allCivilInstId == AllCivilInstId && x.allLoadInst.mwBUId != null && !x.Dismantle &&
                         !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwBUId).ToList();
 
                 if (CiviBUs == null || CiviBUs.Count == 0)

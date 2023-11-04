@@ -127,7 +127,7 @@ namespace TLIS_Service.Services
                 }
                 TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
                 _unitOfWork.SiteRepository.Update(Site);
-                
+
                 _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
                 _MySites.Add(Site);
 
@@ -429,6 +429,7 @@ namespace TLIS_Service.Services
 
                 try
                 {
+                    _MySites.Count();
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
                 }
                 catch (ArgumentNullException Ex)
@@ -445,28 +446,23 @@ namespace TLIS_Service.Services
 
                     if (Property.PropertyType == typeof(string))
                     {
-                        foreach (object FilterValues in filter.value)
+                        if (Property.Name.ToLower() == "LocationType".ToLower())
                         {
-                            if (Property.Name.ToLower() == "LocationType".ToLower())
-                            {
-                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
-                                        Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower().StartsWith(FilterValues.ToString().ToLower()) : false) : false);
-                            }
-                            else
-                            {
-                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    Property.GetValue(x).ToString().ToLower().StartsWith(FilterValues.ToString().ToLower()) : false).ToList();
-                            }
+                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                                (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
+                                    filter.value.Select(z => z.ToString().ToLower()).Any(z => Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower()
+                                        .StartsWith(z)) : false) : false);
+                        }
+                        else
+                        {
+                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                                filter.value.Select(z => z.ToString().ToLower()).Any(z => Property.GetValue(x).ToString().ToLower().StartsWith(z)) : false).ToList();
                         }
                     }
                     else
                     {
-                        foreach (object FilterValues in filter.value)
-                        {
-                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ? 
-                                Property.GetValue(x).ToString().ToLower() == FilterValues.ToString().ToLower() : false).ToList();
-                        }
+                        SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                            filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
                     }
                 }
 
@@ -475,16 +471,52 @@ namespace TLIS_Service.Services
                 SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                     .Take(parameterPagination.PageSize);
 
+                List<SiteViewModel> ListForOutPutOnly = new List<SiteViewModel>();
+
                 foreach (SiteViewModel SitesViewModel in SitesViewModels)
                 {
                     string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
                         .LocationType;
 
                     if (!string.IsNullOrEmpty(LocationTypeInModel))
-                        SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
+                    {
+                        ListForOutPutOnly.Add(new SiteViewModel()
+                        {
+                            SiteCode = SitesViewModel.SiteCode,
+                            LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name,
+                            SiteName = SitesViewModel.SiteName,
+                            Area = SitesViewModel.Area,
+                            CityName = SitesViewModel.CityName,
+                            Latitude = SitesViewModel.Latitude,
+                            LocationHieght = SitesViewModel.LocationHieght,
+                            Longitude = SitesViewModel.Longitude,
+                            Region = SitesViewModel.Region,
+                            RentedSpace = SitesViewModel.RentedSpace,
+                            ReservedSpace = SitesViewModel.ReservedSpace,
+                            Status = SitesViewModel.Status
+                        });
+                    }
+                    else
+                    {
+                        ListForOutPutOnly.Add(new SiteViewModel()
+                        {
+                            SiteCode = SitesViewModel.SiteCode,
+                            LocationType = "NA",
+                            SiteName = SitesViewModel.SiteName,
+                            Area = SitesViewModel.Area,
+                            CityName = SitesViewModel.CityName,
+                            Latitude = SitesViewModel.Latitude,
+                            LocationHieght = SitesViewModel.LocationHieght,
+                            Longitude = SitesViewModel.Longitude,
+                            Region = SitesViewModel.Region,
+                            RentedSpace = SitesViewModel.RentedSpace,
+                            ReservedSpace = SitesViewModel.ReservedSpace,
+                            Status = SitesViewModel.Status
+                        });
+                    }
                 }
 
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<IEnumerable<SiteViewModel>>(true, ListForOutPutOnly, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             else
             {
@@ -516,7 +548,6 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
-
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
         {
             return _mapper.Map<List<SiteViewModel>>(_unitOfWork.SiteRepository

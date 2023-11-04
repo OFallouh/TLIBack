@@ -7,13 +7,14 @@ using System.Text;
 using TLIS_DAL;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.MW_DishDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
 
 namespace TLIS_Repository.Repositories
 {
-    public class MW_ODURepository:RepositoryBase<TLImwODU,MW_ODUViewModel,int>, IMW_ODURepository
+    public class MW_ODURepository : RepositoryBase<TLImwODU, MW_ODUViewModel, int>, IMW_ODURepository
     {
         private readonly ApplicationDbContext _context;
         IMapper _mapper;
@@ -22,7 +23,35 @@ namespace TLIS_Repository.Repositories
             _context = context;
             _mapper = mapper;
         }
+        public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTablesForEdit(string SiteCode, int AllCivilInstId)
+        {
+            List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
 
+            var Owners = _context.TLIowner.Where(x => !x.Deleted && !x.Disable).ToList();
+            List<DropDownListFilters> OwnerLists = _mapper.Map<List<DropDownListFilters>>(Owners);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("OwnerId", OwnerLists));
+
+            List<int> UsedDishesIds = _context.TLImwODU.Where(x => x.Mw_DishId != null).Select(x => x.Mw_DishId.Value).ToList();
+
+            List<TLImwDish> MW_Dishes = _context.TLIcivilLoads
+                .Include(x => x.allLoadInst).Where(x => !x.Dismantle && x.allCivilInstId == AllCivilInstId &&
+                    (x.allLoadInstId != null ? x.allLoadInst.mwDishId != null : false) &&
+                    !UsedDishesIds.Contains(x.allLoadInst.mwDishId.Value))
+                .Select(x => x.allLoadInst.mwDish).ToList();
+
+            List<DropDownListFilters> Mw_DishLists = _mapper.Map<List<DropDownListFilters>>(MW_Dishes);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Mw_DishId", Mw_DishLists));
+
+
+            var OduInstallationType = _context.TLIoduInstallationType.Where(x => !x.Deleted && !x.Disable).ToList();
+            List<DropDownListFilters> OduInstallationTypelists = _mapper.Map<List<DropDownListFilters>>(OduInstallationType);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("OduInstallationTypeId", OduInstallationTypelists));
+
+            var MwODULibrary = _context.TLImwODULibrary.Where(x => x.Active && !x.Deleted).ToList();
+            List<DropDownListFilters> MwODULibrarylists = _mapper.Map<List<DropDownListFilters>>(MwODULibrary);
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("MwODULibraryId", MwODULibrarylists));
+            return RelatedTables;
+        }
         public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables(string SiteCode)
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
@@ -40,10 +69,10 @@ namespace TLIS_Repository.Repositories
                 b.Add(dish);
 
             }
-       
+
             List<DropDownListFilters> Mw_DishLists = _mapper.Map<List<DropDownListFilters>>(b);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Mw_DishId", Mw_DishLists));
-              
+
 
             var OduInstallationType = _context.TLIoduInstallationType.Where(x => !x.Deleted && !x.Disable).ToList();
             List<DropDownListFilters> OduInstallationTypelists = _mapper.Map<List<DropDownListFilters>>(OduInstallationType);

@@ -70,8 +70,13 @@ namespace TLIS_Service.Services
         {
             try
             {
+                TLIallCivilInst CivilWithLegInstallation = _unitOfWork.AllCivilInstRepository
+                    .GetIncludeWhereFirst(x => x.Id == AllCivilInstId && x.civilWithLegsId != null);
 
-                int CivilWithLegInstallationId = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.Id == AllCivilInstId && x.civilWithLegsId != null).civilWithLegsId.Value;
+                if (CivilWithLegInstallation == null)
+                    return new Response<List<LegViewModel>>(true, new List<LegViewModel>(), null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                int CivilWithLegInstallationId = CivilWithLegInstallation.civilWithLegsId.Value;
 
                 List<LegViewModel> LegsViewModel = _mapper.Map<List<LegViewModel>>(_unitOfWork.LegRepository.GetWhere(x => x.CivilWithLegInstId == CivilWithLegInstallationId));
 
