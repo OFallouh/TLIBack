@@ -360,13 +360,10 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId)
+        public Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId, int? MainBUId)
         {
             List<int> UsedPorts = _unitOfWork.MW_BURepository
-                .GetWhere(x => x.PortCascadeId > 0).Select(x => x.PortCascadeId).ToList();
-
-            var xxx = _unitOfWork.MW_PortRepository
-                .GetIncludeWhere(x => x.MwBUId == BUId && !UsedPorts.Contains(x.Id), x => x.MwBU, x => x.MwBULibrary).ToList();
+                .GetWhere(x => x.PortCascadeId > 0 && (MainBUId != null ? x.Id != MainBUId : true)).Select(x => x.PortCascadeId).ToList();
 
             List<MW_PortViewModel> Ports = _mapper.Map<List<MW_PortViewModel>>(_unitOfWork.MW_PortRepository
                 .GetIncludeWhere(x => x.MwBUId == BUId && !UsedPorts.Contains(x.Id), x => x.MwBU, x => x.MwBULibrary).ToList());

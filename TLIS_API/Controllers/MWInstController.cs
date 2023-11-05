@@ -427,9 +427,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetPortCascadedByBUId")]
         [ProducesResponseType(200, Type = typeof(List<MW_PortViewModel>))]
-        public IActionResult GetPortCascadedByBUId(int BUId)
+        public IActionResult GetPortCascadedByBUId(int BUId, int? MainBUId)
         {
-            var response = _unitOfWorkService.MWInstService.GetPortCascadedByBUId(BUId);
+            var response = _unitOfWorkService.MWInstService.GetPortCascadedByBUId(BUId, MainBUId);
             return Ok(response);
         }
     }
