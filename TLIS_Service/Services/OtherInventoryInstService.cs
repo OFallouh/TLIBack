@@ -145,7 +145,8 @@ namespace TLIS_Service.Services
 
                     objectInst.AttributesActivated = ListAttributesActivated;
                     objectInst.OtherInSite = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(TablesNames.TLIotherInSite.ToString(), null, "allOtherInventoryInstId", "Dismantle", "SiteCode");
-                    objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
+                    objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository
+                        .GetInstAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
 
                     IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                         .GetDynamicInstAtts(TableNameEntity.Id, null);
@@ -3896,21 +3897,30 @@ namespace TLIS_Service.Services
                     List<BaseAttView> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
 
+                    int? ReferenceOtherInventoryInstId = null;
+
                     foreach (BaseAttView otherinventorytAttribute in otherInventorytDistanceAttributes)
                     {
                         if (otherinventorytAttribute.DataType.ToLower() == "list")
                         {
                             if (otherinventorytAttribute.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
                             {
+                                TLIallOtherInventoryInst SupportReferenceAllOtherInventory = _unitOfWork.AllOtherInventoryInstRepository
+                                    .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId,
+                                        x => x.cabinet, x => x.solar, x => x.generator);
 
-                                // var  refother= _unitOfWork.AllOtherInventoryInstRepository
-                                //    .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.allOtherInventoryInstId && x.cabinetId != null);
-                                otherinventorytAttribute.Value = _dbContext.TLIcabinet.Where(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId).Select(x => x.Name).FirstOrDefault();
+                                otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
+                                    (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name : 
+                                    SupportReferenceAllOtherInventory.generator.Name);
+
+                                ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
                             }
                         }
                     }
 
                     objectInst.OtherInventoryDistance = _mapper.Map<IEnumerable<BaseInstAttView>>(otherInventorytDistanceAttributes);
+                    if (ReferenceOtherInventoryInstId != null)
+                        objectInst.OtherInventoryDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Id = ReferenceOtherInventoryInstId.Value;
                 }
                 else if (OtherInventoryType.TLIsolar.ToString() == TableName)
                 {
@@ -3985,7 +3995,7 @@ namespace TLIS_Service.Services
 
                     if (ReferenceToDelete != null)
                         RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Value.Remove(ReferenceToDelete);
-objectInst.RelatedTables = RelatedTables;
+                    objectInst.RelatedTables = RelatedTables;
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _dbContext.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == OtherInventoryInsId);
                     TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
@@ -4000,20 +4010,30 @@ objectInst.RelatedTables = RelatedTables;
                     List<BaseAttView> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
 
+                    int? ReferenceOtherInventoryInstId = null;
+
                     foreach (BaseAttView otherinventorytAttribute in otherInventorytDistanceAttributes)
                     {
                         if (otherinventorytAttribute.DataType.ToLower() == "list")
                         {
                             if (otherinventorytAttribute.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
                             {
-                                //  var refother = _unitOfWork.AllOtherInventoryInstRepository
-                                //      .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId && x.solarId != null);
-                                otherinventorytAttribute.Value = _dbContext.TLIsolar.Where(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId).Select(x => x.Name).FirstOrDefault();
+                                TLIallOtherInventoryInst SupportReferenceAllOtherInventory = _unitOfWork.AllOtherInventoryInstRepository
+                                    .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId,
+                                        x => x.cabinet, x => x.solar, x => x.generator);
+
+                                otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
+                                    (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
+                                    SupportReferenceAllOtherInventory.generator.Name);
+
+                                ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
                             }
                         }
                     }
 
                     objectInst.OtherInventoryDistance = _mapper.Map<IEnumerable<BaseInstAttView>>(otherInventorytDistanceAttributes);
+                    if (ReferenceOtherInventoryInstId != null)
+                        objectInst.OtherInventoryDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Id = ReferenceOtherInventoryInstId.Value;
                 }
                 else if (OtherInventoryType.TLIgenerator.ToString() == TableName)
                 {
@@ -4108,20 +4128,30 @@ objectInst.RelatedTables = RelatedTables;
                     List<BaseAttView> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
 
+                    int? ReferenceOtherInventoryInstId = null;
+
                     foreach (BaseAttView otherinventorytAttribute in otherInventorytDistanceAttributes)
                     {
                         if (otherinventorytAttribute.DataType.ToLower() == "list")
                         {
                             if (otherinventorytAttribute.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
                             {
-                                //var refother = _unitOfWork.AllOtherInventoryInstRepository
-                                //    .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId && x.generatorId != null);
-                                otherinventorytAttribute.Value = _dbContext.TLIgenerator.Where(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId).Select(x => x.Name).FirstOrDefault();
+                                TLIallOtherInventoryInst SupportReferenceAllOtherInventory = _unitOfWork.AllOtherInventoryInstRepository
+                                    .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId,
+                                        x => x.cabinet, x => x.solar, x => x.generator);
+
+                                otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
+                                    (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
+                                    SupportReferenceAllOtherInventory.generator.Name);
+
+                                ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
                             }
                         }
                     }
 
                     objectInst.OtherInventoryDistance = _mapper.Map<IEnumerable<BaseInstAttView>>(otherInventorytDistanceAttributes);
+                    if (ReferenceOtherInventoryInstId != null)
+                        objectInst.OtherInventoryDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Id = ReferenceOtherInventoryInstId.Value;
                 }
                 return new Response<ObjectInstAtts>(true, objectInst, null, null, (int)ApiReturnCode.success);
             }

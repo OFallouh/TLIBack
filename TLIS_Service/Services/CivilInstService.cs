@@ -609,50 +609,59 @@ namespace TLIS_Service.Services
         //Return all civil in this site
         private List<DropDownListFilters> GetRelatedToSite(string SiteCode, string TableName)
         {
-            List<DropDownListFilters> values = new List<DropDownListFilters>();
+            //List<DropDownListFilters> values = new List<DropDownListFilters>();
 
-            List<int> CivilInstallations = _unitOfWork.CivilSiteDateRepository.GetWhere(x =>
-                x.SiteCode == SiteCode && !x.Dismantle).Select(x => x.allCivilInstId).ToList();
-
-            for (int i = 0; i < CivilInstallations.Count; i++)
-            {
-                TLIallCivilInst Civil = _unitOfWork.AllCivilInstRepository
-                    .GetWhereFirst(x => x.Id == CivilInstallations[i]);
-
-                if (Civil.civilWithLegsId != null)
+            List<DropDownListFilters> CivilInstallations = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
+                x.SiteCode == SiteCode && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                    x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel)
+                .Select(x => new DropDownListFilters()
                 {
-                    Civil.civilWithLegs = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
-                        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == Civil.civilWithLegsId.Value : false) &&
-                        !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).allCivilInst.civilWithLegs;
+                    Id = x.allCivilInstId,
+                    Deleted = false,
+                    Disable = false,
+                    Value = x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name : 
+                        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name : x.allCivilInst.civilNonSteel.Name)
+                }).ToList();
 
-                    values.Add(new DropDownListFilters(Civil.civilWithLegs.Id, Civil.civilWithLegs.Name));
-                }
-                else if (Civil.civilWithoutLegId != null)
-                {
-                    Civil.civilWithoutLeg = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
-                        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == Civil.civilWithoutLegId.Value : false) &&
-                        !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).allCivilInst.civilWithoutLeg;
+            //for (int i = 0; i < CivilInstallations.Count; i++)
+            //{
+            //    TLIallCivilInst Civil = _unitOfWork.AllCivilInstRepository
+            //        .GetWhereFirst(x => x.Id == CivilInstallations[i]);
 
-                    values.Add(new DropDownListFilters(Civil.civilWithoutLeg.Id, Civil.civilWithoutLeg.Name));
-                }
-                else if (Civil.civilNonSteelId != null)
-                {
-                    Civil.civilNonSteel = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
-                        (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == Civil.civilNonSteelId.Value : false) &&
-                        !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).allCivilInst.civilNonSteel;
+            //    if (Civil.civilWithLegsId != null)
+            //    {
+            //        Civil.civilWithLegs = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
+            //            (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == Civil.civilWithLegsId.Value : false) &&
+            //            !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).allCivilInst.civilWithLegs;
 
-                    values.Add(new DropDownListFilters(Civil.civilNonSteel.Id, Civil.civilNonSteel.Name));
-                }
-            }
-            values.Add(new DropDownListFilters
-            {
-                Id = 0,
-                Value = "NA",
-                Deleted=false,
-                Disable=false
-                
-            });
-            return values;
+            //        values.Add(new DropDownListFilters(Civil.civilWithLegs.Id, Civil.civilWithLegs.Name));
+            //    }
+            //    else if (Civil.civilWithoutLegId != null)
+            //    {
+            //        Civil.civilWithoutLeg = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
+            //            (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == Civil.civilWithoutLegId.Value : false) &&
+            //            !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).allCivilInst.civilWithoutLeg;
+
+            //        values.Add(new DropDownListFilters(Civil.civilWithoutLeg.Id, Civil.civilWithoutLeg.Name));
+            //    }
+            //    else if (Civil.civilNonSteelId != null)
+            //    {
+            //        Civil.civilNonSteel = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() &&
+            //            (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == Civil.civilNonSteelId.Value : false) &&
+            //            !x.allCivilInst.Draft, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).allCivilInst.civilNonSteel;
+
+            //        values.Add(new DropDownListFilters(Civil.civilNonSteel.Id, Civil.civilNonSteel.Name));
+            //    }
+            //}
+            //values.Add(new DropDownListFilters
+            //{
+            //    Id = 0,
+            //    Value = "NA",
+            //    Deleted = false,
+            //    Disable = false
+
+            //});
+            return CivilInstallations;
         }
         //This Function accept two parameters
         //CivilInstallationViewModel object that accept any kind of ViewModel
@@ -4379,6 +4388,8 @@ namespace TLIS_Service.Services
                     List<BaseAttView> CivilsupportAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), civilSupportDistance, null, "CivilInstId", "Id", "SiteCode").ToList();
 
+                    int? ReferenceCivilInstId = null;
+
                     foreach (BaseAttView CivilsupportAttribute in CivilsupportAttributes)
                     {
                         if (CivilsupportAttribute.DataType.ToLower() == "list")
@@ -4393,16 +4404,26 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     var support = _unitOfWork.CivilSupportDistanceRepository
-                                    .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId && x.ReferenceCivilId != null);
+                                        .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                                    CivilsupportAttribute.Value = _dbContext.TLIcivilWithLegs.Where(x => x.Id == support.ReferenceCivilId).Select(x => x.Name).FirstOrDefault();
+                                    TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+
+                                    CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
+                                        (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
+                                        SupportReferenceAllCivilInst.civilNonSteel.Name);
+
+                                    ReferenceCivilInstId = support.ReferenceCivilId;
                                 }
-
                             }
                         }
                     }
 
                     objectInst.CivilSupportDistance = _mapper.Map<List<BaseInstAttView>>(CivilsupportAttributes);
+                    if (ReferenceCivilInstId != null)
+                    {
+                        objectInst.CivilSupportDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceCivilId".ToLower()).Id = ReferenceCivilInstId.Value;
+                    }
                 }
                 else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
                 {
@@ -4509,6 +4530,8 @@ namespace TLIS_Service.Services
                     List<BaseAttView> CivilsupportAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), civilSupportDistance, null, "CivilInstId", "Id", "SiteCode").ToList();
 
+                    int? ReferenceCivilInstId = null;
+
                     foreach (BaseAttView CivilsupportAttribute in CivilsupportAttributes)
                     {
                         if (CivilsupportAttribute.DataType.ToLower() == "list")
@@ -4522,16 +4545,26 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     var support = _unitOfWork.CivilSupportDistanceRepository
-                                   .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId && x.ReferenceCivilId != null);
+                                        .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                                    CivilsupportAttribute.Value = _dbContext.TLIcivilWithoutLeg.Where(x => x.Id == support.ReferenceCivilId).Select(x => x.Name).FirstOrDefault();
+                                    TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+
+                                    CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
+                                        (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
+                                        SupportReferenceAllCivilInst.civilNonSteel.Name);
+
+                                    ReferenceCivilInstId = support.ReferenceCivilId;
                                 }
-
                             }
                         }
                     }
 
                     objectInst.CivilSupportDistance = _mapper.Map<List<BaseInstAttView>>(CivilsupportAttributes);
+                    if (ReferenceCivilInstId != null)
+                    {
+                        objectInst.CivilSupportDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceCivilId".ToLower()).Id = ReferenceCivilInstId.Value;
+                    }
                 }
                 else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == TableName)
                 {
@@ -4646,6 +4679,8 @@ namespace TLIS_Service.Services
                     List<BaseAttView> CivilsupportAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), civilSupportDistance, null, "CivilInstId", "Id", "SiteCode").ToList();
 
+                    int? ReferenceCivilInstId = null;
+
                     foreach (BaseAttView CivilsupportAttribute in CivilsupportAttributes)
                     {
                         if (CivilsupportAttribute.DataType.ToLower() == "list")
@@ -4659,15 +4694,27 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     var support = _unitOfWork.CivilSupportDistanceRepository
-                                  .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId && x.ReferenceCivilId != null);
+                                        .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                                    CivilsupportAttribute.Value = _dbContext.TLIcivilNonSteel.Where(x => x.Id == support.ReferenceCivilId).Select(x => x.Name).FirstOrDefault();
+                                    TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+
+                                    CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
+                                        (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
+                                        SupportReferenceAllCivilInst.civilNonSteel.Name);
+
+                                    ReferenceCivilInstId = support.ReferenceCivilId;
                                 }
 
                             }
                         }
                     }
+
                     objectInst.CivilSupportDistance = _mapper.Map<List<BaseInstAttView>>(CivilsupportAttributes);
+                    if (ReferenceCivilInstId != null)
+                    {
+                        objectInst.CivilSupportDistance.FirstOrDefault(x => x.Key.ToLower() == "ReferenceCivilId".ToLower()).Id = ReferenceCivilInstId.Value;
+                    }
                 }
                 return new Response<ObjectInstAtts>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

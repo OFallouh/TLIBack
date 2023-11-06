@@ -10,11 +10,8 @@ namespace TLIS_Repository.IRepository
 {
     public interface IOtherInventoryDistanceRepository:IRepositoryBase<TLIotherInventoryDistance, OtherInventoryDistanceViewModel, int>
     {
-        List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables(string SiteCode);
         List<KeyValuePair<string, List<DropDownListFilters>>> CabientGetRelatedTables(string SiteCode);
         List<KeyValuePair<string, List<DropDownListFilters>>> SolarGetRelatedTables(string SiteCode);
         List<KeyValuePair<string, List<DropDownListFilters>>> GeneratorGetRelatedTables(string SiteCode);
-
-
     }
 }
