@@ -9001,7 +9001,7 @@ namespace TLIS_Service.Services
                 var AvailablePorts = _dbContext.TLImwPort.Where(x => FreePorts.Contains(x.Id)).Select(x => new MW_PortViewModel
                 {
                     Id = x.Id,
-                    Name = x.Port_Name,
+                    Value = x.Port_Name,
                     MwBUId = x.MwBUId,
                     TX_Frequency = x.TX_Frequency
 

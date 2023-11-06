@@ -1032,10 +1032,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIenforcmentCategory, AddEnforcmentCategoryViewModel>().ReverseMap();
 
             CreateMap<MW_PortViewModel, TLImwPort>()
-                .ForMember(x => x.Port_Name, x => x.MapFrom(f => f.Name));
+                .ForMember(x => x.Port_Name, x => x.MapFrom(f => f.Value));
 
             CreateMap<TLImwPort, MW_PortViewModel>()
-                .ForMember(x => x.Name, x => x.MapFrom(f => f.Port_Name))
+                .ForMember(x => x.Value, x => x.MapFrom(f => f.Port_Name))
                 .ForMember(x => x.MwBULibrary_Name, x => x.MapFrom(f => f.MwBULibrary.Model))
                 .ForMember(x => x.MwBU_Name, x => x.MapFrom(f => f.MwBU.Name));
 
