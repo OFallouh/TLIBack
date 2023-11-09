@@ -36,9 +36,9 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("GetGeneratorLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetGeneratorLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery]bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetGeneratorLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery]bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetGeneratorLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetGeneratorLibraryEnabledAtt(CombineFilters, WithFilterData, parameters, isRefresh);
             return Ok(response);
         }
         [HttpGet("GetGeneratorLibraryById/{id}")]

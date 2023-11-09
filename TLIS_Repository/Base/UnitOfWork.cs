@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TLIS_DAL;
+using TLIS_DAL.Models;
 using TLIS_Repository.IRepository;
 using TLIS_Repository.Repositories;
 
@@ -14,6 +15,12 @@ namespace TLIS_Repository.Base
 {
     public class UnitOfWork : IUnitOfWork
     {
+        public static List<TLIattributeActivated> AllAttributeActivated;
+        public static List<TLIattActivatedCategory> AllAttributeActivatedCategory;
+        public static List<TLIdynamicAtt> AllDynamicAttribute;
+        public static List<TLIattributeViewManagment> AllAttributeViewManagment;
+        public static List<TLIdynamicAttInstValue> AllDynamicAttInstValue;
+        public static List<TLIdynamicAttLibValue> AllDynamicAttLibValue;
         readonly ApplicationDbContext _context;
         private IConfiguration iConfig;
 
@@ -194,7 +201,7 @@ namespace TLIS_Repository.Base
         IDocumentTypeRepository _DocumentTypeRepository;
         ILocationTypeRepository _LocationTypeRepository;
         IRegionRepository _RegionRepository;
-        IUserPermissionssRepository _UserPermissionssRepository;     
+        IUserPermissionssRepository _UserPermissionssRepository;
         IRolePermissionsRepository _RolePermissionsRepository;
         public UnitOfWork(ApplicationDbContext context, IMapper mapper)
         {
@@ -2025,7 +2032,7 @@ namespace TLIS_Repository.Base
                 return _RegionRepository;
             }
         }
-        
+
         public IRolePermissionsRepository RolePermissionsRepository
         {
             get
@@ -2035,7 +2042,7 @@ namespace TLIS_Repository.Base
 
                 return _RolePermissionsRepository;
             }
-        }   
+        }
         public int SaveChanges()
         {
             return _context.SaveChanges();

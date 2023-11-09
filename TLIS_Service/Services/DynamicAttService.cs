@@ -79,7 +79,7 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         private readonly ApplicationDbContext _dbContext;
         private IMapper _mapper;
-        public DynamicAttService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext dbContext,IMapper mapper)
+        public DynamicAttService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext dbContext, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
@@ -254,6 +254,7 @@ namespace TLIS_Service.Services
                             Dictionary<string, int> ListValuesIds = new Dictionary<string, int>();
 
                             _unitOfWork.DynamicAttRepository.Add(DynamicAttEntity);
+                            UnitOfWork.AllDynamicAttribute.Add(DynamicAttEntity);
                             _unitOfWork.SaveChanges();
 
                             DynamicAttId = DynamicAttEntity.Id;
@@ -363,7 +364,7 @@ namespace TLIS_Service.Services
 
                             if (CheckIfDynamicInCivilWithoutLeg)
                             {
-                                _unitOfWork.AttributeViewManagmentRepository.Add(new TLIattributeViewManagment
+                                TLIattributeViewManagment AttributeForAdd = new TLIattributeViewManagment
                                 {
                                     DynamicAttId = DynamicAttId,
                                     Enable = true,
@@ -371,18 +372,24 @@ namespace TLIS_Service.Services
                                         x.TLItablesNames1Id == addDependencyInstViewModel.tablesNamesId &&
                                         (x.CivilWithoutLegCategoryId != null ?
                                             x.CivilWithoutLegCategoryId == addDependencyInstViewModel.CivilWithoutLegCategoryId : false)).Id
-                                });
+                                };
+
+                                _unitOfWork.AttributeViewManagmentRepository.Add(AttributeForAdd);
+                                UnitOfWork.AllAttributeViewManagment.Add(AttributeForAdd);
                                 _unitOfWork.SaveChanges();
                             }
                             else
                             {
-                                _unitOfWork.AttributeViewManagmentRepository.Add(new TLIattributeViewManagment
+                                TLIattributeViewManagment AttributeForAdd = new TLIattributeViewManagment
                                 {
                                     DynamicAttId = DynamicAttId,
                                     Enable = true,
                                     EditableManagmentViewId = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x =>
                                         x.TLItablesNames1Id == addDependencyInstViewModel.tablesNamesId).Id
-                                });
+                                };
+
+                                _unitOfWork.AttributeViewManagmentRepository.Add(AttributeForAdd);
+                                UnitOfWork.AllAttributeViewManagment.Add(AttributeForAdd);
                                 _unitOfWork.SaveChanges();
                             }
 
@@ -679,7 +686,7 @@ namespace TLIS_Service.Services
                             // Civils..
                             if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                             {
-                                List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(CivilLibraryService._CivilWithLegLibrary).ToList();
+                                List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(CivilLibraryService._CivilWithLegLibraryEntities).ToList();
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -1024,6 +1031,7 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -1377,6 +1385,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -1729,6 +1738,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -2084,6 +2094,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -2438,6 +2449,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -2790,6 +2802,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -3142,6 +3155,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -3494,6 +3508,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -3849,6 +3864,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -4201,6 +4217,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -4553,6 +4570,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -4905,6 +4923,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -5257,6 +5276,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -5611,6 +5631,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -5963,6 +5984,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -6315,6 +6337,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -6669,6 +6692,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -7023,6 +7047,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -7367,6 +7392,7 @@ namespace TLIS_Service.Services
                             });
                         }
                         _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
+                        UnitOfWork.AllDynamicAttInstValue.AddRange(ListToAdd);
                         _unitOfWork.SaveChanges();
                     }
                     else
@@ -7412,6 +7438,7 @@ namespace TLIS_Service.Services
                             }
 
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                            UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
                         else
@@ -7435,6 +7462,7 @@ namespace TLIS_Service.Services
                             }
 
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
+                            UnitOfWork.AllDynamicAttInstValue.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
                     }
@@ -7467,6 +7495,8 @@ namespace TLIS_Service.Services
                             }
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
+
+                            UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                         }
                         else
                         {
@@ -7489,6 +7519,8 @@ namespace TLIS_Service.Services
                             }
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
+
+                            UnitOfWork.AllDynamicAttInstValue.AddRange(ListToAdd);
                         }
                     }
                 }
@@ -7621,7 +7653,7 @@ namespace TLIS_Service.Services
                 // Civils ...
                 if (TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                 {
-                    Records = CivilLibraryService._CivilWithLegLibrary.Select(x => x.Id).ToList();
+                    Records = CivilLibraryService._CivilWithLegLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                 {
@@ -7816,121 +7848,12 @@ namespace TLIS_Service.Services
                             int DynamicAttId;
                             Dictionary<string, int> ListValuesIds = new Dictionary<string, int>();
 
-                            #region NO NEED FOR THIS SECTION BECAUSE THERE IS NO DYNAMIC ATTRIBUTE LIST....
-
-                            //if data type is list then add dynamic attributes and add list of values 
-                            //if (DataType.Name.ToLower() == "list")
-                            //{
-                            //    //Add dynamic attribute
-                            //    //_unitOfWork.DynamicAttRepository.Add(DynamicAttEntity);
-                            //    //_unitOfWork.SaveChanges();
-                            //    //Add values for that dynamic attribute
-                            //    using (var cmd = con.CreateCommand())
-                            //    {
-
-                            //        if (DynamicAttEntity.CivilWithoutLegCategoryId == null)
-                            //        {
-                            //            cmd.CommandText = $"Insert into \"TLIdynamicAtt\"(\"Key\", \"LibraryAtt\", \"DataTypeId\", \"Description\", \"tablesNamesId\") VALUES('{ DynamicAttEntity.Key }', { Convert.ToInt32(0) }, { Convert.ToInt32(DynamicAttEntity.DataTypeId) }, '{ DynamicAttEntity.Description }',  { Convert.ToInt32(DynamicAttEntity.tablesNamesId) }) RETURNING \"Id\" INTO :id";
-                            //        }
-                            //        else
-                            //        {
-                            //            cmd.CommandText = $"Insert into \"TLIdynamicAtt\"(\"Key\", \"LibraryAtt\", \"DataTypeId\", \"Description\", \"CivilWithoutLegCategoryId\", \"tablesNamesId\") VALUES('{ DynamicAttEntity.Key }', { Convert.ToInt32(0) }, { Convert.ToInt32(DynamicAttEntity.DataTypeId) }, '{ DynamicAttEntity.Description }', { Convert.ToInt32(DynamicAttEntity.CivilWithoutLegCategoryId) },  { Convert.ToInt32(DynamicAttEntity.tablesNamesId) }) RETURNING \"Id\" INTO :id";
-                            //        }
-                            //        cmd.Parameters.Add(new OracleParameter
-                            //        {
-                            //            ParameterName = ":id",
-                            //            OracleDbType = OracleDbType.Int16,
-                            //            Direction = System.Data.ParameterDirection.Output
-                            //        });
-                            //        cmd.ExecuteNonQuery();
-                            //        //read data and save it on list of integers to add dynamic installation attribute values for each filtered data
-                            //        DynamicAttId = int.Parse(cmd.Parameters[":id"].Value.ToString());
-                            //        AddHistoryForDynamic(DynamicAttId, "Add", DynamicAttEntity.tablesNamesId);
-                            //    }
-                            //    foreach (var DynamicAttValue in addDependencyViewModel.dynamicListValues)
-                            //    {
-                            //        //TLIdynamicListValues dynamicListValues = new TLIdynamicListValues();
-                            //        //dynamicListValues.dynamicAttId = DynamicAttId;
-                            //        //dynamicListValues.Value = DynamicAttValue.Value;
-                            //        //_unitOfWork.DynamicListValuesRepository.Add(dynamicListValues);
-                            //        using (var cmd = con.CreateCommand())
-                            //        {
-
-                            //            cmd.CommandText = $"Insert into \"TLIdynamicListValues\"(\"Value\", \"dynamicAttId\") VALUES('{ DynamicAttValue.Value }', { Convert.ToInt32(DynamicAttId) }) RETURNING \"Id\" INTO :id";
-
-                            //            cmd.Parameters.Add(new OracleParameter
-                            //            {
-                            //                ParameterName = ":id",
-                            //                OracleDbType = OracleDbType.Int16,
-                            //                Direction = System.Data.ParameterDirection.Output
-                            //            });
-                            //            cmd.ExecuteNonQuery();
-                            //            //read data and save it on list of integers to add dynamic installation attribute values for each filtered data
-                            //            ListValuesIds.Add(DynamicAttValue.Value, int.Parse(cmd.Parameters[":id"].Value.ToString()));
-                            //        }
-                            //    }
-                            //    //_unitOfWork.SaveChanges();
-                            //}
-                            //else
-                            //{
-                            //using (var cmd = con.CreateCommand())
-                            //{
-                            //    if (DynamicAttEntity.CivilWithoutLegCategoryId == null)
-                            //    {
-                            //        cmd.CommandText = $"Insert into \"TLIdynamicAtt\"(\"Key\", \"LibraryAtt\", \"DataTypeId\", \"Description\", \"tablesNamesId\") VALUES('{ DynamicAttEntity.Key }', { Convert.ToInt32(1) }, { Convert.ToInt32(DynamicAttEntity.DataTypeId) }, '{ DynamicAttEntity.Description }',  { Convert.ToInt32(DynamicAttEntity.tablesNamesId) }) RETURNING \"Id\" INTO :id";
-                            //    }
-                            //    else
-                            //    {
-                            //        cmd.CommandText = $"Insert into \"TLIdynamicAtt\"(\"Key\", \"LibraryAtt\", \"DataTypeId\", \"Description\", \"CivilWithoutLegCategoryId\", \"tablesNamesId\") VALUES('{ DynamicAttEntity.Key }', { Convert.ToInt32(1) }, { Convert.ToInt32(DynamicAttEntity.DataTypeId) }, '{ DynamicAttEntity.Description }', { Convert.ToInt32(DynamicAttEntity.CivilWithoutLegCategoryId) },  { Convert.ToInt32(DynamicAttEntity.tablesNamesId) }) RETURNING \"Id\" INTO :id";
-                            //    }
-                            //    cmd.Parameters.Add(new OracleParameter
-                            //    {
-                            //        ParameterName = ":id",
-                            //        OracleDbType = OracleDbType.Int16,
-                            //        Direction = System.Data.ParameterDirection.Output
-                            //    });
-                            //    cmd.ExecuteNonQuery();
-                            //    //read data and save it on list of integers to add dynamic installation attribute values for each filtered data
-                            //    DynamicAttId = int.Parse(cmd.Parameters[":id"].Value.ToString());
-                            //    // AddHistoryForDynamic(DynamicAttId, "Add", DynamicAttEntity.tablesNamesId);
-                            //}
-                            //if not list then just add dynamic attribute
-                            //_unitOfWork.DynamicAttRepository.Add(DynamicAttEntity);
-                            //_unitOfWork.SaveChanges();
-                            //}
-
-                            #endregion
-
                             _unitOfWork.DynamicAttRepository.Add(DynamicAttEntity);
+                            UnitOfWork.AllDynamicAttribute.Add(DynamicAttEntity);
                             _unitOfWork.SaveChanges();
 
                             DynamicAttId = DynamicAttEntity.Id;
 
-                            #region NO NEED FOR THIS SECTION BECAUSE THERE IS NO DYNAMIC ATTRIBUTE LIST....
-                            //using (var cmd = con.CreateCommand())
-                            //{
-                            //    if (DynamicAttEntity.CivilWithoutLegCategoryId == null)
-                            //    {
-                            //        cmd.CommandText = $"Insert into \"TLIdynamicAtt\"(\"Key\", \"LibraryAtt\", \"DataTypeId\", \"Description\", \"tablesNamesId\", \"Required\") VALUES('{ DynamicAttEntity.Key }', { Convert.ToInt32(1) }, { Convert.ToInt32(DynamicAttEntity.DataTypeId) }, '{ DynamicAttEntity.Description }',  { Convert.ToInt32(DynamicAttEntity.tablesNamesId) }, { Convert.ToBoolean(DynamicAttEntity.Required) }) RETURNING \"Id\" INTO :id";
-                            //    }
-                            //    else
-                            //    {
-                            //        cmd.CommandText = $"Insert into \"TLIdynamicAtt\"(\"Key\", \"LibraryAtt\", \"DataTypeId\", \"Description\", \"CivilWithoutLegCategoryId\", \"tablesNamesId\", \"Required\") VALUES('{ DynamicAttEntity.Key }', { Convert.ToInt32(1) }, { Convert.ToInt32(DynamicAttEntity.DataTypeId) }, '{ DynamicAttEntity.Description }', { Convert.ToInt32(DynamicAttEntity.CivilWithoutLegCategoryId) },  { Convert.ToInt32(DynamicAttEntity.tablesNamesId) }, { Convert.ToBoolean(DynamicAttEntity.Required) }) RETURNING \"Id\" INTO :id";
-                            //    }
-                            //    cmd.Parameters.Add(new OracleParameter
-                            //    {
-                            //        ParameterName = ":id",
-                            //        OracleDbType = OracleDbType.Int16,
-                            //        Direction = System.Data.ParameterDirection.Output
-                            //    });
-                            //    cmd.ExecuteNonQuery();
-
-                            //    //read data and save it on list of integers to add dynamic installation attribute values for each filtered data
-                            //    DynamicAttId = int.Parse(cmd.Parameters[":id"].Value.ToString());
-
-                            //    // AddHistoryForDynamic(DynamicAttId, "Add", DynamicAttEntity.tablesNamesId);
-                            //}
-                            #endregion
                             if (addDependencyViewModel.validations != null ? addDependencyViewModel.validations.Count > 0 : false)
                             {
                                 foreach (var GeneralValidation in addDependencyViewModel.validations)
@@ -8030,22 +7953,12 @@ namespace TLIS_Service.Services
                                         DependencyRowEntity.LogicalOperationId = DependencyRow.LogicalOperationId;
                                         _unitOfWork.DependencyRowRepository.Add(DependencyRowEntity);
                                         _unitOfWork.SaveChanges();
-
-                                        //List<int> ResultDataType = _unitOfWork.OperationRepository.GetWhereAndSelect(x =>
-                                        //    x.Name.ToLower() == "result" || x.Name == "==", x => new { x.Id }).Select(x => x.Id).ToList();
-
-                                        //int Count = ResultDataType.Count();
-                                        //for (int i = 0; i < Count; i++)
-                                        //{
-                                        //    if (Dependencie.OperationId == ResultDataType[i])
-                                        //        FilterLibraryDataAndInsertIt(addDependencyViewModel, addDependencyViewModel.TableName, con, DynamicAttId, ListValuesIds);
-                                        //}
                                     }
                                 }
                             }
                             if (addDependencyViewModel.CivilWithoutLegCategoryId != null)
                             {
-                                _unitOfWork.AttributeViewManagmentRepository.Add(new TLIattributeViewManagment
+                                TLIattributeViewManagment AttributeForAdd = new TLIattributeViewManagment
                                 {
                                     DynamicAttId = DynamicAttId,
                                     Enable = true,
@@ -8053,19 +7966,25 @@ namespace TLIS_Service.Services
                                         x.TLItablesNames1Id == addDependencyViewModel.tablesNamesId &&
                                         (x.CivilWithoutLegCategoryId != null ?
                                             x.CivilWithoutLegCategoryId == addDependencyViewModel.CivilWithoutLegCategoryId : false)).Id
-                                });
+                                };
+
+                                _unitOfWork.AttributeViewManagmentRepository.Add(AttributeForAdd);
+                                UnitOfWork.AllAttributeViewManagment.Add(AttributeForAdd);
                                 _unitOfWork.SaveChanges();
 
                             }
                             else
                             {
-                                _unitOfWork.AttributeViewManagmentRepository.Add(new TLIattributeViewManagment
+                                TLIattributeViewManagment AttributeForAdd = new TLIattributeViewManagment
                                 {
                                     DynamicAttId = DynamicAttId,
                                     Enable = true,
                                     EditableManagmentViewId = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x =>
                                         x.TLItablesNames1Id == addDependencyViewModel.tablesNamesId).Id
-                                });
+                                };
+
+                                _unitOfWork.AttributeViewManagmentRepository.Add(AttributeForAdd);
+                                UnitOfWork.AllAttributeViewManagment.Add(AttributeForAdd);
                                 _unitOfWork.SaveChanges();
                             }
 
@@ -8171,7 +8090,7 @@ namespace TLIS_Service.Services
                         NonStringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower()) ||
                         StringLibraryProps.Exists(y => y.Name.ToLower() == x.key.ToLower())).ToList();
 
-                    List<int> DynamicAttBaseFilter = _unitOfWork.DynamicAttRepository.GetWhere(x =>
+                    List<int> DynamicAttBaseFilter = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.tablesNamesId == TableNameId && (CategoryId != null ? (x.CivilWithoutLegCategoryId == CategoryId) : true)).Select(x => x.Id).ToList();
 
                     IEnumerable<TLIdynamicAtt> DynamicAtts = _unitOfWork.DynamicAttRepository
@@ -8195,25 +8114,13 @@ namespace TLIS_Service.Services
 
                     List<int> DynamicAttIds = DynamicAtts.Select(x => x.Id).ToList();
 
-                    //List<int> DynamicAttIds = _unitOfWork.DynamicAttRepository.GetWhere(x =>
-                    //    (LibraryPropsAttributeFilters.All(z =>
-                    //        NonStringLibraryProps.Exists(y =>
-                    //            ((y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null) != null) ?
-                    //                (z.value.Any(w => w.ToLower() == y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null).ToString().ToLower())) : (false))) ||
-                    //        StringLibraryProps.Exists(y => z.value.Any(w =>
-                    //            ((y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null) != null) ?
-                    //                (y.GetValue(_mapper.Map<DynamicAttViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower())) : (false))))))
-                    //).Select(i => i.Id).ToList();
-
-                    DynamicAtt = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && x.tablesNamesId == TableNameId && DynamicAttIds.Contains(x.Id),
-                            x => x.DataType, x => x.CivilWithoutLegCategory, x => x.tablesNames).ToList());
+                    DynamicAtt = _mapper.Map<List<DynamicAttViewModel>>(UnitOfWork.AllDynamicAttribute.Where(x =>
+                        x.Id > 0 && x.tablesNamesId == TableNameId && DynamicAttIds.Contains(x.Id)).ToList());
                 }
                 else
                 {
-                    DynamicAtt = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && x.tablesNamesId == TableNameId && (CategoryId != null ? (x.CivilWithoutLegCategoryId == CategoryId) : true),
-                            x => x.DataType, x => x.CivilWithoutLegCategory, x => x.tablesNames).ToList());
+                    DynamicAtt = _mapper.Map<List<DynamicAttViewModel>>(UnitOfWork.AllDynamicAttribute.Where(x =>
+                        x.Id > 0 && x.tablesNamesId == TableNameId && (CategoryId != null ? (x.CivilWithoutLegCategoryId == CategoryId) : true)).ToList());
                 }
 
                 int Count = DynamicAtt.Count();
@@ -8237,7 +8144,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(Id);
+                TLIdynamicAtt DynamicAtt = UnitOfWork.AllDynamicAttribute.FirstOrDefault(x => x.Id == Id);
                 return new Response<DynamicAttViewModel>(true, _mapper.Map<DynamicAttViewModel>(DynamicAtt), null, null, (int)Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -8251,8 +8158,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).AsQueryable().AsNoTracking()
-                    .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttViewModel.Id);
+                TLIdynamicAtt OldDynamicAttData = UnitOfWork.AllDynamicAttribute.AsQueryable().AsNoTracking()
+                    .FirstOrDefault(x => x.Id == DynamicAttViewModel.Id);
 
                 if (OldDynamicAttData.DataTypeId != DynamicAttViewModel.DataTypeId)
                 {
@@ -8439,6 +8346,14 @@ namespace TLIS_Service.Services
                 DynamicAtt.DefaultValue = OldDynamicAttData.DefaultValue;
 
                 await _unitOfWork.DynamicAttRepository.UpdateItem(DynamicAtt);
+
+                UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.DynamicAttId != null ?
+                    x.DynamicAttId == DynamicAtt.Id : false).DynamicAtt = DynamicAtt;
+
+                UnitOfWork.AllDynamicAttribute.Remove(UnitOfWork.AllDynamicAttribute
+                    .FirstOrDefault(x => x.Id == DynamicAtt.Id));
+                UnitOfWork.AllDynamicAttribute.Add(DynamicAtt);
+
                 await _unitOfWork.SaveChangesAsync();
 
                 return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
@@ -10873,6 +10788,12 @@ namespace TLIS_Service.Services
                 if (DynamicAtt.disable)
                     DynamicAtt.Required = false;
 
+                UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.DynamicAttId != null ?
+                    x.DynamicAttId == RecordId : false)
+                    .DynamicAtt = DynamicAtt;
+                UnitOfWork.AllDynamicAttribute.FirstOrDefault(x => x.Id == RecordId).disable = DynamicAtt.disable;
+                UnitOfWork.AllDynamicAttribute.FirstOrDefault(x => x.Id == RecordId).Required = DynamicAtt.Required;
+
                 _unitOfWork.SaveChanges();
                 return new Response<DynamicAttViewModel>();
             }
@@ -10888,6 +10809,11 @@ namespace TLIS_Service.Services
                 TLIdynamicAtt DynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttId);
 
                 DynamicAtt.Required = !(DynamicAtt.Required);
+
+                UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.DynamicAttId != null ?
+                    x.DynamicAttId == DynamicAttId : false).DynamicAtt = DynamicAtt;
+                UnitOfWork.AllDynamicAttribute.FirstOrDefault(x => x.Id == DynamicAttId)
+                    .Required = DynamicAtt.Required;
 
                 _unitOfWork.SaveChanges();
 

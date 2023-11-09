@@ -39,9 +39,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetCivilWithoutLegLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithoutLegLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetCivilWithoutLegLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters, bool? isRefresh)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters);
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters, isRefresh);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

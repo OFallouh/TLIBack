@@ -25,7 +25,7 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        public AttributeActivatedService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper) 
+        public AttributeActivatedService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
@@ -200,14 +200,14 @@ namespace TLIS_Service.Services
                 {
                     if (!string.IsNullOrEmpty(AttributeName))
                     {
-                        Attributes = _unitOfWork.AttributeActivatedRepository.GetWhere(x =>
+                        Attributes = UnitOfWork.AllAttributeActivated.Where(x =>
                             x.Key.ToLower().StartsWith(AttributeName.ToLower()) &&
                             x.Tabel.ToLower() == TableName.ToLower() &&
                             x.DataType != "List" && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted").Distinct().ToList();
                     }
                     else
                     {
-                        Attributes = _unitOfWork.AttributeActivatedRepository.GetWhere(x =>
+                        Attributes = UnitOfWork.AllAttributeActivated.Where(x =>
                             (x.Tabel.ToLower() == TableName.ToLower() &&
                              x.DataType != "List" && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted") ||
                             (x.Tabel.ToLower() == TableName.ToLower() && x.Key.ToLower() == "model")).Distinct().ToList();
@@ -222,11 +222,11 @@ namespace TLIS_Service.Services
                         isLibrary = true;
                     }
 
-                    AttrbiuteViewManagment = _unitOfWork.AttActivatedCategoryRepository.GetIncludeWhere(x =>
+                    AttrbiuteViewManagment = UnitOfWork.AllAttributeActivatedCategory.Where(x =>
                         (x.attributeActivatedId != null && x.civilWithoutLegCategoryId == CivilWithoutLegCategoryId &&
                          x.IsLibrary == isLibrary) ||
                         (x.attributeActivated.Key.ToLower() == "model" && x.civilWithoutLegCategoryId == CivilWithoutLegCategoryId &&
-                        x.IsLibrary == isLibrary), x => x.attributeActivated).ToList();
+                        x.IsLibrary == isLibrary)).ToList();
 
                     List<TLIattributeActivated> AttributeActivated = AttrbiuteViewManagment
                         .Select(x => x.attributeActivated).ToList();
@@ -567,7 +567,7 @@ namespace TLIS_Service.Services
                 var type = Culomn.PropertyType.Name;
                 //var DeclareType = Culomn.DeclaringType.BaseType;
                 //var DeclareType_1 = Culomn.PropertyType.;
-                
+
                 if (type == "Int32" || type == "String" || type == "Nullable`1" || type == "Boolean" || type == "Single" || type == "Double" || type == "DateTime")
                 {
                     TLIattributeActivated attributeActivated = new TLIattributeActivated();
@@ -584,7 +584,7 @@ namespace TLIS_Service.Services
                         attributeActivated.Label = Culomn.Name.ToString();
                         attributeActivated.Description = Culomn.Name.ToString();
                     }
-                    
+
                     var TableName = model.GetType().Name;
                     attributeActivated.Tabel = TableName;
                     if (Culomn.Name.ToString() == "Name")
@@ -658,12 +658,12 @@ namespace TLIS_Service.Services
                         }
                     }
                     _unitOfWork.AttributeActivatedRepository.Add(attributeActivated);
-                    
+
                     await _unitOfWork.SaveChangesAsync();
 
-                    if(TableName == "TLIcivilWithLegLibrary" || TableName == "TLIcivilWithoutLegLibrary")
+                    if (TableName == "TLIcivilWithLegLibrary" || TableName == "TLIcivilWithoutLegLibrary")
                     {
-                        TLIattActivatedCategory attActivatedCategory = new  TLIattActivatedCategory();
+                        TLIattActivatedCategory attActivatedCategory = new TLIattActivatedCategory();
                         attActivatedCategory.attributeActivatedId = attributeActivated.Id;
 
                         if (Culomn.Name.Contains("Id") && Culomn.Name != "Id")
@@ -689,8 +689,8 @@ namespace TLIS_Service.Services
             try
             {
                 TLIattributeActivated AttributeActivatedTest = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(x => x.Id == AttributeActivatedId);
-                
-                if(AttributeActivatedTest.Manage)
+
+                if (AttributeActivatedTest.Manage)
                     return new Response<AttributeActivatedViewModel>(true, null, null, $"{AttributeActivatedTest.Key} attribute is included in space calculation and can't be disabled", (int)Helpers.Constants.ApiReturnCode.fail);
 
                 if (CivilWithoutLegCategoryId == null)
@@ -715,7 +715,15 @@ namespace TLIS_Service.Services
                     EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
 
                     await _unitOfWork.AttributeActivatedRepository.UpdateItem(AttributeActivated);
-                    // AddHistoryForEditAttActivated(AttributeActivated.Id, "Update", testUpdate.Details.ToList());
+
+                    UnitOfWork.AllAttributeActivated.Remove(UnitOfWork.AllAttributeActivated
+                        .FirstOrDefault(x => x.Id == AttributeActivated.Id));
+                    UnitOfWork.AllAttributeActivated.Add(AttributeActivated);
+
+                    UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.AttributeActivatedId != null ?
+                        x.AttributeActivatedId == AttributeActivated.Id : false)
+                        .AttributeActivated = AttributeActivated;
+
                     await _unitOfWork.SaveChangesAsync();
                 }
                 else
@@ -732,7 +740,7 @@ namespace TLIS_Service.Services
                     TLIattActivatedCategory BeforeUpdate = _mapper.Map<TLIattActivatedCategory>(AttributeActivatedCategory);
 
                     AttributeActivatedCategory.enable = !(AttributeActivatedCategory.enable);
-                    if(AttributeActivatedCategory.enable == false)
+                    if (AttributeActivatedCategory.enable == false)
                     {
                         AttributeActivatedCategory.Required = false;
                     }
@@ -742,7 +750,11 @@ namespace TLIS_Service.Services
                     EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
 
                     await _unitOfWork.AttActivatedCategoryRepository.UpdateItem(AttributeActivatedCategory);
-                    // AddHistoryForEditAttActivated(AttributeActivated.Id, "Update", testUpdate.Details.ToList());
+
+                    UnitOfWork.AllAttributeActivatedCategory.Remove(UnitOfWork.AllAttributeActivatedCategory
+                        .FirstOrDefault(x => x.Id == AttributeActivatedCategory.Id));
+                    UnitOfWork.AllAttributeActivatedCategory.Add(AttributeActivatedCategory);
+
                     await _unitOfWork.SaveChangesAsync();
                 }
                 return new Response<AttributeActivatedViewModel>();
@@ -771,7 +783,14 @@ namespace TLIS_Service.Services
 
                     EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
                     await _unitOfWork.AttributeActivatedRepository.UpdateItem(AttributeActivated);
-                    // AddHistoryForEditAttActivated(AttributeActivated.Id, "Update", testUpdate.Details.ToList());
+
+                    UnitOfWork.AllAttributeActivated.Remove(UnitOfWork.AllAttributeActivated.FirstOrDefault(x => x.Id == AttributeActivated.Id));
+                    UnitOfWork.AllAttributeActivated.Add(AttributeActivated);
+
+                    UnitOfWork.AllAttributeViewManagment
+                        .FirstOrDefault(x => x.AttributeActivatedId != null ? x.AttributeActivatedId == AttributeActivated.Id : false)
+                        .AttributeActivated = AttributeActivated;
+
                     await _unitOfWork.SaveChangesAsync();
                 }
                 else
@@ -791,7 +810,11 @@ namespace TLIS_Service.Services
 
                     EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
                     await _unitOfWork.AttActivatedCategoryRepository.UpdateItem(AttributeActivatedCategory);
-                    // AddHistoryForEditAttActivated(AttributeActivated.Id, "Update", testUpdate.Details.ToList());
+
+                    UnitOfWork.AllAttributeActivatedCategory.Remove(UnitOfWork.AllAttributeActivatedCategory
+                        .FirstOrDefault(x => x.Id == AttributeActivatedCategory.Id));
+                    UnitOfWork.AllAttributeActivatedCategory.Add(AttributeActivatedCategory);
+
                     await _unitOfWork.SaveChangesAsync();
                 }
                 return new Response<AttributeActivatedViewModel>();
@@ -812,6 +835,14 @@ namespace TLIS_Service.Services
                     AttributeActivated.Label = editAttributeActivatedViewModel.Label;
                     AttributeActivated.Description = editAttributeActivatedViewModel.Description;
 
+                    UnitOfWork.AllAttributeActivated.Remove(UnitOfWork.AllAttributeActivated
+                        .FirstOrDefault(x => x.Id == AttributeActivated.Id));
+                    UnitOfWork.AllAttributeActivated.Add(AttributeActivated);
+
+                    UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.AttributeActivatedId != null ?
+                        x.AttributeActivatedId == AttributeActivated.Id : false)
+                        .AttributeActivated = AttributeActivated;
+
                     await _unitOfWork.AttributeActivatedRepository.UpdateItem(AttributeActivated);
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -824,6 +855,11 @@ namespace TLIS_Service.Services
                     AttributeActivatedCategory.Description = editAttributeActivatedViewModel.Description;
 
                     await _unitOfWork.AttActivatedCategoryRepository.UpdateItem(AttributeActivatedCategory);
+
+                    UnitOfWork.AllAttributeActivatedCategory.Remove(UnitOfWork.AllAttributeActivatedCategory
+                        .FirstOrDefault(x => x.Id == AttributeActivatedCategory.Id));
+                    UnitOfWork.AllAttributeActivatedCategory.Add(AttributeActivatedCategory);
+
                     await _unitOfWork.SaveChangesAsync();
                 }
                 return new Response<AttributeActivatedViewModel>();

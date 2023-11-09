@@ -56,7 +56,7 @@ namespace TLIS_Service.Services
         private ApplicationDbContext db;
         private IMapper _mapper;
         public ImportSiteDataService(IUnitOfWork unitOfWork, IServiceCollection services, IConfiguration Config, ApplicationDbContext _ApplicationDbContext,
-            IHostingEnvironment hostingEnvironment,IMapper mapper)
+            IHostingEnvironment hostingEnvironment, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
@@ -1159,14 +1159,16 @@ namespace TLIS_Service.Services
 
                                         _unitOfWork.CivilWithoutLegLibraryRepository.Add(NewMastEntity);
                                         _unitOfWork.SaveChanges();
+
+                                        MastTransaction.Complete();
+
+                                        CivilLibraryService._CivilWithoutLegLibraryEntities.Add(NewMastEntity);
                                     }
                                     else
                                     {
                                         MastTransaction.Complete();
                                         continue;
                                     }
-
-                                    MastTransaction.Complete();
                                 }
                                 catch (Exception err)
                                 {
@@ -3763,8 +3765,6 @@ namespace TLIS_Service.Services
                                         NewCivilWithLegsLibraryEntity.Active = true;
 
                                         _unitOfWork.CivilWithLegLibraryRepository.Add(NewCivilWithLegsLibraryEntity);
-                                        CivilLibraryService._CivilWithLegLibrary.Add(NewCivilWithLegsLibraryEntity);
-
                                         _unitOfWork.SaveChanges();
 
                                         string Supplier = CivilWithLegsDataTable.Rows[j]["Supplier"].ToString();
@@ -3774,6 +3774,8 @@ namespace TLIS_Service.Services
                                         }
 
                                         CivilWithLegsTransaction.Complete();
+
+                                        CivilLibraryService._CivilWithLegLibraryEntities.Add(NewCivilWithLegsLibraryEntity);
 
                                         // Dimensions / Bottom_ Top /  between legs
                                         // Diagonal member dimension (at base plate) (Installation)
@@ -21501,7 +21503,7 @@ namespace TLIS_Service.Services
 
                                     try
                                     {
-                                        
+
                                         //
                                         // Dynamic Attribute..
                                         //

@@ -21,7 +21,7 @@ using TLIS_Service.IService;
 
 namespace TLIS_Service.Services
 {
-    public class AttributeViewManagmentService: IAttributeViewManagmentService
+    public class AttributeViewManagmentService : IAttributeViewManagmentService
     {
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
@@ -342,8 +342,8 @@ namespace TLIS_Service.Services
                 int Count = 0;
                 TLIeditableManagmentView EditableManagmentViewData = _unitOfWork.EditableManagmentViewRepository
                     .GetWhereFirst(x => x.View == ViewName);
-                
-                if(EditableManagmentViewData == null)
+
+                if (EditableManagmentViewData == null)
                 {
                     return new Response<List<AttributeViewManagmentViewModel>>(true, null, null, $"This View: {ViewName} Doesn't Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -356,32 +356,28 @@ namespace TLIS_Service.Services
                 {
                     if (!string.IsNullOrEmpty(Search))
                     {
-                        AllEnableAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
+                        AllEnableAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(UnitOfWork.AllAttributeViewManagment
+                            .Where(x =>
                             (x.EditableManagmentViewId == EditableManagmentViewDataId) &&
                             (x.DynamicAttId != null ?
-                                (x.DynamicAtt.Key.ToLower().StartsWith(Search.ToLower()) && !x.DynamicAtt.disable)
-                                :
+                                (x.DynamicAtt.Key.ToLower().StartsWith(Search.ToLower()) && !x.DynamicAtt.disable) :
                                 (x.AttributeActivated.Key.ToLower().StartsWith(Search.ToLower()) && x.AttributeActivated.enable && !x.AttributeActivated.Key.Contains("Id")
-                                && x.AttributeActivated.Key.ToLower() != "active" && x.AttributeActivated.Key.ToLower() != "deleted"))
-
-                            , x => x.AttributeActivated, x => x.DynamicAtt).ToList());
+                                && x.AttributeActivated.Key.ToLower() != "active" && x.AttributeActivated.Key.ToLower() != "deleted"))).ToList());
                     }
                     else
                     {
-                        AllEnableAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                            x.EditableManagmentViewId == EditableManagmentViewDataId &&
-                            ((x.DynamicAttId != null) ? (!x.DynamicAtt.disable) : (x.AttributeActivated.enable && !x.AttributeActivated.Key.Contains("Id") && x.AttributeActivated.Key.ToLower() != "active" && x.AttributeActivated.Key.ToLower() != "deleted"))
-                            , x => x.AttributeActivated, x => x.DynamicAtt).ToList());
+                        AllEnableAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(UnitOfWork.AllAttributeViewManagment
+                            .Where(x => x.EditableManagmentViewId == EditableManagmentViewDataId &&
+                                ((x.DynamicAttId != null) ? (!x.DynamicAtt.disable) : (x.AttributeActivated.enable && !x.AttributeActivated.Key.Contains("Id") && x.AttributeActivated.Key.ToLower() != "active" && x.AttributeActivated.Key.ToLower() != "deleted"))).ToList());
                     }
                 }
                 else
                 {
                     if (string.IsNullOrEmpty(Search))
                     {
-                        List<AttributeViewManagmentViewModel> DynamicAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                            .GetIncludeWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
-                                (x.DynamicAttId != null ? x.DynamicAtt.CivilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId : false),
-                                x => x.DynamicAtt)
+                        List<AttributeViewManagmentViewModel> DynamicAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(UnitOfWork.AllAttributeViewManagment
+                            .Where(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
+                                (x.DynamicAttId != null ? x.DynamicAtt.CivilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId : false))
                             .ToList());
 
                         List<AttActivatedCategoryViewModel> StaticAttributesInCategory = new List<AttActivatedCategoryViewModel>();
@@ -389,41 +385,35 @@ namespace TLIS_Service.Services
                             ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegsLibraryMast.ToString().ToLower() ||
                             ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegsLibraryMonopole.ToString().ToLower())
                         {
-                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(_unitOfWork.AttActivatedCategoryRepository
-                                .GetIncludeWhere(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && x.IsLibrary && x.enable &&
-                                    !x.attributeActivated.Key.Contains("Id") && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted",
-                                        x => x.attributeActivated)
+                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(UnitOfWork.AllAttributeActivatedCategory
+                                .Where(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && x.IsLibrary && x.enable &&
+                                    !x.attributeActivated.Key.Contains("Id") && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted")
                                 .ToList());
                         }
                         else if (ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationCapsule.ToString().ToLower() ||
                                  ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMast.ToString().ToLower() ||
                                  ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMonopole.ToString().ToLower())
                         {
-                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(_unitOfWork.AttActivatedCategoryRepository
-                                .GetIncludeWhere(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && !x.IsLibrary && x.enable &&
-                                    !x.attributeActivated.Key.Contains("Id") && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted",
-                                        x => x.attributeActivated)
+                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(UnitOfWork.AllAttributeActivatedCategory
+                                .Where(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && !x.IsLibrary && x.enable &&
+                                    !x.attributeActivated.Key.Contains("Id") && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted")
                                 .ToList());
                         }
                         var temp = StaticAttributesInCategory.Select(x => x.attributeActivatedId).ToList();
-                        List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                            .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id && x.AttributeActivated != null && temp.Any(y => y == x.AttributeActivatedId)).ToList());
+                        List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(UnitOfWork.AllAttributeViewManagment
+                            .Where(x => x.EditableManagmentViewId == EditableManagmentViewData.Id && x.AttributeActivated != null && temp.Any(y => y == x.AttributeActivatedId)).ToList());
 
-                        //List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                        //    .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
-                        //        x.AttributeActivated != null && StaticAttributesInCategory.Exists(y => y.attributeActivatedId == x.AttributeActivatedId))
-                        //    .ToList());
 
                         StaticAttributesInView.AddRange(DynamicAttributes);
                         AllEnableAttributes = StaticAttributesInView;
                     }
                     else
                     {
-                        List<AttributeViewManagmentViewModel> DynamicAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                            .GetIncludeWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
-                                (x.DynamicAttId != null ? 
-                                    (x.DynamicAtt.CivilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && 
-                                     x.DynamicAtt.Key.ToLower().StartsWith(Search.ToLower())) : false), x => x.DynamicAtt)
+                        List<AttributeViewManagmentViewModel> DynamicAttributes = _mapper.Map<List<AttributeViewManagmentViewModel>>(UnitOfWork.AllAttributeViewManagment
+                            .Where(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
+                                (x.DynamicAttId != null ?
+                                    (x.DynamicAtt.CivilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId &&
+                                     x.DynamicAtt.Key.ToLower().StartsWith(Search.ToLower())) : false))
                             .ToList());
 
                         List<AttActivatedCategoryViewModel> StaticAttributesInCategory = new List<AttActivatedCategoryViewModel>();
@@ -431,26 +421,24 @@ namespace TLIS_Service.Services
                             ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegsLibraryMast.ToString().ToLower() ||
                             ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegsLibraryMonopole.ToString().ToLower())
                         {
-                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(_unitOfWork.AttActivatedCategoryRepository
-                                .GetIncludeWhere(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && x.IsLibrary && x.enable &&
+                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(UnitOfWork.AllAttributeActivatedCategory
+                                .Where(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && x.IsLibrary && x.enable &&
                                     !x.attributeActivated.Key.Contains("Id") && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted" &&
-                                     x.attributeActivated.Key.ToLower().StartsWith(Search.ToLower()),
-                                        x => x.attributeActivated)
+                                     x.attributeActivated.Key.ToLower().StartsWith(Search.ToLower()))
                                 .ToList());
                         }
                         else if (ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationCapsule.ToString().ToLower() ||
-                                 ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMast.ToString().ToLower() ||
-                                 ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMonopole.ToString().ToLower())
+                            ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMast.ToString().ToLower() ||
+                            ViewName.ToLower() == Helpers.Constants.EditableManamgmantViewNames.CivilWithoutLegInstallationMonopole.ToString().ToLower())
                         {
-                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(_unitOfWork.AttActivatedCategoryRepository
-                               .GetIncludeWhere(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && !x.IsLibrary && x.enable &&
+                            StaticAttributesInCategory = _mapper.Map<List<AttActivatedCategoryViewModel>>(UnitOfWork.AllAttributeActivatedCategory
+                               .Where(x => x.civilWithoutLegCategoryId == EditableManagmentViewData.CivilWithoutLegCategoryId && !x.IsLibrary && x.enable &&
                                    !x.attributeActivated.Key.Contains("Id") && x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted" &&
-                                    x.attributeActivated.Key.ToLower().StartsWith(Search.ToLower()),
-                                       x => x.attributeActivated)
+                                    x.attributeActivated.Key.ToLower().StartsWith(Search.ToLower()))
                                .ToList());
                         }
-                        List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(_unitOfWork.AttributeViewManagmentRepository
-                            .GetWhere(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
+                        List<AttributeViewManagmentViewModel> StaticAttributesInView = _mapper.Map<List<AttributeViewManagmentViewModel>>(UnitOfWork.AllAttributeViewManagment
+                            .Where(x => x.EditableManagmentViewId == EditableManagmentViewData.Id &&
                                 x.AttributeActivated != null && StaticAttributesInCategory.Select(y => y.attributeActivatedId).Contains(x.AttributeActivatedId))
                             .ToList());
 
@@ -485,7 +473,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                TLIattributeViewManagment AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository.GetWhereFirst(x => 
+                TLIattributeViewManagment AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository.GetWhereFirst(x =>
                     x.Id == AttributeViewManagmentId);
 
                 if (AttributeViewManagment == null)
@@ -493,20 +481,16 @@ namespace TLIS_Service.Services
                     return new Response<AttributeViewManagmentViewModel>(true, null, null, $"This Id: {AttributeViewManagmentId} is Not Exists",
                         (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                //if(AttributeViewManagment.AttributeActivatedId != null ? (
-                //    !AttributeViewManagment.AttributeActivated.Manage ? (
-                //        !AttributeViewManagment.AttributeActivated.Required || !AttributeViewManagment.AttributeActivated.enable) 
-                //    :(false))
-                //: (false))
-                //{
-                //    return new Response<AttributeViewManagmentViewModel>(true, null, null, "you can Not edit required or enable for attributes related to space calculation", (int)Helpers.Constants.ApiReturnCode.fail);
-                //}
+
                 AttributeViewManagment.Enable = !(AttributeViewManagment.Enable);
+
+                UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.Id == AttributeViewManagmentId)
+                    .Enable = AttributeViewManagment.Enable;
 
                 _unitOfWork.AttributeViewManagmentRepository.Update(AttributeViewManagment);
                 await _unitOfWork.SaveChangesAsync();
                 AttributeViewManagmentViewModel OutPutViewModel = _mapper.Map<AttributeViewManagmentViewModel>(AttributeViewManagment);
-                if(OutPutViewModel.DynamicAttId != null)
+                if (OutPutViewModel.DynamicAttId != null)
                 {
                     OutPutViewModel.Key = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == OutPutViewModel.DynamicAttId).Key;
                 }

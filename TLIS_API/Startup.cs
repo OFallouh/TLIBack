@@ -210,57 +210,235 @@ namespace TLIS_API
                 ApplicationDbContext _Context = Runcontext.RequestServices.GetService<ApplicationDbContext>();
                 IMapper _Mapper = Runcontext.RequestServices.GetService<IMapper>();
 
-                SiteService._MySites = _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
-                    .Include(x => x.siteStatus).ToList();
+                //
+                // Sites..
+                //
 
-                // Attribute View Management
-                // All Attributes(AttributeActivated + DynamicAttributes)
-                List<TLIattributeViewManagment> AllAttributesViewManagement = _Context.TLIattributeViewManagment
+                SiteService._MySites = await _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                    .Include(x => x.siteStatus).ToListAsync();
+
+                //
+                // General Lists..
+                //
+
+                UnitOfWork.AllAttributeViewManagment = await _Context.TLIattributeViewManagment
                     .Include(x => x.AttributeActivated)
-                    .Include(x => x.DynamicAtt).Include(x => x.DynamicAtt.DataType)
-                    .Include(x => x.DynamicAtt.CivilWithoutLegCategory).Include(x => x.DynamicAtt.tablesNames)
-                    .Include(x => x.EditableManagmentView).Include(x => x.EditableManagmentView.TLItablesNames1)
-                    .Where(x => x.Enable && (x.AttributeActivatedId != null ? x.AttributeActivated.enable : true) &&
-                        (x.DynamicAttId != null ? !x.DynamicAtt.disable : true)).ToList();
+                    .Include(x => x.DynamicAtt)
+                    .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
+                    .Include(x => x.DynamicAtt.DataType)
+                    .Include(x => x.DynamicAtt.tablesNames)
+                    .Include(x => x.EditableManagmentView)
+                    .Include(x => x.EditableManagmentView.TLItablesNames1)
+                    .ToListAsync();
 
-                List<TLIdynamicAttLibValue> AllDynamicAttribute_LibraryValue = _Context.TLIdynamicAttLibValue
-                    .Include(x => x.DynamicAtt).Where(x => !x.disable && !x.DynamicAtt.disable).Include(x => x.tablesNames).ToList();
+                UnitOfWork.AllAttributeActivated = await _Context.TLIattributeActivated.ToListAsync();
+                UnitOfWork.AllAttributeActivatedCategory = await _Context.TLIattActivatedCategory
+                    .Include(x => x.attributeActivated).Include(x => x.civilWithoutLegCategory).ToListAsync();
 
-                // CivilWithLegLibrary
-                CivilLibraryService._CivilWithLegLibrary = _Context.TLIcivilWithLegLibrary.Where(x => !x.Deleted && x.Id > 0)
-                    .Include(x => x.sectionsLegType).Include(x => x.civilSteelSupportCategory)
-                    .Include(x => x.structureType).Include(x => x.supportTypeDesigned).ToList();
+                UnitOfWork.AllDynamicAttribute = await _Context.TLIdynamicAtt
+                    .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
+                    .Include(x => x.tablesNames).ToListAsync();
 
-                List<TLIattributeViewManagment> CivilWithLegLibrary_AllAttributesViewManagement = AllAttributesViewManagement
-                    .Where(x => (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CivilWithLegsLibrary.ToString() &&
-                        (x.AttributeActivatedId != null ?
-                            (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString() && x.AttributeActivated.enable) :
-                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()))) ||
-                        (x.AttributeActivated != null ?
-                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
-                            x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()) : false)).ToList();
+                UnitOfWork.AllDynamicAttInstValue = await _Context.TLIdynamicAttInstValue
+                    .Include(x => x.DynamicAtt)
+                    .Include(x => x.sideArm)
+                    .Include(x => x.tablesNames)
+                    .Where(x => UnitOfWork.AllDynamicAttribute
+                        .Select(y => y.Id).Contains(x.DynamicAttId)).ToListAsync();
 
-                CivilLibraryService._CivilWithLegLibrary_AllAttributesViewManagement = CivilWithLegLibrary_AllAttributesViewManagement;
+                UnitOfWork.AllDynamicAttLibValue = await _Context.TLIdynamicAttLibValue
+                    .Include(x => x.DynamicAtt)
+                    .Include(x => x.tablesNames)
+                    .Where(x => UnitOfWork.AllDynamicAttribute
+                        .Select(y => y.Id).Contains(x.DynamicAttId)).ToListAsync();
 
-                List<TLIattributeActivated> CivilWithLegLibrary_AttributeActivated_All = CivilWithLegLibrary_AllAttributesViewManagement
-                    .Where(x => x.AttributeActivatedId != null ? x.AttributeActivated.Key.ToLower() != "deleted".ToLower() : false).Select(x => x.AttributeActivated).ToList();
-                CivilLibraryService._CivilWithLegLibrary_AttributeActivated_All = CivilWithLegLibrary_AttributeActivated_All;
-                CivilLibraryService._CivilWithLegLibrary_AttributeActivated_DateTime = CivilWithLegLibrary_AttributeActivated_All
-                    .Where(x => x.DataType.ToLower() == "DateTime".ToLower()).ToList();
-                CivilLibraryService._CivilWithLegLibrary_AttributeActivated_Not_DateTime = CivilWithLegLibrary_AttributeActivated_All
-                    .Where(x => x.DataType.ToLower() != "DateTime".ToLower()).ToList();
+                //
+                // Civil With Leg Library..
+                //
 
-                List<TLIdynamicAtt> CivilWithLegLibrary_DynamicAttributes_All = CivilWithLegLibrary_AllAttributesViewManagement
-                    .Where(x => x.DynamicAttId != null).Select(x => x.DynamicAtt).ToList();
+                CivilLibraryService._CivilWithLegLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    x.Enable && x.AttributeActivatedId != null &&
+                    x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                    x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CivilWithLegsLibrary.ToString() &&
+                    x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString())
+                .Select(x => x.AttributeActivated).ToList();
 
-                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_All = CivilWithLegLibrary_DynamicAttributes_All;
-                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_DateTime = CivilWithLegLibrary_DynamicAttributes_All
-                    .Where(x => x.DataType.Name.ToLower() == "DateTime".ToLower()).ToList();
-                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_Not_DateTime = CivilWithLegLibrary_DynamicAttributes_All
-                    .Where(x => x.DataType.Name.ToLower() != "DateTime".ToLower()).ToList();
+                CivilLibraryService._CivilWithLegLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()).ToList();
 
-                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_LibraryValue = AllDynamicAttribute_LibraryValue
-                    .Where(x => CivilWithLegLibrary_DynamicAttributes_All.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
+                CivilLibraryService._CivilWithLegLibraryEntities = await _Context.TLIcivilWithLegLibrary
+                    .Include(x => x.civilSteelSupportCategory)
+                    .Include(x => x.sectionsLegType)
+                    .Include(x => x.structureType)
+                    .Include(x => x.supportTypeDesigned)
+                    .Where(x => !x.Deleted).ToListAsync();
+
+                CivilLibraryService._CivilWithLegLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CivilWithLegsLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString()) : false)).ToList();
+
+                //
+                // Civil NON Steel Library..
+                //
+
+                CivilLibraryService._CivilNonSteelLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CivilNonSteelLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
+
+                CivilLibraryService._CivilNonSteelLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString()).ToList();
+
+                CivilLibraryService._CivilNonSteelLibraryEntities = await _Context.TLIcivilNonSteelLibrary
+                    .Include(x => x.civilNonSteelType).Where(x => !x.Deleted).ToListAsync();
+
+                CivilLibraryService._CivilNonSteelLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CivilNonSteelLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString()) : false)).ToList();
+
+                //
+                // Civil Without Leg Library..
+                //
+
+                CivilLibraryService._CivilWithoutLegLibraryAttributeActivatedCategory = await _Context.TLIattActivatedCategory
+                    .Include(x => x.attributeActivated).ToListAsync();
+
+                CivilLibraryService._CivilWithoutLegLibraryAttributeViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    x.Enable && x.AttributeActivatedId != null &&
+                    x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString()).ToList();
+
+                CivilLibraryService._CivilWithoutLegLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString()).ToList();
+
+                CivilLibraryService._CivilWithoutLegLibraryEntities = await _Context.TLIcivilWithoutLegLibrary
+                    .Where(x => !x.Deleted)
+                    .Include(x => x.CivilSteelSupportCategory)
+                    .Include(x => x.CivilWithoutLegCategory)
+                    .Include(x => x.InstallationCivilwithoutLegsType)
+                    .Include(x => x.structureType).ToListAsync();
+
+                //
+                // Cabinet Power Library..
+                //
+
+                OtherInventoryLibraryService._CabinetPowerLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CabinetPowerLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
+
+                OtherInventoryLibraryService._CabinetPowerLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x => 
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Constants.TablesNames.TLIcabinetPowerLibrary.ToString()).ToList();
+
+                OtherInventoryLibraryService._CabinetPowerLibraryEntities = await _Context.TLIcabinetPowerLibrary
+                    .Where(x => !x.Deleted)
+                    .Include(x => x.CabinetPowerType).ToListAsync();
+
+                OtherInventoryLibraryService._CabinetPowerLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CabinetPowerLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && 
+                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString()) : false)).ToList();
+
+                //
+                // Cabinet Telecom Library..
+                //
+
+                OtherInventoryLibraryService._CabinetTelecomLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CabinetTelecomLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
+
+                OtherInventoryLibraryService._CabinetTelecomLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Constants.TablesNames.TLIcabinetTelecomLibrary.ToString()).ToList();
+
+                OtherInventoryLibraryService._CabinetTelecomLibraryEntities = await _Context.TLIcabinetTelecomLibrary
+                    .Where(x => !x.Deleted)
+                    .Include(x => x.TelecomType).ToListAsync();
+
+                OtherInventoryLibraryService._CabinetTelecomLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.CabinetTelecomLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && 
+                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString()) : false)).ToList();
+
+                //
+                // Solar Library..
+                //
+
+                OtherInventoryLibraryService._SolarLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    x.Enable && x.AttributeActivatedId != null &&
+                    x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                    x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.SolarLibrary.ToString() &&
+                    x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString())
+                .Select(x => x.AttributeActivated).ToList();
+
+                OtherInventoryLibraryService._SolarLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Constants.TablesNames.TLIsolarLibrary.ToString()).ToList();
+
+                OtherInventoryLibraryService._SolarLibraryEntities = await _Context.TLIsolarLibrary
+                    .Where(x => !x.Deleted)
+                    .Include(x => x.Capacity).ToListAsync();
+
+                OtherInventoryLibraryService._SolarLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.SolarLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString()) : false)).ToList();
+
+                //
+                // Generator Library..
+                //
+
+                OtherInventoryLibraryService._GeneratorLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    x.Enable && x.AttributeActivatedId != null &&
+                    x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                    x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.GeneratorLibrary.ToString() &&
+                    x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString())
+                .Select(x => x.AttributeActivated).ToList();
+
+                OtherInventoryLibraryService._GeneratorLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    x.LibraryAtt && !x.disable &&
+                    x.tablesNames.TableName == Constants.TablesNames.TLIgeneratorLibrary.ToString()).ToList();
+
+                OtherInventoryLibraryService._GeneratorLibraryEntities = await _Context.TLIgeneratorLibrary
+                    .Where(x => !x.Deleted)
+                    .Include(x => x.Capacity).ToListAsync();
+
+                OtherInventoryLibraryService._GeneratorLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Constants.EditableManamgmantViewNames.GeneratorLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString()) : false)).ToList();
 
                 await next();
             });

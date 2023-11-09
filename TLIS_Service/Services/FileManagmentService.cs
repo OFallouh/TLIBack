@@ -347,7 +347,7 @@ namespace TLIS_Service.Services
                         //int TableNameId = _unitOfWork.TablesNamesRepository.GetWhere(x => x.TableName == TableName).Select(x => x.Id).FirstOrDefault();
                         //get dynamic attributes depened on table name Id
                         List<string> DynamicAtts = _unitOfWork.DynamicAttRepository.GetWhereAndSelect(x =>
-                            x.tablesNamesId == TableNameEntity.Id && x.CivilWithoutLegCategoryId==CategoryId && !x.disable, x => x.Key).ToList();
+                            x.tablesNamesId == TableNameEntity.Id && x.CivilWithoutLegCategoryId == CategoryId && !x.disable, x => x.Key).ToList();
                         List<string> RelatedAtt = new List<string>();
                         string Related = "";
                         foreach (var item in RelatedTables)
@@ -356,7 +356,7 @@ namespace TLIS_Service.Services
                             RelatedAtt.Add(Related);
                         }
                         var StaticAttribute = ActivatedAtts.Union(RelatedAtt);
-                        using ( ExcelPackage package = new ExcelPackage(existingFile))
+                        using (ExcelPackage package = new ExcelPackage(existingFile))
                         {
                             //Get the first sheet in excel file
                             ExcelWorksheet sheet = package.Workbook.Worksheets[0];
@@ -1724,10 +1724,10 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIcivilWithLegLibrary> InsertedivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                    List<TLIcivilWithLegLibrary> InsertedCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
                         .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
 
-                    CivilLibraryService._CivilWithLegLibrary.AddRange(InsertedivilWithLegLibrary);
+                    CivilLibraryService._CivilWithLegLibraryEntities.AddRange(InsertedCivilWithLegLibrary);
 
                     //loop on each dynamic attribute
                     foreach (var DynamicAtt in DynamicAtts)
@@ -1890,14 +1890,14 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
-
-                CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_LibraryValue = _unitOfWork.DynamicAttLibRepository
-                    .GetIncludeWhere(x => !x.disable && !x.DynamicAtt.disable &&
-                        CivilLibraryService._CivilWithLegLibrary_DynamicAttributes_All.Select(y => y.Id).Contains(x.DynamicAttId),
-                            x => x.DynamicAtt, x => x.tablesNames).ToList();
             }
             catch (Exception err)
             {
@@ -2485,6 +2485,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIcivilWithoutLegLibrary> InsertedCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    CivilLibraryService._CivilWithoutLegLibraryEntities.AddRange(InsertedCivilWithoutLegLibrary);
+
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -2642,6 +2648,11 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -3017,6 +3028,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIcivilNonSteelLibrary> InsertedCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    CivilLibraryService._CivilNonSteelLibraryEntities.AddRange(InsertedCivilNonSteelLibrary);
+
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -3174,6 +3191,11 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -9408,6 +9430,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIcabinetPowerLibrary> InsertedCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    OtherInventoryLibraryService._CabinetPowerLibraryEntities.AddRange(InsertedCabinetPowerLibrary);
+
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -9565,6 +9593,11 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -9959,6 +9992,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIcabinetTelecomLibrary> InsertedCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    OtherInventoryLibraryService._CabinetTelecomLibraryEntities.AddRange(InsertedCabinetTelecomLibrary);
+
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -10116,6 +10155,11 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -10493,6 +10537,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIgeneratorLibrary> InsertedGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    OtherInventoryLibraryService._GeneratorLibraryEntities.AddRange(InsertedGeneratorLibrary);
+
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -10650,6 +10700,11 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -11073,6 +11128,12 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    List<TLIsolarLibrary> InsertedSolarLibrary = _unitOfWork.SolarLibraryRepository
+                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
+
+                    OtherInventoryLibraryService._SolarLibraryEntities.AddRange(InsertedSolarLibrary);
+
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -11230,6 +11291,11 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(tablesNamesId);
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
+
+                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
+                            .OrderByDescending(x => x.Id).FirstOrDefault();
+
+                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }

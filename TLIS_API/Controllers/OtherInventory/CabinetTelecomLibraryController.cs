@@ -36,9 +36,9 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("GetCabinetTelecomLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCabinetTelecomLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetCabinetTelecomLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetTelecomLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetTelecomLibraryEnabledAtt(CombineFilters, WithFilterData, parameters, isRefresh);
             return Ok(response);
         }
         [HttpGet("GetCabinetTelecomLibraryById/{id}")]
