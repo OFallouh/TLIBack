@@ -3362,7 +3362,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_CivilWithoutLegLibraryAttributeViewManagement == null || (isRefresh != null ? isRefresh.Value : false))
+                if (_CivilWithoutLegLibraryAttributeViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -3370,6 +3371,20 @@ namespace TLIS_Service.Services
                             .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
                                 x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
                                 x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttribute == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                            .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
+                                x => x.tablesNames).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
+                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
+                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
                     }
 
                     _CivilWithLegLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
@@ -3865,7 +3880,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_CivilWithoutLegLibraryAttributeViewManagement == null || (isRefresh != null ? isRefresh.Value : false))
+                if (_CivilWithoutLegLibraryAttributeViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -3873,6 +3889,20 @@ namespace TLIS_Service.Services
                             .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
                                 x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
                                 x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttribute == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                            .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
+                                x => x.tablesNames).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
+                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
+                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
                     }
 
                     _CivilWithoutLegLibraryAttributeActivatedCategory = _unitOfWork.AttActivatedCategoryRepository
@@ -4421,7 +4451,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_CivilNonSteelLibraryAllAttributesViewManagement == null || (isRefresh != null ? isRefresh.Value : false))
+                if (_CivilNonSteelLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -4429,6 +4460,20 @@ namespace TLIS_Service.Services
                             .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
                                 x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
                                 x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttribute == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                            .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
+                                x => x.tablesNames).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
+                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
+                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
                     }
 
                     _CivilNonSteelLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
