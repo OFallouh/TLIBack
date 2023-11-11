@@ -778,6 +778,8 @@ namespace TLIS_Service.Services
                                 {
                                     string SideArmModel = SideArmDataTable.Rows[j]["SIDE_ARM_SPECS_TYPE"].ToString();
 
+                                    TLIsideArmLibrary NewSideArmLibraryEntity = new TLIsideArmLibrary();
+
                                     if (!string.IsNullOrEmpty(SideArmModel))
                                     {
                                         TLIsideArmLibrary CheckSideArmModelIfExist = _unitOfWork.SideArmLibraryRepository
@@ -803,8 +805,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLIsideArmLibrary NewSideArmLibraryEntity = new TLIsideArmLibrary();
 
                                         NewSideArmLibraryEntity.Model = SideArmDataTable.Rows[j]["SIDE_ARM_SPECS_TYPE"].ToString();
                                         NewSideArmLibraryEntity.Note = SideArmDataTable.Rows[j]["NOTE"].ToString();
@@ -920,6 +920,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     SideArmTransaction.Complete();
+
+                                    SideArmLibraryService._SideArmLibraryEntities.Add(NewSideArmLibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -1258,6 +1260,8 @@ namespace TLIS_Service.Services
                                 {
                                     string MW_ODUModel = MW_ODUDataTable.Rows[j]["Name1"].ToString();
 
+                                    TLImwODULibrary NewMWODULibraryEntity = new TLImwODULibrary();
+
                                     if (!string.IsNullOrEmpty(MW_ODUModel))
                                     {
                                         TLImwODULibrary CheckMW_ODUModelIfExist = _unitOfWork.MW_ODULibraryRepository
@@ -1283,8 +1287,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLImwODULibrary NewMWODULibraryEntity = new TLImwODULibrary();
 
                                         NewMWODULibraryEntity.Model = MW_ODUDataTable.Rows[j]["Name1"].ToString();
 
@@ -1560,6 +1562,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     MW_ODUTransaction.Complete();
+
+                                    MWLibraryService._MW_ODULibraryEntities.Add(NewMWODULibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -1649,6 +1653,8 @@ namespace TLIS_Service.Services
                                 {
                                     string RadioAntennaModel = RadioAntennaDataTable.Rows[j]["antenna_model"].ToString();
 
+                                    TLIradioAntennaLibrary NewRadioAntennaLibraryEntity = new TLIradioAntennaLibrary();
+
                                     if (!string.IsNullOrEmpty(RadioAntennaModel))
                                     {
                                         TLIradioAntennaLibrary radioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository
@@ -1674,8 +1680,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLIradioAntennaLibrary NewRadioAntennaLibraryEntity = new TLIradioAntennaLibrary();
 
                                         NewRadioAntennaLibraryEntity.Model = RadioAntennaModel;
                                         NewRadioAntennaLibraryEntity.FrequencyBand = RadioAntennaDataTable.Rows[j]["frequencyband"].ToString();
@@ -1891,6 +1895,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     RadioAntennaTransaction.Complete();
+
+                                    RadioLibraryService._RadioAntennaLibraryEntities.Add(NewRadioAntennaLibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -1980,6 +1986,8 @@ namespace TLIS_Service.Services
                                 {
                                     string RadioRRUModel = RadioRRUDataTable.Rows[j]["Name1"].ToString();
 
+                                    TLIradioRRULibrary NewRadioRRULibraryEntity = new TLIradioRRULibrary();
+
                                     if (!string.IsNullOrEmpty(RadioRRUModel))
                                     {
                                         TLIradioRRULibrary CheckRadioRRUModelIfExist = _unitOfWork.RadioRRULibraryRepository
@@ -2005,8 +2013,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLIradioRRULibrary NewRadioRRULibraryEntity = new TLIradioRRULibrary();
 
                                         NewRadioRRULibraryEntity.Model = RadioRRUModel;
                                         NewRadioRRULibraryEntity.Type = RadioRRUDataTable.Rows[j]["Type1"].ToString();
@@ -2217,6 +2223,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     RadioRRUTransaction.Complete();
+
+                                    RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -2306,6 +2314,8 @@ namespace TLIS_Service.Services
                                 {
                                     string MW_RFULibraryModel = $"NA/{DateTime.Now} + // {j}";
 
+                                    TLImwRFULibrary NewMW_RFULibraryEntity = new TLImwRFULibrary();
+
                                     TLImwRFULibrary CheckMW_RFULibraryModelIfExist = _unitOfWork.MW_RFULibraryRepository
                                         .GetWhereFirst(x => x.Model.ToLower() == MW_RFULibraryModel.ToLower() && !x.Deleted);
 
@@ -2329,8 +2339,6 @@ namespace TLIS_Service.Services
 
                                         continue;
                                     }
-
-                                    TLImwRFULibrary NewMW_RFULibraryEntity = new TLImwRFULibrary();
 
                                     NewMW_RFULibraryEntity.Model = MW_RFULibraryModel;
                                     NewMW_RFULibraryEntity.tx_parity = MW_RFUDataTable.Rows[j]["Parity"].ToString();
@@ -2452,6 +2460,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     MW_RFUTransaction.Complete();
+
+                                    MWLibraryService._MW_RFULibraryEntities.Add(NewMW_RFULibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -2543,6 +2553,8 @@ namespace TLIS_Service.Services
                                 {
                                     string MW_BULibraryModel = MW_BUDataTable.Rows[j]["Name1"].ToString();
 
+                                    TLImwBULibrary MWBULibrary = new TLImwBULibrary();
+
                                     if (!string.IsNullOrEmpty(MW_BULibraryModel))
                                     {
                                         TLImwBULibrary CheckMW_BULibraryModelIfExist = _unitOfWork.MW_BULibraryRepository
@@ -2568,8 +2580,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLImwBULibrary MWBULibrary = new TLImwBULibrary();
 
                                         MWBULibrary.Model = MW_BULibraryModel;
                                         MWBULibrary.Type = MW_BUDataTable.Rows[j]["BU Type"].ToString();
@@ -2841,6 +2851,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     MW_BUTransaction.Complete();
+
+                                    MWLibraryService._MW_BULibraryEntities.Add(MWBULibrary);
                                 }
                                 catch (Exception err)
                                 {
@@ -2927,6 +2939,8 @@ namespace TLIS_Service.Services
                                 {
                                     string MW_DishLibraryModel = MW_DishDataTable.Rows[j]["MODEL"].ToString();
 
+                                    TLImwDishLibrary NewMWDishLibraryEntity = new TLImwDishLibrary();
+
                                     if (!string.IsNullOrEmpty(MW_DishLibraryModel))
                                     {
                                         TLImwDishLibrary CheckMW_DishLibraryModelIfExist = _unitOfWork.MW_DishLibraryRepository
@@ -2952,8 +2966,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLImwDishLibrary NewMWDishLibraryEntity = new TLImwDishLibrary();
 
                                         NewMWDishLibraryEntity.Model = MW_DishLibraryModel;
                                         NewMWDishLibraryEntity.frequency_band = MW_DishDataTable.Rows[j]["FREQUENCY"].ToString();
@@ -3171,6 +3183,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     MW_BUTransaction.Complete();
+
+                                    MWLibraryService._MW_DishLibraryEntities.Add(NewMWDishLibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -3507,8 +3521,11 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                             }
                                         }
+
+                                        PowerTransaction.Complete();
+
+                                        PowerLibraryService._PowerLibraryEntities.Add(NewPowerLibraryEntity);
                                     }
-                                    PowerTransaction.Complete();
                                 }
                                 catch (Exception err)
                                 {
@@ -3591,6 +3608,9 @@ namespace TLIS_Service.Services
                                 try
                                 {
                                     string CivilWithLegsModel = CivilWithLegsDataTable.Rows[j]["Tower Type"].ToString();
+
+                                    TLIcivilWithLegLibrary NewCivilWithLegsLibraryEntity = new TLIcivilWithLegLibrary();
+
                                     if (!string.IsNullOrEmpty(CivilWithLegsModel))
                                     {
                                         TLIcivilWithLegLibrary CheckSideArmModelIfExist = _unitOfWork.CivilWithLegLibraryRepository
@@ -3616,8 +3636,6 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-
-                                        TLIcivilWithLegLibrary NewCivilWithLegsLibraryEntity = new TLIcivilWithLegLibrary();
 
                                         NewCivilWithLegsLibraryEntity.Model = CivilWithLegsModel;
 

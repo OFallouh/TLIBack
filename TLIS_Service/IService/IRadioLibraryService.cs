@@ -24,8 +24,8 @@ namespace TLIS_Service.IService
         Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id);
         Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id);
         Response<AllItemAttributes> GetForAdd(string TableName);
-        Response<ReturnWithFilters<object>> GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);
-        Response<ReturnWithFilters<object>> GetRadioRRULibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);
-        Response<ReturnWithFilters<object>> GetRadioOtherLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);
+        Response<ReturnWithFilters<object>> GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh);
+        Response<ReturnWithFilters<object>> GetRadioRRULibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh);
+        Response<ReturnWithFilters<object>> GetRadioOtherLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh);
     }
 }

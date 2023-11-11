@@ -449,6 +449,9 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SaveCivilWithLegLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+
+                                _unitOfWork.SaveChanges();
+
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -457,6 +460,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIcivilWithLegLibrary> InsertedCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    CivilLibraryService._CivilWithLegLibraryEntities.AddRange(InsertedCivilWithLegLibrary);
                                 }
                             }
                             else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
@@ -480,6 +494,9 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SaveCivilWithoutLegLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+
+                                _unitOfWork.SaveChanges();
+
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -488,6 +505,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIcivilWithoutLegLibrary> InsertedCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    CivilLibraryService._CivilWithoutLegLibraryEntities.AddRange(InsertedCivilWithoutLegLibrary);
                                 }
                             }
                             else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
@@ -511,6 +539,9 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SaveCivilNonSteelLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+                                
+                                _unitOfWork.SaveChanges();
+
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -519,6 +550,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIcivilNonSteelLibrary> InsertedCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    CivilLibraryService._CivilNonSteelLibraryEntities.AddRange(InsertedCivilNonSteelLibrary);
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString() == TableName)
@@ -551,6 +593,17 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIloadOtherLibrary> InsertedLoadOtherLibrary = _unitOfWork.LoadOtherLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    LoadOtherLibraryService._LoadOtherLibraryEntities.AddRange(InsertedLoadOtherLibrary);
+                                }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == TableName)
                             {
@@ -581,6 +634,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLImwBULibrary> InsertedMW_BULibrary = _unitOfWork.MW_BULibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    MWLibraryService._MW_BULibraryEntities.AddRange(InsertedMW_BULibrary);
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == TableName)
@@ -613,6 +677,17 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLImwDishLibrary> InsertedMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    MWLibraryService._MW_DishLibraryEntities.AddRange(InsertedMW_DishLibrary);
+                                }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == TableName)
                             {
@@ -643,6 +718,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLImwODULibrary> InsertedMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    MWLibraryService._MW_ODULibraryEntities.AddRange(InsertedMW_ODULibrary);
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString() == TableName)
@@ -675,6 +761,17 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLImwOtherLibrary> InsertedMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    MWLibraryService._MW_OtherLibraryEntities.AddRange(InsertedMW_OtherLibrary);
+                                }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == TableName)
                             {
@@ -705,6 +802,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLImwRFULibrary> InsertedMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    MWLibraryService._MW_RFULibraryEntities.AddRange(InsertedMW_RFULibrary);
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString() == TableName)
@@ -737,6 +845,17 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIpowerLibrary> InsertedPowerLibrary = _unitOfWork.PowerLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    PowerLibraryService._PowerLibraryEntities.AddRange(InsertedPowerLibrary);
+                                }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                             {
@@ -767,6 +886,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIradioAntennaLibrary> InsertedRadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    RadioLibraryService._RadioAntennaLibraryEntities.AddRange(InsertedRadioAntennaLibrary);
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
@@ -799,6 +929,17 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIradioOtherLibrary> InsertedRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    RadioLibraryService._RadioOtherLibraryEntities.AddRange(InsertedRadioOtherLibrary);
+                                }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                             {
@@ -830,6 +971,17 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIradioRRULibrary> InsertedRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    RadioLibraryService._RadioRRULibraryEntities.AddRange(InsertedRadioRRULibrary);
+                                }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
                             {
@@ -852,6 +1004,9 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SavecabinetPowerLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+
+                                _unitOfWork.SaveChanges();
+
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -860,6 +1015,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIcabinetPowerLibrary> InsertedCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    OtherInventoryLibraryService._CabinetPowerLibraryEntities.AddRange(InsertedCabinetPowerLibrary);
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
@@ -883,6 +1049,9 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SavecabinetTelecomLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+
+                                _unitOfWork.SaveChanges();
+
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -891,6 +1060,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIcabinetTelecomLibrary> InsertedCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    OtherInventoryLibraryService._CabinetTelecomLibraryEntities.AddRange(InsertedCabinetTelecomLibrary);
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
@@ -914,6 +1094,10 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SavegeneratorLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+
+                                _unitOfWork.SaveChanges();
+
+                                
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -922,6 +1106,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIgeneratorLibrary> InsertedGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    OtherInventoryLibraryService._GeneratorLibraryEntities.AddRange(InsertedGeneratorLibrary);
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
@@ -945,6 +1140,9 @@ namespace TLIS_Service.Services
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
                                 SavesolarLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+
+                                _unitOfWork.SaveChanges();
+                                
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -953,6 +1151,17 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
+                                }
+
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIsolarLibrary> InsertedSolarLibrary = _unitOfWork.SolarLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    OtherInventoryLibraryService._SolarLibraryEntities.AddRange(InsertedSolarLibrary);
                                 }
                             }
                             else if (Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString() == TableName)
@@ -985,19 +1194,23 @@ namespace TLIS_Service.Services
                                 {
                                     SaveLogisticalItemUsingOracleBulkCopy(RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameId, connection);
                                 }
-                            }
 
-                            File.Delete(FilePath);
-                            if (UnsavedRows == null || UnsavedRows.Count == 0)
-                            {
-                                tran.Commit();
+                                File.Delete(FilePath);
+                                if (UnsavedRows == null || UnsavedRows.Count == 0)
+                                {
+                                    tran.Commit();
+
+                                    List<TLIsideArmLibrary> InsertedSideArmLibrary = _unitOfWork.SideArmLibraryRepository
+                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+
+                                    SideArmLibraryService._SideArmLibraryEntities.AddRange(InsertedSideArmLibrary);
+                                }
                             }
                         }
 
                         if (UnsavedRows != null && UnsavedRows.Count != 0)
                         {
                             return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
-
                         }
                         return new Response<List<KeyValuePair<int, string>>>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
@@ -1007,12 +1220,8 @@ namespace TLIS_Service.Services
                         tran.Dispose();
                         return new Response<List<KeyValuePair<int, string>>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-
                 }
-
-
             }
-
         }
         private List<KeyValuePair<string, List<DropDownListFilters>>> GetTableNameRelatedTables(string TableName)
         {
@@ -1724,16 +1933,11 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIcivilWithLegLibrary> InsertedCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    CivilLibraryService._CivilWithLegLibraryEntities.AddRange(InsertedCivilWithLegLibrary);
 
                     //loop on each dynamic attribute
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
-                        List<int> IntValues = new List<int>();
                         List<double> DoubleValues = new List<double>();
                         List<DateTime> DateTimeValues = new List<DateTime>();
                         List<Int32> BooleanValues = new List<Int32>();
@@ -1759,7 +1963,7 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        else if (DynamicAtt.Item2 == "double")
+                        if (DynamicAtt.Item2 == "double")
                         {
                             for (int k = 0; k < DynamicAtt.Item3.Count; k++)
                             {
@@ -1775,9 +1979,7 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-
-
-                        else if (DynamicAtt.Item2 == "datetime")
+                        if (DynamicAtt.Item2 == "datetime")
                         {
                             for (int k = 0; k < DynamicAtt.Item3.Count; k++)
                             {
@@ -1793,7 +1995,7 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        else if (DynamicAtt.Item2 == "boolean")
+                        if (DynamicAtt.Item2 == "boolean")
                         {
                             for (int k = 0; k < DynamicAtt.Item3.Count; k++)
                             {
@@ -1891,10 +2093,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
 
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -2358,7 +2557,7 @@ namespace TLIS_Service.Services
                             }
                         }
                         models.Add(model_test != null ? model_test : "NA");
-                        notes.Add(note_test != null ? model_test : "NA");
+                        notes.Add(note_test != null ? note_test : "NA");
                         HeightsDesigned.Add(heightdesigned_test != 0 ? heightdesigned_test : 0);
                         maxloads.Add(maxloadm2_test != 0 ? maxloadm2_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
@@ -2486,10 +2685,6 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIcivilWithoutLegLibrary> InsertedCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    CivilLibraryService._CivilWithoutLegLibraryEntities.AddRange(InsertedCivilWithoutLegLibrary);
 
                     foreach (var DynamicAtt in DynamicAtts)
                     {
@@ -2649,10 +2844,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
 
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -3029,11 +3221,7 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIcivilNonSteelLibrary> InsertedCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    CivilLibraryService._CivilNonSteelLibraryEntities.AddRange(InsertedCivilNonSteelLibrary);
-
+                    
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -3192,10 +3380,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
-
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
+                        
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -9431,11 +9616,6 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIcabinetPowerLibrary> InsertedCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    OtherInventoryLibraryService._CabinetPowerLibraryEntities.AddRange(InsertedCabinetPowerLibrary);
-
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -9594,10 +9774,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
-
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
+                        
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -9993,11 +10170,7 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIcabinetTelecomLibrary> InsertedCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    OtherInventoryLibraryService._CabinetTelecomLibraryEntities.AddRange(InsertedCabinetTelecomLibrary);
-
+                    
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -10156,10 +10329,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
-
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
+                        
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -10538,11 +10708,7 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIgeneratorLibrary> InsertedGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    OtherInventoryLibraryService._GeneratorLibraryEntities.AddRange(InsertedGeneratorLibrary);
-
+                    
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -10701,10 +10867,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
-
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
+                        
                     }
                     RecordId.AddRange(InsertedIds);
                 }
@@ -11129,11 +11292,7 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    List<TLIsolarLibrary> InsertedSolarLibrary = _unitOfWork.SolarLibraryRepository
-                        .GetWhere(x => InsertedIds.Contains(x.Id)).ToList();
-
-                    OtherInventoryLibraryService._SolarLibraryEntities.AddRange(InsertedSolarLibrary);
-
+                    
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         List<string> StringValues = new List<string>();
@@ -11292,10 +11451,7 @@ namespace TLIS_Service.Services
                         dalvcmd.Parameters.Add(value);
                         dalvcmd.ExecuteNonQuery();
 
-                        TLIdynamicAttLibValue DynamicAttLibValueForAdd = _unitOfWork.DynamicAttLibRepository.GetAllWithoutCount()
-                            .OrderByDescending(x => x.Id).FirstOrDefault();
-
-                        UnitOfWork.AllDynamicAttLibValue.Add(DynamicAttLibValueForAdd);
+                        
                     }
                     RecordId.AddRange(InsertedIds);
                 }

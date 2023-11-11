@@ -19,8 +19,6 @@ namespace TLIS_Repository.Base
         public static List<TLIattActivatedCategory> AllAttributeActivatedCategory;
         public static List<TLIdynamicAtt> AllDynamicAttribute;
         public static List<TLIattributeViewManagment> AllAttributeViewManagment;
-        public static List<TLIdynamicAttInstValue> AllDynamicAttInstValue;
-        public static List<TLIdynamicAttLibValue> AllDynamicAttLibValue;
         readonly ApplicationDbContext _context;
         private IConfiguration iConfig;
 

@@ -37,9 +37,9 @@ namespace TLIS_API.Controllers.Load
         }
         [HttpPost("GetPowerLibrariesWithEnableAttributes")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetPowerLibrariesWithEnableAttributes([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination)
+        public IActionResult GetPowerLibrariesWithEnableAttributes([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination, bool? isRefresh)
         {
-            var response = _unitOfWorkService.PowerLibraryService.GetPowerLibrariesWithEnableAttributes(CombineFilters, parameterPagination);
+            var response = _unitOfWorkService.PowerLibraryService.GetPowerLibrariesWithEnableAttributes(CombineFilters, parameterPagination, isRefresh);
             return Ok(response);
         }
         [HttpPost("GetForAdd")]

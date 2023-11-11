@@ -36,9 +36,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetLoadOtherLibrariesWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<object>))]
-        public IActionResult GetLoadOtherLibrariesWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetLoadOtherLibrariesWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, bool? isRefresh)
         {
-            var response = _unitOfWorkService.LoadOtherLibraryService.GetLoadOtherLibrariesWithEnableAtt(CombineFilters, parameterPagination);
+            var response = _unitOfWorkService.LoadOtherLibraryService.GetLoadOtherLibrariesWithEnableAtt(CombineFilters, parameterPagination, isRefresh);
             return Ok(response);
         }
         [HttpGet("GetLoadOtherLibraryById/{Id}")]

@@ -19,6 +19,6 @@ namespace TLIS_Service.IService
         Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id);
         Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id);
         Response<AllItemAttributes> GetForAdd();
-        Response<ReturnWithFilters<object>> GetLoadOtherLibrariesWithEnableAtt(CombineFilters CombineFilters, ParameterPagination parameterPagination);
+        Response<ReturnWithFilters<object>> GetLoadOtherLibrariesWithEnableAtt(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh);
     }
 }
