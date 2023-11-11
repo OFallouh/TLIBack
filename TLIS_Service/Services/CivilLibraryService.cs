@@ -3233,8 +3233,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CivilWithLegLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CivilWithLegLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewCivilWithLegLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CivilWithLegLibraryEntities.Remove(_CivilWithLegLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == CivilType)
                     {
@@ -3247,8 +3248,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CivilWithoutLegLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CivilWithoutLegLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewCivilWithoutLegLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CivilWithoutLegLibraryEntities.Remove(_CivilWithoutLegLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == CivilType)
                     {
@@ -3261,11 +3263,11 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CivilNonSteelLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CivilNonSteelLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewCivilNonSteelLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CivilNonSteelLibraryEntities.Remove(_CivilNonSteelLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
 
-                    transaction.Complete();
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)

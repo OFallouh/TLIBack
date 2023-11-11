@@ -534,8 +534,7 @@ namespace TLIS_Service.Services
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
                 await _unitOfWork.SaveChangesAsync();
 
-                _SideArmLibraryEntities.FirstOrDefault(x => x.Id == id).Deleted = true;
-                _SideArmLibraryEntities.FirstOrDefault(x => x.Id == id).Model = NewSideWithArm.Model;
+                _SideArmLibraryEntities.Remove(_SideArmLibraryEntities.FirstOrDefault(x => x.Id == id));
 
                 return new Response<SideArmLibraryViewModel>();
             }

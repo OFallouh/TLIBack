@@ -453,14 +453,11 @@ namespace TLIS_Service.Services
                     _unitOfWork.LoadOtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, LoadOtherEntity, NewLoadOtherEntity);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
-
-                    _LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                    _LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewLoadOtherEntity.Model;
+                    _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
                 {
-
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                 }
             }

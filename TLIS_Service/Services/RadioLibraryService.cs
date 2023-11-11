@@ -3724,8 +3724,7 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _RadioAntennaLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _RadioAntennaLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = RadioAntennaEntity.Model;
+                        _RadioAntennaLibraryEntities.Remove(_RadioAntennaLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                     {
@@ -3740,8 +3739,7 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _RadioOtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _RadioOtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewRadioOtherLibrary.Model;
+                        _RadioOtherLibraryEntities.Remove(_RadioOtherLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                     {
@@ -3756,14 +3754,12 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _RadioRRULibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _RadioRRULibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewRadioRRULibrary.Model;
+                        _RadioRRULibraryEntities.Remove(_RadioRRULibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
                 {
-
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }

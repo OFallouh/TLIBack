@@ -2963,8 +2963,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NeweCabinetPowerLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CabinetPowerLibraryEntities.Remove(_CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
                     {
@@ -2977,8 +2978,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewCabinetTelecomLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CabinetTelecomLibraryEntities.Remove(_CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
                     {
@@ -2992,8 +2994,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _GeneratorLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _GeneratorLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewGeneratorLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _GeneratorLibraryEntities.Remove(_GeneratorLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
                     {
@@ -3006,15 +3009,14 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _SolarLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _SolarLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewSolarLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _SolarLibraryEntities.Remove(_SolarLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
-                    transaction.Complete();
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
                 {
-
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                 }
             }

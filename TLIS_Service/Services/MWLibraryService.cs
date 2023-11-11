@@ -6207,10 +6207,7 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _MW_BULibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _MW_BULibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewMW_BULibrary.Model;
-
-                        //AddHistory(MW_BULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), TablesNames.TLImwBULibrary.ToString());
+                        _MW_BULibraryEntities.Remove(_MW_BULibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                     {
@@ -6225,8 +6222,7 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _MW_DishLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _MW_DishLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewMW_DishLibrary.Model;
+                        _MW_DishLibraryEntities.Remove(_MW_DishLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                     {
@@ -6241,8 +6237,7 @@ namespace TLIS_Service.Services
                         
                         transaction.Complete();
 
-                        _MW_ODULibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _MW_ODULibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewMW_ODULibrary.Model;
+                        _MW_ODULibraryEntities.Remove(_MW_ODULibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                     {
@@ -6257,8 +6252,7 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _MW_RFULibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _MW_RFULibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewMW_RFULibrary.Model;
+                        _MW_RFULibraryEntities.Remove(_MW_RFULibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                     {
@@ -6273,14 +6267,12 @@ namespace TLIS_Service.Services
 
                         transaction.Complete();
 
-                        _MW_OtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _MW_OtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewMW_OtherLibrary.Model;
+                        _MW_OtherLibraryEntities.Remove(_MW_OtherLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
                 {
-
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }

@@ -1680,15 +1680,12 @@ namespace TLIS_Service.Services
                 _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                 await _unitOfWork.SaveChangesAsync();
 
-                _PowerLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                _PowerLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewPowerLibrary.Model;
+                _PowerLibraryEntities.Remove(_PowerLibraryEntities.FirstOrDefault(x => x.Id == Id));
 
-                //_unitOfWork.TablesHistoryRepository.AddHistory(PowerEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIpowerLibrary.ToString());
                 return new Response<AllItemAttributes>();
             }
             catch (Exception err)
             {
-
                 return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
