@@ -493,7 +493,7 @@ namespace TLIS_Service.Services
                                 }
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
-                                SaveCivilWithoutLegLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+                                SaveCivilWithoutLegLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection, CategoryId);
 
                                 _unitOfWork.SaveChanges();
 
@@ -2239,18 +2239,19 @@ namespace TLIS_Service.Services
             }
 
         }
-        private void SaveCivilWithoutLegLibraryUsingOracleBulkCopy(out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SaveCivilWithoutLegLibraryUsingOracleBulkCopy(out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection, int? CategoryId)
         {
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _unitOfWork.CivilWithoutLegLibraryRepository.GetSelect(x => x.Model).ToList();
+                List<string> Models = _unitOfWork.CivilWithoutLegLibraryRepository
+                    .GetWhere(x => x.CivilWithoutLegCategoryId == CategoryId && !x.Deleted).Select(x => x.Model).ToList();
 
                 TLIcivilWithoutLegLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilWithoutLegLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
 
                 List<TLIdynamicAtt> CivilWithoutLegLibraryDynamicAtts = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                    x.tablesNamesId == TableNameEntity.Id && !x.disable, x => x.DataType).ToList();
+                    x.tablesNamesId == TableNameEntity.Id && !x.disable && x.CivilWithoutLegCategoryId == CategoryId, x => x.DataType).ToList();
 
                 List<string> models = new List<string>();
                 List<string> notes = new List<string>();
@@ -2273,7 +2274,7 @@ namespace TLIS_Service.Services
                     for (int i = ActColumns; i <= Columns; i++)
                     {
                         ColName = sheet.Cells[1, i].Value.ToString();
-                        DA = CivilWithoutLegLibraryDynamicAtts.FirstOrDefault(x => x.Key == ColName);
+                        DA = CivilWithoutLegLibraryDynamicAtts.FirstOrDefault(x => x.Key.ToLower() == ColName.ToLower());
                         if (DA != null)
                             DynamicAtts.Add(new Tuple<int, string, List<dynamic>>(DA.Id, DA.DataType.Name.ToLower(), new List<dynamic>()));
                     }
@@ -2395,18 +2396,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        int? CivilWithoutLegCategoryId_test = 0;
-                        if (dt.Columns.Contains("CivilWithoutLegCategoryId"))
-                        {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["CivilWithoutLegCategoryId"].ToString()))
-                            {
-                                DropDownListFilters CivilWithoutLegCategory = RelatedTables.FirstOrDefault(x =>
-                                    x.Key == "CivilWithoutLegCategoryId").Value.FirstOrDefault(x =>
-                                        x.Value == dt.Rows[j]["CivilWithoutLegCategoryId"].ToString());
-                                if (CivilWithoutLegCategory != null)
-                                    CivilWithoutLegCategoryId_test = Convert.ToInt32(CivilWithoutLegCategory.Id);
-                            }
-                        }
+                        int? CivilWithoutLegCategoryId_test = CategoryId;
 
                         float HeightBase_test = 0;
                         if (dt.Columns.Contains("HeightBase"))
