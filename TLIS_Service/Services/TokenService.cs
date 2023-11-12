@@ -131,6 +131,15 @@ namespace TLIS_Service.Services
                     UserPrincipal principal = new UserPrincipal(context);
 
                     string UserWithouDomain = login.Wedcto;
+                    var usernotfound = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == login.Wedcto);
+                    if(usernotfound == null)
+                    {
+                        return response = new Response<string>(false, null, null, $"This User Is Not Found In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                    }
+                    else if(usernotfound!=null && usernotfound.Active==false)
+                    {
+                        return response = new Response<string>(false, null, null, $"This Account Is Blocked In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                    }
                     if (IsPasswordValid(login.Wedcto, login.beresd) == true)
                     {
 
@@ -151,9 +160,17 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    else if (Trycount == 3)
+                    {
+                        User.Active = false;
+                        _unitOfWork.UserRepository.Update(User);
+                        _unitOfWork.SaveChanges();
+                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+ 
+                    }
                     else
                     {
-                      return  response = new Response<string>(false, null, null, $"This account is blocked or not found + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                      return  response = new Response<string>(false, null, null, "This account is blocked on Active Directory", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                 }
             }
@@ -175,11 +192,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
-                    else
-                    {
-                        return response = new Response<string>(false, null, null, "Your Password Is Not Correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
-                    }
-
+                  
                 }
                 if (User.ChangedPasswordDate != null)
                 {
