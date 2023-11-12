@@ -232,6 +232,11 @@ namespace TLIS_Service.Services
                         principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
                         if (principal != null && principal.IsMemberOf(group))
                         {
+                            if (principal.Name.Replace($" {principal.Surname}", "")==null|| principal.Surname==null||
+                               principal.EmailAddress==null|| principal.SamAccountName==null)
+                            {
+                                return new Response<UserViewModel>(true, null, null, "This user information is insufficient in Active Directory", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
                             TLIuser user = new TLIuser();
                             user.FirstName = principal.Name.Replace($" {principal.Surname}", "");
                             user.MiddleName = principal.MiddleName;
@@ -242,7 +247,7 @@ namespace TLIS_Service.Services
                             var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName && !x.Deleted);
                             if (tliuser != null)
                             {
-                                return new Response<UserViewModel>(true, null, null, $"This User {UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                             user.Domain = null;
                             user.AdGUID = principal.Guid.ToString();
