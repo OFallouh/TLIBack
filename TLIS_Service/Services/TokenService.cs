@@ -192,7 +192,11 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
-                  
+                    else
+                    {
+                        return response = new Response<string>(false, null, null, "Your Password Is Not Correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                    }
+
                 }
                 if (User.ChangedPasswordDate != null)
                 {
