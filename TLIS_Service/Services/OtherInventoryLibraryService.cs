@@ -43,25 +43,25 @@ namespace TLIS_Service.Services
         private IMapper _mapper;
 
         // Cabinet Power..
-        public static List<TLIattributeActivated> _CabinetPowerLibraryAttributeActivatedCategory;
+        public static List<TLIattributeActivated> _CabinetPowerLibraryAttributeActivated;
         public static List<TLIdynamicAtt> _CabinetPowerLibraryDynamicAttributes;
         public static List<TLIcabinetPowerLibrary> _CabinetPowerLibraryEntities;
         public static List<TLIattributeViewManagment> _CabinetPowerLibraryAllAttributesViewManagement;
 
         // Cabinet Power..
-        public static List<TLIattributeActivated> _CabinetTelecomLibraryAttributeActivatedCategory;
+        public static List<TLIattributeActivated> _CabinetTelecomLibraryAttributeActivated;
         public static List<TLIdynamicAtt> _CabinetTelecomLibraryDynamicAttributes;
         public static List<TLIcabinetTelecomLibrary> _CabinetTelecomLibraryEntities;
         public static List<TLIattributeViewManagment> _CabinetTelecomLibraryAllAttributesViewManagement;
 
         // Solar..
-        public static List<TLIattributeActivated> _SolarLibraryAttributeActivatedCategory;
+        public static List<TLIattributeActivated> _SolarLibraryAttributeActivated;
         public static List<TLIdynamicAtt> _SolarLibraryDynamicAttributes;
         public static List<TLIsolarLibrary> _SolarLibraryEntities;
         public static List<TLIattributeViewManagment> _SolarLibraryAllAttributesViewManagement;
 
         // Generator..
-        public static List<TLIattributeActivated> _GeneratorLibraryAttributeActivatedCategory;
+        public static List<TLIattributeActivated> _GeneratorLibraryAttributeActivated;
         public static List<TLIdynamicAtt> _GeneratorLibraryDynamicAttributes;
         public static List<TLIgeneratorLibrary> _GeneratorLibraryEntities;
         public static List<TLIattributeViewManagment> _GeneratorLibraryAllAttributesViewManagement;
@@ -431,12 +431,6 @@ namespace TLIS_Service.Services
                                     if (cabinetPowerLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(cabinetPowerLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, cabinetPowerLibrary.Id);
-
-                                        List<TLIdynamicAttLibValue> NewDynamicAttLibValues = _unitOfWork.DynamicAttLibRepository
-                                            .GetAllWithoutCount().OrderByDescending(x => x.Id)
-                                            .Take(cabinetPowerLibraryViewModel.TLIdynamicAttLibValue.Count).ToList();
-
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(NewDynamicAttLibValues);
                                     }
                                     //AddHistory(cabinetPowerLibrary.Id, "Add", "TLIcabinetPowerLibrary");
                                 }
@@ -488,12 +482,6 @@ namespace TLIS_Service.Services
                                     if (cabinetTelecomLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(cabinetTelecomLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, cabinetTelecomLibrary.Id);
-
-                                        List<TLIdynamicAttLibValue> NewDynamicAttLibValues = _unitOfWork.DynamicAttLibRepository
-                                            .GetAllWithoutCount().OrderByDescending(x => x.Id)
-                                            .Take(cabinetTelecomLibraryViewModel.TLIdynamicAttLibValue.Count).ToList();
-
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(NewDynamicAttLibValues);
                                     }
                                 }
                                 else
@@ -538,12 +526,6 @@ namespace TLIS_Service.Services
                                     if (generatorLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(generatorLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, generatorLibrary.Id);
-
-                                        List<TLIdynamicAttLibValue> NewDynamicAttLibValues = _unitOfWork.DynamicAttLibRepository
-                                            .GetAllWithoutCount().OrderByDescending(x => x.Id)
-                                            .Take(generatorLibraryViewModel.TLIdynamicAttLibValue.Count).ToList();
-
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(NewDynamicAttLibValues);
                                     }
                                 }
                                 else
@@ -588,12 +570,6 @@ namespace TLIS_Service.Services
                                     if (solarLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(solarLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, solarLibrary.Id);
-
-                                        List<TLIdynamicAttLibValue> NewDynamicAttLibValues = _unitOfWork.DynamicAttLibRepository
-                                            .GetAllWithoutCount().OrderByDescending(x => x.Id)
-                                            .Take(solarLibraryViewModel.TLIdynamicAttLibValue.Count).ToList();
-
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(NewDynamicAttLibValues);
                                     }
                                 }
                                 else
@@ -1528,13 +1504,6 @@ namespace TLIS_Service.Services
 
                         _CabinetPowerLibraryEntities.Remove(_CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == CabinetPowerLibraryEntity.Id));
                         _CabinetPowerLibraryEntities.Add(CabinetPowerLibraryEntity);
-
-                        List<TLIdynamicAttLibValue> DynamicAttLibValuesListForAdd = _unitOfWork.DynamicAttLibRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == CabinetPowerLibraryViewModel.Id && CabinetPowerLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
-
-                        UnitOfWork.AllDynamicAttLibValue.RemoveAll(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == CabinetPowerLibraryViewModel.Id && CabinetPowerLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId));
-                        UnitOfWork.AllDynamicAttLibValue.AddRange(DynamicAttLibValuesListForAdd);
                     }
                     else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1640,13 +1609,6 @@ namespace TLIS_Service.Services
 
                         _CabinetTelecomLibraryEntities.Remove(_CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == CabinetTelecomLibraryEntity.Id));
                         _CabinetTelecomLibraryEntities.Add(CabinetTelecomLibraryEntity);
-
-                        List<TLIdynamicAttLibValue> DynamicAttLibValuesListForAdd = _unitOfWork.DynamicAttLibRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == CabinetTelecomLibraryViewModel.Id && CabinetTelecomLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
-
-                        UnitOfWork.AllDynamicAttLibValue.RemoveAll(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == CabinetTelecomLibraryViewModel.Id && CabinetTelecomLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId));
-                        UnitOfWork.AllDynamicAttLibValue.AddRange(DynamicAttLibValuesListForAdd);
                     }
                     else if (OtherInventoryType.TLIgeneratorLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1743,13 +1705,6 @@ namespace TLIS_Service.Services
 
                         _GeneratorLibraryEntities.Remove(_GeneratorLibraryEntities.FirstOrDefault(x => x.Id == GeneratorLibraryEntity.Id));
                         _GeneratorLibraryEntities.Add(GeneratorLibraryEntity);
-
-                        List<TLIdynamicAttLibValue> DynamicAttLibValuesListForAdd = _unitOfWork.DynamicAttLibRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == GeneratorLibraryViewModel.Id && GeneratorLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
-
-                        UnitOfWork.AllDynamicAttLibValue.RemoveAll(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == GeneratorLibraryViewModel.Id && GeneratorLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId));
-                        UnitOfWork.AllDynamicAttLibValue.AddRange(DynamicAttLibValuesListForAdd);
                     }
                     else if (OtherInventoryType.TLIsolarLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1850,13 +1805,6 @@ namespace TLIS_Service.Services
 
                         _SolarLibraryEntities.Remove(_SolarLibraryEntities.FirstOrDefault(x => x.Id == SolarLibraryEntity.Id));
                         _SolarLibraryEntities.Add(SolarLibraryEntity);
-
-                        List<TLIdynamicAttLibValue> DynamicAttLibValuesListForAdd = _unitOfWork.DynamicAttLibRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == SolarLibraryViewModel.Id && SolarLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId)).ToList();
-
-                        UnitOfWork.AllDynamicAttLibValue.RemoveAll(x => x.tablesNamesId == TableNameEntity.Id &&
-                            x.InventoryId == SolarLibraryViewModel.Id && SolarLibraryViewModel.DynamicAtts.Select(y => y.Id).Contains(x.DynamicAttId));
-                        UnitOfWork.AllDynamicAttLibValue.AddRange(DynamicAttLibValuesListForAdd);
                     }
                     transaction.Complete();
                     return new Response<AllItemAttributes>();
@@ -3015,8 +2963,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NeweCabinetPowerLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CabinetPowerLibraryEntities.Remove(_CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
                     {
@@ -3029,8 +2978,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewCabinetTelecomLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _CabinetTelecomLibraryEntities.Remove(_CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
                     {
@@ -3044,8 +2994,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _GeneratorLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _GeneratorLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewGeneratorLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _GeneratorLibraryEntities.Remove(_GeneratorLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
                     else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
                     {
@@ -3058,15 +3009,14 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
 
-                        _SolarLibraryEntities.FirstOrDefault(x => x.Id == Id).Deleted = true;
-                        _SolarLibraryEntities.FirstOrDefault(x => x.Id == Id).Model = NewSolarLibrary.Model + "_" + DateTime.Now.ToString();
+                        transaction.Complete();
+
+                        _SolarLibraryEntities.Remove(_SolarLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     }
-                    transaction.Complete();
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
                 {
-
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                 }
             }
@@ -3083,7 +3033,7 @@ namespace TLIS_Service.Services
                 
                 DynamicLibValueListIds = new List<int>();
 
-                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = UnitOfWork.AllDynamicAttLibValue.Where(x =>
+                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetWhere(x =>
                     LibDynamicAttListIds.Select(y => y.Id).Contains(x.DynamicAttId) && !x.disable).ToList();
 
                 List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -3121,7 +3071,7 @@ namespace TLIS_Service.Services
             try
             {
                 if (_CabinetPowerLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
-                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -3138,14 +3088,7 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
-                    {
-                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
-                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
-                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
-                    }
-
-                    _CabinetPowerLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    _CabinetPowerLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
                         x.Enable && x.AttributeActivatedId != null &&
                         x.AttributeActivated.DataType.ToLower() != "datetime" &&
                         x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.CabinetPowerLibrary.ToString() &&
@@ -3185,7 +3128,7 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    CabinetPowerLibraryAttribute = _CabinetPowerLibraryAttributeActivatedCategory;
+                    CabinetPowerLibraryAttribute = _CabinetPowerLibraryAttributeActivated;
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -3356,7 +3299,7 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = UnitOfWork.AllDynamicAttLibValue.Where(x =>
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetWhere(x =>
                             DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId)).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -3528,11 +3471,11 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == CabinetPowerLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -3593,11 +3536,11 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == CabinetPowerLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -3637,7 +3580,7 @@ namespace TLIS_Service.Services
             try
             {
                 if (_CabinetPowerLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
-                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -3654,14 +3597,7 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
-                    {
-                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
-                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
-                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
-                    }
-
-                    _CabinetTelecomLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    _CabinetTelecomLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
                         x.Enable && x.AttributeActivatedId != null &&
                         x.AttributeActivated.DataType.ToLower() != "datetime" &&
                         x.EditableManagmentView.View == EditableManamgmantViewNames.CabinetTelecomLibrary.ToString() &&
@@ -3701,7 +3637,7 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    CabinetTelecomLibraryAttribute = _CabinetTelecomLibraryAttributeActivatedCategory;
+                    CabinetTelecomLibraryAttribute = _CabinetTelecomLibraryAttributeActivated;
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -3870,7 +3806,7 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = UnitOfWork.AllDynamicAttLibValue.Where(x =>
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetWhere(x =>
                             DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -4042,11 +3978,11 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == CabinetTelecomLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4107,11 +4043,11 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == CabinetTelecomLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4151,7 +4087,7 @@ namespace TLIS_Service.Services
             try
             {
                 if(_CabinetPowerLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
-                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -4168,14 +4104,7 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
-                    {
-                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
-                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
-                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
-                    }
-
-                    _SolarLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    _SolarLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
                         x.Enable && x.AttributeActivatedId != null &&
                         x.AttributeActivated.DataType.ToLower() != "datetime" &&
                         x.EditableManagmentView.View == EditableManamgmantViewNames.SolarLibrary.ToString() &&
@@ -4214,7 +4143,7 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    SolarLibraryAttribute = _SolarLibraryAttributeActivatedCategory;
+                    SolarLibraryAttribute = _SolarLibraryAttributeActivated;
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -4383,7 +4312,7 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = UnitOfWork.AllDynamicAttLibValue.Where(x =>
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetWhere(x =>
                             DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -4555,11 +4484,11 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == SolarLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4620,11 +4549,11 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == SolarLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4664,7 +4593,7 @@ namespace TLIS_Service.Services
             try
             {
                 if (_CabinetPowerLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
-                    UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
+                    (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
@@ -4681,14 +4610,7 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    if (UnitOfWork.AllDynamicAttLibValue == null || (isRefresh != null ? isRefresh.Value : false))
-                    {
-                        UnitOfWork.AllDynamicAttLibValue = _unitOfWork.DynamicAttLibRepository
-                            .GetIncludeWhere(x => UnitOfWork.AllDynamicAttribute
-                                .Select(y => y.Id).Contains(x.DynamicAttId), x => x.DynamicAtt, x => x.tablesNames).ToList();
-                    }
-
-                    _GeneratorLibraryAttributeActivatedCategory = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    _GeneratorLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
                         x.Enable && x.AttributeActivatedId != null &&
                         x.AttributeActivated.DataType.ToLower() != "datetime" &&
                         x.EditableManagmentView.View == EditableManamgmantViewNames.GeneratorLibrary.ToString() &&
@@ -4727,7 +4649,7 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    GeneratorLibraryAttribute = _GeneratorLibraryAttributeActivatedCategory;
+                    GeneratorLibraryAttribute = _GeneratorLibraryAttributeActivated;
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -4896,7 +4818,7 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = UnitOfWork.AllDynamicAttLibValue.Where(x =>
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetWhere(x =>
                             DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -5068,11 +4990,11 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == GeneratorLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -5133,11 +5055,11 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = UnitOfWork.AllDynamicAttLibValue.FirstOrDefault(x =>
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
                             x.DynamicAttId == LibraryDynamicAtt.Id &&
                             x.InventoryId == GeneratorLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt, x => x.tablesNames);
 
                         if (DynamicAttLibValue != null)
                         {

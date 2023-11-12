@@ -38,6 +38,12 @@ namespace TLIS_Service.Services
         private readonly IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
+
+        public static List<TLIattributeActivated> _LoadOtherLibraryAttributeActivated;
+        public static List<TLIdynamicAtt> _LoadOtherLibraryDynamicAttributes;
+        public static List<TLIloadOtherLibrary> _LoadOtherLibraryEntities;
+        public static List<TLIattributeViewManagment> _LoadOtherLibraryAllAttributesViewManagement;
+
         public LoadOtherLibraryService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -111,14 +117,17 @@ namespace TLIS_Service.Services
                                 {
                                     _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(LoadOtherLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, loadOtherLibrary.Id);
                                 }
-                                //    AddHistory(loadOtherLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLIloadOtherLibrary");
+                                
+                                transaction.Complete();
+                                tran.Commit();
+
+                                _LoadOtherLibraryEntities.Add(loadOtherLibrary);
                             }
                             else
                             {
                                 return new Response<AllItemAttributes>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                             }
-                            transaction.Complete();
-                            tran.Commit();
+                            
                             return new Response<AllItemAttributes>();
                         }
                         catch (Exception err)
@@ -435,21 +444,20 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    //   var TableNameEntity = _unitOfWork.TablesNamesRepository.GetAllAsQueryable().Where(l => l.TableName == Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString()).FirstOrDefault();
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString());
                     var LoadOtherEntity = _unitOfWork.LoadOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                     var NewLoadOtherEntity = _unitOfWork.LoadOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                     NewLoadOtherEntity.Deleted = true;
+                    NewLoadOtherEntity.Model = NewLoadOtherEntity.Model + "_" + DateTime.Now.ToString();
                     _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                     _unitOfWork.LoadOtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, LoadOtherEntity, NewLoadOtherEntity);
                     await _unitOfWork.SaveChangesAsync();
-                    //AddHistory(LoadOtherEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString());
                     transaction.Complete();
+                    _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == Id));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
                 {
-
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                 }
             }
@@ -469,6 +477,9 @@ namespace TLIS_Service.Services
                     _unitOfWork.LoadOtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, LoadOtherLibraryEntity, NewLoadOtherLibraryEntity);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
+
+                    _LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == Id).Active = NewLoadOtherLibraryEntity.Active;
+
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -597,6 +608,10 @@ namespace TLIS_Service.Services
                     }
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
+
+                    _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == LoadOtherLibrary.Id));
+                    _LoadOtherLibraryEntities.Add(LoadOtherLibrary);
+
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -1163,10 +1178,52 @@ namespace TLIS_Service.Services
             }
         }
         #endregion
-        public Response<ReturnWithFilters<object>> GetLoadOtherLibrariesWithEnableAtt(CombineFilters CombineFilters, ParameterPagination parameterPagination)
+        public Response<ReturnWithFilters<object>> GetLoadOtherLibrariesWithEnableAtt(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
             try
             {
+                if (_LoadOtherLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                    (isRefresh != null ? isRefresh.Value : false))
+                {
+                    if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllAttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                            .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
+                                x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
+                                x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                    }
+
+                    if (UnitOfWork.AllDynamicAttribute == null || (isRefresh != null ? isRefresh.Value : false))
+                    {
+                        UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                            .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
+                                x => x.tablesNames).ToList();
+                    }
+
+                    _LoadOtherLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == EditableManamgmantViewNames.OtherLoadLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == TablesNames.TLIloadOtherLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
+
+                    _LoadOtherLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == TablesNames.TLIloadOtherLibrary.ToString()).ToList();
+
+                    _LoadOtherLibraryEntities = _unitOfWork.LoadOtherLibraryRepository
+                        .GetWhere(x => !x.Deleted).ToList();
+
+                    _LoadOtherLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                       (x.Enable && x.EditableManagmentView.View == EditableManamgmantViewNames.OtherLoadLibrary.ToString() &&
+                       (x.AttributeActivatedId != null ?
+                            (x.AttributeActivated.Tabel == TablesNames.TLIloadOtherLibrary.ToString() && x.AttributeActivated.enable) :
+                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == TablesNames.TLIloadOtherLibrary.ToString()))) ||
+                        (x.AttributeActivated != null ?
+                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
+                            x.AttributeActivated.Tabel == TablesNames.TLIloadOtherLibrary.ToString()) : false)).ToList();
+                }
+
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
                 List<DateFilterViewModel> DateFilter = CombineFilters.DateFilter;
                 int Count = 0;
@@ -1183,13 +1240,7 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    OtherLoadLibraryAttribute = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
-                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.OtherLoadLibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(),
-                            x => x.AttributeActivated, x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1)
-                    .Select(x => x.AttributeActivated).ToList();
+                    OtherLoadLibraryAttribute = _LoadOtherLibraryAttributeActivated;
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -1224,11 +1275,8 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString()
-                            , x => x.tablesNames, x => x.DataType).ToList();
+                    List<TLIdynamicAtt> LibDynamicAttListIds = _LoadOtherLibraryDynamicAttributes.Where(x =>
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1264,14 +1312,7 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower()) ||
                             StringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //LibraryAttributeActivatedIds = _unitOfWork.LoadOtherLibraryRepository.GetWhere(x =>
-                        //     LibraryPropsAttributeFilters.All(z =>
-                        //        NonStringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null) != null ? z.value.Contains(y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null).ToString().ToLower()) : false)) ||
-                        //        StringLibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && (z.value.Any(w =>
-                        //             y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null) != null ? y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null).ToString().ToLower().StartsWith(w.ToLower()) : false))))
-                        // ).Select(i => i.Id).ToList();
-
-                        IEnumerable<TLIloadOtherLibrary> Libraries = _unitOfWork.LoadOtherLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIloadOtherLibrary> Libraries = _LoadOtherLibraryEntities.AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1307,8 +1348,8 @@ namespace TLIS_Service.Services
                         IntersectLibraryIds = DynamicLibValueListIds;
                     }
 
-                    WithoutDateFilterLoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_unitOfWork.LoadOtherLibraryRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted).ToList());
+                    WithoutDateFilterLoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_LoadOtherLibraryEntities.Where(x =>
+                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id)).ToList());
                 }
 
                 //
@@ -1354,10 +1395,8 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _LoadOtherLibraryDynamicAttributes.Where(x =>
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1406,14 +1445,7 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        //LibraryAttributeActivatedIds = _unitOfWork.LoadOtherLibraryRepository.GetIncludeWhere(x =>
-                        //    LibraryPropsAttributeFilters.All(z =>
-                        //        (LibraryProps.Exists(y => (z.key.ToLower() == y.Name.ToLower()) && ((y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null) != null) ?
-                        //            ((z.DateFrom >= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null))) &&
-                        //             (z.DateTo <= Convert.ToDateTime(y.GetValue(_mapper.Map<LoadOtherLibraryViewModel>(x), null)))) : (false)))))
-                        //).Select(i => i.Id).ToList();
-
-                        IEnumerable<TLIloadOtherLibrary> Libraries = _unitOfWork.LoadOtherLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
+                        IEnumerable<TLIloadOtherLibrary> Libraries = _LoadOtherLibraryEntities.AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1442,8 +1474,8 @@ namespace TLIS_Service.Services
                         IntersectLibraryIds = DynamicLibValueListIds;
                     }
 
-                    WithDateFilterLoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_unitOfWork.LoadOtherLibraryRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted).ToList());
+                    WithDateFilterLoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_LoadOtherLibraryEntities.Where(x =>
+                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id)).ToList());
                 }
 
                 //
@@ -1452,14 +1484,14 @@ namespace TLIS_Service.Services
                 if ((AttributeFilters != null ? AttributeFilters.Count() == 0 : true) &&
                     (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() == 0 : true))
                 {
-                    LoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_unitOfWork.LoadOtherLibraryRepository.GetIncludeWhere(x =>
-                        x.Id > 0 && !x.Deleted).ToList());
+                    LoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_LoadOtherLibraryEntities.Where(x =>
+                        x.Id > 0).ToList());
                 }
                 else if ((AttributeFilters != null ? AttributeFilters.Count > 0 : false) &&
                         (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() > 0 : false))
                 {
                     List<int> LoadOtherIds = WithoutDateFilterLoadOthersLibraries.Select(x => x.Id).Intersect(WithDateFilterLoadOthersLibraries.Select(x => x.Id)).ToList();
-                    LoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_unitOfWork.LoadOtherLibraryRepository.GetWhere(x =>
+                    LoadOthersLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_LoadOtherLibraryEntities.Where(x =>
                         LoadOtherIds.Contains(x.Id)).ToList());
                 }
                 else if (AttributeFilters != null ? AttributeFilters.Count > 0 : false)
@@ -1476,15 +1508,7 @@ namespace TLIS_Service.Services
                 LoadOthersLibraries = LoadOthersLibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                   (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.OtherLoadLibrary.ToString() &&
-                   (x.AttributeActivatedId != null ?
-                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString() && x.AttributeActivated.enable) :
-                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString()))) ||
-                    (x.AttributeActivated != null ?
-                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString()) : false),
-                       x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1, x => x.EditableManagmentView.TLItablesNames2,
-                       x => x.AttributeActivated, x => x.DynamicAtt, x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType).ToList();
+                List<TLIattributeViewManagment> AllAttributes = _LoadOtherLibraryAllAttributesViewManagement;
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -1551,10 +1575,9 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                       !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString() &&
-                        x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _LoadOtherLibraryDynamicAttributes.Where(x =>
+                        x.DataType.Name.ToLower() != "datetime" &&
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -1563,7 +1586,7 @@ namespace TLIS_Service.Services
                             x.InventoryId == LoadOtherLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
                             x.DynamicAtt.Key == LibraryDynamicAtt.Key,
-                                x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType);
+                                x => x.DynamicAtt);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -1618,10 +1641,9 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                       !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString() &&
-                        x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = _LoadOtherLibraryDynamicAttributes.Where(x =>
+                        x.DataType.Name.ToLower() == "datetime" &&
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
@@ -1630,7 +1652,7 @@ namespace TLIS_Service.Services
                             x.InventoryId == LoadOtherLibraryViewModel.Id && !x.disable &&
                             x.DynamicAtt.LibraryAtt &&
                             x.DynamicAtt.Key == LibraryDynamicAtt.Key,
-                                x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType);
+                                x => x.DynamicAtt);
 
                         if (DynamicAttLibValue != null)
                         {

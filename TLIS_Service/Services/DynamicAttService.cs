@@ -1031,7 +1031,6 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -1385,7 +1384,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -1738,7 +1736,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -2094,7 +2091,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -2449,7 +2445,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -2802,7 +2797,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -3155,7 +3149,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -3508,7 +3501,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -3864,7 +3856,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -4217,7 +4208,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -4570,7 +4560,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -4923,7 +4912,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -5276,7 +5264,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -5631,7 +5618,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -5984,7 +5970,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -6337,7 +6322,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -6692,7 +6676,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -7047,7 +7030,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
@@ -7392,7 +7374,6 @@ namespace TLIS_Service.Services
                             });
                         }
                         _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
-                        UnitOfWork.AllDynamicAttInstValue.AddRange(ListToAdd);
                         _unitOfWork.SaveChanges();
                     }
                     else
@@ -7438,7 +7419,6 @@ namespace TLIS_Service.Services
                             }
 
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                            UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
                         else
@@ -7462,7 +7442,6 @@ namespace TLIS_Service.Services
                             }
 
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
-                            UnitOfWork.AllDynamicAttInstValue.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
                     }
@@ -7495,8 +7474,6 @@ namespace TLIS_Service.Services
                             }
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
-
-                            UnitOfWork.AllDynamicAttLibValue.AddRange(ListToAdd);
                         }
                         else
                         {
@@ -7519,8 +7496,6 @@ namespace TLIS_Service.Services
                             }
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
-
-                            UnitOfWork.AllDynamicAttInstValue.AddRange(ListToAdd);
                         }
                     }
                 }

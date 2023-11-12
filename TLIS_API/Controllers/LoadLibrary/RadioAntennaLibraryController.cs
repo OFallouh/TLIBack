@@ -36,9 +36,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetRadioAntennaLibrariesWithEnabledAttribute")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetRadioAntennaLibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination)
+        public IActionResult GetRadioAntennaLibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination, bool? isRefresh)
         {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
+            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters, parameterPagination, isRefresh);
             return Ok(response);
         }
         [HttpGet("GetRadioAntennaLibraryById/{Id}")]
