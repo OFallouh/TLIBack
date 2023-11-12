@@ -221,5 +221,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.EncryptAllUserPassword(UserName);
             return Ok(response);
         }
+        [HttpGet("DeletePassword")]
+        [ProducesResponseType(200, Type = typeof(Response<string>))]
+        public IActionResult DeletePassword()
+        {
+            var response = _unitOfWorkService.UserService.DeletePassword();
+            return Ok(response);
+        }
     }
 }

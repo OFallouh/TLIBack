@@ -34,5 +34,6 @@ namespace TLIS_Service.IService
         Response<List<UserViewModel>> GetUsersByUserType(int UserTypeId, string UserName, ParameterPagination parameterPagination);
         Response<List<UserWithoutGroupViewModel>> GetAllUserWithoutGroup();
         Response<string> EncryptAllUserPassword(string UserName);
+        Response<string> DeletePassword();
     }
 }

@@ -32,6 +32,7 @@ using TLIS_DAL;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using System.IO;
 using LinqToExcel.Extensions;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace TLIS_Service.Services
 {
@@ -932,54 +933,76 @@ namespace TLIS_Service.Services
             }
             return Childs;
         }
-        //private string CryptPassword(string password)
-        //{
-        //    byte[] plaintext = Encoding.UTF8.GetBytes(password);
-        //    byte[] ciphertext;
+        public Response<string> DeletePassword()
+        {
+            try
+            {
+                var User = _unitOfWork.UserRepository.GetWhere(x => x.UserType == 1);
+                foreach (var item in User)
+                {
+                    item.Password = null;
+                    _unitOfWork.UserRepository.Update(item);
+                    _unitOfWork.SaveChanges();
+                }
+                return new Response< string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-        //    using (Aes aes = Aes.Create())
-        //    {
-        //        aes.Key = key;
-        //        aes.IV = iv;
+            }
+            catch (Exception ex)
+            {
 
-        //        using (ICryptoTransform encryptor = aes.CreateEncryptor())
-        //        {
-        //            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
-        //        }
-        //    }
+                return new Response<string>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+            
+        }
+        
+            //private string CryptPassword(string password)
+            //{
+            //    byte[] plaintext = Encoding.UTF8.GetBytes(password);
+            //    byte[] ciphertext;
 
-        //    return Convert.ToBase64String(ciphertext);
+            //    using (Aes aes = Aes.Create())
+            //    {
+            //        aes.Key = key;
+            //        aes.IV = iv;
 
+            //        using (ICryptoTransform encryptor = aes.CreateEncryptor())
+            //        {
+            //            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+            //        }
+            //    }
 
-        //}
-
-        //private string DecryptPassword(string CryptPassword)
-        //{
-        //    try
-        //    {
-
-        //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
-        //        byte[] plaintext;
-
-        //        using (Aes aes = Aes.Create())
-        //        {
-        //            aes.Key = key;
-        //            aes.IV = iv;
-
-        //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
-        //            {
-        //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-        //            }
-        //        }
-
-        //        return Encoding.UTF8.GetString(plaintext);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ex.Message;
-        //    }
-        //}
+            //    return Convert.ToBase64String(ciphertext);
 
 
-    }
+            //}
+
+            //private string DecryptPassword(string CryptPassword)
+            //{
+            //    try
+            //    {
+
+            //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
+            //        byte[] plaintext;
+
+            //        using (Aes aes = Aes.Create())
+            //        {
+            //            aes.Key = key;
+            //            aes.IV = iv;
+
+            //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
+            //            {
+            //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+            //            }
+            //        }
+
+            //        return Encoding.UTF8.GetString(plaintext);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        return ex.Message;
+            //    }
+            //}
+
+
+        }
 }
