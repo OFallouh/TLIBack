@@ -170,7 +170,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                      return  response = new Response<string>(false, null, null, "This account is blocked on Active Directory", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                      return  response = new Response<string>(false, null, null, "This username or password is not correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                 }
             }
