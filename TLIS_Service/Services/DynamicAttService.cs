@@ -8049,6 +8049,12 @@ namespace TLIS_Service.Services
         {
             try
             {
+                if (UnitOfWork.AllDynamicAttribute == null)
+                {
+                    UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                        .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
+                            x => x.tablesNames).ToList();
+                }
                 List<StringFilterObjectList> AttributeFilters = new List<StringFilterObjectList>();
 
                 int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower()).Id;
