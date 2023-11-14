@@ -7626,6 +7626,12 @@ namespace TLIS_Service.Services
                 List<int> Records = new List<int>();
 
                 // Civils ...
+                if (CivilLibraryService._CivilWithLegLibraryEntities == null)
+                {
+                    CivilLibraryService._CivilWithLegLibraryEntities = _unitOfWork.CivilWithLegLibraryRepository
+                        .GetWhereAndInclude(x => !x.Deleted, x => x.civilSteelSupportCategory, x => x.sectionsLegType,
+                            x => x.structureType, x => x.supportTypeDesigned).ToList();
+                }
                 if (TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                 {
                     Records = CivilLibraryService._CivilWithLegLibraryEntities.Select(x => x.Id).ToList();
@@ -7749,7 +7755,22 @@ namespace TLIS_Service.Services
                     {
                         try
                         {
-                            // Map ViewModel to Entity
+                           
+                            if (UnitOfWork.AllAttributeViewManagment == null)
+                            {
+                                UnitOfWork.AllAttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                    .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
+                                        x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
+                                        x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                            }
+
+                            if (UnitOfWork.AllDynamicAttribute == null)
+                            {
+                                UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                                    .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
+                                        x => x.tablesNames).ToList();
+                            }
+                                // Map ViewModel to Entity
                             TLIdynamicAtt DynamicAttEntity = _mapper.Map<TLIdynamicAtt>(addDependencyViewModel);
 
                             string DataTypeName = _unitOfWork.DataTypeRepository.GetByID(addDependencyViewModel.DataTypeId.Value).Name;
