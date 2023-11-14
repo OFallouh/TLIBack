@@ -3884,7 +3884,7 @@ namespace TLIS_Service.Services
 
                 List<CivilWithoutLegLibraryViewModel> WithoutDateFilterCivilWithoutLegLibraries = new List<CivilWithoutLegLibraryViewModel>();
                 List<CivilWithoutLegLibraryViewModel> WithDateFilterCivilWithoutLegLibraries = new List<CivilWithoutLegLibraryViewModel>();
-
+                if (CategoryId == 0) { CategoryId = 1; }
                 string Category = _unitOfWork.CivilWithoutLegCategoryRepository.GetByID(CategoryId).Name.ToLower();
                 string CategoryViewName = "";
 
