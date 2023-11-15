@@ -3744,12 +3744,19 @@ namespace TLIS_Service.Services
 
                             else if (DynamicAttLibValue.ValueBoolean != null)
                                 DynamicAttValue = DynamicAttLibValue.ValueBoolean;
-
-                            ((IDictionary<String, Object>)DynamicCivilWithLegLibrary).Add(new KeyValuePair<string, object>(LibraryDynamicAtt.Key, DynamicAttValue));
+                            bool check = ((IDictionary<String, Object>)DynamicCivilWithLegLibrary).Contains(new KeyValuePair<string, object>(LibraryDynamicAtt.Key, DynamicAttValue));
+                            if (!check)
+                            {
+                                ((IDictionary<String, Object>)DynamicCivilWithLegLibrary).Add(new KeyValuePair<string, object>(LibraryDynamicAtt.Key, DynamicAttValue));
+                            }
                         }
                         else
                         {
-                            ((IDictionary<String, Object>)DynamicCivilWithLegLibrary).Add(new KeyValuePair<string, object>(LibraryDynamicAtt.Key, null));
+                            bool check = ((IDictionary<String, Object>)DynamicCivilWithLegLibrary).Contains(new KeyValuePair<string, object>(LibraryDynamicAtt.Key, null));
+                            if (!check)
+                            {
+                                ((IDictionary<String, Object>)DynamicCivilWithLegLibrary).Add(new KeyValuePair<string, object>(LibraryDynamicAtt.Key, null));
+                            }
                         }
                     }
 
