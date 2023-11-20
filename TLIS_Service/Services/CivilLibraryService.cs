@@ -3865,12 +3865,11 @@ namespace TLIS_Service.Services
                         .GetIncludeWhere(x => true, x => x.attributeActivated).ToList();
 
                     _CivilWithoutLegLibraryAttributeViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString()).ToList();
-
-                    _CivilWithoutLegLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
+                        x.Enable && x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString()).ToList();
+                    
+                    _CivilWithoutLegLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), x => x.tablesNames).ToList();
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString()).ToList();
 
                     _CivilWithoutLegLibraryEntities = _unitOfWork.CivilWithoutLegLibraryRepository
                         .GetIncludeWhere(x => !x.Deleted, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
@@ -4208,6 +4207,11 @@ namespace TLIS_Service.Services
                     x.CivilWithoutLegCategoryId != null ? (
                         x.CivilWithoutLegCategoryId.Value == CategoryId && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString() && !x.disable && x.LibraryAtt
                     ) : false && !x.disable).ToList());
+
+                AllAttributes = _CivilWithoutLegLibraryAttributeViewManagement.Where(x =>
+                    x.Enable && x.EditableManagmentView.View == CategoryViewName &&
+                    (x.DynamicAttId != null ? (x.DynamicAtt.CivilWithoutLegCategoryId == CategoryId && !x.DynamicAtt.disable &&
+                        x.DynamicAtt.LibraryAtt && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLegLibrary".ToLower()) : false)).ToList();
 
                 AllAttributes = _CivilWithoutLegLibraryAttributeViewManagement.Where(x =>
                    (x.Enable && x.EditableManagmentView.View == CategoryViewName &&
