@@ -232,5 +232,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.GroupService.GetGroupByName_WFVersion();
             return Ok(response.Data);
         }
+        [HttpGet("GetUpperToEscalationWF")]
+        [ProducesResponseType(200, Type = typeof(EscalationWFViewModel))]
+        public IActionResult GetUpperToEscalationWF(int UserId)
+        {
+            var response = _unitOfWorkService.GroupService.GetUpperToEscalationWF(UserId);
+            return Ok(response);
+        }
     }
 }

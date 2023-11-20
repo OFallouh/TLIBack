@@ -1126,6 +1126,78 @@ namespace TLIS_Service.Services
                 return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        public Response<EscalationWFViewModel> GetUpperToEscalationWF(int UserId)
+        {
+            try
+            {
+                EscalationWFViewModel Groups = new EscalationWFViewModel();
+                var Group = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == UserId).ToList();
+                foreach (var item in Group)
+                {
+                    TLIgroup MainGroup = _unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Active && !x.Deleted && x.Id == item.groupId, x => x.Parent, x => x.Upper);
+                    if (MainGroup != null)
+                    {
+                        if (MainGroup.UpperId != null)
+                        {
+                            GroupViewModel UpperLevel1 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == MainGroup.UpperId && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                            if (UpperLevel1 != null)
+                            {
+                                Groups.AllLevel1 = UpperLevel1;
+                                if (UpperLevel1.UpperId != null)
+                                {
+                                    GroupViewModel UpperLevel2 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                                    if (UpperLevel2 != null)
+                                    {
+                                        Groups.AllLevel2 = UpperLevel2;
+                                        if (UpperLevel2.UpperId != null)
+                                        {
+                                            GroupViewModel UpperLevel3 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel2.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
+                                            if (UpperLevel3 != null)
+                                            {
+                                                Groups.AllLevel3 = UpperLevel3;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                  
+                }
+                if(Groups.AllLevel1 != null)
+                {
+                    var Group1Id = Groups.AllLevel1.UpperId;
+                    var Userofgroup1 = _unitOfWork.GroupUserRepository.GetWhere(x => Group1Id == x.groupId).Select(x => x.userId).ToList();
+                    var MailUserofGroup1 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup1.Any(y => y == x.Id)).ToList();
+                    var Mailinfoofgroup1 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup1);
+                    Groups.Level1 = _mapper.Map < List<EscalationViewModel>>(Mailinfoofgroup1);
+                }
+                if (Groups.AllLevel2 != null)
+                {
+                    var Group2Id = Groups.AllLevel2.UpperId;
+                    var Userofgroup2 = _unitOfWork.GroupUserRepository.GetWhere(x => Group2Id == x.groupId).Select(x => x.userId).ToList();
+                    var MailUserofGroup2 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup2.Any(y => y == x.Id)).Select(x => x.Email).ToList();
+                    var Mailinfoofgroup2 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup2);
+                    Groups.Level2 = _mapper.Map<List<EscalationViewModel>>(Mailinfoofgroup2);
+                }
+                if (Groups.AllLevel3 != null)
+                {
+                    var Group3Id = Groups.AllLevel2.UpperId;
+                    var Userofgroup3 = _unitOfWork.GroupUserRepository.GetWhere(x => Group3Id == x.groupId).Select(x => x.userId).ToList();
+                    var MailUserofGroup3 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup3.Any(y => y == x.Id)).Select(x => x.Email).ToList();
+                    var Mailinfoofgroup3 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup3);
+                    Groups.Level3 = _mapper.Map<List<EscalationViewModel>>(Mailinfoofgroup3);
+                }
+                return new Response<EscalationWFViewModel>(true, Groups, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+
+                return new Response<EscalationWFViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+
+
+        }
 
         // Helper Method For DeleteGroupWithItsChilds Api
         public void GetAllChildsIds(List<int> FirstLevelOfChildsIds, List<int> AllChildsLevels)
