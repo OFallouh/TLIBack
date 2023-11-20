@@ -467,10 +467,19 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIcivilWithLegLibrary> InsertedCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (CivilLibraryService._CivilWithLegLibraryEntities == null)
+                                    {
+                                        CivilLibraryService._CivilWithLegLibraryEntities = _unitOfWork.CivilWithLegLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.civilSteelSupportCategory,
+                                                x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIcivilWithLegLibrary> InsertedCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    CivilLibraryService._CivilWithLegLibraryEntities.AddRange(InsertedCivilWithLegLibrary);
+                                        CivilLibraryService._CivilWithLegLibraryEntities.AddRange(InsertedCivilWithLegLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
@@ -512,10 +521,20 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIcivilWithoutLegLibrary> InsertedCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (CivilLibraryService._CivilWithoutLegLibraryEntities == null)
+                                    {
+                                        CivilLibraryService._CivilWithoutLegLibraryEntities = _unitOfWork.CivilWithoutLegLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.CivilSteelSupportCategory,
+                                                x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType,
+                                                x => x.structureType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIcivilWithoutLegLibrary> InsertedCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    CivilLibraryService._CivilWithoutLegLibraryEntities.AddRange(InsertedCivilWithoutLegLibrary);
+                                        CivilLibraryService._CivilWithoutLegLibraryEntities.AddRange(InsertedCivilWithoutLegLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
@@ -557,10 +576,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIcivilNonSteelLibrary> InsertedCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (CivilLibraryService._CivilNonSteelLibraryEntities == null)
+                                    {
+                                        CivilLibraryService._CivilNonSteelLibraryEntities = _unitOfWork.CivilNonSteelLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.civilNonSteelType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIcivilNonSteelLibrary> InsertedCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    CivilLibraryService._CivilNonSteelLibraryEntities.AddRange(InsertedCivilNonSteelLibrary);
+                                        CivilLibraryService._CivilNonSteelLibraryEntities.AddRange(InsertedCivilNonSteelLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString() == TableName)
@@ -599,10 +626,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIloadOtherLibrary> InsertedLoadOtherLibrary = _unitOfWork.LoadOtherLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (LoadOtherLibraryService._LoadOtherLibraryEntities == null)
+                                    {
+                                        LoadOtherLibraryService._LoadOtherLibraryEntities = _unitOfWork.LoadOtherLibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIloadOtherLibrary> InsertedLoadOtherLibrary = _unitOfWork.LoadOtherLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    LoadOtherLibraryService._LoadOtherLibraryEntities.AddRange(InsertedLoadOtherLibrary);
+                                        LoadOtherLibraryService._LoadOtherLibraryEntities.AddRange(InsertedLoadOtherLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == TableName)
@@ -641,10 +676,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLImwBULibrary> InsertedMW_BULibrary = _unitOfWork.MW_BULibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (MWLibraryService._MW_BULibraryEntities == null)
+                                    {
+                                        MWLibraryService._MW_BULibraryEntities = _unitOfWork.MW_BULibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.diversityType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLImwBULibrary> InsertedMW_BULibrary = _unitOfWork.MW_BULibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    MWLibraryService._MW_BULibraryEntities.AddRange(InsertedMW_BULibrary);
+                                        MWLibraryService._MW_BULibraryEntities.AddRange(InsertedMW_BULibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == TableName)
@@ -683,10 +726,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLImwDishLibrary> InsertedMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (MWLibraryService._MW_DishLibraryEntities == null)
+                                    {
+                                        MWLibraryService._MW_DishLibraryEntities = _unitOfWork.MW_DishLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.asType, x => x.polarityType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLImwDishLibrary> InsertedMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    MWLibraryService._MW_DishLibraryEntities.AddRange(InsertedMW_DishLibrary);
+                                        MWLibraryService._MW_DishLibraryEntities.AddRange(InsertedMW_DishLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == TableName)
@@ -725,10 +776,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLImwODULibrary> InsertedMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (MWLibraryService._MW_ODULibraryEntities == null)
+                                    {
+                                        MWLibraryService._MW_ODULibraryEntities = _unitOfWork.MW_ODULibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.parity).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLImwODULibrary> InsertedMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    MWLibraryService._MW_ODULibraryEntities.AddRange(InsertedMW_ODULibrary);
+                                        MWLibraryService._MW_ODULibraryEntities.AddRange(InsertedMW_ODULibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString() == TableName)
@@ -767,10 +826,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLImwOtherLibrary> InsertedMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (MWLibraryService._MW_OtherLibraryEntities == null)
+                                    {
+                                        MWLibraryService._MW_OtherLibraryEntities = _unitOfWork.MW_OtherLibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLImwOtherLibrary> InsertedMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    MWLibraryService._MW_OtherLibraryEntities.AddRange(InsertedMW_OtherLibrary);
+                                        MWLibraryService._MW_OtherLibraryEntities.AddRange(InsertedMW_OtherLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == TableName)
@@ -809,10 +876,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLImwRFULibrary> InsertedMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (MWLibraryService._MW_RFULibraryEntities == null)
+                                    {
+                                        MWLibraryService._MW_RFULibraryEntities = _unitOfWork.MW_RFULibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.boardType, x => x.diversityType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLImwRFULibrary> InsertedMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    MWLibraryService._MW_RFULibraryEntities.AddRange(InsertedMW_RFULibrary);
+                                        MWLibraryService._MW_RFULibraryEntities.AddRange(InsertedMW_RFULibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString() == TableName)
@@ -851,10 +926,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIpowerLibrary> InsertedPowerLibrary = _unitOfWork.PowerLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (PowerLibraryService._PowerLibraryEntities == null)
+                                    {
+                                        PowerLibraryService._PowerLibraryEntities = _unitOfWork.PowerLibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIpowerLibrary> InsertedPowerLibrary = _unitOfWork.PowerLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    PowerLibraryService._PowerLibraryEntities.AddRange(InsertedPowerLibrary);
+                                        PowerLibraryService._PowerLibraryEntities.AddRange(InsertedPowerLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
@@ -893,10 +976,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIradioAntennaLibrary> InsertedRadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (RadioLibraryService._RadioAntennaLibraryEntities == null)
+                                    {
+                                        RadioLibraryService._RadioAntennaLibraryEntities = _unitOfWork.RadioAntennaLibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIradioAntennaLibrary> InsertedRadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    RadioLibraryService._RadioAntennaLibraryEntities.AddRange(InsertedRadioAntennaLibrary);
+                                        RadioLibraryService._RadioAntennaLibraryEntities.AddRange(InsertedRadioAntennaLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
@@ -935,10 +1026,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIradioOtherLibrary> InsertedRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (RadioLibraryService._RadioOtherLibraryEntities == null)
+                                    {
+                                        RadioLibraryService._RadioOtherLibraryEntities = _unitOfWork.RadioOtherLibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIradioOtherLibrary> InsertedRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    RadioLibraryService._RadioOtherLibraryEntities.AddRange(InsertedRadioOtherLibrary);
+                                        RadioLibraryService._RadioOtherLibraryEntities.AddRange(InsertedRadioOtherLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
@@ -977,10 +1076,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIradioRRULibrary> InsertedRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (RadioLibraryService._RadioRRULibraryEntities == null)
+                                    {
+                                        RadioLibraryService._RadioRRULibraryEntities = _unitOfWork.RadioRRULibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIradioRRULibrary> InsertedRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    RadioLibraryService._RadioRRULibraryEntities.AddRange(InsertedRadioRRULibrary);
+                                        RadioLibraryService._RadioRRULibraryEntities.AddRange(InsertedRadioRRULibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
@@ -1022,10 +1129,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIcabinetPowerLibrary> InsertedCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (OtherInventoryLibraryService._CabinetPowerLibraryEntities == null)
+                                    {
+                                        OtherInventoryLibraryService._CabinetPowerLibraryEntities = _unitOfWork.CabinetPowerLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.CabinetPowerType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIcabinetPowerLibrary> InsertedCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    OtherInventoryLibraryService._CabinetPowerLibraryEntities.AddRange(InsertedCabinetPowerLibrary);
+                                        OtherInventoryLibraryService._CabinetPowerLibraryEntities.AddRange(InsertedCabinetPowerLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
@@ -1067,10 +1182,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIcabinetTelecomLibrary> InsertedCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (OtherInventoryLibraryService._CabinetTelecomLibraryEntities == null)
+                                    {
+                                        OtherInventoryLibraryService._CabinetTelecomLibraryEntities = _unitOfWork.CabinetTelecomLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.TelecomType).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIcabinetTelecomLibrary> InsertedCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    OtherInventoryLibraryService._CabinetTelecomLibraryEntities.AddRange(InsertedCabinetTelecomLibrary);
+                                        OtherInventoryLibraryService._CabinetTelecomLibraryEntities.AddRange(InsertedCabinetTelecomLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
@@ -1113,10 +1236,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIgeneratorLibrary> InsertedGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (OtherInventoryLibraryService._GeneratorLibraryEntities == null)
+                                    {
+                                        OtherInventoryLibraryService._GeneratorLibraryEntities = _unitOfWork.GeneratorLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.Capacity).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIgeneratorLibrary> InsertedGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    OtherInventoryLibraryService._GeneratorLibraryEntities.AddRange(InsertedGeneratorLibrary);
+                                        OtherInventoryLibraryService._GeneratorLibraryEntities.AddRange(InsertedGeneratorLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
@@ -1158,10 +1289,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIsolarLibrary> InsertedSolarLibrary = _unitOfWork.SolarLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (OtherInventoryLibraryService._SolarLibraryEntities == null)
+                                    {
+                                        OtherInventoryLibraryService._SolarLibraryEntities = _unitOfWork.SolarLibraryRepository
+                                            .GetIncludeWhere(x => !x.Deleted, x => x.Capacity).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIsolarLibrary> InsertedSolarLibrary = _unitOfWork.SolarLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    OtherInventoryLibraryService._SolarLibraryEntities.AddRange(InsertedSolarLibrary);
+                                        OtherInventoryLibraryService._SolarLibraryEntities.AddRange(InsertedSolarLibrary);
+                                    }
                                 }
                             }
                             else if (Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString() == TableName)
@@ -1200,10 +1339,18 @@ namespace TLIS_Service.Services
                                 {
                                     tran.Commit();
 
-                                    List<TLIsideArmLibrary> InsertedSideArmLibrary = _unitOfWork.SideArmLibraryRepository
-                                        .GetWhere(x => RecordId.Contains(x.Id)).ToList();
+                                    if (SideArmLibraryService._SideArmLibraryEntities == null)
+                                    {
+                                        SideArmLibraryService._SideArmLibraryEntities = _unitOfWork.SideArmLibraryRepository
+                                            .GetWhere(x => !x.Deleted).ToList();
+                                    }
+                                    else
+                                    {
+                                        List<TLIsideArmLibrary> InsertedSideArmLibrary = _unitOfWork.SideArmLibraryRepository
+                                            .GetWhere(x => RecordId.Contains(x.Id)).ToList();
 
-                                    SideArmLibraryService._SideArmLibraryEntities.AddRange(InsertedSideArmLibrary);
+                                        SideArmLibraryService._SideArmLibraryEntities.AddRange(InsertedSideArmLibrary);
+                                    }
                                 }
                             }
                         }

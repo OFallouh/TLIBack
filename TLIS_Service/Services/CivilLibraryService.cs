@@ -3910,15 +3910,19 @@ namespace TLIS_Service.Services
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
                     CivilWithoutLegLibraryAttribute = _CivilWithoutLegLibraryAttributeViewManagement.Where(x =>
-                        x.EditableManagmentView.View == CategoryViewName)
+                        x.EditableManagmentView.View == CategoryViewName && x.AttributeActivatedId != null)
                     .Select(x => x.AttributeActivated).ToList();
 
                     foreach (TLIattributeActivated AttributeActivated in CivilWithoutLegLibraryAttribute)
                     {
-                        AttributeActivated.Label = AttActivatedCategory.FirstOrDefault(x =>
-                            x.attributeActivatedId == AttributeActivated.Id) != null ?
-                        AttributeActivated.Label = AttActivatedCategory.FirstOrDefault(x =>
-                            x.attributeActivatedId == AttributeActivated.Id).Label : "NA";
+                        TLIattActivatedCategory CheckIfAttributeIsExist = AttActivatedCategory.FirstOrDefault(x =>
+                            x.attributeActivatedId == AttributeActivated.Id);
+
+                        if (CheckIfAttributeIsExist != null)
+                            AttributeActivated.Label = CheckIfAttributeIsExist.Label;
+
+                        else
+                            AttributeActivated.Label = "NA";
                     }
                 }
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)

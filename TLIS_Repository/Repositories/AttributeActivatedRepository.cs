@@ -130,9 +130,11 @@ namespace TLIS_Repository.Repositories
                         .FirstOrDefault(x => x.attributeActivatedId == AttributeActivated.Id);
 
                     object value = Installation.GetType().GetProperty(AttributeActivated.Key).GetValue(Installation);
-                    if (AttributeActivated.Key == "equipmentsLocation" || AttributeActivated.Key == "reinforced" || AttributeActivated.Key == "availabilityOfWorkPlatforms" || AttributeActivated.Key == "ladderSteps")
+                    if (AttributeActivated.Key == "equipmentsLocation" || AttributeActivated.Key == "reinforced" || 
+                        AttributeActivated.Key == "availabilityOfWorkPlatforms" || AttributeActivated.Key == "ladderSteps")
                     {
-                        value = value.ToString();
+                        if (value != null)
+                            value = value.ToString();
                     }
                     BaseAttsView.Add(new BaseInstAttView
                     {
