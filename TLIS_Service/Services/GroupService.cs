@@ -1143,18 +1143,24 @@ namespace TLIS_Service.Services
                             if (UpperLevel1 != null)
                             {
                                 Groups.AllLevel1 = UpperLevel1;
+                                Groups.AllLevel1.ParentId = null;
+                                Groups.AllLevel1.ParentName = null;
                                 if (UpperLevel1.UpperId != null)
                                 {
                                     GroupViewModel UpperLevel2 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel1.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                                     if (UpperLevel2 != null)
                                     {
                                         Groups.AllLevel2 = UpperLevel2;
+                                        Groups.AllLevel2.ParentId = null;
+                                        Groups.AllLevel2.ParentName = null;
                                         if (UpperLevel2.UpperId != null)
                                         {
                                             GroupViewModel UpperLevel3 = _mapper.Map<GroupViewModel>(_unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Id == UpperLevel2.UpperId.Value && x.Active && !x.Deleted, x => x.Parent, x => x.Upper));
                                             if (UpperLevel3 != null)
                                             {
                                                 Groups.AllLevel3 = UpperLevel3;
+                                                Groups.AllLevel3.ParentId = null;
+                                                Groups.AllLevel3.ParentName = null;
                                             }
                                         }
                                     }
