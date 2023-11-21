@@ -1131,7 +1131,7 @@ namespace TLIS_Service.Services
             try
             {
                 EscalationWFViewModel Groups = new EscalationWFViewModel();
-                var Group = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == UserId).ToList();
+                var Group = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == UserId &&x.Active&&!x.Deleted ).ToList();
                 foreach (var item in Group)
                 {
                     TLIgroup MainGroup = _unitOfWork.GroupRepository.GetIncludeWhereFirst(x => x.Active && !x.Deleted && x.Id == item.groupId, x => x.Parent, x => x.Upper);
@@ -1166,7 +1166,7 @@ namespace TLIS_Service.Services
                 }
                 if(Groups.AllLevel1 != null)
                 {
-                    var Group1Id = Groups.AllLevel1.UpperId;
+                    var Group1Id = Groups.AllLevel1.Id;
                     var Userofgroup1 = _unitOfWork.GroupUserRepository.GetWhere(x => Group1Id == x.groupId).Select(x => x.userId).ToList();
                     var MailUserofGroup1 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup1.Any(y => y == x.Id)).ToList();
                     var Mailinfoofgroup1 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup1);
@@ -1174,7 +1174,7 @@ namespace TLIS_Service.Services
                 }
                 if (Groups.AllLevel2 != null)
                 {
-                    var Group2Id = Groups.AllLevel2.UpperId;
+                    var Group2Id = Groups.AllLevel2.Id;
                     var Userofgroup2 = _unitOfWork.GroupUserRepository.GetWhere(x => Group2Id == x.groupId).Select(x => x.userId).ToList();
                     var MailUserofGroup2 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup2.Any(y => y == x.Id)).Select(x => x.Email).ToList();
                     var Mailinfoofgroup2 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup2);
@@ -1182,7 +1182,7 @@ namespace TLIS_Service.Services
                 }
                 if (Groups.AllLevel3 != null)
                 {
-                    var Group3Id = Groups.AllLevel2.UpperId;
+                    var Group3Id = Groups.AllLevel2.Id;
                     var Userofgroup3 = _unitOfWork.GroupUserRepository.GetWhere(x => Group3Id == x.groupId).Select(x => x.userId).ToList();
                     var MailUserofGroup3 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup3.Any(y => y == x.Id)).Select(x => x.Email).ToList();
                     var Mailinfoofgroup3 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup3);
