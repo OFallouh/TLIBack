@@ -233,7 +233,7 @@ namespace TLIS_API.Controllers
             return Ok(response.Data);
         }
         [HttpPost("GetUpperToEscalationWF")]
-        [ProducesResponseType(200, Type = typeof(EscalationWFViewModel))]
+        [ProducesResponseType(200, Type = typeof(Task<EscalationWFViewModel>))]
         public IActionResult GetUpperToEscalationWF(int UserId)
         {
             var response = _unitOfWorkService.GroupService.GetUpperToEscalationWF(UserId);
