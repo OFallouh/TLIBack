@@ -1126,10 +1126,9 @@ namespace TLIS_Service.Services
                 return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<EscalationWFViewModel> GetUpperToEscalationWF(int UserId)
+        public async Task<EscalationWFViewModel> GetUpperToEscalationWF(int UserId)
         {
-            try
-            {
+          
                 EscalationWFViewModel Groups = new EscalationWFViewModel();
                 var Group = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == UserId &&x.Active&&!x.Deleted ).ToList();
                 foreach (var item in Group)
@@ -1194,14 +1193,8 @@ namespace TLIS_Service.Services
                     var Mailinfoofgroup3 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup3);
                     Groups.Level3 = _mapper.Map<List<EscalationViewModel>>(Mailinfoofgroup3);
                 }
-                return new Response<EscalationWFViewModel>(true, Groups, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception err)
-            {
 
-                return new Response<EscalationWFViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-            }
-
+            return Groups;
 
         }
 
