@@ -737,12 +737,12 @@ namespace TLIS_Service.Services
                                 {
                                     _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(PowerLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, PowerLibrary.Id);
                                 }
+                                
+                                var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
+                                    .GetIncludeWhereFirst(x => x.Id == PowerLibrary.Id);
 
                                 transaction.Complete();
                                 tran.Commit();
-
-                                var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
-                                    .GetIncludeWhereFirst(x => x.Id == PowerLibrary.Id);
 
                                 _PowerLibraryEntities.Add(ObjectForAddInCashList);
                             }

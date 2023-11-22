@@ -1829,11 +1829,11 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(addRadioAntenna.TLIdynamicAttLibValue, TableNameEntity.Id, radioAntennaLibrary.Id);
                                     }
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.RadioAntennaLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == radioAntennaLibrary.Id);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
 
@@ -1895,11 +1895,11 @@ namespace TLIS_Service.Services
                                     }
                                     _unitOfWork.TablesHistoryRepository.AddHistory(radioOther.Id, "Add", "TLIradioOtherLibrary");
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.RadioOtherLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == radioOther.Id);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _RadioOtherLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -1963,11 +1963,11 @@ namespace TLIS_Service.Services
                                     }
                                     //_unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, "Add", "TLIradioRRULibrary");
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.RadioRRULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == radioRRULibrary.Id);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _RadioRRULibraryEntities.Add(ObjectForAddInCashList);
                                 }

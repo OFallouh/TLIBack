@@ -118,11 +118,11 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(LoadOtherLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, loadOtherLibrary.Id);
                                 }
                                 
-                                transaction.Complete();
-                                tran.Commit();
-
                                 var ObjectForAddInCashList = _unitOfWork.LoadOtherLibraryRepository
                                     .GetIncludeWhereFirst(x => x.Id == loadOtherLibrary.Id);
+
+                                transaction.Complete();
+                                tran.Commit();
 
                                 _LoadOtherLibraryEntities.Add(ObjectForAddInCashList);
                             }

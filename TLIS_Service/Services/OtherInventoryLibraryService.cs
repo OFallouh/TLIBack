@@ -432,11 +432,11 @@ namespace TLIS_Service.Services
                                     }
                                     //AddHistory(cabinetPowerLibrary.Id, "Add", "TLIcabinetPowerLibrary");
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.CabinetPowerLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == cabinetPowerLibrary.Id, x => x.CabinetPowerType);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _CabinetPowerLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -488,11 +488,11 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(cabinetTelecomLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, cabinetTelecomLibrary.Id);
                                     }
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.CabinetTelecomLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == cabinetTelecomLibrary.Id, x => x.TelecomType);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _CabinetTelecomLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -538,11 +538,11 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(generatorLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, generatorLibrary.Id);
                                     }
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.GeneratorLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == generatorLibrary.Id, x => x.Capacity);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _GeneratorLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -588,11 +588,11 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(solarLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, solarLibrary.Id);
                                     }
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.SolarLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == solarLibrary.Id, x => x.Capacity);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _SolarLibraryEntities.Add(ObjectForAddInCashList);
                                 }

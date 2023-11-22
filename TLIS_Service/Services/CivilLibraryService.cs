@@ -159,12 +159,12 @@ namespace TLIS_Service.Services
                                     }
                                     //AddHistory(CivilWithLegEntites.Id, "Add", "TLIcivilWithLegLibrary");
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.CivilWithLegLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == CivilWithLegEntites.Id, x => x.civilSteelSupportCategory,
                                             x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -226,12 +226,12 @@ namespace TLIS_Service.Services
                                     }
                                     //AddHistory(CivilWithoutLegEntites.Id, "Add", "TLIcivilWithoutLegLibrary");
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.CivilWithoutLegLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == CivilWithoutLegEntites.Id, x => x.CivilWithoutLegCategory,
                                             x => x.CivilSteelSupportCategory, x => x.structureType, x => x.InstallationCivilwithoutLegsType);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -297,11 +297,11 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(nonSteelLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, civilNonSteelLibraryEntity.Id);
                                     }
 
-                                    transaction.Complete();
-                                    tran.Commit();
-
                                     var ObjectForAddInCashList = _unitOfWork.CivilNonSteelLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == civilNonSteelLibraryEntity.Id, x => x.civilNonSteelType);
+
+                                    transaction.Complete();
+                                    tran.Commit();
 
                                     _CivilNonSteelLibraryEntities.Add(ObjectForAddInCashList);
                                 }

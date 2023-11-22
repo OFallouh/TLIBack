@@ -3378,10 +3378,10 @@ namespace TLIS_Service.Services
                                     }
                                     _unitOfWork.TablesHistoryRepository.AddHistory(MW_BULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwBULibrary.ToString().ToLower());
 
-                                    transaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_BULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_BULibraryEntity.Id, x => x.diversityType);
+
+                                    transaction.Complete();
 
                                     _MW_BULibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -3450,10 +3450,10 @@ namespace TLIS_Service.Services
                                     }
                                     _unitOfWork.TablesHistoryRepository.AddHistory(MW_DishLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
 
-                                    transaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_DishLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_DishLibraryEntity.Id, x => x.asType, x => x.polarityType);
+                                    
+                                    transaction.Complete();
 
                                     _MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -3514,10 +3514,10 @@ namespace TLIS_Service.Services
                                     }
                                     _unitOfWork.TablesHistoryRepository.AddHistory(MW_ODULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLImwODULibrary");
                                 
-                                    transaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_ODULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_ODULibraryEntity.Id, x => x.parity);
+
+                                    transaction.Complete();
 
                                     _MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                                 }
@@ -3578,10 +3578,10 @@ namespace TLIS_Service.Services
                                     }
                                     //  _unitOfWork.TablesHistoryRepository.AddHistory(MW_RFULibraryEntity.Id, "Add", "TLImwRFULibrary");
 
-                                    transaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_RFULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_RFULibraryEntity.Id, x => x.boardType, x => x.diversityType);
+
+                                    transaction.Complete();
 
                                     _MW_RFULibraryEntities.Add(MW_RFULibraryEntity);
                                 }
@@ -3642,10 +3642,10 @@ namespace TLIS_Service.Services
                                     }
                                     //  _unitOfWork.TablesHistoryRepository.AddHistory(MW_OtherLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwOtherLibrary.ToString().ToLower());
 
-                                    transaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_OtherLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_OtherLibraryEntity.Id);
+
+                                    transaction.Complete();
 
                                     _MW_OtherLibraryEntities.Add(ObjectForAddInCashList);
                                 }

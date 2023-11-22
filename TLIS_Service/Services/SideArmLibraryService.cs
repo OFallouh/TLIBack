@@ -200,11 +200,12 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<SideArmLibraryViewModel>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            transaction.Complete();
-                            tran.Commit();
-
+                            
                             var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
                                 .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
+
+                            transaction.Complete();
+                            tran.Commit();
 
                             _SideArmLibraryEntities.Add(ObjectForAddInCashList);
 
