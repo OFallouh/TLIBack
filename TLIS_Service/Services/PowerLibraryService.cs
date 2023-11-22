@@ -741,7 +741,10 @@ namespace TLIS_Service.Services
                                 transaction.Complete();
                                 tran.Commit();
 
-                                _PowerLibraryEntities.Add(PowerLibrary);
+                                var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
+                                    .GetIncludeWhereFirst(x => x.Id == PowerLibrary.Id);
+
+                                _PowerLibraryEntities.Add(ObjectForAddInCashList);
                             }
                             else
                             {

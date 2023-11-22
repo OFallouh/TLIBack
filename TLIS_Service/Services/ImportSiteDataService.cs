@@ -1164,7 +1164,11 @@ namespace TLIS_Service.Services
 
                                         MastTransaction.Complete();
 
-                                        CivilLibraryService._CivilWithoutLegLibraryEntities.Add(NewMastEntity);
+                                        var ObjectForAddInCashList = _unitOfWork.CivilWithoutLegLibraryRepository
+                                            .GetIncludeWhereFirst(x => x.Id == NewMastEntity.Id, x => x.CivilSteelSupportCategory,
+                                                x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType, x => x.structureType);
+
+                                        CivilLibraryService._CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
                                     }
                                     else
                                     {
@@ -1563,7 +1567,10 @@ namespace TLIS_Service.Services
 
                                     MW_ODUTransaction.Complete();
 
-                                    MWLibraryService._MW_ODULibraryEntities.Add(NewMWODULibraryEntity);
+                                    var ObjectForAddInCashList = _unitOfWork.MW_ODULibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == NewMWODULibraryEntity.Id, x => x.parity);
+
+                                    MWLibraryService._MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -1896,7 +1903,10 @@ namespace TLIS_Service.Services
 
                                     RadioAntennaTransaction.Complete();
 
-                                    RadioLibraryService._RadioAntennaLibraryEntities.Add(NewRadioAntennaLibraryEntity);
+                                    var ObjectForAddInCashList = _unitOfWork.RadioAntennaLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == NewRadioAntennaLibraryEntity.Id);
+
+                                    RadioLibraryService._RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -2224,6 +2234,9 @@ namespace TLIS_Service.Services
 
                                     RadioRRUTransaction.Complete();
 
+                                    var ObjectForAddInCashList = _unitOfWork.RadioAntennaLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == NewRadioRRULibraryEntity.Id);
+
                                     RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
                                 }
                                 catch (Exception err)
@@ -2461,7 +2474,10 @@ namespace TLIS_Service.Services
 
                                     MW_RFUTransaction.Complete();
 
-                                    MWLibraryService._MW_RFULibraryEntities.Add(NewMW_RFULibraryEntity);
+                                    var ObjectForAddInCashList = _unitOfWork.MW_RFULibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == NewMW_RFULibraryEntity.Id, x => x.boardType, x => x.diversityType);
+
+                                    MWLibraryService._MW_RFULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -2852,7 +2868,10 @@ namespace TLIS_Service.Services
 
                                     MW_BUTransaction.Complete();
 
-                                    MWLibraryService._MW_BULibraryEntities.Add(MWBULibrary);
+                                    var ObjectForAddInCashList = _unitOfWork.MW_BULibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == MWBULibrary.Id, x => x.diversityType);
+
+                                    MWLibraryService._MW_BULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -3184,7 +3203,10 @@ namespace TLIS_Service.Services
 
                                     MW_BUTransaction.Complete();
 
-                                    MWLibraryService._MW_DishLibraryEntities.Add(NewMWDishLibraryEntity);
+                                    var ObjectForAddInCashList = _unitOfWork.MW_DishLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == NewMWDishLibraryEntity.Id, x => x.asType, x => x.polarityType);
+
+                                    MWLibraryService._MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -3524,7 +3546,10 @@ namespace TLIS_Service.Services
 
                                         PowerTransaction.Complete();
 
-                                        PowerLibraryService._PowerLibraryEntities.Add(NewPowerLibraryEntity);
+                                        var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
+                                            .GetIncludeWhereFirst(x => x.Id == NewPowerLibraryEntity.Id);
+
+                                        PowerLibraryService._PowerLibraryEntities.Add(ObjectForAddInCashList);
                                     }
                                 }
                                 catch (Exception err)
@@ -3793,7 +3818,11 @@ namespace TLIS_Service.Services
 
                                         CivilWithLegsTransaction.Complete();
 
-                                        CivilLibraryService._CivilWithLegLibraryEntities.Add(NewCivilWithLegsLibraryEntity);
+                                        var ObjectForAddInCashList = _unitOfWork.CivilWithLegLibraryRepository
+                                            .GetIncludeWhereFirst(x => x.Id == NewCivilWithLegsLibraryEntity.Id, x => x.civilSteelSupportCategory,
+                                                x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned);
+
+                                        CivilLibraryService._CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
 
                                         // Dimensions / Bottom_ Top /  between legs
                                         // Diagonal member dimension (at base plate) (Installation)

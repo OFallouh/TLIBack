@@ -146,7 +146,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegEntites);
                                     //SaveChangesAsync return int number if number bigger than zero then task is completed
                                     _unitOfWork.SaveChanges();
-                                    _CivilWithLegLibraryEntities.Add(CivilWithLegEntites);
 
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = CivilLibraryViewModel;
@@ -159,6 +158,15 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(civilWithLegLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, CivilWithLegEntites.Id);
                                     }
                                     //AddHistory(CivilWithLegEntites.Id, "Add", "TLIcivilWithLegLibrary");
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.CivilWithLegLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == CivilWithLegEntites.Id, x => x.civilSteelSupportCategory,
+                                            x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned);
+
+                                    _CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
@@ -205,7 +213,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.CivilWithoutLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithoutLegEntites);
                                     //SaveChangesAsync return int number if number bigger than zero then task is completed
                                     _unitOfWork.SaveChanges();
-                                    _CivilWithoutLegLibraryEntities.Add(CivilWithoutLegEntites);
 
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = CivilLibraryViewModel;
@@ -218,6 +225,15 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(withoutLegLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, CivilWithoutLegEntites.Id);
                                     }
                                     //AddHistory(CivilWithoutLegEntites.Id, "Add", "TLIcivilWithoutLegLibrary");
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.CivilWithoutLegLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == CivilWithoutLegEntites.Id, x => x.CivilWithoutLegCategory,
+                                            x => x.CivilSteelSupportCategory, x => x.structureType, x => x.InstallationCivilwithoutLegsType);
+
+                                    _CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
@@ -269,7 +285,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.CivilNonSteelLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, civilNonSteelLibraryEntity);
                                     //SaveChangesAsync return int number if number bigger than zero then task is completed
                                     _unitOfWork.SaveChanges();
-                                    _CivilNonSteelLibraryEntities.Add(civilNonSteelLibraryEntity);
 
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = CivilLibraryViewModel;
@@ -281,14 +296,21 @@ namespace TLIS_Service.Services
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(nonSteelLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, civilNonSteelLibraryEntity.Id);
                                     }
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.CivilNonSteelLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == civilNonSteelLibraryEntity.Id, x => x.civilNonSteelType);
+
+                                    _CivilNonSteelLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
                                     return new Response<AllItemAttributes>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                             }
-                            transaction.Complete();
-                            tran.Commit();
+                            
                             return new Response<AllItemAttributes>();
                         }
                         catch (Exception err)

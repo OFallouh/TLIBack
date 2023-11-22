@@ -421,8 +421,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.CabinetPowerLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, cabinetPowerLibrary);
                                     _unitOfWork.SaveChanges();
 
-                                    _CabinetPowerLibraryEntities.Add(cabinetPowerLibrary);
-
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = OtherInventoryLibraryViewModel;
 
@@ -433,6 +431,14 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(cabinetPowerLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, cabinetPowerLibrary.Id);
                                     }
                                     //AddHistory(cabinetPowerLibrary.Id, "Add", "TLIcabinetPowerLibrary");
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.CabinetPowerLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == cabinetPowerLibrary.Id, x => x.CabinetPowerType);
+
+                                    _CabinetPowerLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
@@ -472,8 +478,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.CabinetTelecomLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, cabinetTelecomLibrary);
                                     _unitOfWork.SaveChanges();
 
-                                    _CabinetTelecomLibraryEntities.Add(cabinetTelecomLibrary);
-
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = OtherInventoryLibraryViewModel;
 
@@ -483,6 +487,14 @@ namespace TLIS_Service.Services
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(cabinetTelecomLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, cabinetTelecomLibrary.Id);
                                     }
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.CabinetTelecomLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == cabinetTelecomLibrary.Id, x => x.TelecomType);
+
+                                    _CabinetTelecomLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
@@ -516,8 +528,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.GeneratorLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, generatorLibrary);
                                     _unitOfWork.SaveChanges();
 
-                                    _GeneratorLibraryEntities.Add(generatorLibrary);
-
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = OtherInventoryLibraryViewModel;
 
@@ -527,6 +537,14 @@ namespace TLIS_Service.Services
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(generatorLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, generatorLibrary.Id);
                                     }
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.GeneratorLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == generatorLibrary.Id, x => x.Capacity);
+
+                                    _GeneratorLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
@@ -560,8 +578,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.SolarLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, solarLibrary);
                                     _unitOfWork.SaveChanges();
 
-                                    _SolarLibraryEntities.Add(solarLibrary);
-
                                     dynamic LogisticalItemIds = new ExpandoObject();
                                     LogisticalItemIds = OtherInventoryLibraryViewModel;
 
@@ -571,14 +587,21 @@ namespace TLIS_Service.Services
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(solarLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, solarLibrary.Id);
                                     }
+
+                                    transaction.Complete();
+                                    tran.Commit();
+
+                                    var ObjectForAddInCashList = _unitOfWork.SolarLibraryRepository
+                                        .GetIncludeWhereFirst(x => x.Id == solarLibrary.Id, x => x.Capacity);
+
+                                    _SolarLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 else
                                 {
                                     return new Response<AllItemAttributes>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
                             }
-                            transaction.Complete();
-                            tran.Commit();
+                            
                             return new Response<AllItemAttributes>();
                         }
                         catch (Exception err)

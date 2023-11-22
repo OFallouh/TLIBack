@@ -203,7 +203,10 @@ namespace TLIS_Service.Services
                             transaction.Complete();
                             tran.Commit();
 
-                            _SideArmLibraryEntities.Add(tLIsideArmLibrary);
+                            var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
+                                .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
+
+                            _SideArmLibraryEntities.Add(ObjectForAddInCashList);
 
                             return new Response<SideArmLibraryViewModel>();
                         }

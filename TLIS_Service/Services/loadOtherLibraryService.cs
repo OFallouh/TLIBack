@@ -121,7 +121,10 @@ namespace TLIS_Service.Services
                                 transaction.Complete();
                                 tran.Commit();
 
-                                _LoadOtherLibraryEntities.Add(loadOtherLibrary);
+                                var ObjectForAddInCashList = _unitOfWork.LoadOtherLibraryRepository
+                                    .GetIncludeWhereFirst(x => x.Id == loadOtherLibrary.Id);
+
+                                _LoadOtherLibraryEntities.Add(ObjectForAddInCashList);
                             }
                             else
                             {
