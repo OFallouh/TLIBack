@@ -1620,6 +1620,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIuser_Permissions, NewPermissionsViewModel > ().ReverseMap();
             CreateMap<TLIrole_Permissions, NewPermissionsViewModel>().ReverseMap();
             CreateMap<TLIuser, UserNameViewModel>().ReverseMap();
+            CreateMap<TLIuser, EscalationViewModel>().ReverseMap();
             CreateMap<TLIuser, UserWithoutGroupViewModel>().ReverseMap();
         }
        
