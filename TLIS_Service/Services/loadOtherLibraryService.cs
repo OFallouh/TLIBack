@@ -610,7 +610,11 @@ namespace TLIS_Service.Services
                     transaction.Complete();
 
                     _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == LoadOtherLibrary.Id));
-                    _LoadOtherLibraryEntities.Add(LoadOtherLibrary);
+
+                    var ObjectForAddInCashList = _unitOfWork.LoadOtherLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == LoadOtherLibrary.Id);
+
+                    _LoadOtherLibraryEntities.Add(ObjectForAddInCashList);
 
                     return new Response<AllItemAttributes>();
                 }

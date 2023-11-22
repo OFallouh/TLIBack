@@ -1082,7 +1082,12 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _CivilWithLegLibraryEntities.Remove(_CivilWithLegLibraryEntities.FirstOrDefault(x => x.Id == CivilWithLegLibraryEntites.Id));
-                        _CivilWithLegLibraryEntities.Add(CivilWithLegLibraryEntites);
+
+                        var ObjectForAddInCashList = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == CivilWithLegLibraryEntites.Id, x => x.civilSteelSupportCategory,
+                                x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned);
+
+                        _CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1184,7 +1189,12 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _CivilWithoutLegLibraryEntities.Remove(_CivilWithoutLegLibraryEntities.FirstOrDefault(x => x.Id == CivilWithoutLegLibraryEntites.Id));
-                        _CivilWithoutLegLibraryEntities.Add(CivilWithoutLegLibraryEntites);
+
+                        var ObjectForAddInCashList = _unitOfWork.CivilWithoutLegLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == CivilWithoutLegLibraryEntites.Id, x => x.CivilSteelSupportCategory,
+                                x => x.CivilWithoutLegCategory, x => x.structureType, x => x.InstallationCivilwithoutLegsType);
+
+                        _CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1275,7 +1285,11 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _CivilNonSteelLibraryEntities.Remove(_CivilNonSteelLibraryEntities.FirstOrDefault(x => x.Id == civilNonSteelLibraryEntites.Id));
-                        _CivilNonSteelLibraryEntities.Add(civilNonSteelLibraryEntites);
+
+                        var ObjectForAddInCashList = _unitOfWork.CivilNonSteelLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == civilNonSteelLibraryEntites.Id, x => x.civilNonSteelType);
+
+                        _CivilNonSteelLibraryEntities.Add(ObjectForAddInCashList);
                     }
 
                     transaction.Complete();

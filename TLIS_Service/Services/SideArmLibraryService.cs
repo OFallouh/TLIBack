@@ -683,7 +683,11 @@ namespace TLIS_Service.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 _SideArmLibraryEntities.Remove(_SideArmLibraryEntities.FirstOrDefault(x => x.Id == tLIsideArmLibrary.Id));
-                _SideArmLibraryEntities.Add(tLIsideArmLibrary);
+
+                var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
+
+                _SideArmLibraryEntities.Add(ObjectForAddInCashList);
 
                 return new Response<SideArmLibraryViewModel>();
             }

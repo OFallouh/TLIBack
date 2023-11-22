@@ -1164,7 +1164,11 @@ namespace TLIS_Service.Services
                     transaction2.Complete();
 
                     _PowerLibraryEntities.Remove(_PowerLibraryEntities.FirstOrDefault(x => x.Id == PowerLibrary.Id));
-                    _PowerLibraryEntities.Add(PowerLibrary);
+
+                    var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == PowerLibrary.Id);
+
+                    _PowerLibraryEntities.Add(ObjectForAddInCashList);
 
                     return new Response<AllItemAttributes>();
                 }

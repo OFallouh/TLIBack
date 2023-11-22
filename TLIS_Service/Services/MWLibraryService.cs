@@ -4647,7 +4647,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _MW_BULibraryEntities.Remove(_MW_BULibraryEntities.FirstOrDefault(x => x.Id == MW_BULibraryEntity.Id));
-                        _MW_BULibraryEntities.Add(MW_BULibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.MW_BULibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == MW_BULibraryEntity.Id, x => x.diversityType);
+
+                        _MW_BULibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                     {
@@ -4749,7 +4753,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _MW_DishLibraryEntities.Remove(_MW_DishLibraryEntities.FirstOrDefault(x => x.Id == MW_DishLibraryEntity.Id));
-                        _MW_DishLibraryEntities.Add(MW_DishLibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.MW_DishLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == MW_DishLibraryEntity.Id, x => x.asType, x => x.polarityType);
+
+                        _MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                     {
@@ -4852,7 +4860,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _MW_ODULibraryEntities.Remove(_MW_ODULibraryEntities.FirstOrDefault(x => x.Id == MW_ODULibraryEntity.Id));
-                        _MW_ODULibraryEntities.Add(MW_ODULibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.MW_ODULibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == MW_ODULibraryEntity.Id, x => x.parity);
+
+                        _MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                     {
@@ -4951,7 +4963,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _MW_RFULibraryEntities.Remove(_MW_RFULibraryEntities.FirstOrDefault(x => x.Id == MW_RFULibraryEntity.Id));
-                        _MW_RFULibraryEntities.Add(MW_RFULibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.MW_RFULibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == MW_RFULibraryEntity.Id, x => x.boardType, x => x.diversityType);
+
+                        _MW_RFULibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                     {
@@ -5054,7 +5070,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _MW_OtherLibraryEntities.Remove(_MW_OtherLibraryEntities.FirstOrDefault(x => x.Id == MW_OtherLibraryEntity.Id));
-                        _MW_OtherLibraryEntities.Add(MW_OtherLibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.MW_OtherLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == MW_OtherLibraryEntity.Id);
+
+                        _MW_OtherLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }

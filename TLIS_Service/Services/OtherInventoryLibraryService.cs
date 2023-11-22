@@ -1503,7 +1503,11 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _CabinetPowerLibraryEntities.Remove(_CabinetPowerLibraryEntities.FirstOrDefault(x => x.Id == CabinetPowerLibraryEntity.Id));
-                        _CabinetPowerLibraryEntities.Add(CabinetPowerLibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.CabinetPowerLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == CabinetPowerLibraryEntity.Id, x => x.CabinetPowerType);
+
+                        _CabinetPowerLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1608,7 +1612,11 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _CabinetTelecomLibraryEntities.Remove(_CabinetTelecomLibraryEntities.FirstOrDefault(x => x.Id == CabinetTelecomLibraryEntity.Id));
-                        _CabinetTelecomLibraryEntities.Add(CabinetTelecomLibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.CabinetTelecomLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == CabinetTelecomLibraryEntity.Id, x => x.TelecomType);
+
+                        _CabinetTelecomLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (OtherInventoryType.TLIgeneratorLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1704,7 +1712,11 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _GeneratorLibraryEntities.Remove(_GeneratorLibraryEntities.FirstOrDefault(x => x.Id == GeneratorLibraryEntity.Id));
-                        _GeneratorLibraryEntities.Add(GeneratorLibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.GeneratorLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == GeneratorLibraryEntity.Id, x => x.Capacity);
+
+                        _GeneratorLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (OtherInventoryType.TLIsolarLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -1804,7 +1816,11 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
 
                         _SolarLibraryEntities.Remove(_SolarLibraryEntities.FirstOrDefault(x => x.Id == SolarLibraryEntity.Id));
-                        _SolarLibraryEntities.Add(SolarLibraryEntity);
+
+                        var ObjectForAddInCashList = _unitOfWork.SolarLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == SolarLibraryEntity.Id, x => x.Capacity);
+
+                        _SolarLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     transaction.Complete();
                     return new Response<AllItemAttributes>();

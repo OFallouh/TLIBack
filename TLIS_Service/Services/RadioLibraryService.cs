@@ -2686,7 +2686,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _RadioAntennaLibraryEntities.Remove(_RadioAntennaLibraryEntities.FirstOrDefault(x => x.Id == radioAntennaLibrary.Id));
-                        _RadioAntennaLibraryEntities.Add(radioAntennaLibrary);
+
+                        var ObjectForAddInCashList = _unitOfWork.RadioAntennaLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == radioAntennaLibrary.Id);
+
+                        _RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2785,7 +2789,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _RadioOtherLibraryEntities.Remove(_RadioOtherLibraryEntities.FirstOrDefault(x => x.Id == radioOther.Id));
-                        _RadioOtherLibraryEntities.Add(radioOther);
+
+                        var ObjectForAddInCashList = _unitOfWork.RadioOtherLibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == radioOther.Id);
+
+                        _RadioOtherLibraryEntities.Add(ObjectForAddInCashList);
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2884,7 +2892,11 @@ namespace TLIS_Service.Services
                         transaction.Complete();
 
                         _RadioRRULibraryEntities.Remove(_RadioRRULibraryEntities.FirstOrDefault(x => x.Id == radioRRULibrary.Id));
-                        _RadioRRULibraryEntities.Add(radioRRULibrary);
+
+                        var ObjectForAddInCashList = _unitOfWork.RadioRRULibraryRepository
+                            .GetIncludeWhereFirst(x => x.Id == radioRRULibrary.Id);
+
+                        _RadioRRULibraryEntities.Add(ObjectForAddInCashList);
                     }
                     return new Response<AllItemAttributes>();
                 }
