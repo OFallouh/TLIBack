@@ -43,22 +43,16 @@ namespace TLIS_Service.Services
         private IMapper _mapper;
 
         // Radio Antenna..
-        public static List<TLIattributeActivated> _RadioAntennaLibraryAttributeActivated;
-        public static List<TLIdynamicAtt> _RadioAntennaLibraryDynamicAttributes;
         public static List<TLIradioAntennaLibrary> _RadioAntennaLibraryEntities;
-        public static List<TLIattributeViewManagment> _RadioAntennaLibraryAllAttributesViewManagement;
 
         // Radio RRU..
-        public static List<TLIattributeActivated> _RadioRRULibraryAttributeActivated;
-        public static List<TLIdynamicAtt> _RadioRRULibraryDynamicAttributes;
         public static List<TLIradioRRULibrary> _RadioRRULibraryEntities;
-        public static List<TLIattributeViewManagment> _RadioRRULibraryAllAttributesViewManagement;
 
         // Radio Other..
-        public static List<TLIattributeActivated> _RadioOtherLibraryAttributeActivated;
-        public static List<TLIdynamicAtt> _RadioOtherLibraryDynamicAttributes;
+        // public static List<TLIattributeActivated> _RadioOtherLibraryAttributeActivated;
+        // public static List<TLIdynamicAtt> _RadioOtherLibraryDynamicAttributes;
         public static List<TLIradioOtherLibrary> _RadioOtherLibraryEntities;
-        public static List<TLIattributeViewManagment> _RadioOtherLibraryAllAttributesViewManagement;
+        // public static List<TLIattributeViewManagment> _RadioOtherLibraryAllAttributesViewManagement;
 
         public RadioLibraryService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
         {
@@ -182,7 +176,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_RadioAntennaLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
                     (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
@@ -200,28 +194,8 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    _RadioAntennaLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
-                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioAntennaLibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString())
-                    .Select(x => x.AttributeActivated).ToList();
-
-                    _RadioAntennaLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()).ToList();
-
                     _RadioAntennaLibraryEntities = _unitOfWork.RadioAntennaLibraryRepository
                         .GetWhere(x => !x.Deleted).ToList();
-
-                    _RadioAntennaLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                       (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioAntennaLibrary.ToString() &&
-                       (x.AttributeActivatedId != null ?
-                            (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString() && x.AttributeActivated.enable) :
-                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()))) ||
-                        (x.AttributeActivated != null ?
-                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
-                            x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()) : false)).ToList();
                 }
 
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
@@ -240,7 +214,12 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    RadioAntennaLibraryAttribute = _RadioAntennaLibraryAttributeActivated;
+                    RadioAntennaLibraryAttribute = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioAntennaLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -275,8 +254,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _RadioAntennaLibraryDynamicAttributes.Where(x =>
-                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> LibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -395,8 +377,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _RadioAntennaLibraryDynamicAttributes.Where(x =>
-                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -508,7 +493,14 @@ namespace TLIS_Service.Services
                 RadioAntennaLibraries = RadioAntennaLibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = _RadioAntennaLibraryAllAttributesViewManagement;
+                List<TLIattributeViewManagment> AllAttributes = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioAntennaLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
+                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()) : false)).ToList();
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -575,9 +567,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _RadioAntennaLibraryDynamicAttributes.Where(x =>
+                    
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -641,9 +636,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = _RadioAntennaLibraryDynamicAttributes.Where(x =>
+                    
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString()).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
@@ -688,7 +686,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_RadioRRULibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
                     (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
@@ -706,28 +704,8 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    _RadioRRULibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
-                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioRRULibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString())
-                    .Select(x => x.AttributeActivated).ToList();
-
-                    _RadioRRULibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()).ToList();
-
                     _RadioRRULibraryEntities = _unitOfWork.RadioRRULibraryRepository
                         .GetWhere(x => !x.Deleted).ToList();
-
-                    _RadioRRULibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                        (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioRRULibrary.ToString() &&
-                        (x.AttributeActivatedId != null ?
-                            (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString() && x.AttributeActivated.enable) :
-                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()))) ||
-                        (x.AttributeActivated != null ?
-                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
-                            x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()) : false)).ToList();
                 }
 
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
@@ -746,7 +724,12 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    RadioRRULibraryAttribute = _RadioRRULibraryAttributeActivated;
+                    RadioRRULibraryAttribute = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioRRULibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -781,8 +764,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _RadioRRULibraryDynamicAttributes.Where(x =>
-                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> LibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -901,8 +887,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _RadioRRULibraryDynamicAttributes.Where(x =>
-                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1014,7 +1003,14 @@ namespace TLIS_Service.Services
                 RadioRRULibraries = RadioRRULibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = _RadioRRULibraryAllAttributesViewManagement;
+                List<TLIattributeViewManagment> AllAttributes = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioRRULibrary.ToString() &&
+                    (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
+                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()) : false)).ToList();
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -1081,9 +1077,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _RadioRRULibraryDynamicAttributes.Where(x =>
+                    
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -1147,9 +1146,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = _RadioRRULibraryDynamicAttributes.Where(x =>
+
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString()).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
@@ -1193,7 +1195,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_RadioOtherLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
                     (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
@@ -1211,28 +1213,8 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    _RadioOtherLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
-                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioOtherLibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString())
-                    .Select(x => x.AttributeActivated).ToList();
-
-                    _RadioOtherLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()).ToList();
-
                     _RadioOtherLibraryEntities = _unitOfWork.RadioOtherLibraryRepository
                         .GetWhere(x => !x.Deleted).ToList();
-
-                    _RadioOtherLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                       (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioOtherLibrary.ToString() &&
-                       (x.AttributeActivatedId != null ?
-                            (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString() && x.AttributeActivated.enable) :
-                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()))) ||
-                        (x.AttributeActivated != null ?
-                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
-                            x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()) : false)).ToList();
                 }
 
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
@@ -1251,7 +1233,12 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    RadioOtherLibraryAttribute = _RadioOtherLibraryAttributeActivated;
+                    RadioOtherLibraryAttribute = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioOtherLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -1286,8 +1273,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _RadioOtherLibraryDynamicAttributes.Where(x =>
-                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> LibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1406,8 +1396,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _RadioOtherLibraryDynamicAttributes.Where(x =>
-                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1519,7 +1512,14 @@ namespace TLIS_Service.Services
                 RadioOtherLibraries = RadioOtherLibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = _RadioOtherLibraryAllAttributesViewManagement;
+                List<TLIattributeViewManagment> AllAttributes = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                   (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.RadioOtherLibrary.ToString() &&
+                   (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
+                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()) : false)).ToList();
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -1586,9 +1586,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _RadioOtherLibraryDynamicAttributes.Where(x =>
+                    
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -1652,9 +1655,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = _RadioOtherLibraryDynamicAttributes.Where(x =>
+
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id)).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString()).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {

@@ -39,10 +39,7 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         private IMapper _mapper;
 
-        public static List<TLIattributeActivated> _PowerLibraryAttributeActivated;
-        public static List<TLIdynamicAtt> _PowerLibraryDynamicAttributes;
         public static List<TLIpowerLibrary> _PowerLibraryEntities;
-        public static List<TLIattributeViewManagment> _PowerLibraryAllAttributesViewManagement;
 
         public PowerLibraryService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper)
         {
@@ -122,7 +119,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (_PowerLibraryAllAttributesViewManagement == null || UnitOfWork.AllDynamicAttribute == null ||
+                if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
                     (isRefresh != null ? isRefresh.Value : false))
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
@@ -140,28 +137,8 @@ namespace TLIS_Service.Services
                                 x => x.tablesNames).ToList();
                     }
 
-                    _PowerLibraryAttributeActivated = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                        x.Enable && x.AttributeActivatedId != null &&
-                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
-                        x.EditableManagmentView.View == EditableManamgmantViewNames.PowerLibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == TablesNames.TLIpowerLibrary.ToString())
-                    .Select(x => x.AttributeActivated).ToList();
-
-                    _PowerLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()).ToList();
-
                     _PowerLibraryEntities = _unitOfWork.PowerLibraryRepository
                         .GetWhere(x => !x.Deleted).ToList();
-
-                    _PowerLibraryAllAttributesViewManagement = UnitOfWork.AllAttributeViewManagment.Where(x =>
-                       (x.Enable && x.EditableManagmentView.View == EditableManamgmantViewNames.PowerLibrary.ToString() &&
-                       (x.AttributeActivatedId != null ?
-                            (x.AttributeActivated.Tabel == TablesNames.TLIpowerLibrary.ToString() && x.AttributeActivated.enable) :
-                            (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()))) ||
-                        (x.AttributeActivated != null ?
-                            ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
-                            x.AttributeActivated.Tabel == TablesNames.TLIpowerLibrary.ToString()) : false)).ToList();
                 }
 
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
@@ -180,7 +157,12 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    PowerLibraryAttribute = _PowerLibraryAttributeActivated;
+                    PowerLibraryAttribute = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                        x.Enable && x.AttributeActivatedId != null &&
+                        x.AttributeActivated.DataType.ToLower() != "datetime" &&
+                        x.EditableManagmentView.View == EditableManamgmantViewNames.PowerLibrary.ToString() &&
+                        x.EditableManagmentView.TLItablesNames1.TableName == TablesNames.TLIpowerLibrary.ToString())
+                    .Select(x => x.AttributeActivated).ToList();
                 }
 
                 if (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0)
@@ -215,8 +197,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> LibDynamicAttListIds = _PowerLibraryDynamicAttributes.Where(x =>
-                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> LibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -335,8 +320,11 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _PowerLibraryDynamicAttributes.Where(x =>
-                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower())).ToList();
+                    
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                        AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -448,7 +436,14 @@ namespace TLIS_Service.Services
                 PowersLibraries = PowersLibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = _PowerLibraryAllAttributesViewManagement;
+                List<TLIattributeViewManagment> AllAttributes = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    (x.Enable && x.EditableManagmentView.View == EditableManamgmantViewNames.PowerLibrary.ToString() &&
+                    (x.AttributeActivatedId != null ?
+                        (x.AttributeActivated.Tabel == TablesNames.TLIpowerLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()))) ||
+                    (x.AttributeActivated != null ?
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
+                        x.AttributeActivated.Tabel == TablesNames.TLIpowerLibrary.ToString()) : false)).ToList();
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -515,10 +510,12 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _PowerLibraryDynamicAttributes.Where(x =>
+                    
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.Select(x => x.DynamicAttId).Contains(x.Id)).ToList();
+                        NotDateTimeDynamicLibraryAttributesViewModel.Select(x => x.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
@@ -582,9 +579,11 @@ namespace TLIS_Service.Services
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
 
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = _PowerLibraryDynamicAttributes.Where(x =>
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
                         x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.Select(x => x.DynamicAttId).Contains(x.Id)).ToList();
+                        DateTimeDynamicLibraryAttributesViewModel.Select(x => x.DynamicAttId).Contains(x.Id) &&
+                        x.LibraryAtt && !x.disable &&
+                        x.tablesNames.TableName == TablesNames.TLIpowerLibrary.ToString()).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {

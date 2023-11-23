@@ -10784,19 +10784,21 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(RecordId);
+                TLIdynamicAtt DynamicAtt = _unitOfWork.DynamicAttRepository
+                    .GetIncludeWhereFirst(x => x.Id == RecordId, x => x.CivilWithoutLegCategory, x => x.DataType,
+                        x => x.tablesNames);
+
                 DynamicAtt.disable = !(DynamicAtt.disable);
 
                 if (DynamicAtt.disable)
                     DynamicAtt.Required = false;
+                
+                _unitOfWork.SaveChanges();
 
-                UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.DynamicAttId != null ?
-                    x.DynamicAttId == RecordId : false)
-                    .DynamicAtt = DynamicAtt;
+                UnitOfWork.AllAttributeViewManagment.FirstOrDefault(x => x.DynamicAttId == RecordId).DynamicAtt = DynamicAtt;
                 UnitOfWork.AllDynamicAttribute.FirstOrDefault(x => x.Id == RecordId).disable = DynamicAtt.disable;
                 UnitOfWork.AllDynamicAttribute.FirstOrDefault(x => x.Id == RecordId).Required = DynamicAtt.Required;
 
-                _unitOfWork.SaveChanges();
                 return new Response<DynamicAttViewModel>();
             }
             catch (Exception err)
