@@ -200,10 +200,14 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<SideArmLibraryViewModel>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            
+                            var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
+                                .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
+
                             transaction.Complete();
                             tran.Commit();
 
-                            _SideArmLibraryEntities.Add(tLIsideArmLibrary);
+                            _SideArmLibraryEntities.Add(ObjectForAddInCashList);
 
                             return new Response<SideArmLibraryViewModel>();
                         }
@@ -683,7 +687,11 @@ namespace TLIS_Service.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 _SideArmLibraryEntities.Remove(_SideArmLibraryEntities.FirstOrDefault(x => x.Id == tLIsideArmLibrary.Id));
-                _SideArmLibraryEntities.Add(tLIsideArmLibrary);
+
+                var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
+
+                _SideArmLibraryEntities.Add(ObjectForAddInCashList);
 
                 return new Response<SideArmLibraryViewModel>();
             }

@@ -118,10 +118,13 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(LoadOtherLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, loadOtherLibrary.Id);
                                 }
                                 
+                                var ObjectForAddInCashList = _unitOfWork.LoadOtherLibraryRepository
+                                    .GetIncludeWhereFirst(x => x.Id == loadOtherLibrary.Id);
+
                                 transaction.Complete();
                                 tran.Commit();
 
-                                _LoadOtherLibraryEntities.Add(loadOtherLibrary);
+                                _LoadOtherLibraryEntities.Add(ObjectForAddInCashList);
                             }
                             else
                             {
@@ -610,7 +613,11 @@ namespace TLIS_Service.Services
                     transaction.Complete();
 
                     _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == LoadOtherLibrary.Id));
-                    _LoadOtherLibraryEntities.Add(LoadOtherLibrary);
+
+                    var ObjectForAddInCashList = _unitOfWork.LoadOtherLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == LoadOtherLibrary.Id);
+
+                    _LoadOtherLibraryEntities.Add(ObjectForAddInCashList);
 
                     return new Response<AllItemAttributes>();
                 }
