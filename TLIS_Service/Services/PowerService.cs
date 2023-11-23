@@ -2450,28 +2450,26 @@ namespace TLIS_Service.Services
                     if (FKitem.Desc.ToLower() == "tliowner")
                     {
                         if (Power.owner == null)
-                            FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                            FKitem.Value = "NA";
 
                         else
-                            FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == Power.owner.Id).OwnerName;
+                            FKitem.Value = Power.owner.OwnerName;
                     }
                     else if (FKitem.Desc.ToLower() == "tlipowertype")
                     {
                         if (Power.powerType == null)
-                            FKitem.Value = _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                            FKitem.Value = "NA";
 
                         else
-                            FKitem.Value = FKitem.Value = _unitOfWork.PowerTypeRepository.GetWhereFirst(x => x.Id == Power.powerType.Id).Name;
-                        ;
+                            FKitem.Value = Power.powerType.Name;
                     }
                     else if (FKitem.Desc.ToLower() == "tlipowerlibrary")
                     {
                         if (Power.powerLibrary == null)
-                            FKitem.Value = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                            FKitem.Value = "NA";
 
                         else
-                            FKitem.Value = FKitem.Value = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == Power.powerLibrary.Id).Model;
-                        ;
+                            FKitem.Value = Power.powerLibrary.Model;
                     }
                 }
 

@@ -6528,18 +6528,24 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlibasebu")
                         {
                             if (mw_BU.baseBU == null)
-                                FKitem.Value = _unitOfWork.BaseBURepository.GetWhereFirst(x => x.Id == 0).Name;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.BaseBURepository.GetWhereFirst(x => x.Id == mw_BU.baseBU.Id && !x.Deleted && !x.Disable).Name;
+                            {
+                                FKitem.Value = mw_BU.baseBU.Name;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (mw_BU.Owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == mw_BU.Owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                            {
+                                FKitem.Value = mw_BU.Owner.OwnerName;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwdish")
                         {
@@ -6548,29 +6554,38 @@ namespace TLIS_Service.Services
 
                             else
                             {
-                                FKitem.Value = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == mw_BU.MainDish.Id).DishName;
+                                FKitem.Value = mw_BU.MainDish.DishName;
                             }
 
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwbulibrary")
                         {
                             if (mw_BU.MwBULibrary == null)
-                                FKitem.Value = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == mw_BU.MwBULibrary.Id && !x.Deleted && x.Active == true).Model;
+                            {
+                                FKitem.Value = mw_BU.MwBULibrary.Model;
+                            }
                         }
 
                         else if (FKitem.Desc.ToLower() == "tlimwport")
                         {
-                            if (mw_BU.PortCascadeId == null || mw_BU.PortCascadeId == 0)
+                            if (mw_BU.PortCascadeId == 0)
                                 FKitem.Value = "NA";
 
                             else
                             {
-                                FKitem.Value = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id == mw_BU.PortCascadeId).Port_Name;
-                                FKitem.Id = mw_BU.PortCascadeId;
+                                var PortCascadeId = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id == mw_BU.PortCascadeId);
 
+                                if (PortCascadeId != null)
+                                {
+                                    FKitem.Value = PortCascadeId.Port_Name;
+                                    FKitem.Id = mw_BU.PortCascadeId;
+                                }
+                                else
+                                    FKitem.Value = "NA";
                             }
                         }
                     }
@@ -7122,9 +7137,11 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (MW_ODU.Owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetByID((int)FKitem.Value).OwnerName;
+                                FKitem.Value = "NA";
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == MW_ODU.Owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                            {
+                                FKitem.Value = MW_ODU.Owner.OwnerName;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwdish")
                         {
@@ -7133,18 +7150,19 @@ namespace TLIS_Service.Services
 
                             else
                             {
-
-                                FKitem.Value = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == MW_ODU.Mw_Dish.Id).DishName; ;
+                                FKitem.Value = MW_ODU.Mw_Dish.DishName;
                             }
 
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwodulibrary")
                         {
                             if (MW_ODU.MwODULibrary == null)
-                                FKitem.Value = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Id == MW_ODU.MwODULibrary.Id && !x.Deleted && x.Active == true).Model;
+                            {
+                                FKitem.Value = MW_ODU.MwODULibrary.Model;
+                            }
                         }
                     }
 
@@ -7653,42 +7671,55 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (MW_Dish.owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == MW_Dish.owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                            {
+                                FKitem.Value = MW_Dish.owner.OwnerName;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlirepeatertype")
                         {
                             if (MW_Dish.RepeaterType == null)
-                                FKitem.Value = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == MW_Dish.RepeaterType.Id && !x.Deleted && x.Disable == false).Name;
+                            {
+                                FKitem.Value = MW_Dish.RepeaterType.Name;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlipolarityonlocation")
                         {
                             if (MW_Dish.PolarityOnLocation == null)
-                                FKitem.Value = _unitOfWork.PolarityOnLocationRepository.GetWhereFirst(x => x.Id == 0).Name;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.PolarityOnLocationRepository.GetWhereFirst(x => x.Id == MW_Dish.PolarityOnLocation.Id && !x.Deleted && x.Disable == false).Name;
+                            {
+                                FKitem.Value = MW_Dish.PolarityOnLocation.Name;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tliitemconnectto")
                         {
                             if (MW_Dish.ItemConnectTo == null)
-                                FKitem.Value = _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == 0).Name;
-
+                            {
+                                FKitem.Value = "NA";
+                            }
                             else
-                                FKitem.Value = _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == MW_Dish.ItemConnectTo.Id && !x.Deleted && x.Disable == false).Name;
+                            {
+                                FKitem.Value = MW_Dish.ItemConnectTo.Name;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwdishlibrary")
                         {
                             if (MW_Dish.MwDishLibrary == null)
-                                FKitem.Value = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
-
+                                FKitem.Value = "NA";
                             else
-                                FKitem.Value = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == MW_Dish.MwDishLibrary.Id && !x.Deleted && x.Active == true).Model;
+                            {
+                                FKitem.Value = MW_Dish.MwDishLibrary.Model;
+                            }
                         }
                     }
 
@@ -8072,28 +8103,33 @@ namespace TLIS_Service.Services
                     {
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
-
                             if (MW_RFU.Owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == MW_RFU.Owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                            {
+                                FKitem.Value = MW_RFU.Owner.OwnerName;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwport")
                         {
                             if (MW_RFU.MwPort == null)
-                                FKitem.Value = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id == 0).Port_Name;
+                                FKitem.Value = "NA";
 
                             else
+                            {
                                 FKitem.Value = MW_RFU.MwPort.Port_Name;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlimwrfulibrary")
                         {
                             if (MW_RFU.MwRFULibrary == null)
-                                FKitem.Value = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == MW_RFU.MwRFULibrary.Id && !x.Deleted && x.Active == true).Model;
+                            {
+                                FKitem.Value = MW_RFU.MwRFULibrary.Model;
+                            }
                         }
                     }
                     objectInst.AttributesActivated = ListAttributesActivated;
@@ -8381,10 +8417,12 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlimwotherlibrary")
                         {
                             if (mwOther.mwOtherLibrary == null)
-                                FKitem.Value = _unitOfWork.MW_OtherLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.MW_OtherLibraryRepository.GetWhereFirst(x => x.Id == mwOther.mwOtherLibrary.Id && !x.Deleted && x.Active == true).Model;
+                            {
+                                FKitem.Value = mwOther.mwOtherLibrary.Model;
+                            }
                         }
                     }
                     objectInst.AttributesActivated = ListAttributesActivated;

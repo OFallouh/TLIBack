@@ -2064,7 +2064,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "supporttypedesigned_name")
                         {
                             if (FK_SupportTypeDesigned_Name == null)
-                                FKitem.Value = _unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_SupportTypeDesigned_Name;
@@ -2072,7 +2072,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "sectionslegtype_name")
                         {
                             if (FK_SectionsLegType_Name == null)
-                                FKitem.Value = _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_SectionsLegType_Name;
@@ -2080,7 +2080,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "structuretype_name")
                         {
                             if (FK_StructureType_Name == null)
-                                FKitem.Value = _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_StructureType_Name;
@@ -2089,7 +2089,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
                         {
                             if (FK_CivilSteelSupportCategory_Name == null)
-                                FKitem.Value = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_CivilSteelSupportCategory_Name;
@@ -2117,7 +2117,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
                         {
                             if (FK_CivilSteelSupportCategory_Name == null)
-                                FKitem.Value = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_CivilSteelSupportCategory_Name;
@@ -2125,7 +2125,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                         {
                             if (FK_CivilWithoutLegCategory_Name == null)
-                                FKitem.Value = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_CivilWithoutLegCategory_Name;
@@ -2133,7 +2133,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
                         {
                             if (FK_InstallationCivilwithoutLegsType_Name == null)
-                                FKitem.Value = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_InstallationCivilwithoutLegsType_Name;
@@ -2141,7 +2141,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "structuretype_name")
                         {
                             if (FK_structureType_Name == null)
-                                FKitem.Value = _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_structureType_Name;
@@ -2162,7 +2162,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "civilnonsteeltype_name")
                         {
                             if (FK_civilNonSteelType_Name == null)
-                                FKitem.Value = _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_civilNonSteelType_Name;

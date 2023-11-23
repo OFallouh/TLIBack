@@ -429,7 +429,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "diversitytype_name")
                         {
                             if (FK_DiversityType_Name == null)
-                                FKitem.Value = _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_DiversityType_Name;
@@ -452,7 +452,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "polaritytype_name")
                         {
                             if (FK_PolarityType_Name == null)
-                                FKitem.Value = _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_PolarityType_Name;
@@ -460,7 +460,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "astype_name")
                         {
                             if (FK_AsType_Name == null)
-                                FKitem.Value = _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_AsType_Name;
@@ -481,7 +481,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "parity_name")
                         {
                             if (FK_Parity_Name == null)
-                                FKitem.Value = _unitOfWork.ParityRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_Parity_Name;
@@ -504,7 +504,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "boardtype_name")
                         {
                             if (FK_BoardType_Name == null)
-                                FKitem.Value = _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_BoardType_Name;
@@ -512,7 +512,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "diversitytype_name")
                         {
                             if (FK_DiversityType_Name == null)
-                                FKitem.Value = _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_DiversityType_Name;

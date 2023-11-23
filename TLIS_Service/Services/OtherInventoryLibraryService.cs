@@ -2709,7 +2709,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "cabinetpowertype_name")
                         {
                             if (FK_CabinetPowerType_Name == null)
-                                FKitem.Value = _unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_CabinetPowerType_Name;
@@ -2730,7 +2730,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "telecomtype_name")
                         {
                             if (FK_TelecomType_Name == null)
-                                FKitem.Value = _unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_TelecomType_Name;
@@ -2751,7 +2751,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "capacity_name")
                         {
                             if (FK_Capacity_Name == null)
-                                FKitem.Value = _unitOfWork.CapacityRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_Capacity_Name;
@@ -2772,7 +2772,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "capacity_name")
                         {
                             if (FK_Capacity_Name == null)
-                                FKitem.Value = _unitOfWork.CapacityRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = FK_Capacity_Name;

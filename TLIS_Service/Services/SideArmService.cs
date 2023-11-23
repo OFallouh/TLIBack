@@ -544,7 +544,7 @@ namespace TLIS_Service.Services
                     if (FKitem.Desc.ToLower() == "tliowner")
                     {
                         if (side.owner == null)
-                            FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                            FKitem.Value = "NA";
 
                         else
                             FKitem.Value = side.owner.OwnerName;
@@ -552,7 +552,7 @@ namespace TLIS_Service.Services
                     else if (FKitem.Desc.ToLower() == "tlisidearminstallationplace")
                     {
                         if (side.sideArmInstallationPlace == null)
-                            FKitem.Value = _unitOfWork.SideArmInstallationPlaceRepository.GetWhereFirst(x => x.Id == 0).Name;
+                            FKitem.Value = "NA";
 
                         else
                             FKitem.Value = side.sideArmInstallationPlace.Name;
@@ -560,7 +560,7 @@ namespace TLIS_Service.Services
                     else if (FKitem.Desc.ToLower() == "tlisidearmtype")
                     {
                         if (side.sideArmType == null)
-                            FKitem.Value = _unitOfWork.SideArmTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                            FKitem.Value = "NA";
 
                         else
                             FKitem.Value = side.sideArmType.Name;
@@ -568,7 +568,7 @@ namespace TLIS_Service.Services
                     else if (FKitem.Desc.ToLower() == "tliitemstatus")
                     {
                         if (side.ItemStatus == null)
-                            FKitem.Value = _unitOfWork.ItemStatusRepository.GetWhereFirst(x => x.Id == 0).Name;
+                            FKitem.Value = "NA";
 
                         else
                             FKitem.Value = side.ItemStatus.Name;
@@ -576,7 +576,7 @@ namespace TLIS_Service.Services
                     else if (FKitem.Desc.ToLower() == "tlisidearmlibrary")
                     {
                         if (side.sideArmLibrary == null)
-                            FKitem.Value = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                            FKitem.Value = "NA";
 
                         else
                             FKitem.Value = side.sideArmLibrary.Model;
@@ -631,7 +631,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlisidearm")
                         {
                             if (CivilLoads.sideArm == null)
-                                FKitem.Value = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilLoads.sideArm.Name;
@@ -639,7 +639,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlileg")
                         {
                             if (CivilLoads.leg == null)
-                                FKitem.Value = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == 0).CiviLegName;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilLoads.leg.CiviLegName;
@@ -647,7 +647,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlicivilsteelsupportcategory")
                         {
                             if (CivilLoads.civilSteelSupportCategory == null)
-                                FKitem.Value = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilLoads.civilSteelSupportCategory.Name;

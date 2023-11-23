@@ -2350,11 +2350,10 @@ namespace TLIS_Service.Services
                     if (FKitem.Desc.ToLower() == "tliloadotherlibrary")
                     {
                         if (LoadOther.loadOtherLibrary == null)
-                            FKitem.Value = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                            FKitem.Value = "NA";
 
                         else
-                            FKitem.Value = FKitem.Value = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Id == LoadOther.loadOtherLibrary.Id).Model;
-                        
+                            FKitem.Value = LoadOther.loadOtherLibrary.Model;
                     }
                 }
                 objectInst.AttributesActivated = ListAttributesActivated;
@@ -2398,7 +2397,6 @@ namespace TLIS_Service.Services
                     .GetAttributeActivated(TablesNames.TLIcivilLoads.ToString(), CivilLoads, null, "allLoadInstId",
                         "Dismantle", "SiteCode", "civilSteelSupportCategoryId", "legId", "Leg2Id",
                             "sideArmId", "allCivilInstId").ToList();
-
 
                 foreach (BaseAttView FKitem in LoadInstAttributes)
                 {

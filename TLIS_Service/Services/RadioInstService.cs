@@ -4387,26 +4387,26 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (Radio_Antenna.owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == Radio_Antenna.owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                                FKitem.Value = Radio_Antenna.owner.OwnerName;
                         }
                         else if (FKitem.Desc.ToLower() == "tliinstallationplace")
                         {
                             if (Radio_Antenna.installationPlace == null)
-                                FKitem.Value = _unitOfWork.InstallationPlaceRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.InstallationPlaceRepository.GetWhereFirst(x => x.Id == Radio_Antenna.installationPlace.Id && !x.Deleted && x.Disable == false).Name;
+                                FKitem.Value = Radio_Antenna.installationPlace.Name;
                         }
                         else if (FKitem.Desc.ToLower() == "tliradioantennalibrary")
                         {
                             if (Radio_Antenna.radioAntennaLibrary == null)
-                                FKitem.Value = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Id == Radio_Antenna.radioAntennaLibrary.Id && !x.Deleted && x.Active == true).Model;
+                                FKitem.Value = Radio_Antenna.radioAntennaLibrary.Model;
                         }
                     }
 
@@ -4793,36 +4793,36 @@ namespace TLIS_Service.Services
                         if (FKitem.Key.ToLower() == "ownerId".ToLower())
                         {
                             if (Radio_RRU.owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == Radio_RRU.owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                                FKitem.Value = Radio_RRU.owner.OwnerName;
                         }
                         else if (FKitem.Key.ToLower() == "installationPlaceId".ToLower())
                         {
                             if (Radio_RRU.installationPlace == null)
-                                FKitem.Value = _unitOfWork.InstallationPlaceRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.InstallationPlaceRepository.GetWhereFirst(x => x.Id == Radio_RRU.installationPlace.Id && !x.Deleted && x.Disable == false).Name;
+                                FKitem.Value = Radio_RRU.installationPlace.Name;
                         }
                         else if (FKitem.Key.ToLower() == "radioAntennaId".ToLower())
                         {
                             if (Radio_RRU.radioAntenna == null)
-                                FKitem.Value = _unitOfWork.RadioAntennaRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                             {
-                                FKitem.Value = _unitOfWork.RadioAntennaRepository.GetWhereFirst(x => x.Id == Radio_RRU.radioAntenna.Id).Name;
+                                FKitem.Value = Radio_RRU.radioAntenna.Name;
                             }
                         }
                         else if (FKitem.Key.ToLower() == "radioRRULibraryId".ToLower())
                         {
                             if (Radio_RRU.radioRRULibrary == null)
-                                FKitem.Value = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Id == Radio_RRU.radioRRULibrary.Id && !x.Deleted && x.Active == true).Model;
+                                FKitem.Value = Radio_RRU.radioRRULibrary.Model;
                         }
                     }
 
@@ -5213,26 +5213,26 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (RadioOther.owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == RadioOther.owner.Id && !x.Deleted && x.Disable == false).OwnerName;
+                                FKitem.Value = RadioOther.owner.OwnerName;
                         }
                         else if (FKitem.Desc.ToLower() == "tliinstallationplace")
                         {
                             if (RadioOther.installationPlace == null)
-                                FKitem.Value = _unitOfWork.InstallationPlaceRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.InstallationPlaceRepository.GetWhereFirst(x => x.Id == RadioOther.installationPlace.Id && !x.Deleted && x.Disable == false).Name;
+                                FKitem.Value = RadioOther.installationPlace.Name;
                         }
                         else if (FKitem.Desc.ToLower() == "tliradiootherlibrary")
                         {
                             if (RadioOther.radioOtherLibrary == null)
-                                FKitem.Value = _unitOfWork.RadioOtherLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.RadioOtherLibraryRepository.GetWhereFirst(x => x.Id == RadioOther.radioOtherLibrary.Id && !x.Deleted && x.Active == true).Model;
+                                FKitem.Value = RadioOther.radioOtherLibrary.Model;
                         }
                     }
 

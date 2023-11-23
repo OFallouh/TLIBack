@@ -3833,20 +3833,22 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlirenewablecabinettype")
                         {
                             if (CabinetInst.RenewableCabinetType == null)
-                                FKitem.Value = _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == CabinetInst.RenewableCabinetType.Id &&  !x.Deleted && x.Disable == false).Name;
+                            {
+                                FKitem.Value = CabinetInst.RenewableCabinetType.Name;
+                            }
                         }
                         else if (CabinetInst.CabinetPowerLibraryId != null)
                         {
                             if (FKitem.Desc.ToLower() == "tlicabinetpowerlibrary")
                             {
                                 if (CabinetInst.CabinetPowerLibrary == null)
-                                    FKitem.Value = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                    FKitem.Value = "NA";
 
                                 else
-                                    FKitem.Value = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Id == CabinetInst.CabinetPowerLibrary.Id&& !x.Deleted && x.Active == true).Model;
+                                    FKitem.Value = CabinetInst.CabinetPowerLibrary.Model;
                             }
                         }
                         else if (CabinetInst.CabinetTelecomLibraryId != null)
@@ -3854,10 +3856,10 @@ namespace TLIS_Service.Services
                             if (FKitem.Desc.ToLower() == "tlicabinettelecomlibrary")
                             {
                                 if (CabinetInst.CabinetTelecomLibrary == null)
-                                    FKitem.Value = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                    FKitem.Value = "NA";
 
                                 else
-                                    FKitem.Value = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Id == CabinetInst.CabinetTelecomLibrary.Id && !x.Deleted && x.Active == true).Model;
+                                    FKitem.Value = CabinetInst.CabinetTelecomLibrary.Model;
                             }
                         }
                     }
@@ -3963,15 +3965,19 @@ namespace TLIS_Service.Services
                     {
                         if (FKitem.Desc.ToLower() == "tlicabinet")
                         {
-                            FKitem.Value = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == SolarInst.Cabinet.Id).Name;
+                            if (SolarInst.Cabinet == null)
+                                FKitem.Value = "NA";
+
+                            else
+                                FKitem.Value = SolarInst.Cabinet.Name;
                         }
                         else if (FKitem.Desc.ToLower() == "tlisolarlibrary")
                         {
                             if (SolarInst.SolarLibrary == null)
-                                FKitem.Value = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Id == SolarInst.SolarLibrary.Id && !x.Deleted && x.Active == true).Model;
+                                FKitem.Value = SolarInst.SolarLibrary.Model;
                         }
                     }
 
@@ -3987,9 +3993,7 @@ namespace TLIS_Service.Services
 
                     List<KeyValuePair<string, List<DropDownListFilters>>> OtherInventoryDistanceRelatedTables = _unitOfWork.OtherInventoryDistanceRepository.SolarGetRelatedTables(SiteCode);
                     RelatedTables.AddRange(OtherInventoryDistanceRelatedTables);
-
                   
-
                     DropDownListFilters ReferenceToDelete = RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower())
                         .Value.FirstOrDefault(x => x.Id == OtherInventoryInsId);
 
@@ -4037,7 +4041,6 @@ namespace TLIS_Service.Services
                 }
                 else if (OtherInventoryType.TLIgenerator.ToString() == TableName)
                 {
-
                     TLIgenerator GeneratorInst = _unitOfWork.GeneratorRepository
                        .GetIncludeWhereFirst(x => x.Id == OtherInventoryInsId, x => x.GeneratorLibrary,
                            x => x.BaseGeneratorType);
@@ -4078,18 +4081,18 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlibasegeneratortype")
                         {
                             if (GeneratorInst.BaseGeneratorType == null)
-                                FKitem.Value = _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x=>x.Id== GeneratorInst .BaseGeneratorType.Id&& !x.Deleted && x.Disable == false).Name;
+                                FKitem.Value = GeneratorInst.BaseGeneratorType.Name;
                         }
                         if (FKitem.Desc.ToLower() == "tligeneratorlibrary")
                         {
                             if (GeneratorInst.GeneratorLibrary == null)
-                                FKitem.Value = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Id == GeneratorInst.GeneratorLibrary.Id && !x.Deleted && x.Active == true).Model;
+                                FKitem.Value = GeneratorInst.GeneratorLibrary.Model;
                         }
                     }
 

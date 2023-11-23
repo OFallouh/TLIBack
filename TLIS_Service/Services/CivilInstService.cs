@@ -4278,7 +4278,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlilocationtype")
                         {
                             if (CivilWithLegsInst.locationType == null)
-                                FKitem.Value = _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.locationType.Name;
@@ -4286,7 +4286,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlibasetype")
                         {
                             if (CivilWithLegsInst.baseType == null)
-                                FKitem.Value = _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.baseType.Name;
@@ -4294,7 +4294,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (CivilWithLegsInst.Owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.Owner.OwnerName;
@@ -4302,7 +4302,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlibasecivilwithlegstype")
                         {
                             if (CivilWithLegsInst.BaseCivilWithLegType == null)
-                                FKitem.Value = _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.BaseCivilWithLegType.Name;
@@ -4310,7 +4310,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tliguylinetype")
                         {
                             if (CivilWithLegsInst.GuyLineType == null)
-                                FKitem.Value = _unitOfWork.GuyLineTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.GuyLineType.Name;
@@ -4318,7 +4318,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlisupporttypeimplemented")
                         {
                             if (CivilWithLegsInst.SupportTypeImplemented == null)
-                                FKitem.Value = _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.SupportTypeImplemented.Name;
@@ -4326,7 +4326,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlienforcmentcategory")
                         {
                             if (CivilWithLegsInst.enforcmentCategory == null)
-                                FKitem.Value = _unitOfWork.EnforcmentCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.enforcmentCategory.Name;
@@ -4334,7 +4334,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlicivilwithleglibrary")
                         {
                             if (CivilWithLegsInst.CivilWithLegsLib == null)
-                                FKitem.Value = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithLegsInst.CivilWithLegsLib.Model;
@@ -4468,15 +4468,17 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (CivilWithoutLegInst.Owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
+                            {
                                 FKitem.Value = CivilWithoutLegInst.Owner.OwnerName;
+                            }
                         }
                         else if (FKitem.Desc.ToLower() == "tlisubtype")
                         {
                             if (CivilWithoutLegInst.subType == null)
-                                FKitem.Value = _unitOfWork.SubTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilWithoutLegInst.subType.Name;
@@ -4485,7 +4487,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tlicivilwithoutleglibrary")
                         {
                             if (CivilWithoutLegInst.CivilWithoutlegsLib == null)
-                                FKitem.Value = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
                             else
                                 FKitem.Value = CivilWithoutLegInst.CivilWithoutlegsLib.Model;
                         }
@@ -4609,7 +4611,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Desc.ToLower() == "tliowner")
                         {
                             if (CivilNonSteelInst.owner == null)
-                                FKitem.Value = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == 0).OwnerName;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilNonSteelInst.owner.OwnerName;
@@ -4617,7 +4619,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlisupporttypeimplemented")
                         {
                             if (CivilNonSteelInst.supportTypeImplemented == null)
-                                FKitem.Value = _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilNonSteelInst.supportTypeImplemented.Name;
@@ -4625,7 +4627,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlilocationtype")
                         {
                             if (CivilNonSteelInst.locationType == null)
-                                FKitem.Value = _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == 0).Name;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilNonSteelInst.locationType.Name;
@@ -4633,7 +4635,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Desc.ToLower() == "tlicivilnonsteellibrary")
                         {
                             if (CivilNonSteelInst.CivilNonsteelLibrary == null)
-                                FKitem.Value = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == 0).Model;
+                                FKitem.Value = "NA";
 
                             else
                                 FKitem.Value = CivilNonSteelInst.CivilNonsteelLibrary.Model;
