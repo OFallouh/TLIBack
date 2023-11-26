@@ -65,6 +65,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
 
 namespace TLIS_Service.Services
 {
@@ -7104,8 +7105,11 @@ namespace TLIS_Service.Services
         {
             try
             {
+                ServiceProvider serviceProvider = _services.BuildServiceProvider();
+                IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
+                
                 string responseString = "";
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44343/api/Test/GetSMIS_Site");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"]);
                 request.Method = "GET";
                 request.ContentType = "application/json";
 
@@ -7117,95 +7121,166 @@ namespace TLIS_Service.Services
                     }
                 }
                 List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists = new JavaScriptSerializer().Deserialize<List<SiteDataFromOutsiderApiViewModel>>(responseString);
-                //using (var client = new HttpClient())
-                //{
-                //    //Passing service base url  
-                //    client.BaseAddress = new Uri(Baseurl);
-
-                //    client.DefaultRequestHeaders.Clear();
-                //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                //    //Sending request to find web api REST service resource GetDepartments using HttpClient  
-                //    HttpResponseMessage Res = await client.GetAsync("https://localhost:44343/api/Test/GetSMIS_Site");
-
-                //    //Checking the response is successful or not which is sent using HttpClient  
-                //    if (Res.IsSuccessStatusCode)
-                //    {
-                //        var ObjResponse = Res.Content.ReadAsStringAsync().Result;
-                //        SiteViewModelLists = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(ObjResponse);
-                //    }
-                //}
-                ServiceProvider serviceProvider = _services.BuildServiceProvider();
-                ApplicationDbContext _DbContext = serviceProvider.GetService<ApplicationDbContext>();
-                IMapper mapper = serviceProvider.GetService<IMapper>();
-                _unitOfWork = new UnitOfWork(_DbContext, _mapper);
 
                 using (TransactionScope transaction = new TransactionScope())
                 {
-                    foreach (var item in SiteViewModelLists)
+                    foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
                     {
-                        TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == item.SITE_CODE || x.SiteName == item.SITE_NAME);
+                        TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository
+                            .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() || 
+                                x.SiteName.ToLower() == item.Sitename.ToLower());
+
                         if (CheckSiteCodeIfExist != null)
                         {
-                            continue;
-                        }
-                        TLIsite NewSiteToAdd = new TLIsite();
+                            CheckSiteCodeIfExist.SiteCode = item.Sitecode;
+                            CheckSiteCodeIfExist.SiteName = item.Sitename;
+                            CheckSiteCodeIfExist.LocationType = item.LocationType;
+                            CheckSiteCodeIfExist.Latitude = item.Latitude;
+                            CheckSiteCodeIfExist.Longitude = item.Longtude;
+                            CheckSiteCodeIfExist.Zone = item.Zone;
+                            CheckSiteCodeIfExist.SubArea = item.Subarea;
+                            CheckSiteCodeIfExist.STATUS_DATE = item.Statusdate;
+                            CheckSiteCodeIfExist.CREATE_DATE = item.Createddate;
+                            CheckSiteCodeIfExist.LocationHieght = item.LocationHieght;
 
-                        NewSiteToAdd.SiteCode = item.SITE_CODE;
-                        TLIregion CheckREGIONIfExist = await _DbContext.TLIregion.FirstOrDefaultAsync(x => x.RegionCode == item.REGION);
-                        if (CheckREGIONIfExist == null)
-                        {
-                            await _DbContext.TLIregion.AddAsync(new TLIregion { RegionCode = item.REGION });
-                            await _DbContext.SaveChangesAsync();
+                            TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
+                                .GetWhereFirst(x => x.AreaName.ToLower() == item.Area.ToLower());
 
-                            NewSiteToAdd.RegionCode = item.REGION;
-                        }
-                        else
-                        {
-                            NewSiteToAdd.RegionCode = CheckREGIONIfExist.RegionCode;
-                        }
-
-                        TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository.GetWhereFirst(x => x.AreaName == item.AREA);
-                        if (CheckAreaIfExist == null)
-                        {
-                            TLIarea AddNewArea = new TLIarea
+                            if (CheckAreaIfExist == null)
                             {
-                                AreaName = item.AREA
-                            };
-                            await _unitOfWork.AreaRepository.AddAsync(AddNewArea);
-                            await _unitOfWork.SaveChangesAsync();
+                                TLIarea AddNewArea = new TLIarea
+                                {
+                                    AreaName = item.Area
+                                };
+                                await _unitOfWork.AreaRepository.AddAsync(AddNewArea);
+                                await _unitOfWork.SaveChangesAsync();
 
-                            NewSiteToAdd.AreaId = AddNewArea.Id;
-                        }
-                        else
-                        {
-                            NewSiteToAdd.AreaId = CheckAreaIfExist.Id;
-                        }
-                        TLIsiteStatus CheckSiteStatusIfExist = _unitOfWork.SiteStatusRepository.GetWhereFirst(x => x.Name == item.SITE_STATUS);
-
-                        if (CheckSiteStatusIfExist == null)
-                        {
-                            TLIsiteStatus AddNewSiteStatus = new TLIsiteStatus
+                                CheckSiteCodeIfExist.AreaId = AddNewArea.Id;
+                            }
+                            else
                             {
-                                Name = item.SITE_STATUS
-                            };
-                            await _unitOfWork.SiteStatusRepository.AddAsync(AddNewSiteStatus);
-                            await _unitOfWork.SaveChangesAsync();
+                                CheckSiteCodeIfExist.AreaId = CheckAreaIfExist.Id;
+                            }
 
-                            NewSiteToAdd.siteStatusId = AddNewSiteStatus.Id;
+                            TLIregion CheckRegonIfExist = await _context.TLIregion
+                                .FirstOrDefaultAsync(x => x.RegionCode.ToLower() == item.Rejoncode.ToLower());
+
+                            if (CheckRegonIfExist == null)
+                            {
+                                await _context.TLIregion.AddAsync(new TLIregion { RegionCode = item.Rejoncode });
+                                await _context.SaveChangesAsync();
+
+                                CheckSiteCodeIfExist.RegionCode = item.Rejoncode;
+                            }
+                            else
+                            {
+                                CheckSiteCodeIfExist.RegionCode = CheckRegonIfExist.RegionCode;
+                            }
+
+                            // Mostafa Al-Homsi Answered That this Column's Value Will Always Be (NULL)..
+                            TLIsiteStatus CheckSiteStatusIfExist = _unitOfWork.SiteStatusRepository.GetWhereFirst(x => x.Id == 0);
+
+                            if (CheckSiteStatusIfExist == null)
+                            {
+                                TLIsiteStatus AddNewSiteStatus = new TLIsiteStatus
+                                {
+                                    Id = 0,
+                                    Name = "NA",
+                                    Active = true,
+                                    DateDeleted = null,
+                                    Deleted = false
+                                };
+                                await _unitOfWork.SiteStatusRepository.AddAsync(AddNewSiteStatus);
+                                await _unitOfWork.SaveChangesAsync();
+
+                                CheckSiteCodeIfExist.siteStatusId = AddNewSiteStatus.Id;
+                            }
+                            else
+                            {
+                                CheckSiteCodeIfExist.siteStatusId = CheckSiteStatusIfExist.Id;
+                            }
+
+                            await _unitOfWork.SaveChangesAsync();
                         }
                         else
                         {
-                            NewSiteToAdd.siteStatusId = CheckSiteStatusIfExist.Id;
-                        }
-                        NewSiteToAdd.Latitude = item.LATITUDE;
-                        NewSiteToAdd.Longitude = item.LONGITUDE;
-                        NewSiteToAdd.Zone = item.ZONE;
-                        NewSiteToAdd.SubArea = item.SUBAREA;
+                            TLIsite NewSiteToAdd = new TLIsite();
 
-                        await _unitOfWork.SiteRepository.AddAsync(NewSiteToAdd);
-                        await _unitOfWork.SaveChangesAsync();
+                            NewSiteToAdd.SiteCode = item.Sitecode;
+                            TLIregion CheckRegonIfExist = await _context.TLIregion
+                                .FirstOrDefaultAsync(x => x.RegionCode.ToLower() == item.Rejoncode.ToLower());
+
+                            if (CheckRegonIfExist == null)
+                            {
+                                await _context.TLIregion.AddAsync(new TLIregion { RegionCode = item.Rejoncode });
+                                await _context.SaveChangesAsync();
+
+                                NewSiteToAdd.RegionCode = item.Rejoncode;
+                            }
+                            else
+                            {
+                                NewSiteToAdd.RegionCode = CheckRegonIfExist.RegionCode;
+                            }
+
+                            TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
+                                .GetWhereFirst(x => x.AreaName.ToLower() == item.Area.ToLower());
+
+                            if (CheckAreaIfExist == null)
+                            {
+                                TLIarea AddNewArea = new TLIarea
+                                {
+                                    AreaName = item.Area
+                                };
+                                await _unitOfWork.AreaRepository.AddAsync(AddNewArea);
+                                await _unitOfWork.SaveChangesAsync();
+
+                                NewSiteToAdd.AreaId = AddNewArea.Id;
+                            }
+                            else
+                            {
+                                NewSiteToAdd.AreaId = CheckAreaIfExist.Id;
+                            }
+
+                            // Mostafa Al-Homsi Answered That this Column's Value Will Always Be (NULL)..
+                            TLIsiteStatus CheckSiteStatusIfExist = _unitOfWork.SiteStatusRepository.GetWhereFirst(x => x.Id == 0);
+
+                            if (CheckSiteStatusIfExist == null)
+                            {
+                                TLIsiteStatus AddNewSiteStatus = new TLIsiteStatus
+                                {
+                                    Id = 0,
+                                    Name = "NA",
+                                    Active = true,
+                                    DateDeleted = null,
+                                    Deleted = false
+                                };
+                                await _unitOfWork.SiteStatusRepository.AddAsync(AddNewSiteStatus);
+                                await _unitOfWork.SaveChangesAsync();
+
+                                NewSiteToAdd.siteStatusId = AddNewSiteStatus.Id;
+                            }
+                            else
+                            {
+                                NewSiteToAdd.siteStatusId = CheckSiteStatusIfExist.Id;
+                            }
+
+                            NewSiteToAdd.Latitude = item.Latitude;
+                            NewSiteToAdd.Longitude = item.Longtude;
+                            NewSiteToAdd.Zone = item.Zone;
+                            NewSiteToAdd.SubArea = item.Subarea;
+                            NewSiteToAdd.STATUS_DATE = item.Statusdate;
+                            NewSiteToAdd.CREATE_DATE = item.Createddate;
+                            NewSiteToAdd.LocationHieght = item.LocationHieght;
+                            NewSiteToAdd.LocationType = item.LocationType;
+
+                            await _unitOfWork.SiteRepository.AddAsync(NewSiteToAdd);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
                     }
+
+                    _MySites = _unitOfWork.SiteRepository
+                        .GetIncludeWhere(x => true, x => x.Area, x => x.siteStatus, x => x.Region).ToList();
+
                     transaction.Complete();
                 }
                 return "No Error Found";
