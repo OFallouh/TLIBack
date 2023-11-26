@@ -93,12 +93,16 @@ namespace TLIS_Service.Services
             if (isForced)
             {
                 TLIlogistical Logistical = _unitOfWork.LogistcalRepository.GetByID(LogisticalId);
+
+                if (Logistical.Active)
+                {
+                    List<TLIlogisticalitem> LogisticalItemsToDelete = _unitOfWork.LogisticalitemRepository
+                        .GetWhere(x => x.logisticalId == LogisticalId).ToList();
+
+                    _unitOfWork.LogisticalitemRepository.RemoveRangeItems(LogisticalItemsToDelete);
+                }
+
                 Logistical.Active = !Logistical.Active;
-
-                List<TLIlogisticalitem> LogisticalItemsToDelete = _unitOfWork.LogisticalitemRepository
-                    .GetWhere(x => x.logisticalId == LogisticalId).ToList();
-
-                _unitOfWork.LogisticalitemRepository.RemoveRangeItems(LogisticalItemsToDelete);
                 _unitOfWork.SaveChanges();
             }
             else
@@ -106,408 +110,411 @@ namespace TLIS_Service.Services
                 TLIlogistical Logistical = _unitOfWork.LogistcalRepository
                     .GetIncludeWhereFirst(x => x.Id == LogisticalId, x => x.tablePartName);
 
-                List<TLIlogisticalitem> AffectedLogisticalItems = _unitOfWork.LogisticalitemRepository
-                    .GetIncludeWhere(x => x.logisticalId == LogisticalId, x => x.tablesNames).ToList();
-
-                if (AffectedLogisticalItems.Count != 0)
+                if (Logistical.Active)
                 {
-                    List<TableAffected> ListOfResponse = new List<TableAffected>();
+                    List<TLIlogisticalitem> AffectedLogisticalItems = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhere(x => x.logisticalId == LogisticalId, x => x.tablesNames).ToList();
 
-                    if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.CivilSupport.ToString().ToLower())
+                    if (AffectedLogisticalItems.Count != 0)
                     {
-                        // CivilWithLeg..
-                        List<TLIlogisticalitem> CivilWithLegLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString().ToLower()).ToList();
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
 
-                        if (CivilWithLegLibraryLogisticalItems.Count != 0)
+                        if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.CivilSupport.ToString().ToLower())
                         {
-                            List<TLIcivilWithLegLibrary> CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
-                                .GetWhere(x => CivilWithLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+                            // CivilWithLeg..
+                            List<TLIlogisticalitem> CivilWithLegLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString().ToLower()).ToList();
 
-                            ListOfResponse.Add(new TableAffected()
+                            if (CivilWithLegLibraryLogisticalItems.Count != 0)
                             {
-                                TableName = Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                List<TLIcivilWithLegLibrary> CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
+                                    .GetWhere(x => CivilWithLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
                                 {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
+                                    TableName = Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // CivilWithoutLeg..
+                            List<TLIlogisticalitem> CivilWithoutLegLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower()).ToList();
+
+                            if (CivilWithoutLegLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
+                                    .GetWhere(x => CivilWithoutLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // CivilNonSteel..
+                            List<TLIlogisticalitem> CivilNonSteelLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower()).ToList();
+
+                            if (CivilNonSteelLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIcivilNonSteelLibrary> CivilNonSteelLibraries = _unitOfWork.CivilNonSteelLibraryRepository
+                                    .GetWhere(x => CivilNonSteelLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                        }
+                        else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.SideArm.ToString().ToLower())
+                        {
+                            List<TLIlogisticalitem> SideArmLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString().ToLower()).ToList();
+
+                            if (SideArmLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIsideArmLibrary> SideArmLibraries = _unitOfWork.SideArmLibraryRepository
+                                    .GetWhere(x => SideArmLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                        }
+                        else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.MW.ToString().ToLower())
+                        {
+                            // MW_RFU..
+                            List<TLIlogisticalitem> MW_RFULibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwRFULibrary.ToString().ToLower()).ToList();
+
+                            if (MW_RFULibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLImwRFULibrary> MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
+                                    .GetWhere(x => MW_RFULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLImwRFULibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // MW_Dish..
+                            List<TLIlogisticalitem> MW_DishLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwDishLibrary.ToString().ToLower()).ToList();
+
+                            if (MW_DishLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLImwDishLibrary> MW_DishLibraries = _unitOfWork.MW_DishLibraryRepository
+                                    .GetWhere(x => MW_DishLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLImwDishLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // MW_BU..
+                            List<TLIlogisticalitem> MW_BULibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwBULibrary.ToString().ToLower()).ToList();
+
+                            if (MW_BULibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLImwBULibrary> MW_BULibraries = _unitOfWork.MW_BULibraryRepository
+                                    .GetWhere(x => MW_BULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLImwBULibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // MW_ODU..
+                            List<TLIlogisticalitem> MW_ODULibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwODULibrary.ToString().ToLower()).ToList();
+
+                            if (MW_ODULibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLImwODULibrary> MW_ODULibraries = _unitOfWork.MW_ODULibraryRepository
+                                    .GetWhere(x => MW_ODULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // MW_Other..
+                            List<TLIlogisticalitem> MW_OtherLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString().ToLower()).ToList();
+
+                            if (MW_OtherLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLImwOtherLibrary> MW_OtherLibraries = _unitOfWork.MW_OtherLibraryRepository
+                                    .GetWhere(x => MW_OtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                        }
+                        else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Radio.ToString().ToLower())
+                        {
+                            // RadioAntenna..
+                            List<TLIlogisticalitem> RadioAntennaLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString().ToLower()).ToList();
+
+                            if (RadioAntennaLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIradioAntennaLibrary> RadioAntennaLibraries = _unitOfWork.RadioAntennaLibraryRepository
+                                    .GetWhere(x => RadioAntennaLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // RadioRRU..
+                            List<TLIlogisticalitem> RadioRRULibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString().ToLower()).ToList();
+
+                            if (RadioRRULibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIradioRRULibrary> RadioRRULibraries = _unitOfWork.RadioRRULibraryRepository
+                                    .GetWhere(x => RadioRRULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // RadioOther..
+                            List<TLIlogisticalitem> RadioOtherLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString().ToLower()).ToList();
+
+                            if (RadioOtherLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIradioOtherLibrary> RadioOtherLibraries = _unitOfWork.RadioOtherLibraryRepository
+                                    .GetWhere(x => RadioOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                        }
+                        else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Power.ToString().ToLower())
+                        {
+                            // Power..
+                            List<TLIlogisticalitem> PowerLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIpowerLibrary.ToString().ToLower()).ToList();
+
+                            if (PowerLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIpowerLibrary> PowerLibraries = _unitOfWork.PowerLibraryRepository
+                                    .GetWhere(x => PowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIpowerLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = PowerLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                        }
+                        else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.LoadOther.ToString().ToLower())
+                        {
+                            // LoadOther..
+                            List<TLIlogisticalitem> LoadOtherLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString().ToLower()).ToList();
+
+                            if (LoadOtherLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIloadOtherLibrary> LoadOtherLibraries = _unitOfWork.LoadOtherLibraryRepository
+                                    .GetWhere(x => LoadOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                        }
+                        else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.OtherInventory.ToString().ToLower())
+                        {
+                            // CabinetPower..
+                            List<TLIlogisticalitem> CabinetPowerLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString().ToLower()).ToList();
+
+                            if (CabinetPowerLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIcabinetPowerLibrary> CabinetPowerLibraries = _unitOfWork.CabinetPowerLibraryRepository
+                                    .GetWhere(x => CabinetPowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // CabinetTelecom..
+                            List<TLIlogisticalitem> CabinetTelecomLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower()).ToList();
+
+                            if (CabinetTelecomLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIcabinetTelecomLibrary> CabinetTelecomLibraries = _unitOfWork.CabinetTelecomLibraryRepository
+                                    .GetWhere(x => CabinetTelecomLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // Solar..
+                            List<TLIlogisticalitem> SolarLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString().ToLower()).ToList();
+
+                            if (SolarLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIsolarLibrary> SolarLibraries = _unitOfWork.SolarLibraryRepository
+                                    .GetWhere(x => SolarLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = SolarLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            // Generator..
+                            List<TLIlogisticalitem> GeneratorLibraryLogisticalItems = AffectedLogisticalItems
+                                .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString().ToLower()).ToList();
+
+                            if (GeneratorLibraryLogisticalItems.Count != 0)
+                            {
+                                List<TLIgeneratorLibrary> GeneratorLibraries = _unitOfWork.GeneratorLibraryRepository
+                                    .GetWhere(x => GeneratorLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
+
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                    isLibrary = true,
+                                    RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
                         }
 
-                        // CivilWithoutLeg..
-                        List<TLIlogisticalitem> CivilWithoutLegLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower()).ToList();
-
-                        if (CivilWithoutLegLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
-                                .GetWhere(x => CivilWithoutLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                        
-                        // CivilNonSteel..
-                        List<TLIlogisticalitem> CivilNonSteelLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower()).ToList();
-
-                        if (CivilNonSteelLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIcivilNonSteelLibrary> CivilNonSteelLibraries = _unitOfWork.CivilNonSteelLibraryRepository
-                                .GetWhere(x => CivilNonSteelLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
-                    else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.SideArm.ToString().ToLower())
-                    {
-                        List<TLIlogisticalitem> SideArmLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString().ToLower()).ToList();
-
-                        if (SideArmLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIsideArmLibrary> SideArmLibraries = _unitOfWork.SideArmLibraryRepository
-                                .GetWhere(x => SideArmLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                    }
-                    else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.MW.ToString().ToLower())
-                    {
-                        // MW_RFU..
-                        List<TLIlogisticalitem> MW_RFULibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwRFULibrary.ToString().ToLower()).ToList();
-
-                        if (MW_RFULibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLImwRFULibrary> MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
-                                .GetWhere(x => MW_RFULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLImwRFULibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // MW_Dish..
-                        List<TLIlogisticalitem> MW_DishLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwDishLibrary.ToString().ToLower()).ToList();
-
-                        if (MW_DishLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLImwDishLibrary> MW_DishLibraries = _unitOfWork.MW_DishLibraryRepository
-                                .GetWhere(x => MW_DishLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLImwDishLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // MW_BU..
-                        List<TLIlogisticalitem> MW_BULibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwBULibrary.ToString().ToLower()).ToList();
-
-                        if (MW_BULibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLImwBULibrary> MW_BULibraries = _unitOfWork.MW_BULibraryRepository
-                                .GetWhere(x => MW_BULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLImwBULibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // MW_ODU..
-                        List<TLIlogisticalitem> MW_ODULibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwODULibrary.ToString().ToLower()).ToList();
-
-                        if (MW_ODULibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLImwODULibrary> MW_ODULibraries = _unitOfWork.MW_ODULibraryRepository
-                                .GetWhere(x => MW_ODULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // MW_Other..
-                        List<TLIlogisticalitem> MW_OtherLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString().ToLower()).ToList();
-
-                        if (MW_OtherLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLImwOtherLibrary> MW_OtherLibraries = _unitOfWork.MW_OtherLibraryRepository
-                                .GetWhere(x => MW_OtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                    }
-                    else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Radio.ToString().ToLower())
-                    {
-                        // RadioAntenna..
-                        List<TLIlogisticalitem> RadioAntennaLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString().ToLower()).ToList();
-
-                        if (RadioAntennaLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIradioAntennaLibrary> RadioAntennaLibraries = _unitOfWork.RadioAntennaLibraryRepository
-                                .GetWhere(x => RadioAntennaLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // RadioRRU..
-                        List<TLIlogisticalitem> RadioRRULibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString().ToLower()).ToList();
-
-                        if (RadioRRULibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIradioRRULibrary> RadioRRULibraries = _unitOfWork.RadioRRULibraryRepository
-                                .GetWhere(x => RadioRRULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // RadioOther..
-                        List<TLIlogisticalitem> RadioOtherLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString().ToLower()).ToList();
-
-                        if (RadioOtherLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIradioOtherLibrary> RadioOtherLibraries = _unitOfWork.RadioOtherLibraryRepository
-                                .GetWhere(x => RadioOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                    }
-                    else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Power.ToString().ToLower())
-                    {
-                        // Power..
-                        List<TLIlogisticalitem> PowerLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIpowerLibrary.ToString().ToLower()).ToList();
-
-                        if (PowerLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIpowerLibrary> PowerLibraries = _unitOfWork.PowerLibraryRepository
-                                .GetWhere(x => PowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIpowerLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = PowerLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                    }
-                    else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.LoadOther.ToString().ToLower())
-                    {
-                        // LoadOther..
-                        List<TLIlogisticalitem> LoadOtherLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString().ToLower()).ToList();
-
-                        if (LoadOtherLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIloadOtherLibrary> LoadOtherLibraries = _unitOfWork.LoadOtherLibraryRepository
-                                .GetWhere(x => LoadOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                    }
-                    else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.OtherInventory.ToString().ToLower())
-                    {
-                        // CabinetPower..
-                        List<TLIlogisticalitem> CabinetPowerLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString().ToLower()).ToList();
-
-                        if (CabinetPowerLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIcabinetPowerLibrary> CabinetPowerLibraries = _unitOfWork.CabinetPowerLibraryRepository
-                                .GetWhere(x => CabinetPowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // CabinetTelecom..
-                        List<TLIlogisticalitem> CabinetTelecomLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower()).ToList();
-
-                        if (CabinetTelecomLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIcabinetTelecomLibrary> CabinetTelecomLibraries = _unitOfWork.CabinetTelecomLibraryRepository
-                                .GetWhere(x => CabinetTelecomLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // Solar..
-                        List<TLIlogisticalitem> SolarLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsolarLibrary.ToString().ToLower()).ToList();
-
-                        if (SolarLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIsolarLibrary> SolarLibraries = _unitOfWork.SolarLibraryRepository
-                                .GetWhere(x => SolarLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = SolarLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        // Generator..
-                        List<TLIlogisticalitem> GeneratorLibraryLogisticalItems = AffectedLogisticalItems
-                            .Where(x => x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString().ToLower()).ToList();
-
-                        if (GeneratorLibraryLogisticalItems.Count != 0)
-                        {
-                            List<TLIgeneratorLibrary> GeneratorLibraries = _unitOfWork.GeneratorLibraryRepository
-                                .GetWhere(x => GeneratorLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
-                                isLibrary = true,
-                                RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                    }
-
-                    if (ListOfResponse.Count != 0)
-                        return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
 
                 Logistical.Active = !Logistical.Active;
