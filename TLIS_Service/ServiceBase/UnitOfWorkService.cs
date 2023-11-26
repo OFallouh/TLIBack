@@ -120,7 +120,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_LogisiticalService == null)
-                    _LogisiticalService = new LogisticalService(_unitOfWork,_mapper);
+                    _LogisiticalService = new LogisticalService(_unitOfWork, _mapper, db);
 
                 return _LogisiticalService;
             }
