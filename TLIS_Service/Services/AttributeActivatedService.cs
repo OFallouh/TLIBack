@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -194,6 +195,15 @@ namespace TLIS_Service.Services
         {
             try
             {
+                if (UnitOfWork.AllAttributeActivated == null)
+                {
+                    UnitOfWork.AllAttributeActivated = _unitOfWork.AttributeActivatedRepository.GetAllWithoutCount().ToList();
+                }
+                if (UnitOfWork.AllAttributeActivatedCategory == null)
+                {
+                    UnitOfWork.AllAttributeActivatedCategory = _unitOfWork.AttActivatedCategoryRepository
+                        .GetIncludeWhere(x => true, x => x.attributeActivated, x => x.civilWithoutLegCategory).ToList();
+                }
                 List<TLIattributeActivated> Attributes = new List<TLIattributeActivated>();
                 List<TLIattActivatedCategory> AttrbiuteViewManagment = new List<TLIattActivatedCategory?>();
                 if (CivilWithoutLegCategoryId == null)
