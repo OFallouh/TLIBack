@@ -6,16 +6,17 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 {
     public class SiteDataFromOutsiderApiViewModel
     {
-        //public DateTime STATUS_DATE { get; set; }
-        //public DateTime CREATE_DATE { get; set; }
-        public string SITE_CODE { get; set; }
-        public string SITE_NAME { get; set; }
-        public float LATITUDE { get; set; }
-        public float LONGITUDE { get; set; }
-        public string REGION { get; set; } // Object
-        public string AREA { get; set; } // Object
-        public string ZONE { get; set; }
-        public string SUBAREA { get; set; }
-        public string SITE_STATUS { get; set; } // Object
+        public string Sitename { get; set; }
+        public string Sitecode { get; set; }
+        public string LocationType { get; set; }
+        public float Latitude { get; set; }
+        public float Longtude { get; set; }
+        public string Area { get; set; } // Object
+        public string Zone { get; set; }
+        public string Subarea { get; set; }
+        public string Statusdate { get; set; }
+        public string Createddate { get; set; }
+        public string Rejoncode { get; set; } // Object
+        public float LocationHieght { get; set; }
     }
 }
