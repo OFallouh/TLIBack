@@ -686,7 +686,15 @@ namespace TLIS_Service.Services
                             // Civils..
                             if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                             {
-                                List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = _mapper.Map<List<CivilWithLegLibraryViewModel>>(CivilLibraryService._CivilWithLegLibraryEntities).ToList();
+                                if (CivilLibraryService._CivilWithLegLibraryEntities == null)
+                                {
+                                    CivilLibraryService._CivilWithLegLibraryEntities = _unitOfWork.CivilWithLegLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.civilSteelSupportCategory, x => x.sectionsLegType,
+                                            x => x.structureType, x => x.supportTypeDesigned).ToList();
+                                }
+
+                                List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = 
+                                    _mapper.Map<List<CivilWithLegLibraryViewModel>>(CivilLibraryService._CivilWithLegLibraryEntities).ToList();
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -1037,9 +1045,15 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                             {
-                                List<CivilWithoutLegLibraryViewModel> CivilWithoutLegLibraries = _mapper.Map<List<CivilWithoutLegLibraryViewModel>>(_unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType,
-                                    x => x.structureType).ToList());
+                                if (CivilLibraryService._CivilWithoutLegLibraryEntities == null)
+                                {
+                                    CivilLibraryService._CivilWithoutLegLibraryEntities = _unitOfWork.CivilWithoutLegLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
+                                            x => x.InstallationCivilwithoutLegsType, x => x.structureType).ToList();
+                                }
+
+                                List<CivilWithoutLegLibraryViewModel> CivilWithoutLegLibraries = 
+                                    _mapper.Map<List<CivilWithoutLegLibraryViewModel>>(CivilLibraryService._CivilWithoutLegLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -1390,8 +1404,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
                             {
-                                List<CivilNonSteelLibraryViewModel> CivilNonSteelLibraries = _mapper.Map<List<CivilNonSteelLibraryViewModel>>(_unitOfWork.CivilNonSteelLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.civilNonSteelType).ToList());
+                                if (CivilLibraryService._CivilNonSteelLibraryEntities == null)
+                                {
+                                    CivilLibraryService._CivilNonSteelLibraryEntities = _unitOfWork.CivilNonSteelLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.civilNonSteelType).ToList();
+                                }
+
+                                List<CivilNonSteelLibraryViewModel> CivilNonSteelLibraries = 
+                                    _mapper.Map<List<CivilNonSteelLibraryViewModel>>(CivilLibraryService._CivilNonSteelLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -1741,12 +1761,17 @@ namespace TLIS_Service.Services
                                 }
                             }
 
-
                             // SideArm..
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower())
                             {
-                                List<SideArmLibraryViewModel> SideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_unitOfWork.SideArmLibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (SideArmLibraryService._SideArmLibraryEntities == null)
+                                {
+                                    SideArmLibraryService._SideArmLibraryEntities = _unitOfWork.SideArmLibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+
+                                List<SideArmLibraryViewModel> SideArmLibraries = 
+                                    _mapper.Map<List<SideArmLibraryViewModel>>(SideArmLibraryService._SideArmLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -2099,8 +2124,14 @@ namespace TLIS_Service.Services
                             // Other Inventories..
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcabinetPowerLibrary.ToString().ToLower())
                             {
-                                List<CabinetPowerLibraryViewModel> CabinetPowerLibraries = _mapper.Map<List<CabinetPowerLibraryViewModel>>(_unitOfWork.CabinetPowerLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.CabinetPowerType).ToList());
+                                if (OtherInventoryLibraryService._CabinetPowerLibraryEntities == null)
+                                {
+                                    OtherInventoryLibraryService._CabinetPowerLibraryEntities = _unitOfWork.CabinetPowerLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.CabinetPowerType).ToList();
+                                }
+
+                                List<CabinetPowerLibraryViewModel> CabinetPowerLibraries = 
+                                    _mapper.Map<List<CabinetPowerLibraryViewModel>>(OtherInventoryLibraryService._CabinetPowerLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -2451,8 +2482,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower())
                             {
-                                List<CabinetTelecomLibraryViewModel> CabinetTelecomLibraries = _mapper.Map<List<CabinetTelecomLibraryViewModel>>(_unitOfWork.CabinetTelecomLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.TelecomType).ToList());
+                                if (OtherInventoryLibraryService._CabinetTelecomLibraryEntities == null)
+                                {
+                                    OtherInventoryLibraryService._CabinetTelecomLibraryEntities = _unitOfWork.CabinetTelecomLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.TelecomType).ToList();
+                                }
+
+                                List<CabinetTelecomLibraryViewModel> CabinetTelecomLibraries = 
+                                    _mapper.Map<List<CabinetTelecomLibraryViewModel>>(OtherInventoryLibraryService._CabinetTelecomLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -2803,8 +2840,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIsolarLibrary.ToString().ToLower())
                             {
-                                List<SolarLibraryViewModel> SolarLibraries = _mapper.Map<List<SolarLibraryViewModel>>(_unitOfWork.SolarLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.Capacity).ToList());
+                                if (OtherInventoryLibraryService._SolarLibraryEntities == null)
+                                {
+                                    OtherInventoryLibraryService._SolarLibraryEntities = _unitOfWork.SolarLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.Capacity).ToList();
+                                }
+
+                                List<SolarLibraryViewModel> SolarLibraries = 
+                                    _mapper.Map<List<SolarLibraryViewModel>>(OtherInventoryLibraryService._SolarLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -3155,8 +3198,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIgeneratorLibrary.ToString().ToLower())
                             {
-                                List<GeneratorLibraryViewModel> GeneratorLibraries = _mapper.Map<List<GeneratorLibraryViewModel>>(_unitOfWork.GeneratorLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.Capacity).ToList());
+                                if (OtherInventoryLibraryService._GeneratorLibraryEntities == null)
+                                {
+                                    OtherInventoryLibraryService._GeneratorLibraryEntities = _unitOfWork.GeneratorLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.Capacity).ToList();
+                                }
+
+                                List<GeneratorLibraryViewModel> GeneratorLibraries = 
+                                    _mapper.Map<List<GeneratorLibraryViewModel>>(OtherInventoryLibraryService._GeneratorLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -3510,8 +3559,14 @@ namespace TLIS_Service.Services
                             // Microwaves..
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLImwDishLibrary.ToString().ToLower())
                             {
-                                List<MW_DishLibraryViewModel> MWDishLibraries = _mapper.Map<List<MW_DishLibraryViewModel>>(_unitOfWork.MW_DishLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.asType, x => x.polarityType).ToList());
+                                if (MWLibraryService._MW_DishLibraryEntities == null)
+                                {
+                                    MWLibraryService._MW_DishLibraryEntities = _unitOfWork.MW_DishLibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.asType, x => x.polarityType).ToList();
+                                }
+
+                                List<MW_DishLibraryViewModel> MWDishLibraries = 
+                                    _mapper.Map<List<MW_DishLibraryViewModel>>(MWLibraryService._MW_DishLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -3862,8 +3917,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLImwODULibrary.ToString().ToLower())
                             {
-                                List<MW_ODULibraryViewModel> MWODULibraries = _mapper.Map<List<MW_ODULibraryViewModel>>(_unitOfWork.MW_ODULibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.parity).ToList());
+                                if (MWLibraryService._MW_ODULibraryEntities == null)
+                                {
+                                    MWLibraryService._MW_ODULibraryEntities = _unitOfWork.MW_ODULibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.parity).ToList();
+                                }
+
+                                List<MW_ODULibraryViewModel> MWODULibraries = 
+                                    _mapper.Map<List<MW_ODULibraryViewModel>>(MWLibraryService._MW_ODULibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -4214,8 +4275,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLImwBULibrary.ToString().ToLower())
                             {
-                                List<MW_BULibraryViewModel> MWBULibraries = _mapper.Map<List<MW_BULibraryViewModel>>(_unitOfWork.MW_BULibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.diversityType).ToList());
+                                if (MWLibraryService._MW_BULibraryEntities == null)
+                                {
+                                    MWLibraryService._MW_BULibraryEntities = _unitOfWork.MW_BULibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.diversityType).ToList();
+                                }
+
+                                List<MW_BULibraryViewModel> MWBULibraries = 
+                                    _mapper.Map<List<MW_BULibraryViewModel>>(MWLibraryService._MW_BULibraryEntities).ToList();
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -4566,8 +4633,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
                             {
-                                List<MW_RFULibraryViewModel> MWRFULibraries = _mapper.Map<List<MW_RFULibraryViewModel>>(_unitOfWork.MW_RFULibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.boardType, x => x.diversityType).ToList());
+                                if (MWLibraryService._MW_RFULibraryEntities == null)
+                                {
+                                    MWLibraryService._MW_RFULibraryEntities = _unitOfWork.MW_RFULibraryRepository
+                                        .GetIncludeWhere(x => !x.Deleted, x => x.boardType, x => x.diversityType).ToList();
+                                }
+
+                                List<MW_RFULibraryViewModel> MWRFULibraries = 
+                                    _mapper.Map<List<MW_RFULibraryViewModel>>(MWLibraryService._MW_RFULibraryEntities).ToList();
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -4918,8 +4991,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLImwOtherLibrary.ToString().ToLower())
                             {
-                                List<MW_OtherLibraryViewModel> MWOtherLibraries = _mapper.Map<List<MW_OtherLibraryViewModel>>(_unitOfWork.MW_OtherLibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (MWLibraryService._MW_OtherLibraryEntities == null)
+                                {
+                                    MWLibraryService._MW_OtherLibraryEntities = _unitOfWork.MW_OtherLibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+
+                                List<MW_OtherLibraryViewModel> MWOtherLibraries = 
+                                    _mapper.Map<List<MW_OtherLibraryViewModel>>(MWLibraryService._MW_OtherLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -5272,8 +5351,14 @@ namespace TLIS_Service.Services
                             // Radios..
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIradioAntennaLibrary.ToString().ToLower())
                             {
-                                List<RadioAntennaLibraryViewModel> RadioAntennaLibraries = _mapper.Map<List<RadioAntennaLibraryViewModel>>(_unitOfWork.RadioAntennaLibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (RadioLibraryService._RadioAntennaLibraryEntities == null)
+                                {
+                                    RadioLibraryService._RadioAntennaLibraryEntities = _unitOfWork.RadioAntennaLibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+
+                                List<RadioAntennaLibraryViewModel> RadioAntennaLibraries = 
+                                    _mapper.Map<List<RadioAntennaLibraryViewModel>>(RadioLibraryService._RadioAntennaLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -5624,8 +5709,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIradioRRULibrary.ToString().ToLower())
                             {
-                                List<RadioRRULibraryViewModel> RadioRRULibraries = _mapper.Map<List<RadioRRULibraryViewModel>>(_unitOfWork.RadioRRULibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (RadioLibraryService._RadioRRULibraryEntities == null)
+                                {
+                                    RadioLibraryService._RadioRRULibraryEntities = _unitOfWork.RadioRRULibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+
+                                List<RadioRRULibraryViewModel> RadioRRULibraries = 
+                                    _mapper.Map<List<RadioRRULibraryViewModel>>(RadioLibraryService._RadioRRULibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -5976,8 +6067,14 @@ namespace TLIS_Service.Services
                             }
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIradioOtherLibrary.ToString().ToLower())
                             {
-                                List<RadioOtherLibraryViewModel> RadioOtherLibraries = _mapper.Map<List<RadioOtherLibraryViewModel>>(_unitOfWork.RadioOtherLibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (RadioLibraryService._RadioOtherLibraryEntities == null)
+                                {
+                                    RadioLibraryService._RadioOtherLibraryEntities = _unitOfWork.RadioOtherLibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+                                
+                                List<RadioOtherLibraryViewModel> RadioOtherLibraries = 
+                                    _mapper.Map<List<RadioOtherLibraryViewModel>>(RadioLibraryService._RadioOtherLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -6330,8 +6427,14 @@ namespace TLIS_Service.Services
                             // Power..
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIpowerLibrary.ToString().ToLower())
                             {
-                                List<PowerLibraryViewModel> PowerLibraries = _mapper.Map<List<PowerLibraryViewModel>>(_unitOfWork.PowerLibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (PowerLibraryService._PowerLibraryEntities == null)
+                                {
+                                    PowerLibraryService._PowerLibraryEntities = _unitOfWork.PowerLibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+
+                                List<PowerLibraryViewModel> PowerLibraries = 
+                                    _mapper.Map<List<PowerLibraryViewModel>>(PowerLibraryService._PowerLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -6684,8 +6787,14 @@ namespace TLIS_Service.Services
                             // Load Other..
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIloadOtherLibrary.ToString().ToLower())
                             {
-                                List<LoadOtherLibraryViewModel> LoadOtherLibraries = _mapper.Map<List<LoadOtherLibraryViewModel>>(_unitOfWork.LoadOtherLibraryRepository.GetWhere(x =>
-                                    x.Id > 0 && !x.Deleted).ToList());
+                                if (LoadOtherLibraryService._LoadOtherLibraryEntities == null)
+                                {
+                                    LoadOtherLibraryService._LoadOtherLibraryEntities = _unitOfWork.LoadOtherLibraryRepository
+                                        .GetWhere(x => !x.Deleted).ToList();
+                                }
+
+                                List<LoadOtherLibraryViewModel> LoadOtherLibraries = 
+                                    _mapper.Map<List<LoadOtherLibraryViewModel>>(LoadOtherLibraryService._LoadOtherLibraryEntities);
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
@@ -7626,114 +7735,200 @@ namespace TLIS_Service.Services
                 List<int> Records = new List<int>();
 
                 // Civils ...
-                if (CivilLibraryService._CivilWithLegLibraryEntities == null)
-                {
-                    CivilLibraryService._CivilWithLegLibraryEntities = _unitOfWork.CivilWithLegLibraryRepository
-                        .GetWhereAndInclude(x => !x.Deleted, x => x.civilSteelSupportCategory, x => x.sectionsLegType,
-                            x => x.structureType, x => x.supportTypeDesigned).ToList();
-                }
                 if (TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
                 {
+                    if (CivilLibraryService._CivilWithLegLibraryEntities == null)
+                    {
+                        CivilLibraryService._CivilWithLegLibraryEntities = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.civilSteelSupportCategory, x => x.sectionsLegType,
+                                x => x.structureType, x => x.supportTypeDesigned).ToList();
+                    }
+
                     Records = CivilLibraryService._CivilWithLegLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (CivilLibraryService._CivilWithoutLegLibraryEntities == null)
+                    {
+                        CivilLibraryService._CivilWithoutLegLibraryEntities = _unitOfWork.CivilWithoutLegLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
+                                x => x.InstallationCivilwithoutLegsType, x => x.structureType).ToList();
+                    }
+
+                    Records = CivilLibraryService._CivilWithoutLegLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.CivilNonSteelLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (CivilLibraryService._CivilNonSteelLibraryEntities == null)
+                    {
+                        CivilLibraryService._CivilNonSteelLibraryEntities = _unitOfWork.CivilNonSteelLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.civilNonSteelType).ToList();
+                    }
+
+                    Records = CivilLibraryService._CivilNonSteelLibraryEntities.Select(x => x.Id).ToList();
                 }
 
                 // Microwaves ...
                 else if (TableName.ToLower() == TablesNames.TLImwBULibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.MW_BULibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (MWLibraryService._MW_BULibraryEntities == null)
+                    {
+                        MWLibraryService._MW_BULibraryEntities = _unitOfWork.MW_BULibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.diversityType).ToList();
+                    }
+
+                    Records = MWLibraryService._MW_BULibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLImwDishLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.MW_DishLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (MWLibraryService._MW_DishLibraryEntities == null)
+                    {
+                        MWLibraryService._MW_DishLibraryEntities = _unitOfWork.MW_DishLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.asType, x => x.polarityType).ToList();
+                    }
+
+                    Records = MWLibraryService._MW_DishLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLImwODULibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.MW_ODULibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (MWLibraryService._MW_ODULibraryEntities == null)
+                    {
+                        MWLibraryService._MW_ODULibraryEntities = _unitOfWork.MW_ODULibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.parity).ToList();
+                    }
+
+                    Records = MWLibraryService._MW_ODULibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLImwOtherLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.MW_OtherLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (MWLibraryService._MW_OtherLibraryEntities == null)
+                    {
+                        MWLibraryService._MW_OtherLibraryEntities = _unitOfWork.MW_OtherLibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = MWLibraryService._MW_OtherLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.MW_RFULibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (MWLibraryService._MW_RFULibraryEntities == null)
+                    {
+                        MWLibraryService._MW_RFULibraryEntities = _unitOfWork.MW_RFULibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.boardType, x => x.diversityType).ToList();
+                    }
+
+                    Records = MWLibraryService._MW_RFULibraryEntities.Select(x => x.Id).ToList();
                 }
 
                 // Load Other ...
                 else if (TableName.ToLower() == TablesNames.TLIloadOtherLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.LoadOtherLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (LoadOtherLibraryService._LoadOtherLibraryEntities == null)
+                    {
+                        LoadOtherLibraryService._LoadOtherLibraryEntities = _unitOfWork.LoadOtherLibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = LoadOtherLibraryService._LoadOtherLibraryEntities.Select(x => x.Id).ToList();
                 }
 
                 // Power ...
                 else if (TableName.ToLower() == TablesNames.TLIpowerLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.PowerLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (PowerLibraryService._PowerLibraryEntities == null)
+                    {
+                        PowerLibraryService._PowerLibraryEntities = _unitOfWork.PowerLibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = PowerLibraryService._PowerLibraryEntities.Select(x => x.Id).ToList();
                 }
 
                 // Radio ...
                 else if (TableName.ToLower() == TablesNames.TLIradioAntennaLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.RadioAntennaLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (RadioLibraryService._RadioAntennaLibraryEntities == null)
+                    {
+                        RadioLibraryService._RadioAntennaLibraryEntities = _unitOfWork.RadioAntennaLibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = RadioLibraryService._RadioAntennaLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIradioOtherLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.RadioOtherLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (RadioLibraryService._RadioOtherLibraryEntities == null)
+                    {
+                        RadioLibraryService._RadioOtherLibraryEntities = _unitOfWork.RadioOtherLibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = RadioLibraryService._RadioOtherLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIradioRRULibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.RadioRRULibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (RadioLibraryService._RadioRRULibraryEntities == null)
+                    {
+                        RadioLibraryService._RadioRRULibraryEntities = _unitOfWork.RadioRRULibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = RadioLibraryService._RadioRRULibraryEntities.Select(x => x.Id).ToList();
                 }
 
                 // Side Arm ...
                 else if (TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.SideArmLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (SideArmLibraryService._SideArmLibraryEntities == null)
+                    {
+                        SideArmLibraryService._SideArmLibraryEntities = _unitOfWork.SideArmLibraryRepository
+                            .GetWhere(x => !x.Deleted).ToList();
+                    }
+
+                    Records = SideArmLibraryService._SideArmLibraryEntities.Select(x => x.Id).ToList();
                 }
 
                 // Other Inventories ...
                 else if (TableName.ToLower() == TablesNames.TLIcabinetPowerLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.CabinetPowerLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (OtherInventoryLibraryService._CabinetPowerLibraryEntities == null)
+                    {
+                        OtherInventoryLibraryService._CabinetPowerLibraryEntities = _unitOfWork.CabinetPowerLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.CabinetPowerType).ToList();
+                    }
+
+                    Records = OtherInventoryLibraryService._CabinetPowerLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.CabinetTelecomLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (OtherInventoryLibraryService._CabinetTelecomLibraryEntities == null)
+                    {
+                        OtherInventoryLibraryService._CabinetTelecomLibraryEntities = _unitOfWork.CabinetTelecomLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.TelecomType).ToList();
+                    }
+
+                    Records = OtherInventoryLibraryService._CabinetTelecomLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIsolarLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.SolarLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
+                    if (OtherInventoryLibraryService._SolarLibraryEntities == null)
+                    {
+                        OtherInventoryLibraryService._SolarLibraryEntities = _unitOfWork.SolarLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.Capacity).ToList();
+                    }
+
+                    Records = OtherInventoryLibraryService._SolarLibraryEntities.Select(x => x.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIgeneratorLibrary.ToString().ToLower())
                 {
-                    Records = _unitOfWork.GeneratorLibraryRepository.GetWhere(x =>
-                        x.Id > 0 && !x.Deleted).Select(x => x.Id).ToList();
-                }
+                    if (OtherInventoryLibraryService._GeneratorLibraryEntities == null)
+                    {
+                        OtherInventoryLibraryService._GeneratorLibraryEntities = _unitOfWork.GeneratorLibraryRepository
+                            .GetIncludeWhere(x => !x.Deleted, x => x.Capacity).ToList();
+                    }
 
+                    Records = OtherInventoryLibraryService._GeneratorLibraryEntities.Select(x => x.Id).ToList();
+                }
 
                 return Records;
             }
@@ -11152,6 +11347,8 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(DynamicAttributeLibValue.ValueString) &&
                                     !string.IsNullOrWhiteSpace(DynamicAttributeLibValue.ValueString))
                                 {
+                                    var obj = Convert.ChangeType(DynamicAttributeLibValue.ValueString, typeof(double));
+
                                     DynamicAttributeLibValue.ValueDouble = double.Parse(DynamicAttributeLibValue.ValueString);
                                     DynamicAttributeLibValue.ValueString = null;
                                 }
@@ -11164,6 +11361,8 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(DynamicAttributeLibValue.ValueString) &&
                                     !string.IsNullOrWhiteSpace(DynamicAttributeLibValue.ValueString))
                                 {
+                                    var obj = Convert.ChangeType(DynamicAttributeLibValue.ValueString, typeof(bool));
+
                                     DynamicAttributeLibValue.ValueBoolean = bool.Parse(DynamicAttributeLibValue.ValueString);
                                     DynamicAttributeLibValue.ValueString = null;
                                 }
@@ -11176,6 +11375,8 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(DynamicAttributeLibValue.ValueString) &&
                                     !string.IsNullOrWhiteSpace(DynamicAttributeLibValue.ValueString))
                                 {
+                                    var obj = Convert.ChangeType(DynamicAttributeLibValue.ValueString, typeof(DateTime));
+
                                     DynamicAttributeLibValue.ValueDateTime = DateTime.Parse(DynamicAttributeLibValue.ValueString);
                                     DynamicAttributeLibValue.ValueString = null;
                                 }
