@@ -11071,8 +11071,8 @@ namespace TLIS_Service.Services
         }
         public Response<DynamicAttViewModel> CheckEditingDynamicAttDataType(int DynamicAttributeId, int NewDataTypeId)
         {
-            TLIdynamicAtt DynamicAttribute = _unitOfWork.DynamicAttRepository
-                .GetIncludeWhereFirst(x => x.Id == DynamicAttributeId, x => x.DataType);
+            TLIdynamicAtt DynamicAttribute = UnitOfWork.AllDynamicAttribute
+                .FirstOrDefault(x => x.Id == DynamicAttributeId);
 
             if (DynamicAttribute.DataTypeId == NewDataTypeId)
                 return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
@@ -11107,7 +11107,7 @@ namespace TLIS_Service.Services
             }
 
             TLIdependency DependecnyValidation = _unitOfWork.DependencieRepository
-                .GetWhereFirst(x => x.DynamicAttId == DynamicAttributeId);
+                .GetWhereFirst(x => x.DynamicAttId == DynamicAttributeId && x.OperationId != null);
 
             if (DependecnyValidation != null)
                 return new Response<DynamicAttViewModel>(true, null, null,
@@ -11152,7 +11152,8 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(DynamicAttributeLibValue.ValueString) &&
                                     !string.IsNullOrWhiteSpace(DynamicAttributeLibValue.ValueString))
                                 {
-                                    var obj = Convert.ChangeType(DynamicAttributeLibValue.ValueString, typeof(double));
+                                    DynamicAttributeLibValue.ValueDouble = double.Parse(DynamicAttributeLibValue.ValueString);
+                                    DynamicAttributeLibValue.ValueString = null;
                                 }
                             }
                         }
@@ -11163,7 +11164,8 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(DynamicAttributeLibValue.ValueString) &&
                                     !string.IsNullOrWhiteSpace(DynamicAttributeLibValue.ValueString))
                                 {
-                                    var obj = Convert.ChangeType(DynamicAttributeLibValue.ValueString, typeof(bool));
+                                    DynamicAttributeLibValue.ValueBoolean = bool.Parse(DynamicAttributeLibValue.ValueString);
+                                    DynamicAttributeLibValue.ValueString = null;
                                 }
                             }
                         }
@@ -11174,7 +11176,8 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(DynamicAttributeLibValue.ValueString) &&
                                     !string.IsNullOrWhiteSpace(DynamicAttributeLibValue.ValueString))
                                 {
-                                    var obj = Convert.ChangeType(DynamicAttributeLibValue.ValueString, typeof(DateTime));
+                                    DynamicAttributeLibValue.ValueDateTime = DateTime.Parse(DynamicAttributeLibValue.ValueString);
+                                    DynamicAttributeLibValue.ValueString = null;
                                 }
                             }
                         }
