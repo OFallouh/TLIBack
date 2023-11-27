@@ -607,13 +607,13 @@ namespace TLIS_Service.Services
                         }
                     }
                     await _unitOfWork.SaveChangesAsync();
-                    transaction.Complete();
-
-                    _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == LoadOtherLibrary.Id));
 
                     var ObjectForAddInCashList = _unitOfWork.LoadOtherLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == LoadOtherLibrary.Id);
 
+                    transaction.Complete();
+
+                    _LoadOtherLibraryEntities.Remove(_LoadOtherLibraryEntities.FirstOrDefault(x => x.Id == LoadOtherLibrary.Id));
                     _LoadOtherLibraryEntities.Add(ObjectForAddInCashList);
 
                     return new Response<AllItemAttributes>();

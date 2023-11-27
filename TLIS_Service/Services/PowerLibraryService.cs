@@ -1163,13 +1163,13 @@ namespace TLIS_Service.Services
                     }
 
                     await _unitOfWork.SaveChangesAsync();
-                    transaction2.Complete();
-
-                    _PowerLibraryEntities.Remove(_PowerLibraryEntities.FirstOrDefault(x => x.Id == PowerLibrary.Id));
 
                     var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == PowerLibrary.Id);
 
+                    transaction2.Complete();
+
+                    _PowerLibraryEntities.Remove(_PowerLibraryEntities.FirstOrDefault(x => x.Id == PowerLibrary.Id));
                     _PowerLibraryEntities.Add(ObjectForAddInCashList);
 
                     return new Response<AllItemAttributes>();
