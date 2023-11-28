@@ -422,7 +422,7 @@ namespace TLIS_Service.Services
         //}
         public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
         {
-            List<TLIlocationType> Locations = _context.TLIlocationType.ToList();
+            List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
 
             if (filters != null ? filters.Count() > 0 : false)
             {
@@ -433,7 +433,7 @@ namespace TLIS_Service.Services
                     _MySites.Count();
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
                 }
-                catch (ArgumentNullException Ex)
+                catch (ArgumentNullException)
                 {
                     _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                         .Include(x => x.siteStatus).ToList();
@@ -481,10 +481,12 @@ namespace TLIS_Service.Services
 
                     if (!string.IsNullOrEmpty(LocationTypeInModel))
                     {
+                        TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+
                         ListForOutPutOnly.Add(new SiteViewModel()
                         {
                             SiteCode = SitesViewModel.SiteCode,
-                            LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name,
+                            LocationType = CheckLocation != null ? CheckLocation.Name : "NA",
                             SiteName = SitesViewModel.SiteName,
                             Area = SitesViewModel.Area,
                             CityName = SitesViewModel.CityName,
@@ -543,7 +545,15 @@ namespace TLIS_Service.Services
                         .LocationType;
 
                     if (!string.IsNullOrEmpty(LocationTypeInModel))
-                        SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
+                    {
+                        TLIlocationType CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+
+                        if (CheckLocation != null)
+                            SitesViewModel.LocationType = CheckLocation.Name;
+
+                        else
+                            SitesViewModel.LocationType = "NA";
+                    }
                 }
 
                 return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
