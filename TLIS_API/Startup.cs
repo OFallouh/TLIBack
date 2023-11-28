@@ -210,7 +210,8 @@ namespace TLIS_API
                 // Sites..
                 //
 
-                SiteService._MySites = await _Context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                SiteService._MySites = await _Context.TLIsite
+                    .AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                     .Include(x => x.siteStatus).ToListAsync();
 
                 //
@@ -218,6 +219,7 @@ namespace TLIS_API
                 //
 
                 UnitOfWork.AllAttributeViewManagment = await _Context.TLIattributeViewManagment
+                    .AsNoTracking()
                     .Include(x => x.AttributeActivated)
                     .Include(x => x.DynamicAtt)
                     .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
@@ -227,11 +229,14 @@ namespace TLIS_API
                     .Include(x => x.EditableManagmentView.TLItablesNames1)
                     .ToListAsync();
 
-                UnitOfWork.AllAttributeActivated = await _Context.TLIattributeActivated.ToListAsync();
+                UnitOfWork.AllAttributeActivated = await _Context.TLIattributeActivated
+                    .AsNoTracking().ToListAsync();
                 UnitOfWork.AllAttributeActivatedCategory = await _Context.TLIattActivatedCategory
+                    .AsNoTracking()
                     .Include(x => x.attributeActivated).Include(x => x.civilWithoutLegCategory).ToListAsync();
 
                 UnitOfWork.AllDynamicAttribute = await _Context.TLIdynamicAtt
+                    .AsNoTracking()
                     .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
                     .Include(x => x.tablesNames).ToListAsync();
 
@@ -240,6 +245,7 @@ namespace TLIS_API
                 //
 
                 CivilLibraryService._CivilWithLegLibraryEntities = await _Context.TLIcivilWithLegLibrary
+                    .AsNoTracking()
                     .Include(x => x.civilSteelSupportCategory)
                     .Include(x => x.sectionsLegType)
                     .Include(x => x.structureType)
@@ -251,6 +257,7 @@ namespace TLIS_API
                 //
 
                 CivilLibraryService._CivilNonSteelLibraryEntities = await _Context.TLIcivilNonSteelLibrary
+                    .AsNoTracking()
                     .Include(x => x.civilNonSteelType).Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -258,6 +265,7 @@ namespace TLIS_API
                 //
 
                 CivilLibraryService._CivilWithoutLegLibraryEntities = await _Context.TLIcivilWithoutLegLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted)
                     .Include(x => x.CivilSteelSupportCategory)
                     .Include(x => x.CivilWithoutLegCategory)
@@ -269,6 +277,7 @@ namespace TLIS_API
                 //
 
                 OtherInventoryLibraryService._CabinetPowerLibraryEntities = await _Context.TLIcabinetPowerLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted)
                     .Include(x => x.CabinetPowerType).ToListAsync();
 
@@ -277,6 +286,7 @@ namespace TLIS_API
                 //
 
                 OtherInventoryLibraryService._CabinetTelecomLibraryEntities = await _Context.TLIcabinetTelecomLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted)
                     .Include(x => x.TelecomType).ToListAsync();
 
@@ -285,6 +295,7 @@ namespace TLIS_API
                 //
 
                 OtherInventoryLibraryService._SolarLibraryEntities = await _Context.TLIsolarLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted)
                     .Include(x => x.Capacity).ToListAsync();
 
@@ -293,6 +304,7 @@ namespace TLIS_API
                 //
 
                 OtherInventoryLibraryService._GeneratorLibraryEntities = await _Context.TLIgeneratorLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted)
                     .Include(x => x.Capacity).ToListAsync();
 
@@ -301,6 +313,7 @@ namespace TLIS_API
                 //
 
                 PowerLibraryService._PowerLibraryEntities = await _Context.TLIpowerLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -308,6 +321,7 @@ namespace TLIS_API
                 //
 
                 LoadOtherLibraryService._LoadOtherLibraryEntities = await _Context.TLIloadOtherLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -315,6 +329,7 @@ namespace TLIS_API
                 //
 
                 MWLibraryService._MW_ODULibraryEntities = await _Context.TLImwODULibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).Include(x => x.parity).ToListAsync();
 
                 //
@@ -322,6 +337,7 @@ namespace TLIS_API
                 //
 
                 MWLibraryService._MW_DishLibraryEntities = await _Context.TLImwDishLibrary
+                    .AsNoTracking()
                     .Include(x => x.asType)
                     .Include(x => x.polarityType)
                     .Where(x => !x.Deleted).ToListAsync();
@@ -331,6 +347,7 @@ namespace TLIS_API
                 //
 
                 MWLibraryService._MW_BULibraryEntities = await _Context.TLImwBULibrary
+                    .AsNoTracking()
                     .Include(x => x.diversityType)
                     .Where(x => !x.Deleted).ToListAsync();
 
@@ -339,6 +356,7 @@ namespace TLIS_API
                 //
 
                 MWLibraryService._MW_RFULibraryEntities = await _Context.TLImwRFULibrary
+                    .AsNoTracking()
                     .Include(x => x.boardType)
                     .Include(x => x.diversityType)
                     .Where(x => !x.Deleted).ToListAsync();
@@ -348,6 +366,7 @@ namespace TLIS_API
                 //
 
                 MWLibraryService._MW_OtherLibraryEntities = await _Context.TLImwOtherLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -355,6 +374,7 @@ namespace TLIS_API
                 //
 
                 RadioLibraryService._RadioAntennaLibraryEntities = await _Context.TLIradioAntennaLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -362,6 +382,7 @@ namespace TLIS_API
                 //
 
                 RadioLibraryService._RadioRRULibraryEntities = await _Context.TLIradioRRULibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -369,6 +390,7 @@ namespace TLIS_API
                 //
 
                 RadioLibraryService._RadioOtherLibraryEntities = await _Context.TLIradioOtherLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 //
@@ -376,6 +398,7 @@ namespace TLIS_API
                 //
 
                 SideArmLibraryService._SideArmLibraryEntities = await _Context.TLIsideArmLibrary
+                    .AsNoTracking()
                     .Where(x => !x.Deleted).ToListAsync();
 
                 await next();

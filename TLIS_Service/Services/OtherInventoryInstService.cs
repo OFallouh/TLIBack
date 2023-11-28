@@ -3911,11 +3911,14 @@ namespace TLIS_Service.Services
                                     .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId,
                                         x => x.cabinet, x => x.solar, x => x.generator);
 
-                                otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
-                                    (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name : 
-                                    SupportReferenceAllOtherInventory.generator.Name);
+                                if (SupportReferenceAllOtherInventory != null)
+                                {
+                                    otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
+                                        (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
+                                        SupportReferenceAllOtherInventory.generator.Name);
 
-                                ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
+                                    ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
+                                }
                             }
                         }
                     }
@@ -4026,11 +4029,14 @@ namespace TLIS_Service.Services
                                     .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId,
                                         x => x.cabinet, x => x.solar, x => x.generator);
 
-                                otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
-                                    (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
-                                    SupportReferenceAllOtherInventory.generator.Name);
+                                if (SupportReferenceAllOtherInventory != null)
+                                {
+                                    otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
+                                        (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
+                                        SupportReferenceAllOtherInventory.generator.Name);
 
-                                ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
+                                    ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
+                                }
                             }
                         }
                     }
@@ -4143,11 +4149,14 @@ namespace TLIS_Service.Services
                                     .GetIncludeWhereFirst(x => x.Id == otherInventoryDistance.ReferenceOtherInventoryId,
                                         x => x.cabinet, x => x.solar, x => x.generator);
 
-                                otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
-                                    (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
-                                    SupportReferenceAllOtherInventory.generator.Name);
+                                if (SupportReferenceAllOtherInventory != null)
+                                {
+                                    otherinventorytAttribute.Value = SupportReferenceAllOtherInventory.cabinetId != null ? SupportReferenceAllOtherInventory.cabinet.Name :
+                                        (SupportReferenceAllOtherInventory.solarId != null ? SupportReferenceAllOtherInventory.solar.Name :
+                                        SupportReferenceAllOtherInventory.generator.Name);
 
-                                ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
+                                    ReferenceOtherInventoryInstId = SupportReferenceAllOtherInventory.Id;
+                                }
                             }
                         }
                     }
