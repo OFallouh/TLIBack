@@ -33,42 +33,42 @@ namespace TLIS_Repository.Repositories
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
 
-            var CivilSteelSupportCategory = _context.TLIcivilSteelSupportCategory.ToList();
+            var CivilSteelSupportCategory = _context.TLIcivilSteelSupportCategory.AsNoTracking().ToList();
             List<DropDownListFilters> CivilSteelSupportCategoryFilters = _mapper.Map<List<DropDownListFilters>>(CivilSteelSupportCategory);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CivilSteelSupportCategoryId", CivilSteelSupportCategoryFilters));
 
-            var InstallationCivilwithoutLegsType = _context.TLIinstallationCivilwithoutLegsType.Where(x => !x.Deleted && !x.Disable).ToList();
+            var InstallationCivilwithoutLegsType = _context.TLIinstallationCivilwithoutLegsType.AsNoTracking().Where(x => !x.Deleted && !x.Disable).ToList();
             List<DropDownListFilters> InstallationCivilwithoutLegsTypeFilters = _mapper.Map<List<DropDownListFilters>>(InstallationCivilwithoutLegsType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("InstallationCivilwithoutLegsTypeId", InstallationCivilwithoutLegsTypeFilters));
 
-            var CivilWithoutlegCategory = _context.TLIcivilWithoutLegCategory.Where(x => !x.disable).ToList();
+            var CivilWithoutlegCategory = _context.TLIcivilWithoutLegCategory.AsNoTracking().Where(x => !x.disable).ToList();
             List<DropDownListFilters> CivilWithoutlegCategoryFilters = _mapper.Map<List<DropDownListFilters>>(CivilWithoutlegCategory);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CivilWithoutLegCategoryId", CivilWithoutlegCategoryFilters));
 
 
-            var StructureType = _context.TLIstructureType.Where(x => !x.Deleted && !x.Disable).ToList();
+            var StructureType = _context.TLIstructureType.AsNoTracking().Where(x => !x.Deleted && !x.Disable).ToList();
             List<DropDownListFilters> StructureTypeFilters = _mapper.Map<List<DropDownListFilters>>(StructureType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("structureTypeId", StructureTypeFilters));
 
-            var Suppliers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Suppliers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Supplier.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
             List<DropDownListFilters> SuppliersFilters = _mapper.Map<List<DropDownListFilters>>(Suppliers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Suppliers", SuppliersFilters));
 
-            var Designers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Designers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                 .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Designer.ToString().ToLower() && !x.logisticalType.Disable &&
                     !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
             List<DropDownListFilters> DesignersFilters = _mapper.Map<List<DropDownListFilters>>(Designers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Designers", DesignersFilters));
 
-            var Manufacturers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Manufacturers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Manufacturer.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
             List<DropDownListFilters> ManufacturersFilters = _mapper.Map<List<DropDownListFilters>>(Manufacturers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Manufacturers", ManufacturersFilters));
 
-            var Vendors = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Vendors = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Vendor.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
             List<DropDownListFilters> VendorsFilters = _mapper.Map<List<DropDownListFilters>>(Vendors);

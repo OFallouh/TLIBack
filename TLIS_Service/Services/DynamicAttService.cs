@@ -7950,22 +7950,29 @@ namespace TLIS_Service.Services
                     {
                         try
                         {
-                           
                             if (UnitOfWork.AllAttributeViewManagment == null)
                             {
-                                UnitOfWork.AllAttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                    .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
-                                        x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
-                                        x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                                UnitOfWork.AllAttributeViewManagment = _dbContext.TLIattributeViewManagment
+                                    .AsNoTracking()
+                                    .Include(x => x.AttributeActivated)
+                                    .Include(x => x.DynamicAtt)
+                                    .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
+                                    .Include(x => x.DynamicAtt.DataType)
+                                    .Include(x => x.DynamicAtt.tablesNames)
+                                    .Include(x => x.EditableManagmentView)
+                                    .Include(x => x.EditableManagmentView.TLItablesNames1)
+                                    .ToList();
                             }
 
                             if (UnitOfWork.AllDynamicAttribute == null)
                             {
-                                UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
-                                    .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
-                                        x => x.tablesNames).ToList();
+                                UnitOfWork.AllDynamicAttribute = _dbContext.TLIdynamicAtt
+                                    .AsNoTracking()
+                                    .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
+                                    .Include(x => x.tablesNames).ToList();
                             }
-                                // Map ViewModel to Entity
+
+                            // Map ViewModel to Entity
                             TLIdynamicAtt DynamicAttEntity = _mapper.Map<TLIdynamicAtt>(addDependencyViewModel);
 
                             string DataTypeName = _unitOfWork.DataTypeRepository.GetByID(addDependencyViewModel.DataTypeId.Value).Name;

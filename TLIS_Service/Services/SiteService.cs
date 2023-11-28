@@ -435,7 +435,7 @@ namespace TLIS_Service.Services
                 }
                 catch (ArgumentNullException Ex)
                 {
-                    _MySites = _context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                    _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                         .Include(x => x.siteStatus).ToList();
 
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
@@ -530,7 +530,7 @@ namespace TLIS_Service.Services
                 }
                 catch (ArgumentNullException Ex)
                 {
-                    _MySites = _context.TLIsite.Include(x => x.Area).Include(x => x.Region)
+                    _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                         .Include(x => x.siteStatus).ToList();
 
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
@@ -7278,8 +7278,8 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    _MySites = _unitOfWork.SiteRepository
-                        .GetIncludeWhere(x => true, x => x.Area, x => x.siteStatus, x => x.Region).ToList();
+                    _MySites = _context.TLIsite.AsNoTracking()
+                        .Include(x => x.siteStatus).Include(x => x.Region).Include(x => x.AreaId).ToList();
 
                     transaction.Complete();
                 }
