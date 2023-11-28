@@ -4767,11 +4767,11 @@ namespace TLIS_Service.Services
                         }
                         await _unitOfWork.SaveChangesAsync();
 
-                        transaction.Complete();
-
                         var ObjectForAddInCashList = _unitOfWork.MW_DishLibraryRepository
                             .GetIncludeWhereFirst(x => x.Id == MW_DishLibraryEntity.Id, x => x.asType, x => x.polarityType);
 
+                        transaction.Complete();
+                        
                         _MW_DishLibraryEntities.Remove(_MW_DishLibraryEntities.FirstOrDefault(x => x.Id == MW_DishLibraryEntity.Id));
                         _MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                     }
@@ -4873,11 +4873,11 @@ namespace TLIS_Service.Services
                         //}
                         await _unitOfWork.SaveChangesAsync();
 
-                        transaction.Complete();
-
                         var ObjectForAddInCashList = _unitOfWork.MW_ODULibraryRepository
                             .GetIncludeWhereFirst(x => x.Id == MW_ODULibraryEntity.Id, x => x.parity);
 
+                        transaction.Complete();
+                        
                         _MW_ODULibraryEntities.Remove(_MW_ODULibraryEntities.FirstOrDefault(x => x.Id == MW_ODULibraryEntity.Id));
                         _MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                     }
@@ -4975,10 +4975,10 @@ namespace TLIS_Service.Services
                         }
                         await _unitOfWork.SaveChangesAsync();
 
-                        transaction.Complete();
-
                         var ObjectForAddInCashList = _unitOfWork.MW_RFULibraryRepository
                             .GetIncludeWhereFirst(x => x.Id == MW_RFULibraryEntity.Id, x => x.boardType, x => x.diversityType);
+
+                        transaction.Complete();
 
                         _MW_RFULibraryEntities.Remove(_MW_RFULibraryEntities.FirstOrDefault(x => x.Id == MW_RFULibraryEntity.Id));
                         _MW_RFULibraryEntities.Add(ObjectForAddInCashList);
@@ -5080,11 +5080,11 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(editMW_Other.DynamicAtts, TableNameEntity.Id, MW_OtherLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, MWOther.Id);
                         }
 
-                        transaction.Complete();
-
                         var ObjectForAddInCashList = _unitOfWork.MW_OtherLibraryRepository
                             .GetIncludeWhereFirst(x => x.Id == MW_OtherLibraryEntity.Id);
 
+                        transaction.Complete();
+                        
                         _MW_OtherLibraryEntities.Remove(_MW_OtherLibraryEntities.FirstOrDefault(x => x.Id == MW_OtherLibraryEntity.Id));
                         _MW_OtherLibraryEntities.Add(ObjectForAddInCashList);
                     }
