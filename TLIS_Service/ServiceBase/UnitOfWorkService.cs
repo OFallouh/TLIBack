@@ -185,7 +185,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_PowerLibraryService == null)
-                    _PowerLibraryService = new PowerLibraryService(_unitOfWork, _services,_mapper);
+                    _PowerLibraryService = new PowerLibraryService(_unitOfWork, _services,_mapper, db);
 
                 return _PowerLibraryService;
             }
@@ -244,7 +244,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_sideArmLibraryService == null)
-                    _sideArmLibraryService = new SideArmLibraryService(_unitOfWork, _services,_mapper);
+                    _sideArmLibraryService = new SideArmLibraryService(_unitOfWork, _services,_mapper, db);
                 return _sideArmLibraryService;
             }
         }
@@ -363,7 +363,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_MWLibraryService == null)
-                    _MWLibraryService = new MWLibraryService(_unitOfWork, _services,_mapper);
+                    _MWLibraryService = new MWLibraryService(_unitOfWork, _services,_mapper, db);
                 return _MWLibraryService;
             }
         }
@@ -450,7 +450,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_RadioLibraryService == null)
-                    _RadioLibraryService = new RadioLibraryService(_unitOfWork, _services,_mapper);
+                    _RadioLibraryService = new RadioLibraryService(_unitOfWork, _services,_mapper, db);
                 return _RadioLibraryService;
             }
         }
@@ -460,7 +460,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_OtherInventoryLibraryService == null)
-                    _OtherInventoryLibraryService = new OtherInventoryLibraryService(_unitOfWork, _services,_mapper);
+                    _OtherInventoryLibraryService = new OtherInventoryLibraryService(_unitOfWork, _services,_mapper, db);
                 return _OtherInventoryLibraryService;
             }
         }
@@ -596,7 +596,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_LoadOtherLibraryService == null)
-                    _LoadOtherLibraryService = new LoadOtherLibraryService(_unitOfWork, _services,_mapper);
+                    _LoadOtherLibraryService = new LoadOtherLibraryService(_unitOfWork, _services,_mapper, db);
                 return _LoadOtherLibraryService;
             }
         }

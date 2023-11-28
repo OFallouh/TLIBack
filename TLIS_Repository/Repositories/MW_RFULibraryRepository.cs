@@ -32,33 +32,33 @@ namespace TLIS_Repository.Repositories
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
 
-            var diversityType = _context.TLIdiversityType.Where(x => !x.Disable && !x.Deleted).ToList();
+            var diversityType = _context.TLIdiversityType.AsNoTracking().Where(x => !x.Disable && !x.Deleted).ToList();
             List<DropDownListFilters> diversityTypeFilters = _mapper.Map<List<DropDownListFilters>>(diversityType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("diversityTypeId", diversityTypeFilters));
 
-            var boardType = _context.TLIboardType.Where(x => !x.Disable && !x.Deleted).ToList();
+            var boardType = _context.TLIboardType.AsNoTracking().Where(x => !x.Disable && !x.Deleted).ToList();
             List<DropDownListFilters> boardTypeFilters = _mapper.Map<List<DropDownListFilters>>(boardType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("boardTypeId", boardTypeFilters));
 
-            var Suppliers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Suppliers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                 .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Supplier.ToString().ToLower() && !x.logisticalType.Disable &&
                     !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.MW.ToString().ToLower()).ToList();
             List<DropDownListFilters> SuppliersFilters = _mapper.Map<List<DropDownListFilters>>(Suppliers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Suppliers", SuppliersFilters));
 
-            var Designers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Designers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                 .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Designer.ToString().ToLower() && !x.logisticalType.Disable &&
                     !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.MW.ToString().ToLower()).ToList();
             List<DropDownListFilters> DesignersFilters = _mapper.Map<List<DropDownListFilters>>(Designers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Designers", DesignersFilters));
 
-            var Manufacturers = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Manufacturers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Manufacturer.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.MW.ToString().ToLower()).ToList();
             List<DropDownListFilters> ManufacturersFilters = _mapper.Map<List<DropDownListFilters>>(Manufacturers);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Manufacturers", ManufacturersFilters));
 
-            var Vendors = _context.TLIlogistical.Include(x => x.logisticalType).Include(x => x.tablePartName)
+            var Vendors = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Vendor.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.MW.ToString().ToLower()).ToList();
             List<DropDownListFilters> VendorsFilters = _mapper.Map<List<DropDownListFilters>>(Vendors);

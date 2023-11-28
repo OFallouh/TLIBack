@@ -3760,11 +3760,12 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking().FirstOrDefault(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilWithLegsLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == CivilWithLegsLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -3835,11 +3836,12 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking().FirstOrDefault(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilWithLegsLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key.ToLower() == LibraryDynamicAtt.Key.ToLower());
+                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == CivilWithLegsLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.Key.ToLower() == LibraryDynamicAtt.Key.ToLower());
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4357,7 +4359,7 @@ namespace TLIS_Service.Services
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
                         TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking()
-                            .FirstOrDefault(x => 
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x => 
                                 x.DynamicAttId == LibraryDynamicAtt.Id &&
                                 x.InventoryId == CivilWithoutLegLibraryViewModel.Id &&
                                !x.disable && x.DynamicAtt.LibraryAtt &&
@@ -4427,12 +4429,13 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking().FirstOrDefault(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilWithoutLegLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.CivilWithoutLegCategoryId == CategoryId &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == CivilWithoutLegLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.CivilWithoutLegCategoryId == CategoryId &&
+                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4881,11 +4884,12 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking().FirstOrDefault(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilNonSteelLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == CivilNonSteelLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -4949,11 +4953,12 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking().FirstOrDefault(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == CivilNonSteelLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                        TLIdynamicAttLibValue DynamicAttLibValue = db.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == CivilNonSteelLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
 
                         if (DynamicAttLibValue != null)
                         {

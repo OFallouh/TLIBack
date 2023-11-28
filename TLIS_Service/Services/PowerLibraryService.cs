@@ -30,6 +30,7 @@ using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_DAL;
 
 namespace TLIS_Service.Services
 {
@@ -38,14 +39,16 @@ namespace TLIS_Service.Services
         private readonly IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
+        private ApplicationDbContext _DbContext;
 
         public static List<TLIpowerLibrary> _PowerLibraryEntities;
 
-        public PowerLibraryService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper)
+        public PowerLibraryService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper, ApplicationDbContext DbContext)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
+            _DbContext = DbContext;
         }
         //Function take 2 parameters parameters, filters
         //Function return all records 
@@ -82,7 +85,7 @@ namespace TLIS_Service.Services
 
                 DynamicLibValueListIds = new List<int>();
 
-                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
+                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _DbContext.TLIdynamicAttLibValue.AsNoTracking().Where(x =>
                     LibDynamicAttListIds.Select(y => y.Id).Contains(x.DynamicAttId) && !x.disable).ToList();
 
                 List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -124,21 +127,29 @@ namespace TLIS_Service.Services
                 {
                     if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
                     {
-                        UnitOfWork.AllAttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                            .GetIncludeWhere(x => true, x => x.AttributeActivated, x => x.DynamicAtt,
-                                x => x.DynamicAtt.CivilWithoutLegCategory, x => x.DynamicAtt.DataType, x => x.DynamicAtt.tablesNames,
-                                x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1).ToList();
+                        UnitOfWork.AllAttributeViewManagment = _DbContext.TLIattributeViewManagment
+                            .AsNoTracking()
+                            .Include(x => x.AttributeActivated)
+                            .Include(x => x.DynamicAtt)
+                            .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
+                            .Include(x => x.DynamicAtt.DataType)
+                            .Include(x => x.DynamicAtt.tablesNames)
+                            .Include(x => x.EditableManagmentView)
+                            .Include(x => x.EditableManagmentView.TLItablesNames1)
+                            .ToList();
                     }
 
                     if (UnitOfWork.AllDynamicAttribute == null || (isRefresh != null ? isRefresh.Value : false))
                     {
-                        UnitOfWork.AllDynamicAttribute = _unitOfWork.DynamicAttRepository
-                            .GetIncludeWhere(x => true, x => x.CivilWithoutLegCategory, x => x.DataType,
-                                x => x.tablesNames).ToList();
+                        UnitOfWork.AllDynamicAttribute = _DbContext.TLIdynamicAtt
+                            .AsNoTracking()
+                            .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
+                            .Include(x => x.tablesNames).ToList();
                     }
 
-                    _PowerLibraryEntities = _unitOfWork.PowerLibraryRepository
-                        .GetWhere(x => !x.Deleted).ToList();
+                    _PowerLibraryEntities = _PowerLibraryEntities = _DbContext.TLIpowerLibrary
+                        .AsNoTracking()
+                        .Where(x => !x.Deleted).ToList();
                 }
 
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
@@ -337,8 +348,8 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetWhere(x =>
-                            DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _DbContext.TLIdynamicAttLibValue.AsNoTracking()
+                            .Where(x => DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
 
@@ -519,11 +530,12 @@ namespace TLIS_Service.Services
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == PowerLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt);
+                        TLIdynamicAttLibValue DynamicAttLibValue = _DbContext.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == PowerLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -587,11 +599,12 @@ namespace TLIS_Service.Services
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
-                            x.DynamicAttId == LibraryDynamicAtt.Id &&
-                            x.InventoryId == PowerLibraryViewModel.Id && !x.disable &&
-                            x.DynamicAtt.LibraryAtt &&
-                            x.DynamicAtt.Key == LibraryDynamicAtt.Key, x => x.DynamicAtt);
+                        TLIdynamicAttLibValue DynamicAttLibValue = _DbContext.TLIdynamicAttLibValue.AsNoTracking()
+                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
+                                x.DynamicAttId == LibraryDynamicAtt.Id &&
+                                x.InventoryId == PowerLibraryViewModel.Id && !x.disable &&
+                                x.DynamicAtt.LibraryAtt &&
+                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
 
                         if (DynamicAttLibValue != null)
                         {
