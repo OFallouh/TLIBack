@@ -2902,11 +2902,11 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(editRadioRRULibrary.DynamicAtts, TableNameEntity.Id, radioRRULibrary.Id, Helpers.LogFilterAttribute.UserId, resultId, RadioRRU.Id);
                         }
 
-                        transaction.Complete();
-
                         var ObjectForAddInCashList = _unitOfWork.RadioRRULibraryRepository
                             .GetIncludeWhereFirst(x => x.Id == radioRRULibrary.Id);
 
+                        transaction.Complete();
+                        
                         _RadioRRULibraryEntities.Remove(_RadioRRULibraryEntities.FirstOrDefault(x => x.Id == radioRRULibrary.Id));
                         _RadioRRULibraryEntities.Add(ObjectForAddInCashList);
                     }
