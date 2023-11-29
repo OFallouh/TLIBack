@@ -672,6 +672,28 @@ namespace TLIS_Service.Services
         {
             try
             {
+                List<TLIoperation> ListOfOperations = _dbContext.TLIoperation
+                    .Where(x => !x.Deleted).ToList();
+
+                if (UnitOfWork.AllAttributeActivated == null)
+                {
+                    UnitOfWork.AllAttributeActivated = _dbContext.TLIattributeActivated
+                        .AsNoTracking().ToList();
+                }
+                if (UnitOfWork.AllAttributeActivatedCategory == null)
+                {
+                    UnitOfWork.AllAttributeActivatedCategory = _dbContext.TLIattActivatedCategory
+                        .AsNoTracking()
+                        .Include(x => x.attributeActivated).Include(x => x.civilWithoutLegCategory).ToList();
+                }
+                if (UnitOfWork.AllDynamicAttribute == null)
+                {
+                    UnitOfWork.AllDynamicAttribute = _dbContext.TLIdynamicAtt
+                        .AsNoTracking()
+                        .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
+                        .Include(x => x.tablesNames).ToList();
+                }
+
                 if (addDependencyViewModel.Dependencies != null ? addDependencyViewModel.Dependencies.Count() == 0 : true)
                 {
                     AddDefaultValues(addDependencyViewModel, null, DynamicAttId);
@@ -710,7 +732,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(CivilWithLegLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -719,7 +742,9 @@ namespace TLIS_Service.Services
 
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -854,12 +879,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CivilWithLegLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CivilWithLegLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -1069,7 +1095,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(CivilWithoutLegLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -1077,7 +1104,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(CivilWithoutLegLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -1212,12 +1241,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CivilWithoutLegLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CivilWithoutLegLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -1427,7 +1457,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(CivilNonSteelLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -1435,7 +1466,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(CivilNonSteelLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -1570,12 +1603,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CivilNonSteelLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CivilNonSteelLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -1787,7 +1821,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(SideArmLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -1795,7 +1830,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(SideArmLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -1930,12 +1967,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == SideArmLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == SideArmLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -2147,7 +2185,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(CabinetPowerLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -2155,7 +2194,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(CabinetPowerLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -2290,12 +2331,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CabinetPowerLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CabinetPowerLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -2505,7 +2547,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(CabinetTelecomLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -2513,7 +2556,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(CabinetTelecomLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -2648,12 +2693,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CabinetTelecomLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == CabinetTelecomLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -2863,7 +2909,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(SolarLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -2871,7 +2918,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(SolarLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -3006,12 +3055,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == SolarLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == SolarLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -3221,7 +3271,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(GeneratorLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -3229,7 +3280,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(GeneratorLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -3364,12 +3417,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == GeneratorLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == GeneratorLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -3582,7 +3636,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(MW_DishLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -3590,7 +3645,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(MWDishLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -3725,12 +3782,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWDishLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWDishLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -3940,7 +3998,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(MW_ODULibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -3948,7 +4007,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(MWODULibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -4083,12 +4144,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWODULibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWODULibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -4298,7 +4360,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(MW_BULibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -4306,7 +4369,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(MWBULibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -4441,12 +4506,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWBULibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWBULibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -4656,7 +4722,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(MW_RFULibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -4664,7 +4731,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(MWRFULibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -4799,12 +4868,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWRFULibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWRFULibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -5014,7 +5084,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(MW_OtherLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -5022,7 +5093,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(MWOtherLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -5157,12 +5230,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWOtherLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == MWOtherLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -5374,7 +5448,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(RadioAntennaLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -5382,7 +5457,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(RadioAntennaLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -5517,12 +5594,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == RadioAntennaLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == RadioAntennaLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -5732,7 +5810,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(RadioRRULibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -5740,7 +5819,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(RadioRRULibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -5875,12 +5956,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == RadioRRULibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == RadioRRULibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -6090,7 +6172,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(RadioOtherLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -6098,7 +6181,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(RadioOtherLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -6233,12 +6318,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == RadioOtherLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == RadioOtherLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -6450,7 +6536,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(PowerLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -6458,7 +6545,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(PowerLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -6593,12 +6682,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == PowerLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == PowerLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -6810,7 +6900,8 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RowRule.Rule.attributeActivatedId != null)
                                                 {
-                                                    TLIattributeActivated RuleStaticAttribute = _unitOfWork.AttributeActivatedRepository.GetByID(RowRule.Rule.attributeActivatedId.Value);
+                                                    TLIattributeActivated RuleStaticAttribute = UnitOfWork.AllAttributeActivated
+                                                        .FirstOrDefault(x => x.Id == RowRule.Rule.attributeActivatedId.Value);
 
                                                     PropertyInfo LibraryProp = typeof(LoadOtherLibraryViewModel).GetProperties().FirstOrDefault(x =>
                                                         x.Name.ToLower() == RuleStaticAttribute.Key.ToLower());
@@ -6818,7 +6909,9 @@ namespace TLIS_Service.Services
                                                     object PropObject = LibraryProp.GetValue(LoadOtherLibrary, null);
                                                     if (PropObject != null)
                                                     {
-                                                        string OperationStatic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationStatic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
+
                                                         if (OperationStatic == "==")
                                                         {
                                                             if (RowRule.Rule.OperationValueBoolean != null)
@@ -6953,12 +7046,13 @@ namespace TLIS_Service.Services
                                                 }
                                                 else if (RowRule.Rule.dynamicAttId != null)
                                                 {
-                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _unitOfWork.DynamicAttLibRepository.GetWhereFirst(x =>
-                                                        x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == LoadOtherLibrary.Id);
+                                                    TLIdynamicAttLibValue RuleDynamicAttribute = _dbContext.TLIdynamicAttLibValue.AsNoTracking()
+                                                        .FirstOrDefault(x => x.DynamicAttId == RowRule.Rule.dynamicAttId.Value && x.InventoryId == LoadOtherLibrary.Id);
 
                                                     if (RuleDynamicAttribute != null)
                                                     {
-                                                        string OperationDynamic = _unitOfWork.OperationRepository.GetWhereFirst(x => !x.Deleted && x.Id == RowRule.Rule.OperationId.Value).Name;
+                                                        string OperationDynamic = ListOfOperations
+                                                            .FirstOrDefault(x => x.Id == RowRule.Rule.OperationId.Value).Name;
 
                                                         if (OperationDynamic == "==")
                                                         {
@@ -7509,46 +7603,40 @@ namespace TLIS_Service.Services
 
                         if (addDependencyViewModel.LibraryAtt)
                         {
-                            RecordsIds = GetLibraryRecordsIds(addDependencyViewModel.TableName);
                             List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
 
-                            foreach (int RecordId in RecordsIds)
-                            {
-                                ListToAdd.Add(new TLIdynamicAttLibValue
+                            GetLibraryRecordsIds(addDependencyViewModel.TableName)
+                                .Select(x => new TLIdynamicAttLibValue()
                                 {
                                     disable = false,
                                     DynamicAttId = DynamicAttId,
-                                    InventoryId = RecordId,
+                                    InventoryId = x,
                                     tablesNamesId = addDependencyViewModel.tablesNamesId,
                                     ValueBoolean = addDependencyViewModel.BooleanDefaultValue,
                                     ValueDateTime = addDependencyViewModel.DateTimeDefaultValue,
                                     ValueDouble = addDependencyViewModel.DoubleDefaultValue,
                                     ValueString = addDependencyViewModel.StringDefaultValue
                                 });
-                            }
 
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
                         else
                         {
-                            RecordsIds = GetInstallationRecordsIds(addDependencyViewModel.TableName);
                             List<TLIdynamicAttInstValue> ListToAdd = new List<TLIdynamicAttInstValue>();
 
-                            foreach (int RecordId in RecordsIds)
-                            {
-                                ListToAdd.Add(new TLIdynamicAttInstValue
+                            GetInstallationRecordsIds(addDependencyViewModel.TableName)
+                                .Select(x => new TLIdynamicAttInstValue()
                                 {
                                     disable = false,
                                     DynamicAttId = DynamicAttId,
-                                    InventoryId = RecordId,
+                                    InventoryId = x,
                                     tablesNamesId = addDependencyViewModel.tablesNamesId,
                                     ValueBoolean = addDependencyViewModel.BooleanDefaultValue,
                                     ValueDateTime = addDependencyViewModel.DateTimeDefaultValue,
                                     ValueDouble = addDependencyViewModel.DoubleDefaultValue,
                                     ValueString = addDependencyViewModel.StringDefaultValue
                                 });
-                            }
 
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
@@ -7564,45 +7652,41 @@ namespace TLIS_Service.Services
 
                         if (addDependencyInstViewModel.LibraryAtt)
                         {
-                            RecordsIds = GetLibraryRecordsIds(addDependencyInstViewModel.TableName);
                             List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
 
-                            foreach (int RecordId in RecordsIds)
-                            {
-                                ListToAdd.Add(new TLIdynamicAttLibValue
+                            GetLibraryRecordsIds(addDependencyInstViewModel.TableName)
+                                .Select(x => new TLIdynamicAttLibValue()
                                 {
                                     disable = false,
                                     DynamicAttId = DynamicAttId,
-                                    InventoryId = RecordId,
+                                    InventoryId = x,
                                     tablesNamesId = addDependencyInstViewModel.tablesNamesId,
                                     ValueBoolean = addDependencyInstViewModel.BooleanDefaultValue,
                                     ValueDateTime = addDependencyInstViewModel.DateTimeDefaultValue,
                                     ValueDouble = addDependencyInstViewModel.DoubleDefaultValue,
                                     ValueString = addDependencyInstViewModel.StringDefaultValue
                                 });
-                            }
+
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
                         else
                         {
-                            RecordsIds = GetInstallationRecordsIds(addDependencyInstViewModel.TableName);
                             List<TLIdynamicAttInstValue> ListToAdd = new List<TLIdynamicAttInstValue>();
 
-                            foreach (int RecordId in RecordsIds)
-                            {
-                                ListToAdd.Add(new TLIdynamicAttInstValue
+                            GetInstallationRecordsIds(addDependencyInstViewModel.TableName)
+                                .Select(x => new TLIdynamicAttInstValue()
                                 {
                                     disable = false,
                                     DynamicAttId = DynamicAttId,
-                                    InventoryId = RecordId,
+                                    InventoryId = x,
                                     tablesNamesId = addDependencyInstViewModel.tablesNamesId,
                                     ValueBoolean = addDependencyInstViewModel.BooleanDefaultValue,
                                     ValueDateTime = addDependencyInstViewModel.DateTimeDefaultValue,
                                     ValueDouble = addDependencyInstViewModel.DoubleDefaultValue,
                                     ValueString = addDependencyInstViewModel.StringDefaultValue
                                 });
-                            }
+
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
                             _unitOfWork.SaveChanges();
                         }
