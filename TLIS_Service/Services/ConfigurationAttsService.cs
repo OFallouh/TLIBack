@@ -2072,7 +2072,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwBULibrary.ToString(),
+                                    TableName = "MW_BU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
                                     {
@@ -2085,7 +2085,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwRFULibrary.ToString(),
+                                    TableName = "MW_RFU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
                                     {
@@ -2119,7 +2119,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcabinetTelecomLibrary.ToString(),
+                                    TableName = "Cabinet Telecom Library",
                                     isLibrary = true,
                                     RecordsAffected = CabinetTelecomLibrary.Select(x => new RecordAffected
                                     {
@@ -2153,7 +2153,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support With Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
                                     {
@@ -2193,7 +2193,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                     {
@@ -2206,7 +2206,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilNonSteel.ToString(),
+                                    TableName = "Civil Non Steel Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
                                     {
@@ -2243,7 +2243,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support With Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
                                     {
@@ -2256,7 +2256,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithoutLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support Without Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithoutLegLibrary.Select(x => new RecordAffected
                                     {
@@ -2290,7 +2290,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support With Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
                                     {
@@ -2333,7 +2333,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegsInstallation.Select(x => new RecordAffected
                                     {
@@ -2368,7 +2368,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIgenerator.ToString(),
+                                    TableName = "Generator Installation",
                                     isLibrary = false,
                                     RecordsAffected = GeneratorInstallation.Select(x => new RecordAffected
                                     {
@@ -2402,7 +2402,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithoutLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support Without Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithoutLegLibrary.Select(x => new RecordAffected
                                     {
@@ -2435,7 +2435,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwRFULibrary.ToString(),
+                                    TableName = "MW_RFU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_RFULibrary.Select(x => new RecordAffected
                                     {
@@ -2470,7 +2470,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                     {
@@ -2506,7 +2506,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwDish.ToString(),
+                                    TableName = "MW_Dish Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                     {
@@ -2542,7 +2542,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwDish.ToString(),
+                                    TableName = "MW_Dish Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                     {
@@ -2578,7 +2578,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwDish.ToString(),
+                                    TableName = "MW_Dish Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                     {
@@ -2649,7 +2649,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                     {
@@ -2684,7 +2684,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIpower.ToString(),
+                                    TableName = "Power Load Installation",
                                     isLibrary = false,
                                     RecordsAffected = PowerInstallation.Select(x => new RecordAffected
                                     {
@@ -2718,7 +2718,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilNonSteelLibrary.ToString(),
+                                    TableName = "Civil Non Steel Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilNonSteelLibrary.Select(x => new RecordAffected
                                     {
@@ -2754,7 +2754,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithoutLeg.ToString(),
+                                    TableName = "Civil Steel Support Without Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithoutLegInstallation.Select(x => new RecordAffected
                                     {
@@ -2788,7 +2788,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwDishLibrary.ToString(),
+                                    TableName = "MW_Dish Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_DishLibrary.Select(x => new RecordAffected
                                     {
@@ -2822,7 +2822,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwDishLibrary.ToString(),
+                                    TableName = "MW_Dish Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_DishLibrary.Select(x => new RecordAffected
                                     {
@@ -2855,7 +2855,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwODULibrary.ToString(),
+                                    TableName = "MW_ODU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_ODULibrary.Select(x => new RecordAffected
                                     {
@@ -2889,7 +2889,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcabinetPowerLibrary.ToString(),
+                                    TableName = "Cabinet Power Library",
                                     isLibrary = true,
                                     RecordsAffected = CabinetPowerLibrary.Select(x => new RecordAffected
                                     {
@@ -2925,7 +2925,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIgeneratorLibrary.ToString(),
+                                    TableName = "Generator Library",
                                     isLibrary = true,
                                     RecordsAffected = GeneratorLibrary.Select(x => new RecordAffected
                                     {
@@ -2938,7 +2938,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIsolarLibrary.ToString(),
+                                    TableName = "Solar Library",
                                     isLibrary = true,
                                     RecordsAffected = SolarLibrary.Select(x => new RecordAffected
                                     {
@@ -2974,7 +2974,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                     {
@@ -2993,7 +2993,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithoutLeg.ToString(),
+                                    TableName = "Civil Steel Support Without Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithoutLegInstallation.Select(x => new RecordAffected
                                     {
@@ -3012,7 +3012,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilNonSteel.ToString(),
+                                    TableName = "Civil Non Steel Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
                                     {
@@ -3031,7 +3031,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwRFU.ToString(),
+                                    TableName = "MW_RFU Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_RFUInstallation.Select(x => new RecordAffected
                                     {
@@ -3050,7 +3050,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwBU.ToString(),
+                                    TableName = "MW_BU Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_BUInstallation.Select(x => new RecordAffected
                                     {
@@ -3069,7 +3069,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwDish.ToString(),
+                                    TableName = "MW_Dish Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                     {
@@ -3088,7 +3088,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwODU.ToString(),
+                                    TableName = "MW_ODU Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_ODUInstallation.Select(x => new RecordAffected
                                     {
@@ -3107,7 +3107,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIradioAntenna.ToString(),
+                                    TableName = "Radio Antenna Installation",
                                     isLibrary = false,
                                     RecordsAffected = RadioAnteenInstallation.Select(x => new RecordAffected
                                     {
@@ -3126,7 +3126,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIradioRRU.ToString(),
+                                    TableName = "Radio RRU Installation",
                                     isLibrary = false,
                                     RecordsAffected = RadioRRUInstallation.Select(x => new RecordAffected
                                     {
@@ -3145,7 +3145,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIradioOther.ToString(),
+                                    TableName = "Radio Other Installation",
                                     isLibrary = false,
                                     RecordsAffected = RadioOtherInstallation.Select(x => new RecordAffected
                                     {
@@ -3164,7 +3164,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIpower.ToString(),
+                                    TableName = "Power Load Installation",
                                     isLibrary = false,
                                     RecordsAffected = PowerInstallation.Select(x => new RecordAffected
                                     {
@@ -3183,7 +3183,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIsideArm.ToString(),
+                                    TableName = "Side Arm Installation",
                                     isLibrary = false,
                                     RecordsAffected = SideArmInstallation.Select(x => new RecordAffected
                                     {
@@ -3218,7 +3218,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                     {
@@ -3237,7 +3237,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilNonSteel.ToString(),
+                                    TableName = "Civil Non Steel Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
                                     {
@@ -3273,7 +3273,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcivilWithLegs.ToString(),
+                                    TableName = "Civil Steel Support With Legs Installation",
                                     isLibrary = false,
                                     RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                     {
@@ -3309,7 +3309,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLImwBU.ToString(),
+                                    TableName = "MW_BU Installation",
                                     isLibrary = false,
                                     RecordsAffected = MW_BUInstallation.Select(x => new RecordAffected
                                     {
@@ -3345,7 +3345,7 @@ namespace TLIS_Service.Services
                             {
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = TablesNames.TLIcabinet.ToString(),
+                                    TableName = "Cabinet Installation",
                                     isLibrary = false,
                                     RecordsAffected = CabinetInstallation.Select(x => new RecordAffected
                                     {

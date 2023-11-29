@@ -132,7 +132,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support With Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
                                     {
@@ -153,7 +153,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(),
+                                    TableName = "Civil Steel Support Without Legs Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
                                     {
@@ -174,7 +174,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
+                                    TableName = "Civil Non Steel Library",
                                     isLibrary = true,
                                     RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
                                     {
@@ -196,7 +196,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(),
+                                    TableName = "Side Arm Library",
                                     isLibrary = true,
                                     RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
                                     {
@@ -219,7 +219,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLImwRFULibrary.ToString(),
+                                    TableName = "MW_RFU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
                                     {
@@ -240,7 +240,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLImwDishLibrary.ToString(),
+                                    TableName = "MW_Dish Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
                                     {
@@ -261,7 +261,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLImwBULibrary.ToString(),
+                                    TableName = "MW_BU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
                                     {
@@ -282,7 +282,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
+                                    TableName = "MW_ODU Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
                                     {
@@ -303,7 +303,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString(),
+                                    TableName = "MW_Other Library",
                                     isLibrary = true,
                                     RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
                                     {
@@ -326,7 +326,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
+                                    TableName = "Radio Antenna Library",
                                     isLibrary = true,
                                     RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
                                     {
@@ -347,7 +347,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(),
+                                    TableName = "Radio RRU Library",
                                     isLibrary = true,
                                     RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
                                     {
@@ -368,7 +368,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString(),
+                                    TableName = "Radio Other Library",
                                     isLibrary = true,
                                     RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
                                     {
@@ -391,7 +391,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIpowerLibrary.ToString(),
+                                    TableName = "Power Load Library",
                                     isLibrary = true,
                                     RecordsAffected = PowerLibraries.Select(x => new RecordAffected
                                     {
@@ -415,7 +415,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(),
+                                    TableName = "Load Other Library",
                                     isLibrary = true,
                                     RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
                                     {
@@ -438,7 +438,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(),
+                                    TableName = "Cabinet Power Library",
                                     isLibrary = true,
                                     RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
                                     {
@@ -459,7 +459,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(),
+                                    TableName = "Cabinet Telecom Library",
                                     isLibrary = true,
                                     RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
                                     {
@@ -480,7 +480,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
+                                    TableName = "Solar Library",
                                     isLibrary = true,
                                     RecordsAffected = SolarLibraries.Select(x => new RecordAffected
                                     {
@@ -501,7 +501,7 @@ namespace TLIS_Service.Services
 
                                 ListOfResponse.Add(new TableAffected()
                                 {
-                                    TableName = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                    TableName = "Generator Library",
                                     isLibrary = true,
                                     RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
                                     {
