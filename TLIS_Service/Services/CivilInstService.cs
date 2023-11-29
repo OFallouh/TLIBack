@@ -4406,14 +4406,18 @@ namespace TLIS_Service.Services
                                     var support = _unitOfWork.CivilSupportDistanceRepository
                                         .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                                    TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
-                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+                                    if (support != null)
+                                    {
+                                        TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
+                                            .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+                                        
+                                        if (SupportReferenceAllCivilInst != null)
+                                            CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
+                                                (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
+                                                 SupportReferenceAllCivilInst.civilNonSteel.Name);
 
-                                    CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
-                                        (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
-                                        SupportReferenceAllCivilInst.civilNonSteel.Name);
-
-                                    ReferenceCivilInstId = support.ReferenceCivilId;
+                                        ReferenceCivilInstId = support.ReferenceCivilId;
+                                    }
                                 }
                             }
                         }
@@ -4549,16 +4553,16 @@ namespace TLIS_Service.Services
                                     
                                     var support = _unitOfWork.CivilSupportDistanceRepository
                                         .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
-                                    if (support != null) {
 
+                                    if (support != null) 
+                                    {
                                         TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
-                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+                                            .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+                                        
                                         if (SupportReferenceAllCivilInst != null) 
-                                        {
                                             CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
-                                            (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
-                                             SupportReferenceAllCivilInst.civilNonSteel.Name);
-                                        }
+                                                (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
+                                                 SupportReferenceAllCivilInst.civilNonSteel.Name);
                                    
                                         ReferenceCivilInstId = support.ReferenceCivilId;
                                     }
@@ -4703,16 +4707,19 @@ namespace TLIS_Service.Services
                                     var support = _unitOfWork.CivilSupportDistanceRepository
                                         .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                                    TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
-                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
+                                    if (support != null)
+                                    {
+                                        TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
+                                            .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
 
-                                    CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
-                                        (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
-                                        SupportReferenceAllCivilInst.civilNonSteel.Name);
+                                        if (SupportReferenceAllCivilInst != null)
+                                            CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
+                                                (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
+                                                 SupportReferenceAllCivilInst.civilNonSteel.Name);
 
-                                    ReferenceCivilInstId = support.ReferenceCivilId;
+                                        ReferenceCivilInstId = support.ReferenceCivilId;
+                                    }
                                 }
-
                             }
                         }
                     }
