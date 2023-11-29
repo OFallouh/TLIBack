@@ -718,8 +718,14 @@ namespace TLIS_Service.Services
                                 List<CivilWithLegLibraryViewModel> CivilWithLegLibraries = 
                                     _mapper.Map<List<CivilWithLegLibraryViewModel>>(CivilLibraryService._CivilWithLegLibraryEntities).ToList();
 
+                                int DependencyCount = 0;
+                                int CivilCount = 0;
+                                List<TLIdynamicAttLibValue> ForExceptionListToAdd = new List<TLIdynamicAttLibValue>();
+
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
                                 {
+                                    DependencyCount++;
+
                                     foreach (CivilWithLegLibraryViewModel CivilWithLegLibrary in CivilWithLegLibraries)
                                     {
                                         List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
@@ -1064,8 +1070,18 @@ namespace TLIS_Service.Services
                                                 });
                                             }
                                         }
-                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
+
+                                        CivilCount++;
+
+                                        try
+                                        {
+                                            ForExceptionListToAdd = ListToAdd;
+                                            _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        }
+                                        catch (Exception err)
+                                        {
+
+                                        }
                                     }
                                 }
                             }
@@ -1428,7 +1444,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -1790,7 +1805,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -2154,7 +2168,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -2518,7 +2531,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -2880,7 +2892,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -3242,7 +3253,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -3604,7 +3614,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -3969,7 +3978,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -4331,7 +4339,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -4693,7 +4700,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -5055,7 +5061,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -5417,7 +5422,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -5781,7 +5785,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -6143,7 +6146,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -6505,7 +6507,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -6869,7 +6870,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -7233,7 +7233,6 @@ namespace TLIS_Service.Services
                                         }
 
                                         _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
                                     }
                                 }
                             }
@@ -7619,7 +7618,6 @@ namespace TLIS_Service.Services
                                 });
 
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                            _unitOfWork.SaveChanges();
                         }
                         else
                         {
@@ -7639,7 +7637,6 @@ namespace TLIS_Service.Services
                                 });
 
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
-                            _unitOfWork.SaveChanges();
                         }
                     }
                 }
@@ -7668,7 +7665,6 @@ namespace TLIS_Service.Services
                                 });
 
                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                            _unitOfWork.SaveChanges();
                         }
                         else
                         {
@@ -7688,7 +7684,6 @@ namespace TLIS_Service.Services
                                 });
 
                             _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAdd);
-                            _unitOfWork.SaveChanges();
                         }
                     }
                 }
@@ -8027,10 +8022,8 @@ namespace TLIS_Service.Services
             using (var con = new OracleConnection(ConnectionString))
             {
                 con.Open();
-                using (var tran = con.BeginTransaction())
-                {
                     using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new System.TimeSpan(0, 15, 0)))
+                        new System.TimeSpan(12, 0, 0)))
                     {
                         try
                         {
@@ -8272,7 +8265,6 @@ namespace TLIS_Service.Services
 
                             AddLibraryListValues(addDependencyViewModel, DynamicAttId);
 
-                            tran.Commit();
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
 
@@ -8280,10 +8272,8 @@ namespace TLIS_Service.Services
                         }
                         catch (Exception err)
                         {
-                            tran.Rollback();
                             return new Response<AddDependencyViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
                         }
-                    }
                 }
             }
         }

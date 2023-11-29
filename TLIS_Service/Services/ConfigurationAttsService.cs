@@ -2901,7 +2901,6 @@ namespace TLIS_Service.Services
 
                             if (ListOfResponse.Count != 0)
                                 return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
                         }
 
                         cabinetPowerType.Disable = !(cabinetPowerType.Disable);
