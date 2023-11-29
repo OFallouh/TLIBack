@@ -7245,7 +7245,7 @@ namespace TLIS_Service.Services
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception err)
             {
                 throw;
             }

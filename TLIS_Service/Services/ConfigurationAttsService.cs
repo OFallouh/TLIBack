@@ -2358,8 +2358,9 @@ namespace TLIS_Service.Services
                         if (!baseGeneratorType.Disable)
                         {
                             List<TLIotherInSite> GeneratorInstallation = _unitOfWork.OtherInSiteRepository
-                                .GetWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && (x.allOtherInventoryInst.generatorId != null ?
-                                    x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false)).ToList();
+                                .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && (x.allOtherInventoryInst.generatorId != null ?
+                                    x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false), 
+                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator).ToList();
 
                             List<TableAffected> ListOfResponse = new List<TableAffected>();
 
