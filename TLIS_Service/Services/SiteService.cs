@@ -420,7 +420,7 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, bool? isRefresh, List<FilterObjectList> filters = null)
         {
             List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
 
@@ -428,17 +428,27 @@ namespace TLIS_Service.Services
             {
                 IEnumerable<SiteViewModel> SitesViewModels;
 
-                try
-                {
-                    _MySites.Count();
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
-                }
-                catch (ArgumentNullException)
+                if (isRefresh != null ? isRefresh.Value : false)
                 {
                     _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
-                        .Include(x => x.siteStatus).ToList();
+                            .Include(x => x.siteStatus).ToList();
 
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                }
+                else
+                {
+                    try
+                    {
+                        _MySites.Count();
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+                            .Include(x => x.siteStatus).ToList();
+
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                    }
                 }
 
                 foreach (FilterObjectList filter in filters)

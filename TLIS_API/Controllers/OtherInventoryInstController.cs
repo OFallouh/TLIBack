@@ -179,9 +179,7 @@ namespace TLIS_API.Controllers
                 }
             }
             return Ok(new Response<AddGeneratorViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
-
         }
-
         [HttpGet("GetCabinetById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCabinetById(int OtherInventoryInstId)

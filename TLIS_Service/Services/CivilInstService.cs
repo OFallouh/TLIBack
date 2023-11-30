@@ -670,50 +670,63 @@ namespace TLIS_Service.Services
 
         private List<DropDownListFilters> GetRelatedToSiteToEdit(string SiteCode, string TableName , int CivilInsId)
         {
-            List<DropDownListFilters> values = new List<DropDownListFilters>();
+            //List<DropDownListFilters> values = new List<DropDownListFilters>();
 
-            List<int> CivilInstallations = _unitOfWork.CivilSiteDateRepository.GetWhere(x =>
-                x.SiteCode == SiteCode && !x.Dismantle).Select(x => x.allCivilInstId).ToList();
+            //List<int> CivilInstallations = _unitOfWork.CivilSiteDateRepository.GetWhere(x =>
+            //    x.SiteCode == SiteCode && !x.Dismantle).Select(x => x.allCivilInstId).ToList();
 
-            for (int i = 0; i < CivilInstallations.Count; i++)
-            {
-                TLIallCivilInst Civil = _unitOfWork.AllCivilInstRepository
-                    .GetWhereFirst(x => x.Id == CivilInstallations[i]);
+            //for (int i = 0; i < CivilInstallations.Count; i++)
+            //{
+            //    TLIallCivilInst Civil = _unitOfWork.AllCivilInstRepository
+            //        .GetWhereFirst(x => x.Id == CivilInstallations[i]);
 
-                if (Civil.civilWithLegsId != null)
+            //    if (Civil.civilWithLegsId != null)
+            //    {
+            //        Civil.civilWithLegs = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == Civil.civilWithLegsId && x.Id != CivilInsId);
+            //        if (Civil.civilWithLegs != null)
+            //        {
+            //            values.Add(new DropDownListFilters(Civil.civilWithLegs.Id, Civil.civilWithLegs.Name));
+            //        }
+            //    }
+            //    else if (Civil.civilWithoutLegId != null)
+            //    {
+            //        Civil.civilWithoutLeg = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == Civil.civilWithoutLegId && x.Id != CivilInsId);
+            //        if (Civil.civilWithoutLeg != null)
+            //        {
+            //            values.Add(new DropDownListFilters(Civil.civilWithoutLeg.Id, Civil.civilWithoutLeg.Name));
+            //        }
+            //    }
+            //    else if (Civil.civilNonSteelId != null)
+            //    {
+            //        Civil.civilNonSteel = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == Civil.civilNonSteelId && x.Id != CivilInsId);
+            //        if (Civil.civilNonSteel != null)
+            //        {
+            //            values.Add(new DropDownListFilters(Civil.civilNonSteel.Id, Civil.civilNonSteel.Name));
+            //        }
+            //    }
+            //}
+            //values.Add(new DropDownListFilters
+            //{
+            //    Id = 0,
+            //    Value = "NA",
+            //    Deleted = false,
+            //    Disable = false
+
+            //});
+
+            List<DropDownListFilters> CivilInstallations = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x =>
+                x.SiteCode == SiteCode && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                    x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel)
+                .Select(x => new DropDownListFilters()
                 {
-                    Civil.civilWithLegs = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == Civil.civilWithLegsId && x.Id != CivilInsId);
-                    if (Civil.civilWithLegs != null)
-                    {
-                        values.Add(new DropDownListFilters(Civil.civilWithLegs.Id, Civil.civilWithLegs.Name));
-                    }
-                }
-                else if (Civil.civilWithoutLegId != null)
-                {
-                    Civil.civilWithoutLeg = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == Civil.civilWithoutLegId && x.Id != CivilInsId);
-                    if (Civil.civilWithoutLeg != null)
-                    {
-                        values.Add(new DropDownListFilters(Civil.civilWithoutLeg.Id, Civil.civilWithoutLeg.Name));
-                    }
-                }
-                else if (Civil.civilNonSteelId != null)
-                {
-                    Civil.civilNonSteel = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == Civil.civilNonSteelId && x.Id != CivilInsId);
-                    if (Civil.civilNonSteel != null)
-                    {
-                        values.Add(new DropDownListFilters(Civil.civilNonSteel.Id, Civil.civilNonSteel.Name));
-                    }
-                }
-            }
-            values.Add(new DropDownListFilters
-            {
-                Id = 0,
-                Value = "NA",
-                Deleted = false,
-                Disable = false
+                    Id = x.allCivilInstId,
+                    Deleted = false,
+                    Disable = false,
+                    Value = x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name :
+                        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name : x.allCivilInst.civilNonSteel.Name)
+                }).ToList();
 
-            });
-            return values;
+            return CivilInstallations;
         }
         public void LoopForPath(List<string> Path, int StartIndex, ApplicationDbContext _dbContext, object Value, List<object> OutPutIds)
         {
