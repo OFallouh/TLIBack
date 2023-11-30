@@ -1206,6 +1206,9 @@ namespace TLIS_Service.Services
         #endregion
         public Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -1714,11 +1717,23 @@ namespace TLIS_Service.Services
                 SideArmTableDisplay.Model = OutPutList;
                 SideArmTableDisplay.filters = _unitOfWork.SideArmLibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, SideArmTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, SideArmTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         #endregion

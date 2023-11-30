@@ -3098,6 +3098,9 @@ namespace TLIS_Service.Services
         #endregion
         public Response<ReturnWithFilters<object>> GetCabinetPowerLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -3611,15 +3614,30 @@ namespace TLIS_Service.Services
                 else
                     CabinetPowerTableDisplay.filters = null;
 
-                return new Response<ReturnWithFilters<object>>(true, CabinetPowerTableDisplay, null, null, (int)ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, CabinetPowerTableDisplay, ErrorMessagesWhenReturning, null, (int)ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetCabinetTelecomLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -4133,15 +4151,30 @@ namespace TLIS_Service.Services
                 else
                     CabinetTelecomTableDisplay.filters = null;
 
-                return new Response<ReturnWithFilters<object>>(true, CabinetTelecomTableDisplay, null, null, (int)ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, CabinetTelecomTableDisplay, ErrorMessagesWhenReturning, null, (int)ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetSolarLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -4654,15 +4687,30 @@ namespace TLIS_Service.Services
                 else
                     SolarTableDisplay.filters = null;
 
-                return new Response<ReturnWithFilters<object>>(true, SolarTableDisplay, null, null, (int)ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, SolarTableDisplay, ErrorMessagesWhenReturning, null, (int)ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetGeneratorLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -5175,11 +5223,23 @@ namespace TLIS_Service.Services
                 else
                     GeneratorTableDisplay.filters = null;
 
-                return new Response<ReturnWithFilters<object>>(true, GeneratorTableDisplay, null, null, (int)ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, GeneratorTableDisplay, ErrorMessagesWhenReturning, null, (int)ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         #endregion

@@ -120,6 +120,9 @@ namespace TLIS_Service.Services
         #endregion
         public Response<ReturnWithFilters<object>> GetPowerLibrariesWithEnableAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -629,11 +632,23 @@ namespace TLIS_Service.Services
 
                 PowerTableDisplay.filters = _unitOfWork.PowerLibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, PowerTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, PowerTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         #endregion

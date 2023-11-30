@@ -176,6 +176,9 @@ namespace TLIS_Service.Services
         #endregion
         public Response<ReturnWithFilters<object>> GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -685,15 +688,30 @@ namespace TLIS_Service.Services
 
                 RadioAntennaTableDisplay.filters = _unitOfWork.RadioAntennaLibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, RadioAntennaTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, RadioAntennaTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetRadioRRULibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -1202,15 +1220,30 @@ namespace TLIS_Service.Services
                 RadioRRUTableDisplay.Model = OutPutList;
                 RadioRRUTableDisplay.filters = _unitOfWork.RadioRRULibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, RadioRRUTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, RadioRRUTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetRadioOtherLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -1719,11 +1752,23 @@ namespace TLIS_Service.Services
                 RadioOtherTableDisplay.Model = OutPutList;
                 RadioOtherTableDisplay.filters = _unitOfWork.RadioOtherLibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, RadioOtherTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, RadioOtherTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         #endregion

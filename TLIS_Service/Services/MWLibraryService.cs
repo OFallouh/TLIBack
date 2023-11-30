@@ -733,6 +733,9 @@ namespace TLIS_Service.Services
         #endregion
         public Response<ReturnWithFilters<object>> GetMW_BULibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -1250,15 +1253,30 @@ namespace TLIS_Service.Services
                     MW_BUTableDisplay.filters = null;
                 }
 
-                return new Response<ReturnWithFilters<object>>(true, MW_BUTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, MW_BUTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetMW_DishLibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -1778,15 +1796,30 @@ namespace TLIS_Service.Services
                     MW_DishTableDisplay.filters = null;
                 }
 
-                return new Response<ReturnWithFilters<object>>(true, MW_DishTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, MW_DishTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetMW_ODULibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -2303,15 +2336,30 @@ namespace TLIS_Service.Services
                     MW_ODUTableDisplay.filters = null;
                 }
 
-                return new Response<ReturnWithFilters<object>>(true, MW_ODUTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, MW_ODUTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetMW_RFULibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -2830,15 +2878,30 @@ namespace TLIS_Service.Services
                     NW_RFUTableDisplay.filters = null;
                 }
 
-                return new Response<ReturnWithFilters<object>>(true, NW_RFUTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, NW_RFUTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<ReturnWithFilters<object>> GetMW_OtherLibraries(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
         {
+            string[] ErrorMessagesWhenReturning = null;
+
+            StartAgainWithRefresh:
             try
             {
                 if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
@@ -3346,11 +3409,23 @@ namespace TLIS_Service.Services
 
                 MW_OtherTableDisplay.filters = _unitOfWork.MW_OtherLibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, MW_OtherTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, MW_OtherTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+                else
+                {
+                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         #endregion
