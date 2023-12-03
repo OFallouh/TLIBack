@@ -7,7 +7,7 @@ namespace TLIS_DAL.Helper
 {
     public class ParameterPagination
     {
-        const int maxPageSize = 50;
+        const int maxPageSize = 100000000;
         public int PageNumber { get; set; } = 1;
 
         private int _pageSize = 100;
