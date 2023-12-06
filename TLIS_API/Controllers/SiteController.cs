@@ -395,5 +395,17 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetAllSitesWithoutPaginationForWorkFlow();
             return Ok(response);
         }
+        [HttpGet("GetUsedSitesCount")]
+        public IActionResult GetUsedSitesCount()
+        {
+            var response = _unitOfWorkService.SiteService.GetUsedSitesCount();
+            return Ok(response);
+        }
+        [HttpGet("GetItemsOnSite")]
+        public IActionResult GetItemsOnSite(string SiteCode)
+        {
+            var response = _unitOfWorkService.SiteService.GetItemsOnSite(SiteCode);
+            return Ok(response);
+        }
     }
 }

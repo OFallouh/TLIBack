@@ -72,5 +72,7 @@ namespace TLIS_Service.IService
         Response<List<GetAllsiteOnMultiAreaViewModel>> GetAllsiteonMultiArea(List<AreaForSiteViewModel> Area);
         Task<List<GetSiteNameBySitCode>> GetSiteNameBySitCode(List<SiteCodeForW_F> SiteCode);
         List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow();
+        Response<UsedSitesViewModel> GetUsedSitesCount();
+        Response<ItemsOnSite> GetItemsOnSite(string SiteCode);
     }
 }
