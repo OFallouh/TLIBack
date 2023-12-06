@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using TLIS_API.Middleware.ActionFilters;
 using TLIS_DAL.Helper;
 using TLIS_DAL.ViewModels.ComplixFilter;
@@ -96,6 +99,18 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.ExternalSysService.GetListErrorLog(f);
             return Ok(response);
         }
+        [HttpPost("GetRawContent")]
+        public async Task<IActionResult> GetRawContent()
+        {
+            string rawContent = string.Empty;
+            using (var reader = new StreamReader(Request.Body,
+                          encoding: Encoding.UTF8, detectEncodingFromByteOrderMarks: false))
+            {
+                rawContent = await reader.ReadToEndAsync();
+            }
 
+            return Ok(rawContent);
+
+        }
     }
 }

@@ -66,6 +66,9 @@ using System.Drawing;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
+using System.Xml;
+using Microsoft.AspNetCore.Components.Forms;
+using LinqToExcel.Extensions;
 
 namespace TLIS_Service.Services
 {
@@ -7134,33 +7137,48 @@ namespace TLIS_Service.Services
         #endregion
 
         // string Baseurl = "https://localhost:44311";
-        public async Task<string> GetSMIS_Site()
+        public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
         {
             try
             {
                 ServiceProvider serviceProvider = _services.BuildServiceProvider();
                 IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
-                
-                string responseString = "";
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"]);
-                request.Method = "GET";
-                request.ContentType = "application/json";
 
-                using (var response1 = request.GetResponse())
+                HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
+                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}/'{Paramater}'") :
+                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
+
+                Request.Method = "POST";
+                
+                if (!string.IsNullOrEmpty(RowContent))
                 {
-                    using (StreamReader reader = new StreamReader(response1.GetResponseStream()))
+                    Request.ContentType = "text/plain";
+
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] BodyText = encoding.GetBytes(RowContent);
+
+                    Stream NewStream = Request.GetRequestStream();
+                    NewStream.Write(BodyText, 0, BodyText.Length);
+                    Request.ContentLength = BodyText.Length;
+                }
+
+                string SMIS_Response = "";
+                using (WebResponse WebResponse = Request.GetResponse())
+                {
+                    using (StreamReader Reader = new StreamReader(WebResponse.GetResponseStream()))
                     {
-                        responseString = reader.ReadToEnd();
+                        SMIS_Response = Reader.ReadToEnd();
                     }
                 }
-                List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists = new JavaScriptSerializer().Deserialize<List<SiteDataFromOutsiderApiViewModel>>(responseString);
+
+                List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists = new JavaScriptSerializer().Deserialize<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
 
                 using (TransactionScope transaction = new TransactionScope())
                 {
                     foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
                     {
                         TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository
-                            .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() || 
+                            .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() ||
                                 x.SiteName.ToLower() == item.Sitename.ToLower());
 
                         if (CheckSiteCodeIfExist != null)
