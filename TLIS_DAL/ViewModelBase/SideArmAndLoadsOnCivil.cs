@@ -19,5 +19,7 @@ namespace TLIS_DAL.ViewModelBase
         public int SideArmsCount { get; set; }
         public double Availablespace { get; set; }  
         public double? CurrentLoads { get; set; }
+
+        public double? CivilMaxLoad { get; set; }
     }
 }

@@ -38,6 +38,7 @@ using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.AsTypeDTOs;
 using TLIS_DAL.ViewModels.AttActivatedCategoryDTOs;
 using TLIS_DAL.ViewModels.AttributeActivatedDTOs;
+using TLIS_DAL.ViewModels.BaseBUDTOs;
 using TLIS_DAL.ViewModels.BoardTypeDTOs;
 using TLIS_DAL.ViewModels.CabinetDTOs;
 using TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs;
@@ -61,6 +62,7 @@ using TLIS_DAL.ViewModels.DynamicAttLibValueDTOs;
 using TLIS_DAL.ViewModels.GeneratorDTOs;
 using TLIS_DAL.ViewModels.GeneratorLibraryDTOs;
 using TLIS_DAL.ViewModels.InstallationCivilwithoutLegsTypeDTOs;
+using TLIS_DAL.ViewModels.ItemConnectToDTOs;
 using TLIS_DAL.ViewModels.LoadOtherDTOs;
 using TLIS_DAL.ViewModels.LoadOtherLibraryDTOs;
 using TLIS_DAL.ViewModels.LoadPartDTOs;
@@ -71,10 +73,12 @@ using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
 using TLIS_DAL.ViewModels.Mw_OtherDTOs;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
+using TLIS_DAL.ViewModels.MW_PortDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
 using TLIS_DAL.ViewModels.OwnerDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL.ViewModels.PartDTOs;
+using TLIS_DAL.ViewModels.PolarityOnLocationDTOs;
 using TLIS_DAL.ViewModels.PolarityTypeDTOs;
 using TLIS_DAL.ViewModels.PowerDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaDTOs;
@@ -83,6 +87,7 @@ using TLIS_DAL.ViewModels.RadioOtherDTOs;
 using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioRRUDTOs;
 using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
+using TLIS_DAL.ViewModels.RepeaterTypeDTOs;
 using TLIS_DAL.ViewModels.RowRuleDTOs;
 using TLIS_DAL.ViewModels.RuleDTOs;
 using TLIS_DAL.ViewModels.SectionsLegTypeDTOs;
@@ -20999,7 +21004,7 @@ namespace TLIS_Service.Services
                 throw;
             }
         }
-        public void LoopForPath(List<string> Path, int StartIndex, ApplicationDbContext _dbContext, object Value, List<int> OutPutIds)
+        public void LoopForPath(List<string> Path, int StartIndex, ApplicationDbContext db, object Value, List<int> OutPutIds)
         {
             if (StartIndex == Path.Count())
             {
@@ -21007,9 +21012,9 @@ namespace TLIS_Service.Services
             }
             else
             {
-                List<object> TableRecords = _mapper.Map<List<object>>(_dbContext.GetType()
+                List<object> TableRecords = _mapper.Map<List<object>>(db.GetType()
                     .GetProperties().FirstOrDefault(x => x.Name.ToLower() == Path[StartIndex].ToLower())
-                    .GetValue(_dbContext, null))
+                    .GetValue(db, null))
                         .Where(x => x.GetType().GetProperty(Path[StartIndex + 1]).GetValue(x, null) != null ?
                             x.GetType().GetProperty(Path[StartIndex + 1]).GetValue(x, null).ToString().ToLower() == Value.ToString().ToLower() : false).ToList();
 
@@ -21021,7 +21026,7 @@ namespace TLIS_Service.Services
                     if (PrimaryKeyValue != null)
                     {
                         if (StartIndex + 3 < Path.Count())
-                            LoopForPath(Path, StartIndex + 3, _dbContext, PrimaryKeyValue, OutPutIds);
+                            LoopForPath(Path, StartIndex + 3, db, PrimaryKeyValue, OutPutIds);
 
                         else if (StartIndex + 3 == Path.Count())
                             OutPutIds.Add((int)PrimaryKeyValue);
@@ -29709,7 +29714,7 @@ namespace TLIS_Service.Services
                         {
                             var Radioantenna = db.TLIcivilLoads.Include(x => x.allLoadInst).Where(x => !x.Dismantle && x.allLoadInstId != null &&
                            x.allLoadInst.radioAntennaId != null).Select(x => x.allLoadInst.radioAntennaId).ToList();
-                            // var Radio = _dbContext.TLIradioAntenna.Select(x => x.Id).ToList();
+                            // var Radio = db.TLIradioAntenna.Select(x => x.Id).ToList();
                             //var newList = Radioantenna.Where(v => !Radioantenna.Contains(v)).ToList();
                             List<TLIradioAntenna> tLIradioAntennas = new List<TLIradioAntenna>();
                             foreach (var item in Radioantenna)
@@ -32530,8 +32535,6368 @@ namespace TLIS_Service.Services
                 return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        //public Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString)
+        //{
+        //    using (var con = new OracleConnection(ConnectionString))
+        //    {
+        //        con.Open();
+        //        using (var tran = con.BeginTransaction())
+        //        {
+        //            using (TransactionScope transaction = new TransactionScope())
+        //            {
+        //                try
+        //                {
+        //                    string ErrorMessage = string.Empty;
+        //                    var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
+        //                    if (LoadSubType.TLImwODU.ToString() == TableName)
+        //                    {
+        //                        AddMW_ODUViewModel addMW_ODU = _mapper.Map<AddMW_ODUViewModel>(MWInstallationViewModel);
+        //                        TLImwODU mwODU = _mapper.Map<TLImwODU>(addMW_ODU);
+        //                        //Installation: 
+        //                        //{(((( -Directly behind the dish, (Installation mode called “Direct Mount”). In other installation mode(called “Separate Mount”, the ODU is installed separately to the civil steel support using side arm))))}.
+        //                        bool test = true;
+        //                        string CheckDependencyValidation = CheckDependencyValidationForMWTypes(MWInstallationViewModel, TableName, SiteCode);
+
+        //                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //                        string CheckGeneralValidation = CheckGeneralValidationFunction(addMW_ODU.TLIdynamicAttInstValue, TableName);
+
+        //                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //                        if (test == true)
+        //                        {
+        //                            //TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                            //    !x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ? x.allLoadInst.mwODU.Name.ToLower() == mwODU.Name.ToLower() : false) : false),
+        //                            //        x => x.allLoadInst, x => x.allLoadInst.mwODU);
+        //                            //if (CheckName != null)
+        //                            //    return new Response<ObjectInstAtts>(true, null, null, $"This name {mwODU.Name} is already exists", (int)ApiReturnCode.fail); 
+        //                            var CheckSerialNumber = _unitOfWork.MW_ODURepository.GetWhereFirst(x => x.Serial_Number == mwODU.Serial_Number);
+        //                            if (CheckSerialNumber != null)
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"The SerialNumber {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+        //                            }
+        //                            TLIoduInstallationType OduInstallationType = _unitOfWork.OduInstallationTypeRepository.GetByID((int)addMW_ODU.OduInstallationTypeId);
+
+        //                            //if (addMW_ODU.OduInstallationTypeId != null)
+        //                            //{
+        //                            //    OduInstallationType = _unitOfWork.OduInstallationTypeRepository.GetByID((int)addMW_ODU.OduInstallationTypeId);
+        //                            //    if (OduInstallationType.Name.ToLower() != "sidearm")
+        //                            //    {
+        //                            //        return new Response<ObjectInstAtts>(true, null, null, "The odu installation place should be sidearm", (int)ApiReturnCode.fail);
+        //                            //    }
+        //                            //}
+
+        //                            if (OduInstallationType.Name.ToLower() == "sperate mount")
+        //                            {
+        //                                if (addMW_ODU.Height == null)
+        //                                {
+        //                                    return new Response<ObjectInstAtts>(true, null, null, "The odu Height Can't Be Null ", (int)ApiReturnCode.fail);
+        //                                }
+        //                            }
+
+        //                            TLImwDish DishEntity = null;
+        //                            mwODU.Name = "";
+        //                            if (mwODU.Mw_DishId != null)
+        //                            {
+        //                                DishEntity = _unitOfWork.MW_DishRepository.GetByID((int)mwODU.Mw_DishId);
+        //                                mwODU.Name += DishEntity.DishName;
+        //                            }
+        //                            TLImwODULibrary ODULibraryEntity = null;
+        //                            if (mwODU.MwODULibraryId != null)
+        //                            {
+        //                                ODULibraryEntity = _unitOfWork.MW_ODULibraryRepository.GetByID((int)mwODU.MwODULibraryId);
+        //                                if (String.IsNullOrEmpty(mwODU.Name) == true)
+        //                                {
+        //                                    mwODU.Name += ODULibraryEntity.Model;
+        //                                }
+        //                                else
+        //                                {
+        //                                    mwODU.Name += " " + ODULibraryEntity.Model;
+        //                                }
+        //                            }
+        //                            TLIpolarityOnLocation PolarityOnLocationEntity = null;
+        //                            if (DishEntity.PolarityOnLocationId != null)
+        //                            {
+        //                                PolarityOnLocationEntity = _unitOfWork.PolarityOnLocationRepository.GetByID((int)DishEntity.PolarityOnLocationId);
+        //                                if (String.IsNullOrEmpty(mwODU.Name) == true)
+        //                                {
+        //                                    mwODU.Name += PolarityOnLocationEntity.Name;
+        //                                }
+        //                                else
+        //                                {
+        //                                    mwODU.Name += " " + PolarityOnLocationEntity.Name;
+        //                                }
+        //                            }
+        //                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                               !x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ? x.allLoadInst.mwODU.Name.ToLower() == mwODU.Name.ToLower() : false) : false) &&
+        //                               x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                   x => x.allLoadInst, x => x.allLoadInst.mwODU);
+
+        //                            if (CheckName != null)
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"This name {mwODU.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //                            _unitOfWork.MW_ODURepository.Add(mwODU);
+        //                            _unitOfWork.SaveChanges();
+
+        //                            var Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
+        //                            _unitOfWork.CivilLoadsRepository.AddCivilLoad(addMW_ODU.TLIcivilLoads, Id, SiteCode);
+        //                            if (addMW_ODU.TLIdynamicAttInstValue.Count > 0)
+        //                            {
+        //                                foreach (var DynamicAttInstValue in addMW_ODU.TLIdynamicAttInstValue)
+        //                                {
+        //                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwODU.Id);
+        //                                }
+        //                            }
+        //                            //AddHistory(addMW_ODU.ticketAtt, Id, "Insert");
+        //                        }
+        //                        else
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+        //                        }
+        //                    }
+        //                    else if (LoadSubType.TLImwBU.ToString() == TableName)
+        //                    {
+        //                        AddMW_BUViewModel addMW_BU = _mapper.Map<AddMW_BUViewModel>(MWInstallationViewModel);
+        //                        TLImwBU mwBU = _mapper.Map<TLImwBU>(addMW_BU);
+        //                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(addMW_BU.TLIcivilLoads.allCivilInstId).Message;
+        //                        if (Message != "Success")
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+        //                        }
+        //                        var mwBULibrary = db.TLImwBULibrary.Where(x => x.Id == addMW_BU.MwBULibraryId).AsNoTracking().FirstOrDefault();
+        //                        if (mwBU.CenterHigh == 0 || mwBU.CenterHigh == null)
+        //                        {
+        //                            mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+        //                        }
+        //                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(addMW_BU.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
+        //                        if (message != "Success")
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                        }
+
+        //                        if (addMW_BU.TLIcivilLoads.ReservedSpace == true && mwBU.SpaceInstallation == 0)
+        //                        {
+        //                            mwBU.SpaceInstallation = mwBULibrary.SpaceLibrary;
+
+        //                            if (mwBULibrary.SpaceLibrary == 0)
+        //                            {
+        //                                mwBU.SpaceInstallation = mwBULibrary.Length * mwBULibrary.Width;
+        //                            }
+        //                        }
+        //                        if (addMW_BU.TLIcivilLoads.ReservedSpace == true && (addMW_BU.TLIcivilLoads.sideArmId == null || addMW_BU.TLIcivilLoads.sideArmId == 0))
+        //                        {
+        //                            mwBU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(addMW_BU.TLIcivilLoads.allCivilInstId, TableName, mwBU.SpaceInstallation, mwBU.CenterHigh, addMW_BU.MwBULibraryId, addMW_BU.HBA).Data;
+        //                        }
+        //                        bool test = true;
+        //                        string CheckDependencyValidation = CheckDependencyValidationForMWTypes(MWInstallationViewModel, TableName, SiteCode);
+
+        //                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //                        string CheckGeneralValidation = CheckGeneralValidationFunction(addMW_BU.TLIdynamicAttInstValue, TableName);
+
+        //                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //                        if (test == true)
+        //                        {
+        //                            //TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                            //    !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.Name.ToLower() == mwBU.Name.ToLower() : false) : false),
+        //                            //        x => x.allLoadInst, x => x.allLoadInst.mwBU);
+        //                            //if (CheckName != null)
+        //                            //    return new Response<ObjectInstAtts>(true, null, null, $"This name {mwBU.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //                            var CheckSerialNumber = _unitOfWork.MW_BURepository.GetWhereFirst(x => x.Serial_Number == mwBU.Serial_Number);
+        //                            if (CheckSerialNumber != null)
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"The SerialNumber {mwBU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+        //                            }
+        //                            mwBU.Name = "";
+        //                            TLIsideArm SideArmEntity = null;
+        //                            if (addMW_BU.TLIcivilLoads.sideArmId != null)
+        //                            {
+        //                                //  SideArmEntity = _unitOfWork.SideArmRepository.GetByID((int)addMW_BU.TLIcivilLoads.sideArmId);
+        //                                SideArmEntity = db.TLIsideArm.Where(x => x.Id == (int)addMW_BU.TLIcivilLoads.sideArmId).AsNoTracking().FirstOrDefault();
+
+        //                                mwBU.Name = SideArmEntity.Name;
+        //                            }
+        //                            TLImwBULibrary BULibrary = null;
+        //                            if (mwBU.MwBULibraryId != null)
+        //                            {
+        //                                // BULibrary = _unitOfWork.MW_BULibraryRepository.GetByID((int)mwBU.MwBULibraryId);
+        //                                BULibrary = db.TLImwBULibrary.Where(x => x.Id == (int)mwBU.MwBULibraryId).AsNoTracking().FirstOrDefault();
+        //                                if (String.IsNullOrEmpty(mwBU.Name) == true)
+        //                                {
+        //                                    mwBU.Name = BULibrary.Model + " " + mwBU.Height;
+        //                                }
+        //                                else
+        //                                {
+        //                                    mwBU.Name += " " + BULibrary.Model + " " + mwBU.Height;
+        //                                }
+        //                            }
+        //                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                               !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.Name.ToLower() == mwBU.Name.ToLower() : false) : false) &&
+        //                               x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                   x => x.allLoadInst, x => x.allLoadInst.mwBU);
+        //                            if (CheckName != null)
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"This name {mwBU.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //                            _unitOfWork.MW_BURepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, mwBU);
+        //                            _unitOfWork.SaveChanges();
+        //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
+        //                            _unitOfWork.CivilLoadsRepository.AddCivilLoad(addMW_BU.TLIcivilLoads, Id, SiteCode);
+        //                            if (addMW_BU.TLIdynamicAttInstValue.Count > 0)
+        //                            {
+        //                                foreach (var DynamicAttInstValue in addMW_BU.TLIdynamicAttInstValue)
+        //                                {
+        //                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwBU.Id);
+        //                                }
+        //                            }
+        //                            //add ports to BU
+
+        //                            for (int i = 0; i <= 4; i++)
+        //                            {
+        //                                if (i != 4)
+        //                                {
+        //                                    TLImwPort item = new TLImwPort();
+        //                                    item.Port_Name = mwBU.Name + "_Port" + (i + 1);
+        //                                    item.TX_Frequency = "100";
+        //                                    item.MwBUId = mwBU.Id;
+        //                                    item.MwBULibraryId = mwBU.MwBULibraryId;
+        //                                    item.Port_Type = 1;
+        //                                    db.TLImwPort.Add(item);
+        //                                    db.SaveChanges();
+        //                                }
+        //                                else
+        //                                {
+        //                                    TLImwPort item = new TLImwPort();
+        //                                    item.Port_Name = mwBU.Name + "_Port" + (i + 1);
+        //                                    item.TX_Frequency = "100";
+        //                                    item.MwBUId = mwBU.Id;
+        //                                    item.MwBULibraryId = mwBU.MwBULibraryId;
+        //                                    item.Port_Type = 2;
+        //                                    db.TLImwPort.Add(item);
+        //                                    db.SaveChanges();
+        //                                }
+
+        //                            }
+        //                            //AddHistory(addMW_BU.ticketAtt, Id, "Insert");
+        //                        }
+        //                        else
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+        //                        }
+        //                    }
+        //                    else if (LoadSubType.TLImwDish.ToString() == TableName)
+        //                    {
+        //                        AddMW_DishViewModel AddMW_Dish = _mapper.Map<AddMW_DishViewModel>(MWInstallationViewModel);
+
+        //                        TLImwDish mwDish = _mapper.Map<TLImwDish>(AddMW_Dish);
+        //                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Dish.TLIcivilLoads.allCivilInstId).Message;
+        //                        if (Message != "Success")
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+        //                        }
+        //                        var mwDishLibrary = db.TLImwDishLibrary.Where(x => x.Id == AddMW_Dish.MwDishLibraryId).AsNoTracking().FirstOrDefault();
+        //                        if (mwDish.CenterHigh == 0 || mwDish.CenterHigh == null)
+        //                        {
+        //                            mwDish.CenterHigh = mwDish.HBA + mwDishLibrary.Length / 2;
+        //                        }
+        //                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(AddMW_Dish.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
+        //                        if (message != "Success")
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                        }
+
+        //                        if (AddMW_Dish.TLIcivilLoads.ReservedSpace == true && mwDish.SpaceInstallation == 0)
+        //                        {
+        //                            mwDish.SpaceInstallation = mwDishLibrary.SpaceLibrary;
+
+        //                            if (mwDishLibrary.SpaceLibrary == 0)
+        //                            {
+        //                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(mwDishLibrary.diameter / 2, 2);
+        //                            }
+        //                        }
+        //                        if (AddMW_Dish.TLIcivilLoads.ReservedSpace == true && (AddMW_Dish.TLIcivilLoads.sideArmId == null || AddMW_Dish.TLIcivilLoads.sideArmId == 0))
+        //                        {
+        //                            mwDish.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(AddMW_Dish.TLIcivilLoads.allCivilInstId, TableName, mwDish.SpaceInstallation, mwDish.CenterHigh, AddMW_Dish.MwDishLibraryId, AddMW_Dish.HBA).Data;
+        //                        }
+        //                        //TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                        //        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
+        //                        //            x => x.allLoadInst, x => x.allLoadInst.mwDish);
+        //                        //if (CheckName != null)
+        //                        //    return new Response<ObjectInstAtts>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+        //                        string CheckDependencyValidation = CheckDependencyValidationForMWTypes(MWInstallationViewModel, TableName, SiteCode);
+
+        //                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //                        string CheckGeneralValidation = CheckGeneralValidationFunction(AddMW_Dish.TLIdynamicAttInstValue, TableName);
+
+        //                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+        //                        {
+        //                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+        //                            if (CheckSerialNumber)
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+        //                        }
+
+        //                        bool CheckMW_LinkId = _unitOfWork.MW_DishRepository.Any(x => x.MW_LinkId == mwDish.MW_LinkId);
+        //                        if (CheckMW_LinkId)
+        //                            return new Response<ObjectInstAtts>(true, null, null, $"The MW_LinkId {mwDish.MW_LinkId} is already exists", (int)ApiReturnCode.fail);
+
+        //                        mwDish.DishName = AddMW_Dish.TLIcivilLoads.sideArmId != null ?
+        //                            $"{_unitOfWork.SideArmRepository.GetByID((int)AddMW_Dish.TLIcivilLoads.sideArmId).Name} {AddMW_Dish.HeightBase} {AddMW_Dish.Azimuth}" :
+        //                            AddMW_Dish.HeightBase + " " + AddMW_Dish.Azimuth;
+
+        //                        TLImwDishLibrary DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetByID(AddMW_Dish.MwDishLibraryId);
+        //                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false) &&
+        //                                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+        //                        if (CheckName != null)
+        //                            return new Response<ObjectInstAtts>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+
+        //                        if (AddMW_Dish.InstallationPlaceId != null)
+        //                        {
+        //                            TLIinstallationPlace InstallationPlaceEntity = _unitOfWork.InstallationPlaceRepository.GetByID(AddMW_Dish.InstallationPlaceId.Value);
+
+        //                            if (InstallationPlaceEntity.Name.ToLower() == "direct")
+        //                                if (AddMW_Dish.TLIcivilLoads.allCivilInstId == 0 || AddMW_Dish.TLIcivilLoads.sideArmId != null)
+        //                                    return new Response<ObjectInstAtts>(true, null, null, "The dish if installateion place is direct then should be on civil without sideArm", (int)ApiReturnCode.fail);
+
+        //                                else if (InstallationPlaceEntity.Name.ToLower() == "sidearm")
+        //                                    if (AddMW_Dish.TLIcivilLoads.allCivilInstId == 0 || AddMW_Dish.TLIcivilLoads.sideArmId == null)
+        //                                        return new Response<ObjectInstAtts>(true, null, null, "The dish if installateion place is direct then should be on civil by sideArm", (int)ApiReturnCode.fail);
+        //                        }
+        //                        if (AddMW_Dish.ItemConnectToId != null)
+        //                        {
+        //                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(AddMW_Dish.ItemConnectToId.Value);
+        //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+        //                                if (string.IsNullOrEmpty(AddMW_Dish.Far_End_Site_Code))
+        //                                    return new Response<ObjectInstAtts>(true, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+        //                                else if (ConnectedToEntity.Name.ToLower() == "repeater")
+        //                                {
+        //                                    if (AddMW_Dish.RepeaterTypeId == null)
+        //                                    {
+        //                                        return new Response<ObjectInstAtts>(true, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        TLIrepeaterType RepeaterTypeEntity = null;
+        //                                        if (AddMW_Dish.RepeaterTypeId != null)
+        //                                        {
+        //                                            RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetByID((int)AddMW_Dish.RepeaterTypeId);
+        //                                            if (RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+        //                                            {
+        //                                                return new Response<ObjectInstAtts>(true, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+        //                                            }
+        //                                            if (RepeaterTypeEntity.Name.ToLower() == "active")
+        //                                            {
+        //                                                if (String.IsNullOrEmpty(AddMW_Dish.Far_End_Site_Code))
+        //                                                {
+        //                                                    return new Response<ObjectInstAtts>(true, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+        //                                                }
+        //                                            }
+        //                                            else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+        //                                            {
+        //                                                if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+        //                                                {
+        //                                                    return new Response<ObjectInstAtts>(true, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+        //                                                }
+        //                                            }
+        //                                        }
+        //                                    }
+        //                                }
+        //                        }
+        //                        _unitOfWork.MW_DishRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, mwDish);
+        //                        _unitOfWork.SaveChanges();
+        //                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+        //                        _unitOfWork.CivilLoadsRepository.AddCivilLoad(AddMW_Dish.TLIcivilLoads, Id, SiteCode);
+        //                        if (AddMW_Dish.TLIdynamicAttInstValue.Count > 0)
+        //                        {
+        //                            foreach (var DynamicAttInstValue in AddMW_Dish.TLIdynamicAttInstValue)
+        //                            {
+        //                                _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwDish.Id);
+        //                            }
+        //                        }
+        //                    }
+        //                    else if (LoadSubType.TLImwRFU.ToString() == TableName)
+        //                    {
+        //                        AddMW_RFUViewModel AddMW_RFU = _mapper.Map<AddMW_RFUViewModel>(MWInstallationViewModel);
+        //                        TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(AddMW_RFU);
+        //                        if (AddMW_RFU.MwPortId == null)
+        //                        {
+        //                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_RFU.TLIcivilLoads.allCivilInstId).Message;
+        //                            if (Message != "Success")
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+        //                            }
+        //                            var mwRFULibrary = db.TLImwRFULibrary.Where(x => x.Id == AddMW_RFU.MwRFULibraryId).FirstOrDefault();
+        //                            if (mwRFU.CenterHigh == 0 || mwRFU.CenterHigh == null)
+        //                            {
+        //                                mwRFU.CenterHigh = mwRFU.HBA + mwRFULibrary.Length / 2;
+        //                            }
+        //                            if (AddMW_RFU.TLIcivilLoads.ReservedSpace == true && mwRFU.SpaceInstallation == 0)
+        //                            {
+        //                                mwRFU.SpaceInstallation = mwRFULibrary.SpaceLibrary;
+
+        //                                if (mwRFULibrary.SpaceLibrary == 0)
+        //                                {
+        //                                    mwRFU.SpaceInstallation = mwRFULibrary.Length * mwRFULibrary.Width;
+        //                                }
+        //                            }
+        //                            if (AddMW_RFU.TLIcivilLoads.ReservedSpace == true && (AddMW_RFU.TLIcivilLoads.sideArmId == null || AddMW_RFU.TLIcivilLoads.sideArmId == 0))
+        //                            {
+        //                                mwRFU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(AddMW_RFU.TLIcivilLoads.allCivilInstId, TableName, mwRFU.SpaceInstallation, mwRFU.CenterHigh, AddMW_RFU.MwRFULibraryId, AddMW_RFU.HBA).Data;
+        //                            }
+        //                        }
+
+        //                        bool test = false;
+        //                        if (AddMW_RFU.TLIdynamicAttInstValue != null ? AddMW_RFU.TLIdynamicAttInstValue.Count > 0 : false)
+        //                        {
+        //                            string CheckDependencyValidation = CheckDependencyValidationForMWTypes(MWInstallationViewModel, TableName, SiteCode);
+
+        //                            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //                            string CheckGeneralValidation = CheckGeneralValidationFunction(AddMW_RFU.TLIdynamicAttInstValue, TableName);
+
+        //                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //                            test = true;
+        //                        }
+        //                        else
+        //                        {
+        //                            test = true;
+        //                        }
+        //                        if (test == true)
+        //                        {
+        //                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                                !x.allLoadInst.Draft && (x.allLoadInst.mwRFUId != null ? x.allLoadInst.mwRFU.Name.ToLower() == mwRFU.Name.ToLower() : false) : false) &&
+        //                                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                    x => x.allLoadInst, x => x.allLoadInst.mwRFU);
+        //                            if (CheckName != null)
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"This name {mwRFU.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //                            var CheckSerialNumber = _unitOfWork.MW_RFURepository.GetWhereFirst(x => x.SerialNumber == mwRFU.SerialNumber);
+        //                            if (CheckSerialNumber != null)
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"The SerialNumber {mwRFU.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+        //                            }
+
+        //                            _unitOfWork.MW_RFURepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, mwRFU);
+        //                            _unitOfWork.SaveChanges();
+        //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwRFU.ToString(), mwRFU.Id);
+        //                            _unitOfWork.CivilLoadsRepository.AddCivilLoad(AddMW_RFU.TLIcivilLoads, Id, SiteCode);
+        //                            if (AddMW_RFU.TLIdynamicAttInstValue.Count > 0)
+        //                            {
+        //                                foreach (var DynamicAttInstValue in AddMW_RFU.TLIdynamicAttInstValue)
+        //                                {
+        //                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwRFU.Id);
+        //                                }
+        //                            }
+        //                        }    //AddHistory(AddMW_RFU.ticketAtt, Id, "Insert");
+
+        //                        else
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+        //                        }
+
+        //                    }
+        //                    else if (LoadSubType.TLImwOther.ToString() == TableName)
+        //                    {
+        //                        AddMw_OtherViewModel AddMW_Other = _mapper.Map<AddMw_OtherViewModel>(MWInstallationViewModel);
+        //                        TLImwOther mwOther = _mapper.Map<TLImwOther>(AddMW_Other);
+        //                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Other.TLIcivilLoads.allCivilInstId).Message;
+        //                        if (Message != "Success")
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+        //                        }
+        //                        var mwOtherLibrary = db.TLImwOtherLibrary.Where(x => x.Id == AddMW_Other.mwOtherLibraryId).FirstOrDefault();
+        //                        if (mwOther.CenterHigh == 0 || mwOther.CenterHigh == null)
+        //                        {
+        //                            mwOther.CenterHigh = mwOther.HBA + mwOtherLibrary.Length / 2;
+        //                        }
+        //                        if (AddMW_Other.TLIcivilLoads.ReservedSpace == true && mwOther.Spaceinstallation == 0)
+        //                        {
+        //                            mwOther.Spaceinstallation = mwOtherLibrary.SpaceLibrary;
+
+        //                            if (mwOtherLibrary.SpaceLibrary == 0)
+        //                            {
+        //                                mwOther.Spaceinstallation = mwOtherLibrary.Length * mwOtherLibrary.Width;
+        //                            }
+        //                        }
+        //                        if (AddMW_Other.TLIcivilLoads.ReservedSpace == true && (AddMW_Other.TLIcivilLoads.sideArmId == null || AddMW_Other.TLIcivilLoads.sideArmId == 0))
+        //                        {
+        //                            mwOther.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(AddMW_Other.TLIcivilLoads.allCivilInstId, TableName, mwOther.Spaceinstallation, mwOther.CenterHigh, AddMW_Other.mwOtherLibraryId, AddMW_Other.HBA).Data;
+        //                        }
+        //                        bool test = false;
+        //                        if (AddMW_Other.TLIdynamicAttInstValue != null ? AddMW_Other.TLIdynamicAttInstValue.Count > 0 : false)
+        //                        {
+        //                            string CheckDependencyValidation = CheckDependencyValidationForMWTypes(MWInstallationViewModel, TableName, SiteCode);
+
+        //                            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //                            string CheckGeneralValidation = CheckGeneralValidationFunction(AddMW_Other.TLIdynamicAttInstValue, TableName);
+
+        //                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //                            test = true;
+        //                        }
+        //                        else
+        //                        {
+        //                            test = true;
+        //                        }
+        //                        if (test == true)
+        //                        {
+        //                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                                !x.allLoadInst.Draft && (x.allLoadInst.mwOtherId != null ? x.allLoadInst.mwOther.Name.ToLower() == mwOther.Name.ToLower() : false) : false) &&
+        //                                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                    x => x.allLoadInst, x => x.allLoadInst.mwOther);
+        //                            if (CheckName != null)
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"This name {mwOther.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //                            var CheckSerialNumber = _unitOfWork.Mw_OtherRepository.GetWhereFirst(x => x.SerialNumber == mwOther.SerialNumber);
+        //                            if (CheckSerialNumber != null)
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"The SerialNumber {mwOther.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+        //                            }
+
+        //                            _unitOfWork.Mw_OtherRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, mwOther);
+        //                            _unitOfWork.SaveChanges();
+        //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), mwOther.Id);
+        //                            _unitOfWork.CivilLoadsRepository.AddCivilLoad(AddMW_Other.TLIcivilLoads, Id, SiteCode);
+        //                            if (AddMW_Other.TLIdynamicAttInstValue.Count > 0)
+        //                            {
+        //                                foreach (var DynamicAttInstValue in AddMW_Other.TLIdynamicAttInstValue)
+        //                                {
+        //                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwOther.Id);
+        //                                }
+        //                            }
+
+        //                        }
+        //                        else
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+        //                        }
+        //                    }
+
+        //                    transaction.Complete();
+        //                    tran.Commit();
+        //                    return new Response<ObjectInstAtts>();
+        //                }
+        //                catch (Exception err)
+        //                {
+
+        //                    tran.Rollback();
+        //                    return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //}
+        //public async Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName)
+        //{
+        //    try
+        //    {
+        //        int TableNameId = 0;
+        //        if (LoadSubType.TLImwODU.ToString() == TableName)
+        //        {
+        //            TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwODU.ToString().ToLower()).Id;
+        //            EditMW_ODUViewModel MW_ODUViewModel = _mapper.Map<EditMW_ODUViewModel>(MWInstallationViewModel);
+
+        //            TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                x.allLoadInst.mwODUId == MW_ODUViewModel.Id : false), x => x.allLoadInst);
+
+        //            string SiteCode = "";
+
+        //            if (CivilLoads != null)
+        //                SiteCode = CivilLoads.SiteCode;
+
+        //            else
+        //                SiteCode = null;
+
+        //            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwODUId != MW_ODUViewModel.Id && (x.allLoadInstId != null ?
+        //                !x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ? x.allLoadInst.mwODU.Name.ToLower() == MW_ODUViewModel.Name.ToLower() : false) : false) &&
+        //                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                    x => x.allLoadInst, x => x.allLoadInst.mwODU);
+
+        //            if (CheckName != null)
+        //                return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_ODUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+        //            string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_ODUViewModel.DynamicInstAttsValue, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //            string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //            TLImwODU mwODU = _mapper.Map<TLImwODU>(MW_ODUViewModel);
+        //            TLImwODU OldMW_ODUViewModel = _unitOfWork.MW_ODURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_ODUViewModel.Id);
+
+        //            _unitOfWork.MW_ODURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_ODUViewModel, mwODU);
+        //            var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwODUId == MW_ODUViewModel.Id).Id;
+        //            var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+        //            CivilLoads.InstallationDate = MW_ODUViewModel.TLIcivilLoads.InstallationDate;
+        //            CivilLoads.ItemOnCivilStatus = MW_ODUViewModel.TLIcivilLoads.ItemOnCivilStatus;
+        //            CivilLoads.ItemStatus = MW_ODUViewModel.TLIcivilLoads.ItemStatus;
+        //            CivilLoads.ReservedSpace = MW_ODUViewModel.TLIcivilLoads.ReservedSpace;
+        //            CivilLoads.sideArmId = MW_ODUViewModel.TLIcivilLoads.sideArmId;
+        //            CivilLoads.allCivilInstId = MW_ODUViewModel.TLIcivilLoads.allCivilInstId;
+        //            CivilLoads.legId = MW_ODUViewModel.TLIcivilLoads.legId;
+        //            CivilLoads.Leg2Id = MW_ODUViewModel.TLIcivilLoads.Leg2Id;
+
+        //            _unitOfWork.SaveChanges();
+        //            if (MW_ODUViewModel.DynamicInstAttsValue != null ? MW_ODUViewModel.DynamicInstAttsValue.Count() > 0 : false)
+        //                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_ODUViewModel.DynamicInstAttsValue, TableNameId, mwODU.Id);
+
+        //            await _unitOfWork.SaveChangesAsync();
+        //        }
+        //        else if (LoadSubType.TLImwBU.ToString() == TableName)
+        //        {
+        //            TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwBU.ToString().ToLower()).Id;
+        //            EditMW_BUViewModel MW_BUViewModel = _mapper.Map<EditMW_BUViewModel>(MWInstallationViewModel);
+
+        //            TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                x.allLoadInst.mwBUId == MW_BUViewModel.Id : false), x => x.allLoadInst);
+
+        //            string SiteCode = "";
+
+        //            if (CivilLoads != null)
+        //                SiteCode = CivilLoads.SiteCode;
+
+        //            else
+        //                SiteCode = null;
+
+        //            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwBUId != MW_BUViewModel.Id && (x.allLoadInstId != null ?
+        //                !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.Name.ToLower() == MW_BUViewModel.Name.ToLower() : false) : false) &&
+        //                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                    x => x.allLoadInst, x => x.allLoadInst.mwBU);
+
+        //            if (CheckName != null)
+        //                return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_BUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+        //            string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_BUViewModel.DynamicInstAttsValue, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //            string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //            TLImwBU mwBU = _mapper.Map<TLImwBU>(MW_BUViewModel);
+        //            var mw_BUInst = _unitOfWork.MW_BURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_BUViewModel.Id);
+        //            if (mwBU.HBA == mw_BUInst.HBA && mwBU.CenterHigh == mw_BUInst.CenterHigh && mwBU.SpaceInstallation == mw_BUInst.SpaceInstallation && mwBU.Azimuth != mw_BUInst.Azimuth && MW_BUViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_BUViewModel.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
+        //                if (message != "Success")
+        //                {
+        //                    return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                }
+        //            }
+        //            if (mwBU.HBA != mw_BUInst.HBA || mwBU.CenterHigh != mw_BUInst.CenterHigh || mwBU.SpaceInstallation != mw_BUInst.SpaceInstallation && MW_BUViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var mwBULibrary = db.TLImwBULibrary.Where(x => x.Id == mwBU.MwBULibraryId).FirstOrDefault();
+        //                if (mwBU.CenterHigh == 0 || mwBU.CenterHigh == null)
+        //                {
+        //                    mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+        //                }
+        //                var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_BUViewModel.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
+        //                if (message != "Success")
+        //                {
+        //                    return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                }
+        //                if (MW_BUViewModel.TLIcivilLoads.ReservedSpace == true && (MW_BUViewModel.TLIcivilLoads.sideArmId == null || MW_BUViewModel.TLIcivilLoads.sideArmId == 0))
+        //                {
+        //                    mwBU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_BUViewModel.TLIcivilLoads.allCivilInstId, TableName, mwBU.SpaceInstallation, mwBU.CenterHigh, mwBU.MwBULibraryId, mwBU.HBA).Data;
+        //                }
+        //            }
+        //            _unitOfWork.MW_BURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, mw_BUInst, mwBU);
+        //            var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwBUId == MW_BUViewModel.Id).Id;
+        //            var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+        //            CivilLoads.InstallationDate = MW_BUViewModel.TLIcivilLoads.InstallationDate;
+        //            CivilLoads.ItemOnCivilStatus = MW_BUViewModel.TLIcivilLoads.ItemOnCivilStatus;
+        //            CivilLoads.ItemStatus = MW_BUViewModel.TLIcivilLoads.ItemStatus;
+        //            CivilLoads.ReservedSpace = MW_BUViewModel.TLIcivilLoads.ReservedSpace;
+        //            CivilLoads.sideArmId = MW_BUViewModel.TLIcivilLoads.sideArmId;
+        //            CivilLoads.allCivilInstId = MW_BUViewModel.TLIcivilLoads.allCivilInstId;
+        //            CivilLoads.legId = MW_BUViewModel.TLIcivilLoads.legId;
+        //            CivilLoads.Leg2Id = MW_BUViewModel.TLIcivilLoads.Leg2Id;
+
+        //            _unitOfWork.SaveChanges();
+        //            if (MW_BUViewModel.DynamicInstAttsValue != null ? MW_BUViewModel.DynamicInstAttsValue.Count > 0 : false)
+        //                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_BUViewModel.DynamicInstAttsValue, TableNameId, mwBU.Id);
+
+        //            await _unitOfWork.SaveChangesAsync();
+        //        }
+        //        else if (LoadSubType.TLImwDish.ToString() == TableName)
+        //        {
+        //            TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
+        //            EditMW_DishViewModel MW_DishViewModel = _mapper.Map<EditMW_DishViewModel>(MWInstallationViewModel);
+
+        //            TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                x.allLoadInst.mwDishId == MW_DishViewModel.Id : false), x => x.allLoadInst);
+
+        //            string SiteCode = "";
+
+        //            if (CivilLoads != null)
+        //                SiteCode = CivilLoads.SiteCode;
+
+        //            else
+        //                SiteCode = null;
+
+        //            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwDishId != MW_DishViewModel.Id && (x.allLoadInstId != null ?
+        //                !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == MW_DishViewModel.DishName.ToLower() : false) : false) &&
+        //                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                    x => x.allLoadInst, x => x.allLoadInst.mwDish);
+
+        //            if (CheckName != null)
+        //                return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_DishViewModel.DishName}] is already exists", (int)ApiReturnCode.fail);
+
+        //            string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_DishViewModel.DynamicInstAttsValue, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //            string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //            TLImwDish mwDish = _mapper.Map<TLImwDish>(MW_DishViewModel);
+        //            TLImwDish OldMW_DishViewModel = _unitOfWork.MW_DishRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_DishViewModel.Id);
+        //            if (mwDish.HBA == OldMW_DishViewModel.HBA && mwDish.CenterHigh == OldMW_DishViewModel.CenterHigh && mwDish.SpaceInstallation == OldMW_DishViewModel.SpaceInstallation && mwDish.Azimuth != OldMW_DishViewModel.Azimuth && MW_DishViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_DishViewModel.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
+        //                if (message != "Success")
+        //                {
+        //                    return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                }
+        //            }
+        //            if (mwDish.HBA != OldMW_DishViewModel.HBA || mwDish.CenterHigh != OldMW_DishViewModel.CenterHigh || mwDish.SpaceInstallation != OldMW_DishViewModel.SpaceInstallation && MW_DishViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var mwDishLibrary = db.TLImwDishLibrary.Where(x => x.Id == mwDish.MwDishLibraryId).FirstOrDefault();
+        //                if (mwDish.CenterHigh == 0 || mwDish.CenterHigh == null)
+        //                {
+        //                    mwDish.CenterHigh = mwDish.HBA + mwDishLibrary.Length / 2;
+        //                }
+        //                var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_DishViewModel.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
+        //                if (message != "Success")
+        //                {
+        //                    return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                }
+        //                if (MW_DishViewModel.TLIcivilLoads.ReservedSpace == true && (MW_DishViewModel.TLIcivilLoads.sideArmId == null || MW_DishViewModel.TLIcivilLoads.sideArmId == 0))
+        //                {
+        //                    mwDish.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_DishViewModel.TLIcivilLoads.allCivilInstId, TableName, mwDish.SpaceInstallation, mwDish.CenterHigh, mwDish.MwDishLibraryId, mwDish.HBA).Data;
+        //                }
+        //            }
+        //            _unitOfWork.MW_DishRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_DishViewModel, mwDish);
+        //            var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwDishId == MW_DishViewModel.Id).Id;
+        //            var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+        //            CivilLoads.InstallationDate = MW_DishViewModel.TLIcivilLoads.InstallationDate;
+        //            CivilLoads.ItemOnCivilStatus = MW_DishViewModel.TLIcivilLoads.ItemOnCivilStatus;
+        //            CivilLoads.ItemStatus = MW_DishViewModel.TLIcivilLoads.ItemStatus;
+        //            CivilLoads.ReservedSpace = MW_DishViewModel.TLIcivilLoads.ReservedSpace;
+        //            CivilLoads.sideArmId = MW_DishViewModel.TLIcivilLoads.sideArmId;
+        //            CivilLoads.allCivilInstId = MW_DishViewModel.TLIcivilLoads.allCivilInstId;
+        //            CivilLoads.legId = MW_DishViewModel.TLIcivilLoads.legId;
+        //            CivilLoads.Leg2Id = MW_DishViewModel.TLIcivilLoads.Leg2Id;
+
+        //            _unitOfWork.SaveChanges();
+        //            if (MW_DishViewModel.DynamicInstAttsValue != null ? MW_DishViewModel.DynamicInstAttsValue.Count > 0 : false)
+        //            {
+        //                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_DishViewModel.DynamicInstAttsValue, TableNameId, mwDish.Id);
+        //            }
+        //            await _unitOfWork.SaveChangesAsync();
+        //        }
+        //        else if (LoadSubType.TLImwRFU.ToString() == TableName)
+        //        {
+        //            TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower()).Id;
+        //            EditMW_RFUViewModel MW_RFUViewModel = _mapper.Map<EditMW_RFUViewModel>(MWInstallationViewModel);
+
+        //            TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                x.allLoadInst.mwRFUId == MW_RFUViewModel.Id : false), x => x.allLoadInst);
+
+        //            string SiteCode = "";
+
+        //            if (CivilLoads != null)
+        //                SiteCode = CivilLoads.SiteCode;
+
+        //            else
+        //                SiteCode = null;
+
+        //            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwRFUId != MW_RFUViewModel.Id && (x.allLoadInstId != null ?
+        //                !x.allLoadInst.Draft && (x.allLoadInst.mwRFUId != null ? x.allLoadInst.mwRFU.Name.ToLower() == MW_RFUViewModel.Name.ToLower() : false) : false) &&
+        //                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                    x => x.allLoadInst, x => x.allLoadInst.mwRFU);
+
+        //            if (CheckName != null)
+        //                return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_RFUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+        //            string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_RFUViewModel.DynamicInstAttsValue, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //            string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //            TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(MW_RFUViewModel);
+        //            TLImwRFU OldMW_RFUViewModel = _unitOfWork.MW_RFURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_RFUViewModel.Id);
+        //            if (mwRFU.HBA == OldMW_RFUViewModel.HBA && mwRFU.CenterHigh == OldMW_RFUViewModel.CenterHigh && mwRFU.SpaceInstallation == OldMW_RFUViewModel.SpaceInstallation && mwRFU.Azimuth != OldMW_RFUViewModel.Azimuth && MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, 0, mwRFU.Azimuth, mwRFU.CenterHigh).Message;
+        //                if (message != "Success")
+        //                {
+        //                    return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                }
+        //            }
+        //            if (mwRFU.HBA != OldMW_RFUViewModel.HBA || mwRFU.CenterHigh != OldMW_RFUViewModel.CenterHigh || mwRFU.SpaceInstallation != OldMW_RFUViewModel.SpaceInstallation && MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var mwRFULibrary = db.TLImwRFULibrary.Where(x => x.Id == mwRFU.MwRFULibraryId).FirstOrDefault();
+        //                if (mwRFU.CenterHigh == 0 || mwRFU.CenterHigh == null)
+        //                {
+        //                    mwRFU.CenterHigh = mwRFU.HBA + mwRFULibrary.Length / 2;
+        //                }
+        //                var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, 0, mwRFU.Azimuth, mwRFU.CenterHigh).Message;
+        //                if (message != "Success")
+        //                {
+        //                    return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+        //                }
+        //                if (MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true && (MW_RFUViewModel.TLIcivilLoads.sideArmId == null || MW_RFUViewModel.TLIcivilLoads.sideArmId == 0))
+        //                {
+        //                    mwRFU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, TableName, mwRFU.SpaceInstallation, mwRFU.CenterHigh, mwRFU.MwRFULibraryId, mwRFU.HBA).Data;
+        //                }
+        //            }
+        //            _unitOfWork.MW_RFURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_RFUViewModel, mwRFU);
+        //            var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwRFUId == MW_RFUViewModel.Id).Id;
+        //            var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+        //            CivilLoads.InstallationDate = MW_RFUViewModel.TLIcivilLoads.InstallationDate;
+        //            CivilLoads.ItemOnCivilStatus = MW_RFUViewModel.TLIcivilLoads.ItemOnCivilStatus;
+        //            CivilLoads.ItemStatus = MW_RFUViewModel.TLIcivilLoads.ItemStatus;
+        //            CivilLoads.ReservedSpace = MW_RFUViewModel.TLIcivilLoads.ReservedSpace;
+        //            CivilLoads.sideArmId = MW_RFUViewModel.TLIcivilLoads.sideArmId;
+        //            CivilLoads.allCivilInstId = MW_RFUViewModel.TLIcivilLoads.allCivilInstId;
+        //            CivilLoads.legId = MW_RFUViewModel.TLIcivilLoads.legId;
+        //            CivilLoads.Leg2Id = MW_RFUViewModel.TLIcivilLoads.Leg2Id;
+
+        //            _unitOfWork.SaveChanges();
+        //            if (MW_RFUViewModel.DynamicInstAttsValue.Count > 0)
+        //            {
+        //                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_RFUViewModel.DynamicInstAttsValue, TableNameId, mwRFU.Id);
+        //            }
+        //            await _unitOfWork.SaveChangesAsync();
+        //        }
+        //        else if (LoadSubType.TLImwOther.ToString() == TableName)
+        //        {
+        //            TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwOther.ToString().ToLower()).Id;
+        //            EditMw_OtherViewModel Mw_OtherViewModel = _mapper.Map<EditMw_OtherViewModel>(MWInstallationViewModel);
+
+        //            TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                x.allLoadInst.mwOtherId == Mw_OtherViewModel.Id : false), x => x.allLoadInst);
+
+        //            string SiteCode = "";
+
+        //            if (CivilLoads != null)
+        //                SiteCode = CivilLoads.SiteCode;
+
+        //            else
+        //                SiteCode = null;
+
+        //            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwOtherId != Mw_OtherViewModel.Id && (x.allLoadInstId != null ?
+        //                !x.allLoadInst.Draft && (x.allLoadInst.mwOtherId != null ? x.allLoadInst.mwOther.Name.ToLower() == Mw_OtherViewModel.Name.ToLower() : false) : false) &&
+        //                x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                    x => x.allLoadInst, x => x.allLoadInst.mwOther);
+
+        //            if (CheckName != null)
+        //                return new Response<ObjectInstAtts>(true, null, null, $"This name [{Mw_OtherViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+        //            string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(Mw_OtherViewModel.DynamicInstAttsValue, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //            string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+        //            if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+        //            TLImwOther mwOther = _mapper.Map<TLImwOther>(Mw_OtherViewModel);
+        //            TLImwOther OldMw_OtherViewModel = _unitOfWork.Mw_OtherRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Mw_OtherViewModel.Id);
+        //            if (mwOther.HBA != OldMw_OtherViewModel.HBA || mwOther.CenterHigh != OldMw_OtherViewModel.CenterHigh || mwOther.Spaceinstallation != OldMw_OtherViewModel.Spaceinstallation && Mw_OtherViewModel.TLIcivilLoads.ReservedSpace == true)
+        //            {
+        //                var mwOtherLibrary = db.TLImwOtherLibrary.Where(x => x.Id == mwOther.mwOtherLibraryId).FirstOrDefault();
+        //                if (mwOther.CenterHigh == 0 || mwOther.CenterHigh == null)
+        //                {
+        //                    mwOther.CenterHigh = mwOther.HBA + mwOtherLibrary.Length / 2;
+        //                }
+        //                if (Mw_OtherViewModel.TLIcivilLoads.ReservedSpace == true && (Mw_OtherViewModel.TLIcivilLoads.sideArmId == null || Mw_OtherViewModel.TLIcivilLoads.sideArmId == 0))
+        //                {
+        //                    mwOther.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(Mw_OtherViewModel.TLIcivilLoads.allCivilInstId, TableName, mwOther.Spaceinstallation, mwOther.CenterHigh, mwOther.mwOtherLibraryId, mwOther.HBA).Data;
+        //                }
+        //            }
+        //            _unitOfWork.Mw_OtherRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMw_OtherViewModel, mwOther);
+        //            var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwOtherId == Mw_OtherViewModel.Id).Id;
+        //            var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+        //            CivilLoads.InstallationDate = Mw_OtherViewModel.TLIcivilLoads.InstallationDate;
+        //            CivilLoads.ItemOnCivilStatus = Mw_OtherViewModel.TLIcivilLoads.ItemOnCivilStatus;
+        //            CivilLoads.ItemStatus = Mw_OtherViewModel.TLIcivilLoads.ItemStatus;
+        //            CivilLoads.ReservedSpace = Mw_OtherViewModel.TLIcivilLoads.ReservedSpace;
+        //            CivilLoads.sideArmId = Mw_OtherViewModel.TLIcivilLoads.sideArmId;
+        //            CivilLoads.allCivilInstId = Mw_OtherViewModel.TLIcivilLoads.allCivilInstId;
+        //            CivilLoads.legId = Mw_OtherViewModel.TLIcivilLoads.legId;
+        //            CivilLoads.Leg2Id = Mw_OtherViewModel.TLIcivilLoads.Leg2Id;
+
+        //            _unitOfWork.SaveChanges();
+        //            if (Mw_OtherViewModel.DynamicInstAttsValue.Count > 0)
+        //            {
+        //                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(Mw_OtherViewModel.DynamicInstAttsValue, TableNameId, mwOther.Id);
+        //            }
+        //            await _unitOfWork.SaveChangesAsync();
+        //        }
+        //        return new Response<ObjectInstAtts>();
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+        //    }
+        //}
+        //public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName)
+        //{
+        //    try
+        //    {
+        //        double? Freespace = 0;
+        //        double? EquivalentSpace = 0;
+        //        var allLoadInst = db.TLIallLoadInst.Where(x => x.mwBUId == LoadId || x.mwDishId == LoadId || x.mwODUId == LoadId || x.mwRFUId == LoadId || x.mwOtherId == LoadId || x.radioAntennaId == LoadId || x.radioRRUId == LoadId || x.radioOtherId == LoadId || x.powerId == LoadId || x.loadOtherId == LoadId)
+        //            .Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU)
+        //            .Include(x => x.mwRFU).Include(x => x.mwOther).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).
+        //            Include(x => x.power).Include(x => x.loadOther).ToList();
+
+        //        foreach (var item in allLoadInst)
+        //        {
+        //            var civilload = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id).Select(x => x.allCivilInstId).ToList();
+        //            foreach (var civilloadinst in civilload)
+        //            {
+        //                var allcivil = db.TLIallCivilInst.Where(x => x.Id == civilloadinst).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel).ToList();
 
 
+        //                foreach (var t in allcivil)
+        //                {
+        //                    if (t.civilWithLegsId != null)
+        //                    {
+        //                        if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
+        //                        {
+
+        //                            TLImwBU TLImwBU = item.mwBU;
+        //                            var PortCascadeId = db.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
+        //                            var PortCascade = db.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
+        //                            foreach (var Port in PortCascade)
+        //                            {
+        //                                var allload = db.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
+        //                                var Civilloads = db.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
+        //                                if (Civilloads != null)
+        //                                {
+        //                                    Civilloads.Dismantle = true;
+        //                                    EquivalentSpace += 0;
+        //                                    Port.MwBUId = 0;
+        //                                    Port.MwBULibraryId = 0;
+        //                                }
+        //                            }
+        //                            var mwport = db.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
+        //                            foreach (var port in mwport)
+        //                            {
+        //                                var mwrfu = db.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
+
+        //                                foreach (var rfu in mwrfu)
+        //                                {
+        //                                    var allLoadRFU = db.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
+        //                                    foreach (var allLoad in allLoadRFU)
+        //                                    {
+        //                                        var MwRfu = db.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                                        foreach (var MWRfU in MwRfu)
+        //                                        {
+        //                                            MWRfU.Dismantle = true;
+        //                                            EquivalentSpace += 0;
+        //                                        }
+
+        //                                    }
+        //                                }
+
+        //                            }
+        //                            var civilLoads = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var civilLoad in civilLoads)
+        //                            {
+        //                                civilLoad.Dismantle = true;
+        //                                if (civilLoad.sideArmId == null)
+        //                                {
+
+        //                                    EquivalentSpace += 0;
+
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
+        //                        {
+        //                            TLImwDish TLImwDish = item.mwDish;
+        //                            var mwODU = db.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
+        //                            foreach (var ODU in mwODU)
+        //                            {
+        //                                var allLoadinst = db.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
+        //                                foreach (var Load in allLoadinst)
+        //                                {
+        //                                    var civil = db.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+
+
+        //                                    foreach (var civillload in civil)
+        //                                    {
+        //                                        civillload.Dismantle = true;
+        //                                        if (civillload.sideArmId == null)
+        //                                        {
+        //                                            EquivalentSpace += 0;
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            EquivalentSpace += 0;
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                            var mwdish = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false).ToList();
+        //                            foreach (var TlImwdish in mwdish)
+        //                            {
+        //                                TlImwdish.Dismantle = true;
+        //                                var Bu = db.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+        //                                foreach (var TLIBu in Bu)
+        //                                {
+        //                                    TLIBu.MainDishId = null;
+        //                                }
+        //                                if (TlImwdish.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLImwDish.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            var TLImwdish = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false).ToList();
+        //                            foreach (var TLmwdish in TLImwdish)
+        //                            {
+        //                                TLmwdish.Dismantle = true;
+        //                                var Bu = db.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+        //                                foreach (var TLIBu in Bu)
+        //                                {
+        //                                    TLIBu.MainDishId = null;
+        //                                }
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+
+        //                        }
+        //                        else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
+        //                        {
+        //                            TLImwODU TLImwODU = item.mwODU;
+        //                            var MWODU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwodu in MWODU)
+        //                            {
+        //                                mwodu.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+
+        //                        }
+        //                        else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
+        //                        {
+        //                            TLImwRFU TLImwRFU = item.mwRFU;
+        //                            var MWRFU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwrfu in MWRFU)
+        //                            {
+        //                                mwrfu.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
+        //                        {
+        //                            TLImwOther TLImwOther = item.mwOther;
+        //                            var MWOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwother in MWOTHER)
+        //                            {
+        //                                mwother.Dismantle = true;
+        //                                if (mwother.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLImwOther.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            var TLIMWOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwother in TLIMWOTHER)
+        //                            {
+        //                                mwother.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
+        //                        {
+        //                            TLIradioAntenna TLIradioAntenna = item.radioAntenna;
+        //                            var RADIOANTENNA = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioantenna in RADIOANTENNA)
+        //                            {
+        //                                radioantenna.Dismantle = true;
+        //                                var RadioRRu = db.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+        //                                foreach (var radioRru in RadioRRu)
+        //                                {
+        //                                    radioRru.radioAntennaId = null;
+        //                                }
+        //                                if (radioantenna.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIradioAntenna.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            var TLIRADIOANTENNA = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioantenna in TLIRADIOANTENNA)
+        //                            {
+        //                                radioantenna.Dismantle = true;
+        //                                var RadioRRu = db.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+        //                                foreach (var radioRru in RadioRRu)
+        //                                {
+        //                                    radioRru.radioAntennaId = null;
+        //                                }
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+        //                        {
+
+        //                            TLIRadioRRU TLIRadioRRU = item.radioRRU;
+        //                            var RADIORRU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radiorru in RADIORRU)
+        //                            {
+        //                                radiorru.Dismantle = true;
+        //                                if (radiorru.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIRadioRRU.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLIRADIORRU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radio in TLIRADIORRU)
+        //                            {
+        //                                radio.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
+        //                        {
+        //                            TLIradioOther TLIradioOther = item.radioOther;
+        //                            var RADIOOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioother in RADIOOTHER)
+        //                            {
+        //                                radioother.Dismantle = true;
+        //                                if (radioother.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIradioOther.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLIRADIOOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioother in TLIRADIOOTHER)
+        //                            {
+        //                                radioother.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
+        //                        {
+        //                            TLIpower TLIpower = item.power;
+        //                            var POWER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var power in POWER)
+        //                            {
+        //                                power.Dismantle = true;
+        //                                if (power.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIpower.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLIPOWER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var power in TLIPOWER)
+        //                            {
+        //                                power.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
+        //                        {
+        //                            TLIloadOther tLIloadOther = item.loadOther;
+        //                            var LOADOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var loadother in LOADOTHER)
+        //                            {
+        //                                loadother.Dismantle = true;
+        //                                if (loadother.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += tLIloadOther.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLILOADOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var loadother in TLILOADOTHER)
+        //                            {
+        //                                loadother.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+        //                            tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+        //                        }
+        //                        db.SaveChanges();
+        //                    }
+        //                    else if (t.civilWithoutLegId != null)
+        //                    {
+
+        //                        if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
+        //                        {
+
+        //                            TLImwBU TLImwBU = item.mwBU;
+        //                            var PortCascadeId = db.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
+        //                            var PortCascade = db.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
+        //                            foreach (var Port in PortCascade)
+        //                            {
+        //                                var allload = db.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
+        //                                var Civilloads = db.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
+        //                                if (Civilloads != null)
+        //                                {
+        //                                    Civilloads.Dismantle = true;
+        //                                    EquivalentSpace += 0;
+        //                                    Port.MwBUId = 0;
+        //                                    Port.MwBULibraryId = 0;
+        //                                }
+        //                            }
+        //                            var mwport = db.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
+        //                            foreach (var port in mwport)
+        //                            {
+        //                                var mwrfu = db.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
+
+        //                                foreach (var rfu in mwrfu)
+        //                                {
+        //                                    var allLoadRFU = db.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
+        //                                    foreach (var allLoad in allLoadRFU)
+        //                                    {
+        //                                        var MwRfu = db.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                                        foreach (var MWRfU in MwRfu)
+        //                                        {
+        //                                            MWRfU.Dismantle = true;
+        //                                            EquivalentSpace += 0;
+        //                                        }
+
+        //                                    }
+        //                                }
+
+        //                            }
+        //                            var civilLoads = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var civilLoad in civilLoads)
+        //                            {
+        //                                civilLoad.Dismantle = true;
+        //                                if (civilLoad.sideArmId == null)
+        //                                {
+
+        //                                    EquivalentSpace += 0;
+
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
+        //                        {
+        //                            TLImwDish TLImwDish = item.mwDish;
+        //                            var mwODU = db.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
+        //                            foreach (var ODU in mwODU)
+        //                            {
+        //                                var allLoadinst = db.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
+        //                                foreach (var Load in allLoadinst)
+        //                                {
+        //                                    var civil = db.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+
+
+        //                                    foreach (var civillload in civil)
+        //                                    {
+        //                                        civillload.Dismantle = true;
+        //                                        if (civillload.sideArmId == null)
+        //                                        {
+        //                                            EquivalentSpace += 0;
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            EquivalentSpace += 0;
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                            var mwdish = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false).ToList();
+        //                            foreach (var TLImwdish in mwdish)
+        //                            {
+        //                                TLImwdish.Dismantle = true;
+        //                                var Bu = db.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+        //                                foreach (var TLIBu in Bu)
+        //                                {
+        //                                    TLIBu.MainDishId = null;
+        //                                }
+        //                                if (TLImwdish.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLImwDish.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            var tlimwdish = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false).ToList();
+        //                            foreach (var MwDish in tlimwdish)
+        //                            {
+        //                                MwDish.Dismantle = true;
+        //                                var Bu = db.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+        //                                foreach (var TLIBu in Bu)
+        //                                {
+        //                                    TLIBu.MainDishId = null;
+        //                                }
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
+        //                        {
+        //                            TLImwODU TLImwODU = item.mwODU;
+        //                            var MWODU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwodu in MWODU)
+        //                            {
+        //                                mwodu.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
+        //                        {
+        //                            TLImwRFU TLImwRFU = item.mwRFU;
+        //                            var MWRFU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwrfu in MWRFU)
+        //                            {
+        //                                mwrfu.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
+        //                        {
+        //                            TLImwOther TLImwOther = item.mwOther;
+        //                            var MWOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwother in MWOTHER)
+        //                            {
+        //                                mwother.Dismantle = true;
+        //                                if (mwother.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLImwOther.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            var TLIMWOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwother in TLIMWOTHER)
+        //                            {
+        //                                mwother.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
+        //                        {
+        //                            TLIradioAntenna TLIradioAntenna = item.radioAntenna;
+        //                            var RADIOANTENNA = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioantenna in RADIOANTENNA)
+        //                            {
+        //                                radioantenna.Dismantle = true;
+        //                                var RadioRRu = db.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+        //                                foreach (var TLIRadioRRu in RadioRRu)
+        //                                {
+        //                                    TLIRadioRRu.radioAntennaId = null;
+        //                                }
+        //                                if (radioantenna.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIradioAntenna.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+
+        //                            }
+        //                            var TLIRADIOANTENNA = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioantenna in TLIRADIOANTENNA)
+        //                            {
+        //                                radioantenna.Dismantle = true;
+        //                                var RadioRRu = db.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+        //                                foreach (var TLIRadioRRu in RadioRRu)
+        //                                {
+        //                                    TLIRadioRRu.radioAntennaId = null;
+        //                                }
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+        //                        {
+
+        //                            TLIRadioRRU TLIRadioRRU = item.radioRRU;
+        //                            var RADIORRU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radiorru in RADIORRU)
+        //                            {
+        //                                radiorru.Dismantle = true;
+        //                                if (radiorru.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIRadioRRU.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLIRADIORRU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radiorru in TLIRADIORRU)
+        //                            {
+        //                                radiorru.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
+        //                        {
+        //                            TLIradioOther TLIradioOther = item.radioOther;
+        //                            var RADIOOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioother in RADIOOTHER)
+        //                            {
+        //                                radioother.Dismantle = true;
+        //                                if (radioother.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIradioOther.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLIRADIOOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioother in TLIRADIOOTHER)
+        //                            {
+        //                                radioother.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
+        //                        {
+        //                            TLIpower TLIpower = item.power;
+        //                            var POWER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var power in POWER)
+        //                            {
+        //                                power.Dismantle = true;
+        //                                if (power.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += TLIpower.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLIPOWER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var power in TLIPOWER)
+        //                            {
+        //                                power.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
+        //                        {
+        //                            TLIloadOther tLIloadOther = item.loadOther;
+        //                            var LOADOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var loadother in LOADOTHER)
+        //                            {
+        //                                loadother.Dismantle = true;
+        //                                if (loadother.sideArmId == null)
+        //                                {
+        //                                    EquivalentSpace += tLIloadOther.EquivalentSpace;
+        //                                }
+        //                                else
+        //                                {
+        //                                    EquivalentSpace += 0;
+        //                                }
+        //                            }
+        //                            var TLILOADOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var loadother in TLILOADOTHER)
+        //                            {
+        //                                loadother.Dismantle = true;
+        //                            }
+        //                            TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+        //                            tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+        //                        }
+        //                        db.SaveChanges();
+        //                    }
+        //                    else if (t.civilNonSteelId != null)
+        //                    {
+        //                        if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
+        //                        {
+
+        //                            TLImwBU TLImwBU = item.mwBU;
+        //                            var PortCascadeId = db.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
+        //                            var PortCascade = db.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
+        //                            foreach (var Port in PortCascade)
+        //                            {
+        //                                var allload = db.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
+        //                                var Civilloads = db.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
+        //                                if (Civilloads != null)
+        //                                {
+        //                                    Civilloads.Dismantle = true;
+        //                                    EquivalentSpace += 0;
+        //                                    Port.MwBUId = 0;
+        //                                    Port.MwBULibraryId = 0;
+        //                                }
+        //                            }
+        //                            var mwport = db.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
+        //                            foreach (var port in mwport)
+        //                            {
+        //                                var mwrfu = db.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
+
+        //                                foreach (var rfu in mwrfu)
+        //                                {
+        //                                    var allLoadRFU = db.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
+        //                                    foreach (var allLoad in allLoadRFU)
+        //                                    {
+        //                                        var MwRfu = db.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                                        foreach (var MWRfU in MwRfu)
+        //                                        {
+        //                                            MWRfU.Dismantle = true;
+        //                                            EquivalentSpace += 0;
+        //                                        }
+
+        //                                    }
+        //                                }
+
+        //                            }
+        //                            var civilLoads = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var civilLoad in civilLoads)
+        //                            {
+        //                                civilLoad.Dismantle = true;
+        //                                EquivalentSpace += 0;
+
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+        //                        }
+        //                        else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
+        //                        {
+        //                            TLImwDish TLImwDish = item.mwDish;
+        //                            var mwODU = db.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
+        //                            foreach (var ODU in mwODU)
+        //                            {
+        //                                var allLoadinst = db.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
+        //                                foreach (var Load in allLoadinst)
+        //                                {
+        //                                    var civil = db.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+
+
+        //                                    foreach (var civillload in civil)
+        //                                    {
+        //                                        civillload.Dismantle = true;
+        //                                        EquivalentSpace += 0;
+        //                                    }
+        //                                }
+        //                            }
+        //                            var mwdish = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false).ToList();
+        //                            foreach (var TLImwdish in mwdish)
+        //                            {
+        //                                TLImwdish.Dismantle = true;
+        //                                var Bu = db.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+        //                                foreach (var TLIBu in Bu)
+        //                                {
+        //                                    TLIBu.MainDishId = null;
+        //                                }
+        //                                EquivalentSpace += 0;
+
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
+        //                        {
+        //                            TLImwODU TLImwODU = item.mwODU;
+        //                            var MWODU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwodu in MWODU)
+        //                            {
+        //                                mwodu.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+
+        //                        }
+        //                        else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
+        //                        {
+        //                            TLImwRFU TLImwRFU = item.mwRFU;
+        //                            var MWRFU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwrfu in MWRFU)
+        //                            {
+        //                                mwrfu.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
+        //                        {
+        //                            TLImwOther TLImwOther = item.mwOther;
+        //                            var MWOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var mwother in MWOTHER)
+        //                            {
+        //                                mwother.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
+        //                        {
+        //                            TLIradioAntenna TLIradioAntenna = item.radioAntenna;
+        //                            var RADIOANTENNA = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioantenna in RADIOANTENNA)
+        //                            {
+        //                                radioantenna.Dismantle = true;
+        //                                var RadioRRu = db.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+        //                                foreach (var radioRru in RadioRRu)
+        //                                {
+        //                                    radioRru.radioAntennaId = null;
+        //                                }
+        //                                EquivalentSpace += 0;
+
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+        //                        {
+
+        //                            TLIRadioRRU TLIRadioRRU = item.radioRRU;
+        //                            var RADIORRU = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radiorru in RADIORRU)
+        //                            {
+        //                                radiorru.Dismantle = true;
+        //                                EquivalentSpace += 0;
+
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
+        //                        {
+        //                            TLIradioOther TLIradioOther = item.radioOther;
+        //                            var RADIOOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var radioother in RADIOOTHER)
+        //                            {
+        //                                radioother.Dismantle = true;
+        //                                EquivalentSpace += 0;
+
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
+        //                        {
+        //                            TLIpower TLIpower = item.power;
+        //                            var POWER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var power in POWER)
+        //                            {
+        //                                power.Dismantle = true;
+        //                                EquivalentSpace += 0;
+
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
+        //                        {
+        //                            TLIloadOther tLIloadOther = item.loadOther;
+        //                            var LOADOTHER = db.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+        //                            foreach (var loadother in LOADOTHER)
+        //                            {
+        //                                loadother.Dismantle = true;
+        //                                EquivalentSpace += 0;
+        //                            }
+        //                            TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+        //                            tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+
+        //                        }
+        //                        db.SaveChanges();
+
+        //                    }
+        //                }
+        //            }
+
+
+        //            db.SaveChanges();
+        //        }
+        //        return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+        //    }
+        //    catch (Exception er)
+        //    {
+
+        //        return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+        //    }
+        //}
+        //public Response<ObjectInstAttsForSideArm> GetById(int MWInsId, string TableName)
+        //{
+        //    try
+        //    {
+        //        TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+        //        ObjectInstAttsForSideArm objectInst = new ObjectInstAttsForSideArm();
+        //        TLIallLoadInst AllLoadInst = new TLIallLoadInst();
+        //        TLIcivilLoads CivilLoads = new TLIcivilLoads();
+        //        List<BaseAttView> LoadInstAttributes = new List<BaseAttView>();
+
+        //        TLIallCivilInst AllCivilInst = new TLIallCivilInst();
+        //        List<BaseInstAttView> MWInstallationInfo = new List<BaseInstAttView>();
+
+        //        if (LoadSubType.TLImwBU.ToString() == TableName)
+        //        {
+        //            TLImwBU mw_BU = _unitOfWork.MW_BURepository
+        //                .GetIncludeWhereFirst(x => x.Id == MWInsId, x => x.baseBU,
+        //                    x => x.Owner, x => x.InstallationPlace, x => x.MwBULibrary,
+        //                    x => x.MainDish);
+
+        //            MW_BULibraryViewModel MwBuLibrary = _mapper.Map<MW_BULibraryViewModel>(_unitOfWork.MW_BULibraryRepository
+        //               .GetIncludeWhereFirst(x => x.Id == mw_BU.MwBULibraryId, x => x.diversityType));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //               .GetAttributeActivated(TablesNames.TLImwBULibrary.ToString(), MwBuLibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = MwBuLibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(MwBuLibrary);
+        //                }
+        //            }
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), TablesNames.TLImwBULibrary.ToString(), MwBuLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+        //                .GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), mw_BU,
+        //                    "InstallationPlaceId").ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            TLIcivilLoads CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //                x.allLoadInst.mwBUId == MWInsId : false), x => x.allLoadInst);
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tlibasebu")
+        //                {
+        //                    if (mw_BU.baseBU == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = mw_BU.baseBU.Name;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tliowner")
+        //                {
+        //                    if (mw_BU.Owner == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = mw_BU.Owner.OwnerName;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwdish")
+        //                {
+        //                    if (mw_BU.MainDish == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = mw_BU.MainDish.DishName;
+        //                    }
+
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwbulibrary")
+        //                {
+        //                    if (mw_BU.MwBULibrary == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = mw_BU.MwBULibrary.Model;
+        //                    }
+        //                }
+
+        //                else if (FKitem.Desc.ToLower() == "tlimwport")
+        //                {
+        //                    if (mw_BU.PortCascadeId == 0)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        var PortCascadeId = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id == mw_BU.PortCascadeId);
+
+        //                        if (PortCascadeId != null)
+        //                        {
+        //                            FKitem.Value = PortCascadeId.Port_Name;
+        //                            FKitem.Id = mw_BU.PortCascadeId;
+        //                        }
+        //                        else
+        //                            FKitem.Value = "NA";
+        //                    }
+        //                }
+        //            }
+        //            objectInst.AttributesActivated = ListAttributesActivated;
+
+        //            objectInst.DynamicAtts = _unitOfWork.DynamicAttInstValueRepository
+        //                .GetDynamicInstAtts(TableNameEntity.Id, MWInsId, null);
+
+        //            AllLoadInst = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwBUId == MWInsId);
+
+        //            CivilLoads = _unitOfWork.CivilLoadsRepository
+        //                .GetIncludeWhereFirst(x => x.allLoadInstId == AllLoadInst.Id, x => x.sideArm, x => x.site, x => x.leg, x => x.allCivilInst,
+        //                    x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
+        //                    x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU,
+        //                    x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel, x => x.civilSteelSupportCategory);
+
+        //            LoadInstAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLIcivilLoads.ToString(), CivilLoads, null, "allLoadInstId",
+        //                    "Dismantle", "SiteCode", "civilSteelSupportCategoryId", "legId", "Leg2Id",
+        //                        "sideArmId", "allCivilInstId").ToList();
+
+        //            List<KeyValuePair<string, List<DropDownListFilters>>> CivilLoadsRelatedTables = _unitOfWork.CivilLoadsRepository
+        //                .GetRelatedTables(CivilLoads.SiteCode);
+
+        //            if (CivilLoads != null)
+        //            {
+        //                TLImwPort? CascadedBu_ForRelatedTables = _unitOfWork.MW_PortRepository
+        //                    .GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
+        //                List<KeyValuePair<string, List<DropDownListFilters>>> mwbuRelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
+        //                if (CascadedBu_ForRelatedTables != null)
+        //                    mwbuRelatedTables = _unitOfWork.MW_BURepository
+        //                        .GetRelatedTablesForEdit(CivilLoads.SiteCode, CascadedBu_ForRelatedTables.MwBUId);
+
+        //                else
+        //                    mwbuRelatedTables = _unitOfWork.MW_BURepository
+        //                        .GetRelatedTablesForEdit(CivilLoads.SiteCode, null);
+
+        //                mwbuRelatedTables.AddRange(CivilLoadsRelatedTables);
+
+        //                if (CivilLoads.allCivilInst.civilWithLegsId != null)
+        //                {
+        //                    List<TLIleg> LegsForCivilWithLegLibrary = _unitOfWork.LegRepository
+        //                        .GetWhere(x => x.CivilWithLegInstId == CivilLoads.allCivilInst.civilWithLegsId).ToList();
+
+        //                    List<DropDownListFilters> LegIds = _mapper.Map<List<DropDownListFilters>>(LegsForCivilWithLegLibrary);
+
+        //                    mwbuRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg1Id", LegIds));
+
+        //                    List<TLIleg> Legs2ForCivilWithLegLibrary = LegsForCivilWithLegLibrary.Except(LegsForCivilWithLegLibrary
+        //                        .Where(x => x.Id == CivilLoads.legId)).ToList();
+
+        //                    List<DropDownListFilters> Leg2Ids = _mapper.Map<List<DropDownListFilters>>(Legs2ForCivilWithLegLibrary);
+
+        //                    mwbuRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg2Id", Leg2Ids));
+        //                }
+
+        //                objectInst.RelatedTables = mwbuRelatedTables;
+
+        //                AllCivilInst = _unitOfWork.CivilLoadsRepository
+        //                    .GetIncludeWhereFirst(x => (x.allLoadInstId != null ? (x.allLoadInst.mwBUId != null ?
+        //                        x.allLoadInst.mwBUId.Value == MWInsId : false) : false) && !x.Dismantle, x => x.allCivilInst, x => x.allLoadInst).allCivilInst;
+
+        //                if (AllCivilInst.civilWithLegsId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil with legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil with legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil with legs support items",
+        //                        Label = "Select civil with legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithLegsRepository.GetByID(AllCivilInst.civilWithLegsId.Value).Name
+        //                    });
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else if (CivilLoads.legId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Leg"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the leg",
+        //                            enable = true,
+        //                            Id = CivilLoads.legId.Value,
+        //                            Key = "Select the leg",
+        //                            Label = "Select the leg",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.leg.CiviLegName
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                    if (mw_BU.PortCascadeId != 0)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select BU installtion type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select BU installtion type",
+        //                            Label = "Select BU installtion type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Cascaded"
+        //                        });
+
+        //                        TLImwPort CascadedBu = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the cascaded BU",
+        //                            enable = true,
+        //                            Id = CascadedBu.MwBUId,
+        //                            Key = "Select the cascaded BU",
+        //                            Label = "Select the cascaded BU",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CascadedBu.MwBU.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select BU installtion type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select BU installtion type",
+        //                            Label = "Select BU installtion type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Normal"
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilWithoutLegId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil without legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil without legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil without legs support items",
+        //                        Label = "Select civil without legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithoutLegRepository.GetByID(AllCivilInst.civilWithoutLegId.Value).Name
+        //                    });
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                    if (mw_BU.PortCascadeId != 0)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select BU installtion type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select BU installtion type",
+        //                            Label = "Select BU installtion type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Cascaded"
+        //                        });
+
+        //                        TLImwPort CascadedBU = _unitOfWork.MW_PortRepository
+        //                            .GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the cascaded BU",
+        //                            enable = true,
+        //                            Id = CascadedBU.MwBUId,
+        //                            Key = "Select the cascaded BU",
+        //                            Label = "Select the cascaded BU",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CascadedBU.MwBU.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select BU installtion type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select BU installtion type",
+        //                            Label = "Select BU installtion type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Normal"
+        //                        });
+
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilNonSteelId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil non steel"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil non steel support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil non steel support items",
+        //                        Label = "Select civil non steel support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilNonSteelRepository.GetByID(AllCivilInst.civilNonSteelId.Value).Name
+        //                    });
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                    if (mw_BU.PortCascadeId != 0)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select BU installtion type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select BU installtion type",
+        //                            Label = "Select BU installtion type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Cascaded"
+        //                        });
+
+        //                        TLImwPort CascadedBU = _unitOfWork.MW_PortRepository.GetIncludeWhereFirst(x => x.Id == mw_BU.PortCascadeId, x => x.MwBU);
+
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the cascaded BU",
+        //                            enable = true,
+        //                            Id = CascadedBU.MwBUId,
+        //                            Key = "Select the cascaded BU",
+        //                            Label = "Select the cascaded BU",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CascadedBU.MwBU.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select BU installtion type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select BU installtion type",
+        //                            Label = "Select BU installtion type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Normal"
+        //                        });
+
+        //                    }
+        //                }
+
+        //                MWInstallationInfo.Add(new BaseInstAttView
+        //                {
+        //                    AutoFill = false,
+        //                    DataType = "List",
+        //                    DataTypeId = null,
+        //                    Desc = "allLoadInstId",
+        //                    enable = false,
+        //                    Id = AllLoadInst.Id,
+        //                    Key = "allLoadInstId",
+        //                    Label = "allLoadInstId",
+        //                    Manage = false,
+        //                    Required = false,
+        //                    Value = AllLoadInst.Id
+        //                });
+        //                objectInst.SideArmInstallationInfo = MWInstallationInfo;
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwODU.ToString() == TableName)
+        //        {
+        //            TLImwODU MW_ODU = _unitOfWork.MW_ODURepository
+        //                .GetIncludeWhereFirst(x => x.Id == MWInsId, x => x.MwODULibrary, x => x.Mw_Dish, x => x.OduInstallationType, x => x.Owner);
+
+        //            MW_ODULibraryViewModel MwOduLibrary = _mapper.Map<MW_ODULibraryViewModel>(_unitOfWork.MW_ODULibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == MW_ODU.MwODULibraryId, x => x.parity));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //               .GetAttributeActivated(TablesNames.TLImwODULibrary.ToString(), MwOduLibrary, null).ToList();
+
+        //            TLIcivilLoads CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+        //              x.allLoadInst.mwBUId == MWInsId : false), x => x.allLoadInst);
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = MwOduLibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(MwOduLibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), TablesNames.TLImwODULibrary.ToString(), MwOduLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+
+        //            List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+        //                .GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), MW_ODU, "OduInstallationTypeId", "Mw_DishId").ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tliowner")
+        //                {
+        //                    if (MW_ODU.Owner == null)
+        //                        FKitem.Value = "NA";
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_ODU.Owner.OwnerName;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwdish")
+        //                {
+        //                    if (MW_ODU.Mw_Dish == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_ODU.Mw_Dish.DishName;
+        //                    }
+
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwodulibrary")
+        //                {
+        //                    if (MW_ODU.MwODULibrary == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_ODU.MwODULibrary.Model;
+        //                    }
+        //                }
+        //            }
+
+        //            objectInst.AttributesActivated = ListAttributesActivated;
+
+        //            objectInst.DynamicAtts = _unitOfWork.DynamicAttInstValueRepository
+        //                .GetDynamicInstAtts(TableNameEntity.Id, MWInsId, null);
+
+        //            AllLoadInst = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwODUId == MWInsId);
+
+        //            CivilLoads = _unitOfWork.CivilLoadsRepository
+        //                .GetIncludeWhereFirst(x => x.allLoadInstId == AllLoadInst.Id, x => x.sideArm, x => x.site, x => x.leg, x => x.allCivilInst,
+        //                    x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
+        //                    x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU,
+        //                    x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel, x => x.civilSteelSupportCategory);
+
+        //            LoadInstAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLIcivilLoads.ToString(), CivilLoads, null, "allLoadInstId",
+        //                    "Dismantle", "SiteCode", "civilSteelSupportCategoryId", "legId", "Leg2Id",
+        //                        "sideArmId", "allCivilInstId").ToList();
+
+        //            List<KeyValuePair<string, List<DropDownListFilters>>> CivilLoadsRelatedTables = _unitOfWork.CivilLoadsRepository
+        //                .GetRelatedTables(CivilLoads.SiteCode);
+        //            if (CivilLoads != null)
+        //            {
+        //                List<KeyValuePair<string, List<DropDownListFilters>>> mwoduRelatedTables = _unitOfWork.MW_ODURepository
+        //                    .GetRelatedTablesForEdit(CivilLoads.SiteCode, CivilLoads.allCivilInstId);
+
+        //                mwoduRelatedTables.AddRange(CivilLoadsRelatedTables);
+
+        //                if (CivilLoads.allCivilInst.civilWithLegsId != null)
+        //                {
+        //                    List<TLIleg> LegsForCivilWithLegLibrary = _unitOfWork.LegRepository
+        //                        .GetWhere(x => x.CivilWithLegInstId == CivilLoads.allCivilInst.civilWithLegsId).ToList();
+
+        //                    List<DropDownListFilters> LegIds = _mapper.Map<List<DropDownListFilters>>(LegsForCivilWithLegLibrary);
+
+        //                    mwoduRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg1Id", LegIds));
+
+        //                    List<TLIleg> Legs2ForCivilWithLegLibrary = LegsForCivilWithLegLibrary.Except(LegsForCivilWithLegLibrary
+        //                        .Where(x => x.Id == CivilLoads.legId)).ToList();
+
+        //                    List<DropDownListFilters> Leg2Ids = _mapper.Map<List<DropDownListFilters>>(Legs2ForCivilWithLegLibrary);
+
+        //                    mwoduRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg2Id", Leg2Ids));
+        //                }
+
+        //                objectInst.RelatedTables = mwoduRelatedTables;
+
+        //                AllCivilInst = _unitOfWork.CivilLoadsRepository
+        //                    .GetIncludeWhereFirst(x => (x.allLoadInstId != null ? (x.allLoadInst.mwODUId != null ?
+        //                        x.allLoadInst.mwODUId.Value == MWInsId : false) : false) && !x.Dismantle, x => x.allCivilInst, x => x.allLoadInst).allCivilInst;
+
+        //                if (AllCivilInst.civilWithLegsId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil with legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil with legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil with legs support items",
+        //                        Label = "Select civil with legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithLegsRepository.GetByID(AllCivilInst.civilWithLegsId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId.Value).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else if (CivilLoads.legId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId.Value).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the seperate place",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the seperate place",
+        //                            Label = "Select the seperate place",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Leg"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the leg",
+        //                            enable = true,
+        //                            Id = CivilLoads.legId.Value,
+        //                            Key = "Select the leg",
+        //                            Label = "Select the leg",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.leg.CiviLegName
+        //                        });
+        //                    }
+        //                    else if (MW_ODU.Mw_DishId != null ? MW_ODU.Mw_DishId != 0 : false)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the dish ",
+        //                            enable = true,
+        //                            Id = MW_ODU.Mw_DishId.Value,
+        //                            Key = "Select the dish",
+        //                            Label = "Select the dish",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == MW_ODU.Mw_DishId.Value).DishName
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the seperate place",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the seperate place",
+        //                            Label = "Select the seperate place",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilWithoutLegId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil without legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil without legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil without legs support items",
+        //                        Label = "Select civil without legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithoutLegRepository.GetByID(AllCivilInst.civilWithoutLegId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId.Value).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else if (MW_ODU.Mw_DishId != null ? MW_ODU.Mw_DishId != 0 : false)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId.Value).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the dish",
+        //                            enable = true,
+        //                            Id = MW_ODU.Mw_DishId.Value,
+        //                            Key = "Select the dish",
+        //                            Label = "Select the dish",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == MW_ODU.Mw_DishId).DishName
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId).Name
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilNonSteelId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil non steel"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil non steel support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil non steel support items",
+        //                        Label = "Select civil non steel support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilNonSteelRepository.GetByID(AllCivilInst.civilNonSteelId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId.Value).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else if (MW_ODU.Mw_DishId != null ? MW_ODU.Mw_DishId != 0 : false)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId.Value).Name
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the dish",
+        //                            enable = true,
+        //                            Id = MW_ODU.Mw_DishId.Value,
+        //                            Key = "Select the dish",
+        //                            Label = "Select the dish",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == MW_ODU.Mw_DishId).DishName
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = MW_ODU.OduInstallationTypeId.Value,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = _unitOfWork.OduInstallationTypeRepository.GetWhereFirst(x => x.Id == MW_ODU.OduInstallationTypeId).Name
+        //                        });
+        //                    }
+        //                }
+
+        //                MWInstallationInfo.Add(new BaseInstAttView
+        //                {
+        //                    AutoFill = false,
+        //                    DataType = "List",
+        //                    DataTypeId = null,
+        //                    Desc = "allLoadInstId",
+        //                    enable = false,
+        //                    Id = AllLoadInst.Id,
+        //                    Key = "allLoadInstId",
+        //                    Label = "allLoadInstId",
+        //                    Manage = false,
+        //                    Required = false,
+        //                    Value = AllLoadInst.Id
+        //                });
+        //                objectInst.SideArmInstallationInfo = MWInstallationInfo;
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwDish.ToString() == TableName)
+        //        {
+        //            TLImwDish MW_Dish = _unitOfWork.MW_DishRepository
+        //                .GetIncludeWhereFirst(x => x.Id == MWInsId, x => x.MwDishLibrary,
+        //                    x => x.RepeaterType, x => x.owner, x => x.PolarityOnLocation,
+        //                    x => x.ItemConnectTo, x => x.InstallationPlace);
+
+        //            MW_DishLibraryViewModel MwdishLibrary = _mapper.Map<MW_DishLibraryViewModel>(_unitOfWork.MW_DishLibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == MW_Dish.MwDishLibraryId, x => x.polarityType, x => x.asType));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //               .GetAttributeActivated(TablesNames.TLImwDishLibrary.ToString(), MwdishLibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = MwdishLibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(MwdishLibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //               .GetLogistical(TablePartName.MW.ToString(), TablesNames.TLImwDishLibrary.ToString(), MwdishLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+        //                .GetInstAttributeActivated(TablesNames.TLImwDish.ToString(), MW_Dish,
+        //                    "InstallationPlaceId").ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tliowner")
+        //                {
+        //                    if (MW_Dish.owner == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_Dish.owner.OwnerName;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlirepeatertype")
+        //                {
+        //                    if (MW_Dish.RepeaterType == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_Dish.RepeaterType.Name;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlipolarityonlocation")
+        //                {
+        //                    if (MW_Dish.PolarityOnLocation == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_Dish.PolarityOnLocation.Name;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tliitemconnectto")
+        //                {
+        //                    if (MW_Dish.ItemConnectTo == null)
+        //                    {
+        //                        FKitem.Value = "NA";
+        //                    }
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_Dish.ItemConnectTo.Name;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwdishlibrary")
+        //                {
+        //                    if (MW_Dish.MwDishLibrary == null)
+        //                        FKitem.Value = "NA";
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_Dish.MwDishLibrary.Model;
+        //                    }
+        //                }
+        //            }
+
+        //            objectInst.AttributesActivated = ListAttributesActivated;
+
+        //            objectInst.DynamicAtts = _unitOfWork.DynamicAttInstValueRepository.
+        //                GetDynamicInstAtts(TableNameEntity.Id, MWInsId, null);
+
+        //            AllLoadInst = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwDishId == MWInsId);
+
+        //            CivilLoads = _unitOfWork.CivilLoadsRepository
+        //               .GetIncludeWhereFirst(x => x.allLoadInstId == AllLoadInst.Id, x => x.sideArm, x => x.site, x => x.leg, x => x.allCivilInst,
+        //                   x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
+        //                   x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU,
+        //                   x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel, x => x.civilSteelSupportCategory);
+
+        //            LoadInstAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLIcivilLoads.ToString(), CivilLoads, null, "allLoadInstId",
+        //                    "Dismantle", "SiteCode", "civilSteelSupportCategoryId", "legId", "Leg2Id",
+        //                        "sideArmId", "allCivilInstId").ToList();
+
+        //            List<KeyValuePair<string, List<DropDownListFilters>>> CivilLoadsRelatedTables = _unitOfWork.CivilLoadsRepository
+        //                .GetRelatedTables(CivilLoads.SiteCode);
+        //            if (CivilLoads != null)
+        //            {
+        //                List<KeyValuePair<string, List<DropDownListFilters>>> mwdishRelatedTables = _unitOfWork.MW_DishRepository
+        //                    .GetRelatedTables();
+        //                mwdishRelatedTables.AddRange(CivilLoadsRelatedTables);
+
+        //                if (CivilLoads.allCivilInst.civilWithLegsId != null)
+        //                {
+        //                    List<TLIleg> LegsForCivilWithLegLibrary = _unitOfWork.LegRepository
+        //                        .GetWhere(x => x.CivilWithLegInstId == CivilLoads.allCivilInst.civilWithLegsId).ToList();
+
+        //                    List<DropDownListFilters> LegIds = _mapper.Map<List<DropDownListFilters>>(LegsForCivilWithLegLibrary);
+
+        //                    mwdishRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg1Id", LegIds));
+
+        //                    List<TLIleg> Legs2ForCivilWithLegLibrary = LegsForCivilWithLegLibrary.Except(LegsForCivilWithLegLibrary
+        //                        .Where(x => x.Id == CivilLoads.legId)).ToList();
+
+        //                    List<DropDownListFilters> Leg2Ids = _mapper.Map<List<DropDownListFilters>>(Legs2ForCivilWithLegLibrary);
+
+        //                    mwdishRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg2Id", Leg2Ids));
+        //                }
+
+        //                objectInst.RelatedTables = mwdishRelatedTables;
+
+        //                AllCivilInst = _unitOfWork.CivilLoadsRepository
+        //                   .GetIncludeWhereFirst(x => (x.allLoadInstId != null ? (x.allLoadInst.mwDishId != null ?
+        //                       x.allLoadInst.mwDishId.Value == MWInsId : false) : false) && !x.Dismantle, x => x.allCivilInst, x => x.allLoadInst).allCivilInst;
+
+        //                if (AllCivilInst.civilWithLegsId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil with legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil with legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil with legs support items",
+        //                        Label = "Select civil with legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithLegsRepository.GetByID(AllCivilInst.civilWithLegsId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else if (CivilLoads.legId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Leg"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the leg",
+        //                            enable = true,
+        //                            Id = CivilLoads.legId.Value,
+        //                            Key = "Select the leg",
+        //                            Label = "Select the leg",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.leg.CiviLegName
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilWithoutLegId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil without legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil without legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil without legs support items",
+        //                        Label = "Select civil without legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithoutLegRepository.GetByID(AllCivilInst.civilWithoutLegId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilNonSteelId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil non steel"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil non steel support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil non steel support items",
+        //                        Label = "Select civil non steel support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilNonSteelRepository.GetByID(AllCivilInst.civilNonSteelId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+
+        //                MWInstallationInfo.Add(new BaseInstAttView
+        //                {
+        //                    AutoFill = false,
+        //                    DataType = "List",
+        //                    DataTypeId = null,
+        //                    Desc = "allLoadInstId",
+        //                    enable = false,
+        //                    Id = AllLoadInst.Id,
+        //                    Key = "allLoadInstId",
+        //                    Label = "allLoadInstId",
+        //                    Manage = false,
+        //                    Required = false,
+        //                    Value = AllLoadInst.Id
+        //                });
+        //                objectInst.SideArmInstallationInfo = MWInstallationInfo;
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwRFU.ToString() == TableName)
+        //        {
+        //            TLImwRFU MW_RFU = _unitOfWork.MW_RFURepository
+        //                .GetIncludeWhereFirst(x => x.Id == MWInsId, x => x.Owner,
+        //                    x => x.MwPort, x => x.MwRFULibrary, x => x.MwPort.MwBU);
+
+        //            MW_RFULibraryViewModel MwRfuLibrary = _mapper.Map<MW_RFULibraryViewModel>(_unitOfWork.MW_RFULibraryRepository
+        //              .GetIncludeWhereFirst(x => x.Id == MW_RFU.MwRFULibraryId, x => x.diversityType, x => x.boardType));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //               .GetAttributeActivated(TablesNames.TLImwRFULibrary.ToString(), MwRfuLibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = MwRfuLibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(MwRfuLibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), TablesNames.TLImwRFULibrary.ToString(), MwRfuLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+        //                .GetInstAttributeActivated(LoadSubType.TLImwRFU.ToString(), MW_RFU).ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tliowner")
+        //                {
+        //                    if (MW_RFU.Owner == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_RFU.Owner.OwnerName;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwport")
+        //                {
+        //                    if (MW_RFU.MwPort == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_RFU.MwPort.Port_Name;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwrfulibrary")
+        //                {
+        //                    if (MW_RFU.MwRFULibrary == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = MW_RFU.MwRFULibrary.Model;
+        //                    }
+        //                }
+        //            }
+        //            objectInst.AttributesActivated = ListAttributesActivated;
+
+        //            objectInst.DynamicAtts = _unitOfWork.DynamicAttInstValueRepository
+        //               .GetDynamicInstAtts(TableNameEntity.Id, MWInsId, null);
+
+        //            AllLoadInst = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwRFUId == MWInsId);
+
+        //            CivilLoads = _unitOfWork.CivilLoadsRepository
+        //                .GetIncludeWhereFirst(x => x.allLoadInstId == AllLoadInst.Id, x => x.sideArm, x => x.site, x => x.leg, x => x.allCivilInst,
+        //                    x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
+        //                    x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU,
+        //                    x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel, x => x.civilSteelSupportCategory);
+
+        //            LoadInstAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLIcivilLoads.ToString(), CivilLoads, null, "allLoadInstId",
+        //                    "Dismantle", "SiteCode", "civilSteelSupportCategoryId", "legId", "Leg2Id",
+        //                        "sideArmId", "allCivilInstId").ToList();
+
+        //            List<KeyValuePair<string, List<DropDownListFilters>>> CivilLoadsRelatedTables = _unitOfWork.CivilLoadsRepository
+        //                .GetRelatedTables(CivilLoads.SiteCode);
+        //            if (CivilLoads != null)
+        //            {
+        //                List<KeyValuePair<string, List<DropDownListFilters>>> mwrfuRelatedTables = _unitOfWork.MW_RFURepository
+        //                    .GetRelatedTables();
+        //                mwrfuRelatedTables.AddRange(CivilLoadsRelatedTables);
+
+        //                if (CivilLoads.allCivilInst.civilWithLegsId != null)
+        //                {
+        //                    List<TLIleg> LegsForCivilWithLegLibrary = _unitOfWork.LegRepository
+        //                        .GetWhere(x => x.CivilWithLegInstId == CivilLoads.allCivilInst.civilWithLegsId).ToList();
+
+        //                    List<DropDownListFilters> LegIds = _mapper.Map<List<DropDownListFilters>>(LegsForCivilWithLegLibrary);
+
+        //                    mwrfuRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg1Id", LegIds));
+
+        //                    List<TLIleg> Legs2ForCivilWithLegLibrary = LegsForCivilWithLegLibrary.Except(LegsForCivilWithLegLibrary
+        //                        .Where(x => x.Id == CivilLoads.legId)).ToList();
+
+        //                    List<DropDownListFilters> Leg2Ids = _mapper.Map<List<DropDownListFilters>>(Legs2ForCivilWithLegLibrary);
+
+        //                    mwrfuRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg2Id", Leg2Ids));
+        //                }
+
+        //                objectInst.RelatedTables = mwrfuRelatedTables;
+
+        //                AllCivilInst = _unitOfWork.CivilLoadsRepository
+        //                   .GetIncludeWhereFirst(x => (x.allLoadInstId != null ? (x.allLoadInst.mwRFUId != null ?
+        //                       x.allLoadInst.mwRFUId.Value == MWInsId : false) : false) && !x.Dismantle, x => x.allCivilInst, x => x.allLoadInst).allCivilInst;
+
+        //                if (AllCivilInst.civilWithLegsId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil with legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil with legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil with legs support items",
+        //                        Label = "Select civil with legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithLegsRepository.GetByID(AllCivilInst.civilWithLegsId.Value).Name
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select the BU",
+        //                        enable = true,
+        //                        Id = MW_RFU.MwPort.MwBUId,
+        //                        Key = "Select the BU",
+        //                        Label = "Select the BU",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = MW_RFU.MwPort.MwBU.Name
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select the port of BU",
+        //                        enable = true,
+        //                        Id = MW_RFU.MwPortId.Value,
+        //                        Key = "Select the port of BU",
+        //                        Label = "Select the port of BU",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = MW_RFU.MwPort.Port_Name
+        //                    });
+        //                }
+        //                else if (AllCivilInst.civilWithoutLegId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil without Legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil without legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil without legs support items",
+        //                        Label = "Select civil without legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithoutLegRepository.GetByID(AllCivilInst.civilWithoutLegId.Value).Name
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select the BU",
+        //                        enable = true,
+        //                        Id = MW_RFU.MwPort.MwBUId,
+        //                        Key = "Select the BU",
+        //                        Label = "Select the BU",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = MW_RFU.MwPort.MwBU.Name
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select the port of BU",
+        //                        enable = true,
+        //                        Id = MW_RFU.MwPortId.Value,
+        //                        Key = "Select the port of BU",
+        //                        Label = "Select the port of BU",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = MW_RFU.MwPort.Port_Name
+        //                    });
+        //                }
+        //                else if (AllCivilInst.civilNonSteelId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil non steel"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil without legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil without legs support items",
+        //                        Label = "Select civil without legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilNonSteelRepository.GetByID(AllCivilInst.civilNonSteelId.Value).Name
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select the BU",
+        //                        enable = true,
+        //                        Id = MW_RFU.MwPort.MwBUId,
+        //                        Key = "Select the BU",
+        //                        Label = "Select the BU",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = MW_RFU.MwPort.MwBU.Name
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select the port of BU",
+        //                        enable = true,
+        //                        Id = MW_RFU.MwPortId.Value,
+        //                        Key = "Select the port of BU",
+        //                        Label = "Select the port of BU",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = MW_RFU.MwPort.Port_Name
+        //                    });
+        //                }
+        //                MWInstallationInfo.Add(new BaseInstAttView
+        //                {
+        //                    AutoFill = false,
+        //                    DataType = "List",
+        //                    DataTypeId = null,
+        //                    Desc = "allLoadInstId",
+        //                    enable = false,
+        //                    Id = AllLoadInst.Id,
+        //                    Key = "allLoadInstId",
+        //                    Label = "allLoadInstId",
+        //                    Manage = false,
+        //                    Required = false,
+        //                    Value = AllLoadInst.Id
+        //                });
+
+        //                objectInst.SideArmInstallationInfo = MWInstallationInfo;
+
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwOther.ToString() == TableName)
+        //        {
+        //            TLImwOther mwOther = _unitOfWork.Mw_OtherRepository
+        //                .GetIncludeWhereFirst(x => x.Id == MWInsId, x => x.mwOtherLibrary);
+
+        //            MW_OtherLibraryViewModel MwOtherLibrary = _mapper.Map<MW_OtherLibraryViewModel>(_unitOfWork.MW_OtherLibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == mwOther.mwOtherLibraryId));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //               .GetAttributeActivated(TablesNames.TLImwOtherLibrary.ToString(), MwOtherLibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = MwOtherLibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(MwOtherLibrary);
+        //                }
+        //            }
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //               .GetLogistical(TablePartName.MW.ToString(), TablesNames.TLImwOtherLibrary.ToString(), MwOtherLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+        //                .GetInstAttributeActivated(LoadSubType.TLImwOther.ToString(), mwOther, "InstallationPlaceId").ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tlimwotherlibrary")
+        //                {
+        //                    if (mwOther.mwOtherLibrary == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                    {
+        //                        FKitem.Value = mwOther.mwOtherLibrary.Model;
+        //                    }
+        //                }
+        //            }
+        //            objectInst.AttributesActivated = ListAttributesActivated;
+
+        //            objectInst.DynamicAtts = _unitOfWork.DynamicAttInstValueRepository
+        //               .GetDynamicInstAtts(TableNameEntity.Id, MWInsId, null);
+
+        //            AllLoadInst = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwOtherId == MWInsId);
+
+        //            CivilLoads = _unitOfWork.CivilLoadsRepository
+        //                .GetIncludeWhereFirst(x => x.allLoadInstId == AllLoadInst.Id, x => x.sideArm, x => x.site, x => x.leg, x => x.allCivilInst,
+        //                    x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
+        //                    x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU,
+        //                    x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel, x => x.civilSteelSupportCategory);
+
+        //            LoadInstAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLIcivilLoads.ToString(), CivilLoads, null, "allLoadInstId",
+        //                    "Dismantle", "SiteCode", "civilSteelSupportCategoryId", "legId", "Leg2Id",
+        //                        "sideArmId", "allCivilInstId").ToList();
+
+        //            List<KeyValuePair<string, List<DropDownListFilters>>> CivilLoadsRelatedTables = _unitOfWork.CivilLoadsRepository
+        //                .GetRelatedTables(CivilLoads.SiteCode);
+        //            if (CivilLoads != null)
+        //            {
+        //                List<KeyValuePair<string, List<DropDownListFilters>>> mwotherRelatedTables = _unitOfWork.Mw_OtherRepository
+        //                    .GetRelatedTables();
+        //                mwotherRelatedTables.AddRange(CivilLoadsRelatedTables);
+
+        //                if (CivilLoads.allCivilInst.civilWithLegsId != null)
+        //                {
+        //                    List<TLIleg> LegsForCivilWithLegLibrary = _unitOfWork.LegRepository
+        //                        .GetWhere(x => x.CivilWithLegInstId == CivilLoads.allCivilInst.civilWithLegsId).ToList();
+
+        //                    List<DropDownListFilters> LegIds = _mapper.Map<List<DropDownListFilters>>(LegsForCivilWithLegLibrary);
+
+        //                    mwotherRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg1Id", LegIds));
+
+        //                    List<TLIleg> Legs2ForCivilWithLegLibrary = LegsForCivilWithLegLibrary.Except(LegsForCivilWithLegLibrary
+        //                        .Where(x => x.Id == CivilLoads.legId)).ToList();
+
+        //                    List<DropDownListFilters> Leg2Ids = _mapper.Map<List<DropDownListFilters>>(Legs2ForCivilWithLegLibrary);
+
+        //                    mwotherRelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Leg2Id", Leg2Ids));
+        //                }
+
+        //                objectInst.RelatedTables = mwotherRelatedTables;
+
+        //                AllCivilInst = _unitOfWork.CivilLoadsRepository
+        //                   .GetIncludeWhereFirst(x => (x.allLoadInstId != null ? (x.allLoadInst.mwOtherId != null ?
+        //                       x.allLoadInst.mwOtherId.Value == MWInsId : false) : false) && !x.Dismantle, x => x.allCivilInst, x => x.allLoadInst).allCivilInst;
+
+        //                if (AllCivilInst.civilWithLegsId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil with legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil with legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil with legs support items",
+        //                        Label = "Select civil with legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithLegsRepository.GetByID(AllCivilInst.civilWithLegsId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else if (CivilLoads.legId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Leg"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the leg",
+        //                            enable = true,
+        //                            Id = CivilLoads.legId.Value,
+        //                            Key = "Select the leg",
+        //                            Label = "Select the leg",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.leg.CiviLegName
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilWithoutLegId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil without legs"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil without legs support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil without legs support items",
+        //                        Label = "Select civil without legs support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilWithoutLegRepository.GetByID(AllCivilInst.civilWithoutLegId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+        //                else if (AllCivilInst.civilNonSteelId != null)
+        //                {
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil support type",
+        //                        enable = true,
+        //                        Id = -1,
+        //                        Key = "Select civil support type",
+        //                        Label = "Select civil support type",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = "Civil non steel"
+        //                    });
+        //                    MWInstallationInfo.Add(new BaseInstAttView
+        //                    {
+        //                        AutoFill = false,
+        //                        DataType = "List",
+        //                        DataTypeId = null,
+        //                        Desc = "Select civil non steel support items",
+        //                        enable = true,
+        //                        Id = AllCivilInst.Id,
+        //                        Key = "Select civil non steel support items",
+        //                        Label = "Select civil non steel support items",
+        //                        Manage = false,
+        //                        Required = false,
+        //                        Value = _unitOfWork.CivilNonSteelRepository.GetByID(AllCivilInst.civilNonSteelId.Value).Name
+        //                    });
+
+        //                    if (CivilLoads.sideArmId != null)
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "SideArm"
+        //                        });
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the sidearm",
+        //                            enable = true,
+        //                            Id = CivilLoads.sideArmId.Value,
+        //                            Key = "Select the sidearm",
+        //                            Label = "Select the sidearm",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = CivilLoads.sideArm.Name
+        //                        });
+        //                    }
+        //                    else
+        //                    {
+        //                        MWInstallationInfo.Add(new BaseInstAttView
+        //                        {
+        //                            AutoFill = false,
+        //                            DataType = "List",
+        //                            DataTypeId = null,
+        //                            Desc = "Select the installation place type",
+        //                            enable = true,
+        //                            Id = -1,
+        //                            Key = "Select the installation place type",
+        //                            Label = "Select the installation place type",
+        //                            Manage = false,
+        //                            Required = false,
+        //                            Value = "Direct"
+        //                        });
+        //                    }
+        //                }
+
+        //                MWInstallationInfo.Add(new BaseInstAttView
+        //                {
+        //                    AutoFill = false,
+        //                    DataType = "List",
+        //                    DataTypeId = null,
+        //                    Desc = "allLoadInstId",
+        //                    enable = false,
+        //                    Id = AllLoadInst.Id,
+        //                    Key = "allLoadInstId",
+        //                    Label = "allLoadInstId",
+        //                    Manage = false,
+        //                    Required = false,
+        //                    Value = AllLoadInst.Id
+        //                });
+        //                objectInst.SideArmInstallationInfo = MWInstallationInfo;
+        //            }
+        //        }
+        //        if (CivilLoads != null)
+        //        {
+        //            foreach (BaseAttView FKitem in LoadInstAttributes)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tlisidearm")
+        //                {
+        //                    if (CivilLoads.sideArm == null)
+        //                        FKitem.Value = "NA";
+
+        //                    else
+        //                        FKitem.Value = CivilLoads.sideArm.Name;
+        //                }
+
+        //                else if (FKitem.Desc.ToLower() == "tlileg")
+        //                {
+        //                    if (CivilLoads.leg == null)
+        //                        FKitem.Value = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == 0).CiviLegName;
+
+        //                    else
+        //                        FKitem.Value = CivilLoads.leg.CiviLegName;
+        //                }
+
+        //                if (FKitem.Desc.ToLower() == "tlicivilsteelsupportcategory")
+        //                {
+        //                    if (CivilLoads.civilSteelSupportCategory == null)
+        //                        FKitem.Value = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == 0).Name;
+
+        //                    else
+        //                        FKitem.Value = CivilLoads.civilSteelSupportCategory.Name;
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlisite")
+        //                {
+        //                    FKitem.Value = CivilLoads.site.SiteName;
+        //                }
+
+        //                else if (FKitem.Desc.ToLower() == "tliallcivilinst")
+        //                {
+        //                    if (CivilLoads.allCivilInst.civilWithLegsId != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allCivilInst.civilWithLegs.Name;
+        //                    }
+        //                    else if (CivilLoads.allCivilInst.civilWithoutLegId != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allCivilInst.civilWithoutLeg.Name;
+        //                    }
+        //                    else if (CivilLoads.allCivilInst.civilNonSteelId != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allCivilInst.civilNonSteel.Name;
+        //                    }
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tliallloadinst")
+        //                {
+        //                    if (CivilLoads.allLoadInst.power != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.power.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.loadOther != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.loadOther.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.mwBU != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.mwBU.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.mwDish != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.mwDish.DishName;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.mwODU != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.mwODU.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.mwOther != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.mwOther.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.mwRFU != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.mwRFU.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.radioAntenna != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.radioAntenna.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.radioRRU != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.radioRRU.Name;
+        //                    }
+        //                    else if (CivilLoads.allLoadInst.radioOther != null)
+        //                    {
+        //                        FKitem.Value = CivilLoads.allLoadInst.radioOther.Name;
+        //                    }
+        //                }
+        //            }
+
+        //            objectInst.CivilLoads = _mapper.Map<IEnumerable<BaseInstAttView>>(LoadInstAttributes);
+        //        }
+
+        //        return new Response<ObjectInstAttsForSideArm>(true, objectInst, null, null, (int)ApiReturnCode.success);
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        return new Response<ObjectInstAttsForSideArm>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+        //    }
+        //}
+        //public Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode)
+        //{
+        //    try
+        //    {
+        //        TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
+        //            x.TableName == TableName);
+
+        //        ObjectInstAtts objectInst = new ObjectInstAtts();
+        //        List<BaseInstAttView> ListAttributesActivated = new List<BaseInstAttView>();
+
+        //        if (LoadSubType.TLImwBU.ToString() == TableName)
+        //        {
+        //            MW_BULibraryViewModel mwBULibrary = _mapper.Map<MW_BULibraryViewModel>(_unitOfWork.MW_BULibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.diversityType));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLImwBULibrary.ToString(), mwBULibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = mwBULibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(mwBULibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwBULibrary.ToString(), mwBULibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+        //                GetInstAttributeActivated(LoadSubType.TLImwBU.ToString(), null, "Name", "InstallationPlaceId", "MwBULibraryId" /*, "EquivalentSpace"*/).ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tlibasebu")
+        //                    FKitem.Value = _mapper.Map<List<BaseBUViewModel>>(_unitOfWork.BaseBURepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
+
+        //                else if (FKitem.Desc.ToLower() == "tliowner")
+        //                    FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
+
+        //                else if (FKitem.Desc.ToLower() == "tlimwdish")
+        //                {
+        //                    var Dish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.SiteCode == SiteCode && !x.Dismantle && x.allLoadInstId != null, x => x.allLoadInst).Select(x => x.allLoadInst.mwDishId).ToList();
+
+        //                    List<TLImwDish> mwdishlist = new List<TLImwDish>();
+        //                    foreach (var item in Dish)
+        //                    {
+        //                        if (item != null)
+        //                        {
+        //                            var dishname = db.TLImwDish.FirstOrDefault(x => x.Id == item);
+        //                            mwdishlist.Add(dishname);
+        //                        }
+        //                    }
+        //                    FKitem.Value = _mapper.Map<List<MW_DishGetForAddViewModel>>(mwdishlist);
+
+        //                }
+        //                else if (FKitem.Desc.ToLower() == "tlimwport")
+        //                    FKitem.Value = _mapper.Map<List<MW_PortViewModel>>(_unitOfWork.MW_PortRepository.GetWhere(x => x.Port_Type == 2).ToList());
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwODU.ToString() == TableName)
+        //        {
+        //            MW_ODULibraryViewModel mwODULibrary = _mapper.Map<MW_ODULibraryViewModel>(_unitOfWork.MW_ODULibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.parity));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLImwODULibrary.ToString(), mwODULibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = mwODULibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(mwODULibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwODULibrary.ToString(), mwODULibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+        //                GetInstAttributeActivated(LoadSubType.TLImwODU.ToString(), null, "Name", "MwODULibraryId", "OduInstallationTypeId"/*, "EquivalentSpace"*/).ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tliowner")
+        //                    FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
+
+        //                else if (FKitem.Desc.ToLower() == "tlimwdish")
+        //                {
+        //                    List<int> UsedDishesIds = _unitOfWork.MW_ODURepository.GetWhere(x => x.Mw_DishId != null).Select(x => x.Mw_DishId.Value).ToList();
+
+        //                    List<MW_DishGetForAddViewModel> MW_Dishes = _mapper.Map<List<MW_DishGetForAddViewModel>>(_unitOfWork.CivilLoadsRepository
+        //                        .GetIncludeWhere(x => !x.Dismantle &&
+        //                            (x.allLoadInstId != null ? x.allLoadInst.mwDishId != null : false) &&
+        //                            !UsedDishesIds.Contains(x.allLoadInst.mwDishId.Value), x => x.allLoadInst, x => x.allLoadInst.mwDish)
+        //                        .Select(x => x.allLoadInst.mwDish).ToList());
+
+        //                    FKitem.Value = _mapper.Map<List<MW_DishGetForAddViewModel>>(MW_Dishes);
+        //                }
+        //            }
+
+        //        }
+        //        else if (LoadSubType.TLImwRFU.ToString() == TableName)
+        //        {
+        //            MW_RFULibraryViewModel mwRFULibrary = _mapper.Map<MW_RFULibraryViewModel>(_unitOfWork.MW_RFULibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.boardType, x => x.diversityType));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLImwRFULibrary.ToString(), mwRFULibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = mwRFULibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(mwRFULibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwRFULibrary.ToString(), mwRFULibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+        //                GetInstAttributeActivated(LoadSubType.TLImwRFU.ToString(), null, "MwRFULibraryId", "MwPortId"/*, "EquivalentSpace"*/).ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tliowner")
+        //                    FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwDish.ToString() == TableName)
+        //        {
+        //            MW_DishLibraryViewModel mwDishLibrary = _mapper.Map<MW_DishLibraryViewModel>(_unitOfWork.MW_DishLibraryRepository
+        //                .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.asType, x => x.polarityType));
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLImwDishLibrary.ToString(), mwDishLibrary, null).ToList();
+
+        //            foreach (BaseAttView LibraryAttribute in LibraryAttributes)
+        //            {
+        //                if (LibraryAttribute.DataType.ToLower() == "list")
+        //                {
+        //                    LibraryAttribute.Value = mwDishLibrary.GetType().GetProperties()
+        //                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(mwDishLibrary);
+        //                }
+        //            }
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwDishLibrary.ToString(), mwDishLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+        //                GetInstAttributeActivated(LoadSubType.TLImwDish.ToString(), null, "DishName", "InstallationPlaceId", "MwDishLibraryId"/*, "EquivalentSpace"*/).ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+
+        //            foreach (BaseInstAttView FKitem in ListAttributesActivated)
+        //            {
+        //                if (FKitem.Desc.ToLower() == "tliitemconnectto")
+        //                    FKitem.Value = _mapper.Map<List<ItemConnectToViewModel>>(_unitOfWork.ItemConnectToRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+        //                else if (FKitem.Desc.ToLower() == "tlipolarityonlocation")
+        //                    FKitem.Value = _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+        //                else if (FKitem.Desc.ToLower() == "tlirepeatertype")
+        //                    FKitem.Value = _mapper.Map<List<RepeaterTypeViewModel>>(_unitOfWork.RepeaterTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+        //                else if (FKitem.Desc.ToLower() == "tliowner")
+        //                    FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+        //            }
+        //        }
+        //        else if (LoadSubType.TLImwOther.ToString() == TableName)
+        //        {
+        //            TLImwOtherLibrary mwOtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetByID(LibraryID);
+
+        //            List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+        //                .GetAttributeActivated(TablesNames.TLImwOtherLibrary.ToString(), mwOtherLibrary, null).ToList();
+
+        //            List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+        //                .GetLogistical(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString(), mwOtherLibrary.Id).ToList());
+
+        //            LibraryAttributes.AddRange(LogisticalAttributes);
+
+        //            objectInst.LibraryActivatedAttributes = LibraryAttributes;
+
+        //            ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+        //                GetInstAttributeActivated(LoadSubType.TLImwOther.ToString(), null, "mwOtherLibraryId", /*"EquivalentSpace",*/
+        //                    "InstallationPlaceId").ToList();
+
+        //            BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+        //            if (NameAttribute != null)
+        //            {
+        //                BaseInstAttView Swap = ListAttributesActivated[0];
+        //                ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+        //                ListAttributesActivated[0] = NameAttribute;
+        //            }
+        //        }
+
+        //        List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = _unitOfWork.CivilLoadsRepository.GetRelatedTables(SiteCode);
+        //        objectInst.RelatedTables = RelatedTables;
+
+        //        objectInst.AttributesActivated = ListAttributesActivated;
+
+        //        objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository.
+        //            GetInstAttributeActivated(TablesNames.TLIcivilLoads.ToString(), null, "allLoadInstId", "Dismantle", "SiteCode", "legId", "Leg2Id",
+        //                "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId");
+
+        //        IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+        //                .GetDynamicInstAtts(TableNameEntity.Id, null);
+
+        //        foreach (DynaminAttInstViewModel DynamicAttribute in DynamicAttributesWithoutValue)
+        //        {
+        //            TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+
+        //            if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+        //            {
+        //                if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
+        //                    DynamicAttribute.ValueString = DynamicAttributeEntity.DefaultValue;
+
+        //                else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
+        //                    DynamicAttribute.ValueDouble = int.Parse(DynamicAttributeEntity.DefaultValue);
+
+        //                else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
+        //                    DynamicAttribute.ValueDouble = double.Parse(DynamicAttributeEntity.DefaultValue);
+
+        //                else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
+        //                    DynamicAttribute.ValueBoolean = bool.Parse(DynamicAttributeEntity.DefaultValue);
+
+        //                else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
+        //                    DynamicAttribute.ValueDateTime = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+        //            }
+        //            else
+        //            {
+        //                DynamicAttribute.ValueString = " ".Split(' ')[0];
+        //            }
+        //        }
+
+        //        objectInst.DynamicAtts = DynamicAttributesWithoutValue;
+
+        //        return new Response<ObjectInstAtts>(objectInst);
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+        //    }
+        //}
+        //public string CheckDependencyValidationForMWTypes(object Input, string MWType, string SiteCode)
+        //{
+        //    if (MWType.ToLower() == TablesNames.TLImwDish.ToString().ToLower())
+        //    {
+        //        string MainTableName = TablesNames.TLImwDish.ToString();
+        //        AddMW_DishViewModel AddInstallationViewModel = _mapper.Map<AddMW_DishViewModel>(Input);
+
+        //        List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+        //            .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+        //                , x => x.tablesNames).ToList());
+
+        //        foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+        //        {
+        //            TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+        //                (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+        //                    x.OperationId != null, x => x.Operation);
+
+        //            if (DynamicAttributeMainDependency == null)
+        //                continue;
+
+        //            List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+        //                .Select(x => x.RowId.Value).Distinct().ToList();
+
+        //            foreach (int RowId in DependencyRows)
+        //            {
+        //                List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
+        //                    x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+        //                int CheckIfSuccessAllRules = 0;
+
+        //                foreach (TLIrule Rule in Rules)
+        //                {
+        //                    string SDTableName = Rule.tablesNames.TableName;
+
+        //                    string DataType = "";
+
+        //                    string Operation = Rule.Operation.Name;
+        //                    object OperationValue = new object();
+
+        //                    if (Rule.OperationValueBoolean != null)
+        //                    {
+        //                        DataType = "Bool";
+        //                        OperationValue = Rule.OperationValueBoolean;
+        //                    }
+        //                    else if (Rule.OperationValueDateTime != null)
+        //                    {
+        //                        DataType = "DateTime";
+        //                        OperationValue = Rule.OperationValueDateTime;
+        //                    }
+        //                    else if (Rule.OperationValueDouble != null)
+        //                    {
+        //                        DataType = "Double";
+        //                        OperationValue = Rule.OperationValueDouble;
+        //                    }
+        //                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                    {
+        //                        DataType = "String";
+        //                        OperationValue = Rule.OperationValueString;
+        //                    }
+
+        //                    if (MainTableName.ToLower() == SDTableName.ToLower())
+        //                    {
+        //                        object InsertedValue = new object();
+
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            object TestValue = AddInstallationViewModel.GetType().GetProperties()
+        //                                .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddInstallationViewModel, null);
+
+        //                            if (TestValue == null)
+        //                                break;
+
+        //                            if (Rule.OperationValueBoolean != null)
+        //                                InsertedValue = bool.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDateTime != null)
+        //                                InsertedValue = DateTime.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDouble != null)
+        //                                InsertedValue = double.Parse(TestValue.ToString());
+
+        //                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                                InsertedValue = TestValue.ToString();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddDynamicAttInstValueViewModel DynamicObject = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                                .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+        //                            if (DynamicObject == null)
+        //                                break;
+
+        //                            if (DynamicObject.ValueBoolean != null)
+        //                                InsertedValue = DynamicObject.ValueBoolean;
+
+        //                            else if (DynamicObject.ValueDateTime != null)
+        //                                InsertedValue = DynamicObject.ValueDateTime;
+
+        //                            else if (DynamicObject.ValueDouble != null)
+        //                                InsertedValue = DynamicObject.ValueDouble;
+
+        //                            else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+        //                                InsertedValue = DynamicObject.ValueString;
+        //                        }
+
+        //                        if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                            Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+        //                            Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+        //                            Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                            Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+        //                            Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        List<object> TableRecords = new List<object>();
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            if (OperationValue != null)
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType().GetProperty(SDTableName)
+        //                                    .GetValue(db, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+        //                                    Operation == ">=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "<" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+        //                                    Operation == "<=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "==" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                                    Operation == "!=" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+        //                            if (!DynamicAttribute.LibraryAtt)
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            else
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+        //                            {
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType()
+        //                                    .GetProperty(SDTableName).GetValue(db, null))
+        //                                        .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+        //                            }
+        //                        }
+
+        //                        AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+        //                        if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                dynamicAttId = Rule.dynamicAttId,
+        //                                IsDynamic = true,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        else if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                attributeActivatedId = Rule.attributeActivatedId,
+        //                                IsDynamic = false,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+        //                        PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+        //                            MainTableName + SDTableName + "Goal");
+
+        //                        List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+        //                        object CheckId = new object();
+
+        //                        if (Path.Count() > 1)
+        //                        {
+        //                            object CivilLoads = AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                .GetValue(AddInstallationViewModel, null);
+
+        //                            CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+        //                                (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+        //                        }
+        //                        else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+        //                        {
+        //                            CheckId = SiteCode;
+        //                        }
+        //                        else if (Path.Count() == 1)
+        //                        {
+        //                            if (AddInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(AddInstallationViewModel, null) != null)
+        //                                CheckId = (int)AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                    .GetValue(AddInstallationViewModel, null);
+        //                        }
+
+        //                        if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (Rules.Count() == CheckIfSuccessAllRules)
+        //                {
+        //                    string DynamicAttributeName = "";
+        //                    int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+        //                        .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+        //                    AddDynamicAttInstValueViewModel InputDynamicAttribute = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                        .FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+        //                    if (InputDynamicAttribute == null)
+        //                    {
+        //                        DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                            .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                        return $"({DynamicAttributeName}) value can't be null";
+        //                    }
+        //                    else
+        //                    {
+        //                        string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+        //                        object DependencyValidationValue = new object();
+
+        //                        if (DynamicAttributeMainDependency.ValueBoolean != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDateTime != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDouble != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+
+        //                        object InputDynamicValue = new object();
+
+        //                        if (InputDynamicAttribute.ValueBoolean != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueBoolean;
+
+        //                        else if (InputDynamicAttribute.ValueDateTime != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDateTime;
+
+        //                        else if (InputDynamicAttribute.ValueDouble != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(InputDynamicAttribute.ValueString))
+        //                            InputDynamicValue = InputDynamicAttribute.ValueString;
+
+        //                        if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+        //                            DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+        //                            DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+        //                            DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+        //                        {
+        //                            DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                                .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                            string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+        //                                (DependencyValidationOperation == "!=" ? "not equal to" :
+        //                                (DependencyValidationOperation == ">" ? "bigger than" :
+        //                                (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+        //                                (DependencyValidationOperation == "<" ? "smaller than" :
+        //                                (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+        //                            return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (MWType.ToLower() == TablesNames.TLImwBU.ToString().ToLower())
+        //    {
+        //        string MainTableName = TablesNames.TLImwBU.ToString();
+        //        AddMW_BUViewModel AddInstallationViewModel = _mapper.Map<AddMW_BUViewModel>(Input);
+
+        //        List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+        //            .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+        //                , x => x.tablesNames).ToList());
+
+        //        foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+        //        {
+        //            TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+        //                (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+        //                    x.OperationId != null, x => x.Operation);
+
+        //            if (DynamicAttributeMainDependency == null)
+        //                continue;
+
+        //            List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+        //                .Select(x => x.RowId.Value).Distinct().ToList();
+
+        //            foreach (int RowId in DependencyRows)
+        //            {
+        //                List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
+        //                    x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+        //                int CheckIfSuccessAllRules = 0;
+
+        //                foreach (TLIrule Rule in Rules)
+        //                {
+        //                    string SDTableName = Rule.tablesNames.TableName;
+
+        //                    string DataType = "";
+
+        //                    string Operation = Rule.Operation.Name;
+        //                    object OperationValue = new object();
+
+        //                    if (Rule.OperationValueBoolean != null)
+        //                    {
+        //                        DataType = "Bool";
+        //                        OperationValue = Rule.OperationValueBoolean;
+        //                    }
+        //                    else if (Rule.OperationValueDateTime != null)
+        //                    {
+        //                        DataType = "DateTime";
+        //                        OperationValue = Rule.OperationValueDateTime;
+        //                    }
+        //                    else if (Rule.OperationValueDouble != null)
+        //                    {
+        //                        DataType = "Double";
+        //                        OperationValue = Rule.OperationValueDouble;
+        //                    }
+        //                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                    {
+        //                        DataType = "String";
+        //                        OperationValue = Rule.OperationValueString;
+        //                    }
+
+        //                    if (MainTableName.ToLower() == SDTableName.ToLower())
+        //                    {
+        //                        object InsertedValue = new object();
+
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            object TestValue = AddInstallationViewModel.GetType().GetProperties()
+        //                                .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddInstallationViewModel, null);
+
+        //                            if (TestValue == null)
+        //                                break;
+
+        //                            if (Rule.OperationValueBoolean != null)
+        //                                InsertedValue = bool.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDateTime != null)
+        //                                InsertedValue = DateTime.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDouble != null)
+        //                                InsertedValue = double.Parse(TestValue.ToString());
+
+        //                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                                InsertedValue = TestValue.ToString();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddDynamicAttInstValueViewModel DynamicObject = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                                .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+        //                            if (DynamicObject == null)
+        //                                break;
+
+        //                            if (DynamicObject.ValueBoolean != null)
+        //                                InsertedValue = DynamicObject.ValueBoolean;
+
+        //                            else if (DynamicObject.ValueDateTime != null)
+        //                                InsertedValue = DynamicObject.ValueDateTime;
+
+        //                            else if (DynamicObject.ValueDouble != null)
+        //                                InsertedValue = DynamicObject.ValueDouble;
+
+        //                            else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+        //                                InsertedValue = DynamicObject.ValueString;
+        //                        }
+
+        //                        if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                            Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+        //                            Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+        //                            Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                            Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+        //                            Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        List<object> TableRecords = new List<object>();
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            if (OperationValue != null)
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType().GetProperty(SDTableName)
+        //                                    .GetValue(db, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+        //                                    Operation == ">=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "<" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+        //                                    Operation == "<=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "==" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                                    Operation == "!=" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+        //                            if (!DynamicAttribute.LibraryAtt)
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            else
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+        //                            {
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType()
+        //                                    .GetProperty(SDTableName).GetValue(db, null))
+        //                                        .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+        //                            }
+        //                        }
+
+        //                        AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+        //                        if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                dynamicAttId = Rule.dynamicAttId,
+        //                                IsDynamic = true,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        else if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                attributeActivatedId = Rule.attributeActivatedId,
+        //                                IsDynamic = false,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+        //                        PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+        //                            MainTableName + SDTableName + "Goal");
+
+        //                        List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+        //                        object CheckId = new object();
+
+        //                        if (Path.Count() > 1)
+        //                        {
+        //                            object CivilLoads = AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                .GetValue(AddInstallationViewModel, null);
+        //                            if (CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null)
+        //                            {
+        //                                CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+        //                                    (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+        //                            }
+
+        //                        }
+        //                        else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+        //                        {
+        //                            CheckId = SiteCode;
+        //                        }
+        //                        else if (Path.Count() == 1)
+        //                        {
+        //                            if (AddInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(AddInstallationViewModel, null) != null)
+        //                                CheckId = (int)AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                    .GetValue(AddInstallationViewModel, null);
+        //                        }
+
+        //                        if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (Rules.Count() == CheckIfSuccessAllRules)
+        //                {
+        //                    string DynamicAttributeName = "";
+        //                    int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+        //                        .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+        //                    AddDynamicAttInstValueViewModel InputDynamicAttribute = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                        .FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+        //                    if (InputDynamicAttribute == null)
+        //                    {
+        //                        DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                            .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                        return $"({DynamicAttributeName}) value can't be null";
+        //                    }
+        //                    else
+        //                    {
+        //                        string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+        //                        object DependencyValidationValue = new object();
+
+        //                        if (DynamicAttributeMainDependency.ValueBoolean != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDateTime != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDouble != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+
+        //                        object InputDynamicValue = new object();
+
+        //                        if (InputDynamicAttribute.ValueBoolean != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueBoolean;
+
+        //                        else if (InputDynamicAttribute.ValueDateTime != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDateTime;
+
+        //                        else if (InputDynamicAttribute.ValueDouble != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(InputDynamicAttribute.ValueString))
+        //                            InputDynamicValue = InputDynamicAttribute.ValueString;
+
+        //                        if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+        //                            DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+        //                            DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+        //                            DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+        //                        {
+        //                            DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                                .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                            string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+        //                                (DependencyValidationOperation == "!=" ? "not equal to" :
+        //                                (DependencyValidationOperation == ">" ? "bigger than" :
+        //                                (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+        //                                (DependencyValidationOperation == "<" ? "smaller than" :
+        //                                (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+        //                            return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (MWType.ToLower() == TablesNames.TLImwRFU.ToString().ToLower())
+        //    {
+        //        string MainTableName = TablesNames.TLImwRFU.ToString();
+        //        AddMW_RFUViewModel AddInstallationViewModel = _mapper.Map<AddMW_RFUViewModel>(Input);
+
+        //        List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+        //            .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+        //                , x => x.tablesNames).ToList());
+
+        //        foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+        //        {
+        //            TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+        //                (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+        //                    x.OperationId != null, x => x.Operation);
+
+        //            if (DynamicAttributeMainDependency == null)
+        //                continue;
+
+        //            List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+        //                .Select(x => x.RowId.Value).Distinct().ToList();
+
+        //            foreach (int RowId in DependencyRows)
+        //            {
+        //                List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
+        //                    x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+        //                int CheckIfSuccessAllRules = 0;
+
+        //                foreach (TLIrule Rule in Rules)
+        //                {
+        //                    string SDTableName = Rule.tablesNames.TableName;
+
+        //                    string DataType = "";
+
+        //                    string Operation = Rule.Operation.Name;
+        //                    object OperationValue = new object();
+
+        //                    if (Rule.OperationValueBoolean != null)
+        //                    {
+        //                        DataType = "Bool";
+        //                        OperationValue = Rule.OperationValueBoolean;
+        //                    }
+        //                    else if (Rule.OperationValueDateTime != null)
+        //                    {
+        //                        DataType = "DateTime";
+        //                        OperationValue = Rule.OperationValueDateTime;
+        //                    }
+        //                    else if (Rule.OperationValueDouble != null)
+        //                    {
+        //                        DataType = "Double";
+        //                        OperationValue = Rule.OperationValueDouble;
+        //                    }
+        //                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                    {
+        //                        DataType = "String";
+        //                        OperationValue = Rule.OperationValueString;
+        //                    }
+
+        //                    if (MainTableName.ToLower() == SDTableName.ToLower())
+        //                    {
+        //                        object InsertedValue = new object();
+
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            object TestValue = AddInstallationViewModel.GetType().GetProperties()
+        //                                .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddInstallationViewModel, null);
+
+        //                            if (TestValue == null)
+        //                                break;
+
+        //                            if (Rule.OperationValueBoolean != null)
+        //                                InsertedValue = bool.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDateTime != null)
+        //                                InsertedValue = DateTime.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDouble != null)
+        //                                InsertedValue = double.Parse(TestValue.ToString());
+
+        //                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                                InsertedValue = TestValue.ToString();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddDynamicAttInstValueViewModel DynamicObject = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                                .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+        //                            if (DynamicObject == null)
+        //                                break;
+
+        //                            if (DynamicObject.ValueBoolean != null)
+        //                                InsertedValue = DynamicObject.ValueBoolean;
+
+        //                            else if (DynamicObject.ValueDateTime != null)
+        //                                InsertedValue = DynamicObject.ValueDateTime;
+
+        //                            else if (DynamicObject.ValueDouble != null)
+        //                                InsertedValue = DynamicObject.ValueDouble;
+
+        //                            else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+        //                                InsertedValue = DynamicObject.ValueString;
+        //                        }
+
+        //                        if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                            Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+        //                            Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+        //                            Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                            Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+        //                            Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        List<object> TableRecords = new List<object>();
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            if (OperationValue != null)
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType().GetProperty(SDTableName)
+        //                                    .GetValue(db, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+        //                                    Operation == ">=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "<" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+        //                                    Operation == "<=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "==" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                                    Operation == "!=" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+        //                            if (!DynamicAttribute.LibraryAtt)
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            else
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+        //                            {
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType()
+        //                                    .GetProperty(SDTableName).GetValue(db, null))
+        //                                        .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+        //                            }
+        //                        }
+
+        //                        AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+        //                        if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                dynamicAttId = Rule.dynamicAttId,
+        //                                IsDynamic = true,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        else if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                attributeActivatedId = Rule.attributeActivatedId,
+        //                                IsDynamic = false,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+        //                        PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+        //                            MainTableName + SDTableName + "Goal");
+
+        //                        List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+        //                        object CheckId = new object();
+
+        //                        if (Path.Count() > 1)
+        //                        {
+        //                            if (Path[1].ToLower() == "allLoadInstId".ToLower())
+        //                            {
+        //                                int MW_PortId = (int)AddInstallationViewModel.GetType().GetProperty("MwPortId")
+        //                                    .GetValue(AddInstallationViewModel, null);
+
+        //                                int MW_BUId = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id == MW_PortId).MwBUId;
+
+        //                                CheckId = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => !x.Draft && x.mwBUId == MW_BUId).Id;
+        //                            }
+        //                            else
+        //                            {
+        //                                object CivilLoads = AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                    .GetValue(AddInstallationViewModel, null);
+
+        //                                CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+        //                                    (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+        //                            }
+        //                        }
+        //                        else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+        //                        {
+        //                            CheckId = SiteCode;
+        //                        }
+        //                        else if (Path.Count() == 1)
+        //                        {
+        //                            if (AddInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(AddInstallationViewModel, null) != null)
+        //                                CheckId = (int)AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                    .GetValue(AddInstallationViewModel, null);
+        //                        }
+
+        //                        if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (Rules.Count() == CheckIfSuccessAllRules)
+        //                {
+        //                    string DynamicAttributeName = "";
+        //                    int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+        //                        .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+        //                    AddDynamicAttInstValueViewModel InputDynamicAttribute = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                        .FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+        //                    if (InputDynamicAttribute == null)
+        //                    {
+        //                        DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                            .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                        return $"({DynamicAttributeName}) value can't be null";
+        //                    }
+        //                    else
+        //                    {
+        //                        string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+        //                        object DependencyValidationValue = new object();
+
+        //                        if (DynamicAttributeMainDependency.ValueBoolean != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDateTime != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDouble != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+
+        //                        object InputDynamicValue = new object();
+
+        //                        if (InputDynamicAttribute.ValueBoolean != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueBoolean;
+
+        //                        else if (InputDynamicAttribute.ValueDateTime != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDateTime;
+
+        //                        else if (InputDynamicAttribute.ValueDouble != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(InputDynamicAttribute.ValueString))
+        //                            InputDynamicValue = InputDynamicAttribute.ValueString;
+
+        //                        if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+        //                            DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+        //                            DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+        //                            DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+        //                        {
+        //                            DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                                .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                            string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+        //                                (DependencyValidationOperation == "!=" ? "not equal to" :
+        //                                (DependencyValidationOperation == ">" ? "bigger than" :
+        //                                (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+        //                                (DependencyValidationOperation == "<" ? "smaller than" :
+        //                                (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+        //                            return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (MWType.ToLower() == TablesNames.TLImwODU.ToString().ToLower())
+        //    {
+        //        string MainTableName = TablesNames.TLImwODU.ToString();
+        //        AddMW_ODUViewModel AddInstallationViewModel = _mapper.Map<AddMW_ODUViewModel>(Input);
+
+        //        List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+        //            .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+        //                , x => x.tablesNames).ToList());
+
+        //        foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+        //        {
+        //            TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+        //                (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+        //                    x.OperationId != null, x => x.Operation);
+
+        //            if (DynamicAttributeMainDependency == null)
+        //                continue;
+
+        //            List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+        //                .Select(x => x.RowId.Value).Distinct().ToList();
+
+        //            foreach (int RowId in DependencyRows)
+        //            {
+        //                List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
+        //                    x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+        //                int CheckIfSuccessAllRules = 0;
+
+        //                foreach (TLIrule Rule in Rules)
+        //                {
+        //                    string SDTableName = Rule.tablesNames.TableName;
+
+        //                    string DataType = "";
+
+        //                    string Operation = Rule.Operation.Name;
+        //                    object OperationValue = new object();
+
+        //                    if (Rule.OperationValueBoolean != null)
+        //                    {
+        //                        DataType = "Bool";
+        //                        OperationValue = Rule.OperationValueBoolean;
+        //                    }
+        //                    else if (Rule.OperationValueDateTime != null)
+        //                    {
+        //                        DataType = "DateTime";
+        //                        OperationValue = Rule.OperationValueDateTime;
+        //                    }
+        //                    else if (Rule.OperationValueDouble != null)
+        //                    {
+        //                        DataType = "Double";
+        //                        OperationValue = Rule.OperationValueDouble;
+        //                    }
+        //                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                    {
+        //                        DataType = "String";
+        //                        OperationValue = Rule.OperationValueString;
+        //                    }
+
+        //                    if (MainTableName.ToLower() == SDTableName.ToLower())
+        //                    {
+        //                        object InsertedValue = new object();
+
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            object TestValue = AddInstallationViewModel.GetType().GetProperties()
+        //                                .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddInstallationViewModel, null);
+
+        //                            if (TestValue == null)
+        //                                break;
+
+        //                            if (Rule.OperationValueBoolean != null)
+        //                                InsertedValue = bool.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDateTime != null)
+        //                                InsertedValue = DateTime.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDouble != null)
+        //                                InsertedValue = double.Parse(TestValue.ToString());
+
+        //                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                                InsertedValue = TestValue.ToString();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddDynamicAttInstValueViewModel DynamicObject = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                                .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+        //                            if (DynamicObject == null)
+        //                                break;
+
+        //                            if (DynamicObject.ValueBoolean != null)
+        //                                InsertedValue = DynamicObject.ValueBoolean;
+
+        //                            else if (DynamicObject.ValueDateTime != null)
+        //                                InsertedValue = DynamicObject.ValueDateTime;
+
+        //                            else if (DynamicObject.ValueDouble != null)
+        //                                InsertedValue = DynamicObject.ValueDouble;
+
+        //                            else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+        //                                InsertedValue = DynamicObject.ValueString;
+        //                        }
+
+        //                        if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                            Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+        //                            Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+        //                            Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                            Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+        //                            Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        List<object> TableRecords = new List<object>();
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            if (OperationValue != null)
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType().GetProperty(SDTableName)
+        //                                    .GetValue(db, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+        //                                    Operation == ">=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "<" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+        //                                    Operation == "<=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "==" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                                    Operation == "!=" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+        //                            if (!DynamicAttribute.LibraryAtt)
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            else
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+        //                            {
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType()
+        //                                    .GetProperty(SDTableName).GetValue(db, null))
+        //                                        .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+        //                            }
+        //                        }
+
+        //                        AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+        //                        if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                dynamicAttId = Rule.dynamicAttId,
+        //                                IsDynamic = true,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        else if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                attributeActivatedId = Rule.attributeActivatedId,
+        //                                IsDynamic = false,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+        //                        PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+        //                            MainTableName + SDTableName + "Goal");
+
+        //                        List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+        //                        object CheckId = new object();
+
+        //                        if (Path.Count() > 1)
+        //                        {
+        //                            object CivilLoads = AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                .GetValue(AddInstallationViewModel, null);
+
+        //                            CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+        //                                (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+        //                        }
+        //                        else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+        //                        {
+        //                            CheckId = SiteCode;
+        //                        }
+        //                        else if (Path.Count() == 1)
+        //                        {
+        //                            if (AddInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(AddInstallationViewModel, null) != null)
+        //                                CheckId = (int)AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                    .GetValue(AddInstallationViewModel, null);
+        //                        }
+
+        //                        if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (Rules.Count() == CheckIfSuccessAllRules)
+        //                {
+        //                    string DynamicAttributeName = "";
+        //                    int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+        //                        .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+        //                    AddDynamicAttInstValueViewModel InputDynamicAttribute = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                        .FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+        //                    if (InputDynamicAttribute == null)
+        //                    {
+        //                        DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                            .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                        return $"({DynamicAttributeName}) value can't be null";
+        //                    }
+        //                    else
+        //                    {
+        //                        string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+        //                        object DependencyValidationValue = new object();
+
+        //                        if (DynamicAttributeMainDependency.ValueBoolean != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDateTime != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDouble != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+
+        //                        object InputDynamicValue = new object();
+
+        //                        if (InputDynamicAttribute.ValueBoolean != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueBoolean;
+
+        //                        else if (InputDynamicAttribute.ValueDateTime != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDateTime;
+
+        //                        else if (InputDynamicAttribute.ValueDouble != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(InputDynamicAttribute.ValueString))
+        //                            InputDynamicValue = InputDynamicAttribute.ValueString;
+
+        //                        if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+        //                            DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+        //                            DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+        //                            DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+        //                        {
+        //                            DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                                .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                            string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+        //                                (DependencyValidationOperation == "!=" ? "not equal to" :
+        //                                (DependencyValidationOperation == ">" ? "bigger than" :
+        //                                (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+        //                                (DependencyValidationOperation == "<" ? "smaller than" :
+        //                                (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+        //                            return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (MWType.ToLower() == TablesNames.TLImwOther.ToString().ToLower())
+        //    {
+        //        string MainTableName = TablesNames.TLImwOther.ToString();
+        //        AddMw_OtherViewModel AddInstallationViewModel = _mapper.Map<AddMw_OtherViewModel>(Input);
+
+        //        List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+        //            .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+        //                , x => x.tablesNames).ToList());
+
+        //        foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+        //        {
+        //            TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+        //                (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+        //                    x.OperationId != null, x => x.Operation);
+
+        //            if (DynamicAttributeMainDependency == null)
+        //                continue;
+
+        //            List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+        //                .Select(x => x.RowId.Value).Distinct().ToList();
+
+        //            foreach (int RowId in DependencyRows)
+        //            {
+        //                List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
+        //                    x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+        //                int CheckIfSuccessAllRules = 0;
+
+        //                foreach (TLIrule Rule in Rules)
+        //                {
+        //                    string SDTableName = Rule.tablesNames.TableName;
+
+        //                    string DataType = "";
+
+        //                    string Operation = Rule.Operation.Name;
+        //                    object OperationValue = new object();
+
+        //                    if (Rule.OperationValueBoolean != null)
+        //                    {
+        //                        DataType = "Bool";
+        //                        OperationValue = Rule.OperationValueBoolean;
+        //                    }
+        //                    else if (Rule.OperationValueDateTime != null)
+        //                    {
+        //                        DataType = "DateTime";
+        //                        OperationValue = Rule.OperationValueDateTime;
+        //                    }
+        //                    else if (Rule.OperationValueDouble != null)
+        //                    {
+        //                        DataType = "Double";
+        //                        OperationValue = Rule.OperationValueDouble;
+        //                    }
+        //                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                    {
+        //                        DataType = "String";
+        //                        OperationValue = Rule.OperationValueString;
+        //                    }
+
+        //                    if (MainTableName.ToLower() == SDTableName.ToLower())
+        //                    {
+        //                        object InsertedValue = new object();
+
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            object TestValue = AddInstallationViewModel.GetType().GetProperties()
+        //                                .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddInstallationViewModel, null);
+
+        //                            if (TestValue == null)
+        //                                break;
+
+        //                            if (Rule.OperationValueBoolean != null)
+        //                                InsertedValue = bool.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDateTime != null)
+        //                                InsertedValue = DateTime.Parse(TestValue.ToString());
+
+        //                            else if (Rule.OperationValueDouble != null)
+        //                                InsertedValue = double.Parse(TestValue.ToString());
+
+        //                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+        //                                InsertedValue = TestValue.ToString();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddDynamicAttInstValueViewModel DynamicObject = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                                .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+        //                            if (DynamicObject == null)
+        //                                break;
+
+        //                            if (DynamicObject.ValueBoolean != null)
+        //                                InsertedValue = DynamicObject.ValueBoolean;
+
+        //                            else if (DynamicObject.ValueDateTime != null)
+        //                                InsertedValue = DynamicObject.ValueDateTime;
+
+        //                            else if (DynamicObject.ValueDouble != null)
+        //                                InsertedValue = DynamicObject.ValueDouble;
+
+        //                            else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+        //                                InsertedValue = DynamicObject.ValueString;
+        //                        }
+
+        //                        if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                            Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+        //                            Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+        //                            Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                            Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+        //                            Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+        //                                InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        List<object> TableRecords = new List<object>();
+        //                        if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            string AttributeName = Rule.attributeActivated.Key;
+
+        //                            if (OperationValue != null)
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType().GetProperty(SDTableName)
+        //                                    .GetValue(db, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+        //                                    Operation == ">=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "<" ?
+        //                                       (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+        //                                    Operation == "<=" ?
+        //                                        (DataType.ToLower() == "DateTime".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+        //                                        DataType.ToLower() == "Double".ToLower() ?
+        //                                            (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+        //                                             x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+        //                                    Operation == "==" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+        //                                    Operation == "!=" ?
+        //                                        x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+        //                        }
+        //                        else if (Rule.dynamicAttId != null)
+        //                        {
+        //                            List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+        //                            if (!DynamicAttribute.LibraryAtt)
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            else
+        //                            {
+        //                                DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+        //                                    .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+        //                                        (Operation == "==" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == "!=" ?
+        //                                            ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+        //                                            (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+        //                                        (Operation == ">" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == ">=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+        //                                        (Operation == "<=" ?
+        //                                            ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+        //                                            (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+        //                                        ).Select(x => x.InventoryId).ToList();
+        //                            }
+        //                            if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+        //                            {
+        //                                TableRecords = _mapper.Map<List<object>>(db.GetType()
+        //                                    .GetProperty(SDTableName).GetValue(db, null))
+        //                                        .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+        //                            }
+        //                        }
+
+        //                        AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+        //                        if (Rule.dynamicAttId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                dynamicAttId = Rule.dynamicAttId,
+        //                                IsDynamic = true,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        else if (Rule.attributeActivatedId != null)
+        //                        {
+        //                            AddInstRuleViewModel = new AddInstRuleViewModel
+        //                            {
+        //                                attributeActivatedId = Rule.attributeActivatedId,
+        //                                IsDynamic = false,
+        //                                OperationId = Rule.OperationId,
+        //                                OperationValueBoolean = Rule.OperationValueBoolean,
+        //                                OperationValueDateTime = Rule.OperationValueDateTime,
+        //                                OperationValueDouble = Rule.OperationValueDouble,
+        //                                OperationValueString = Rule.OperationValueString,
+        //                                TableName = Rule.tablesNames.TableName
+        //                            };
+        //                        }
+        //                        List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+        //                        PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+        //                            MainTableName + SDTableName + "Goal");
+
+        //                        List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+        //                        object CheckId = new object();
+
+        //                        if (Path.Count() > 1)
+        //                        {
+        //                            object CivilLoads = AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                .GetValue(AddInstallationViewModel, null);
+
+        //                            CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+        //                                (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+        //                        }
+        //                        else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+        //                        {
+        //                            CheckId = SiteCode;
+        //                        }
+        //                        else if (Path.Count() == 1)
+        //                        {
+        //                            if (AddInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(AddInstallationViewModel, null) != null)
+        //                                CheckId = (int)AddInstallationViewModel.GetType().GetProperty(Path[0])
+        //                                    .GetValue(AddInstallationViewModel, null);
+        //                        }
+
+        //                        if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+        //                        {
+        //                            CheckIfSuccessAllRules++;
+        //                        }
+        //                    }
+        //                }
+
+        //                if (Rules.Count() == CheckIfSuccessAllRules)
+        //                {
+        //                    string DynamicAttributeName = "";
+        //                    int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+        //                        .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+        //                    AddDynamicAttInstValueViewModel InputDynamicAttribute = AddInstallationViewModel.TLIdynamicAttInstValue
+        //                        .FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+        //                    if (InputDynamicAttribute == null)
+        //                    {
+        //                        DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                            .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                        return $"({DynamicAttributeName}) value can't be null";
+        //                    }
+        //                    else
+        //                    {
+        //                        string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+        //                        object DependencyValidationValue = new object();
+
+        //                        if (DynamicAttributeMainDependency.ValueBoolean != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDateTime != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+
+        //                        else if (DynamicAttributeMainDependency.ValueDouble != null)
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+        //                            DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+
+        //                        object InputDynamicValue = new object();
+
+        //                        if (InputDynamicAttribute.ValueBoolean != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueBoolean;
+
+        //                        else if (InputDynamicAttribute.ValueDateTime != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDateTime;
+
+        //                        else if (InputDynamicAttribute.ValueDouble != null)
+        //                            InputDynamicValue = InputDynamicAttribute.ValueDouble;
+
+        //                        else if (!string.IsNullOrEmpty(InputDynamicAttribute.ValueString))
+        //                            InputDynamicValue = InputDynamicAttribute.ValueString;
+
+        //                        if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+        //                            DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+        //                            DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+        //                            DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+        //                            DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+        //                                InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+        //                        {
+        //                            DynamicAttributeName = _unitOfWork.DynamicAttRepository
+        //                                .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+        //                            string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+        //                                (DependencyValidationOperation == "!=" ? "not equal to" :
+        //                                (DependencyValidationOperation == ">" ? "bigger than" :
+        //                                (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+        //                                (DependencyValidationOperation == "<" ? "smaller than" :
+        //                                (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+        //                            return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return string.Empty;
+        //}
     }
 }
 
