@@ -7591,7 +7591,7 @@ namespace TLIS_Service.Services
                 x.allLoadInstId != null ? (x.allLoadInst.loadOtherId != null && !x.allLoadInst.Draft) : false,
                     x => x.allLoadInst).Select(x => x.allLoadInst.loadOtherId.Value).Distinct().ToList().Count();
             double Availablespace = 0;
-            if (CivilType == "TLIcivilWithLegsm")
+            if (CivilType == "TLIcivilWithLegs")
             {
                 var TLIcivilWithLegsInstallation = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == CivilId);
                 if (TLIcivilWithLegsInstallation != null)
