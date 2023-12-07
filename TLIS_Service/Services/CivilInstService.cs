@@ -7600,18 +7600,27 @@ namespace TLIS_Service.Services
 
                     if (TLIcivilWithLegsInstallation.IsEnforeced == true)
                     {
-                        Availablespace = TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement.Value - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                        if(TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement != null && TLIcivilWithLegsInstallation.CurrentLoads!=null)
+                        {
+                            Availablespace = TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement.Value - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                        }
+                      
                     }
 
                     else if (TLIcivilWithLegsInstallation.Support_Limited_Load != 0)
                     {
-                        Availablespace = TLIcivilWithLegsInstallation.Support_Limited_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
-
+                        if (TLIcivilWithLegsInstallation.CurrentLoads != null )
+                        {
+                            Availablespace = TLIcivilWithLegsInstallation.Support_Limited_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                        }
+       
                     }
                     else
                     {
-                        Availablespace = civilWithLegsLibrary.Manufactured_Max_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
-
+                        if (TLIcivilWithLegsInstallation.CurrentLoads != null)
+                        {
+                            Availablespace = civilWithLegsLibrary.Manufactured_Max_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                        }
                     }
                 }
                 OutPutData.CurrentLoads = TLIcivilWithLegsInstallation.CurrentLoads;
@@ -7626,12 +7635,19 @@ namespace TLIS_Service.Services
 
                     if (TLIcivilWithoutLegInstallation.Support_Limited_Load != 0)
                     {
-                        Availablespace = TLIcivilWithoutLegInstallation.Support_Limited_Load - TLIcivilWithoutLegInstallation.CurrentLoads.Value;
+                        if (TLIcivilWithoutLegInstallation.CurrentLoads != null)
+                        {
+                            Availablespace = TLIcivilWithoutLegInstallation.Support_Limited_Load - TLIcivilWithoutLegInstallation.CurrentLoads.Value;
+                        }
 
                     }
                     else
                     {
-                        Availablespace = civilWithoutLegLibrary.Manufactured_Max_Load - TLIcivilWithoutLegInstallation.CurrentLoads.Value;
+                        if (TLIcivilWithoutLegInstallation.CurrentLoads != null)
+                        {
+                            Availablespace = civilWithoutLegLibrary.Manufactured_Max_Load - TLIcivilWithoutLegInstallation.CurrentLoads.Value;
+                        }
+                   
 
                     }
                 }
