@@ -63,7 +63,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<object>> GetRadioRRUOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
         Response<ReturnWithFilters<object>> GetRadioOtherOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
         Response<ReturnWithFilters<object>> GetPowerOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
-        Task<string> GetSMIS_Site();
+        Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent);
         Response<List<AreaViewModel>> GetAllArea();
         Response<List<RegionViewModel>> GetAllRegion();
         Response<SiteViewModel> DisplaySiteDetailsBySiteCode(string SiteCode);
@@ -72,5 +72,7 @@ namespace TLIS_Service.IService
         Response<List<GetAllsiteOnMultiAreaViewModel>> GetAllsiteonMultiArea(List<AreaForSiteViewModel> Area);
         Task<List<GetSiteNameBySitCode>> GetSiteNameBySitCode(List<SiteCodeForW_F> SiteCode);
         List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow();
+        Response<UsedSitesViewModel> GetUsedSitesCount();
+        Response<ItemsOnSite> GetItemsOnSite(string SiteCode);
     }
 }

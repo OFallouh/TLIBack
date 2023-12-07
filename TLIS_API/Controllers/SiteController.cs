@@ -195,9 +195,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetSMIS_Site")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> GetSMIS_Site()
+        public async Task<IActionResult> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, [FromBody] string RowContent)
         {
-            var response = await _unitOfWorkService.SiteService.GetSMIS_Site();
+            var response = await _unitOfWorkService.SiteService.GetSMIS_Site(UserName, Password, ViewName, Paramater, RowContent);
             return Ok(response);
         }
         [HttpPost("GetAllSiteStatus")]
@@ -393,6 +393,18 @@ namespace TLIS_API.Controllers
         public IActionResult GetAllSitesWithoutPaginationForWorkFlow()
         {
             var response = _unitOfWorkService.SiteService.GetAllSitesWithoutPaginationForWorkFlow();
+            return Ok(response);
+        }
+        [HttpGet("GetUsedSitesCount")]
+        public IActionResult GetUsedSitesCount()
+        {
+            var response = _unitOfWorkService.SiteService.GetUsedSitesCount();
+            return Ok(response);
+        }
+        [HttpGet("GetItemsOnSite")]
+        public IActionResult GetItemsOnSite(string SiteCode)
+        {
+            var response = _unitOfWorkService.SiteService.GetItemsOnSite(SiteCode);
             return Ok(response);
         }
     }

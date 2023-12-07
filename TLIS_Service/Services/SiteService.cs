@@ -66,6 +66,9 @@ using System.Drawing;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
+using System.Xml;
+using Microsoft.AspNetCore.Components.Forms;
+using LinqToExcel.Extensions;
 
 namespace TLIS_Service.Services
 {
@@ -7134,33 +7137,48 @@ namespace TLIS_Service.Services
         #endregion
 
         // string Baseurl = "https://localhost:44311";
-        public async Task<string> GetSMIS_Site()
+        public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
         {
             try
             {
                 ServiceProvider serviceProvider = _services.BuildServiceProvider();
                 IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
-                
-                string responseString = "";
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"]);
-                request.Method = "GET";
-                request.ContentType = "application/json";
 
-                using (var response1 = request.GetResponse())
+                HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
+                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}/'{Paramater}'") :
+                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
+
+                Request.Method = "POST";
+                
+                if (!string.IsNullOrEmpty(RowContent))
                 {
-                    using (StreamReader reader = new StreamReader(response1.GetResponseStream()))
+                    Request.ContentType = "text/plain";
+
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] BodyText = encoding.GetBytes(RowContent);
+
+                    Stream NewStream = Request.GetRequestStream();
+                    NewStream.Write(BodyText, 0, BodyText.Length);
+                    Request.ContentLength = BodyText.Length;
+                }
+
+                string SMIS_Response = "";
+                using (WebResponse WebResponse = Request.GetResponse())
+                {
+                    using (StreamReader Reader = new StreamReader(WebResponse.GetResponseStream()))
                     {
-                        responseString = reader.ReadToEnd();
+                        SMIS_Response = Reader.ReadToEnd();
                     }
                 }
-                List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists = new JavaScriptSerializer().Deserialize<List<SiteDataFromOutsiderApiViewModel>>(responseString);
+
+                List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists = new JavaScriptSerializer().Deserialize<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
 
                 using (TransactionScope transaction = new TransactionScope())
                 {
                     foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
                     {
                         TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository
-                            .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() || 
+                            .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() ||
                                 x.SiteName.ToLower() == item.Sitename.ToLower());
 
                         if (CheckSiteCodeIfExist != null)
@@ -7436,6 +7454,87 @@ namespace TLIS_Service.Services
                 Sites.Add(result);
             }
             return Sites;
+        }
+        public Response<UsedSitesViewModel> GetUsedSitesCount()
+        {
+            if (_MySites == null)
+                _MySites = _context.TLIsite
+                    .AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+                    .Include(x => x.siteStatus).ToList();
+
+            List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+            List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+            List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+            List<string> all = UsedSitesInLoads.Concat(UsedSitesInCivils).Concat(UsedSitesInOtherInventories).Distinct().ToList();
+
+            int UsedSitesCount = _MySites.Select(x => x.SiteCode.ToLower()).Where(x => all.Contains(x)).ToList().Count();
+            int AllSitesCount = _MySites.Count();
+            int UnUsedSitesCount = AllSitesCount - UsedSitesCount;
+
+            UsedSitesViewModel OutPut = new UsedSitesViewModel()
+            {
+                UsedSitesCount = UsedSitesCount,
+                UnUsedSitesCount = UnUsedSitesCount,
+                AllSitesCount = AllSitesCount
+            };
+
+            return new Response<UsedSitesViewModel>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+        }
+        public Response<ItemsOnSite> GetItemsOnSite(string SiteCode)
+        {
+            ItemsOnSite OutPut = new ItemsOnSite();
+
+            List<TLIcivilLoads> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
+                .Include(x => x.allLoadInst)
+                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
+
+            OutPut.PowerCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.powerId != null : false).Count();
+            OutPut.MW_RFUCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwRFUId != null : false).Count();
+            OutPut.MW_BUCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwBUId != null : false).Count();
+            OutPut.MW_DishCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwDishId != null : false).Count();
+            OutPut.MW_ODUCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwODUId != null : false).Count();
+            OutPut.MW_OtherCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwOtherId != null : false).Count();
+            OutPut.RadioAntennaCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.radioAntennaId != null : false).Count();
+            OutPut.RadioRRUCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.radioRRUId != null : false).Count();
+            OutPut.RadioOtherCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.radioOtherId != null : false).Count();
+            OutPut.LoadOtherCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.loadOtherId != null : false).Count();
+            OutPut.SideArmCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.sideArmId != null : false).Count();
+
+            List<TLIallCivilInst> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
+                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower())
+                .Include(x => x.allCivilInst)
+                .ThenInclude(x => x.civilWithoutLeg)
+                .ThenInclude(x => x.CivilWithoutlegsLib)
+                .ThenInclude(x => x.CivilWithoutLegCategory)
+                .Select(x => x.allCivilInst).ToList();
+
+            OutPut.SteelWithLegsCount = UsedSitesInCivils.Where(x => x.civilWithLegsId != null).Count();
+            OutPut.SteelWithoutLegs_MastCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ? 
+               (x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId != null ?
+                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Mast.ToString().ToLower() : false) : false).Count();
+            OutPut.SteelWithoutLegs_MonopoleCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ?
+               (x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId != null ?
+                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Monopole.ToString().ToLower() : false) : false).Count();
+            OutPut.SteelWithoutLegs_CapsuleCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ?
+               (x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId != null ?
+                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Capsule.ToString().ToLower() : false) : false).Count();
+            OutPut.NonSteelCount = UsedSitesInCivils.Where(x => x.civilNonSteelId != null).Count();
+
+            List<TLIallOtherInventoryInst> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
+                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower())
+                .Include(x => x.allOtherInventoryInst)
+                .ThenInclude(x => x.cabinet)
+                .Select(x => x.allOtherInventoryInst).ToList();
+
+            OutPut.CabinetPowerCount = UsedSitesInOtherInventories.Where(x => x.cabinetId != null ?
+                x.cabinet.CabinetPowerLibraryId != null : false).Count();
+            OutPut.CabinetTelecomCount = UsedSitesInOtherInventories.Where(x => x.cabinetId != null ?
+                x.cabinet.CabinetTelecomLibraryId != null : false).Count();
+            OutPut.SolarCount = UsedSitesInOtherInventories.Where(x => x.solarId != null).Count();
+            OutPut.GeneratorCount = UsedSitesInOtherInventories.Where(x => x.generatorId != null).Count();
+
+            return new Response<ItemsOnSite>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
     }
 }

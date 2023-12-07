@@ -428,7 +428,9 @@ namespace TLIS_Service.Services
                             string siteStatusId = SiteDataTable.Rows[j]["siteStatus"].ToString();
                             if (!string.IsNullOrEmpty(siteStatusId))
                             {
-                                TLIsiteStatus ChecksiteStatusId = AllSiteStatusInTLIS.FirstOrDefault(x => x.Name.ToLower() == siteStatusId.ToLower());
+                                TLIsiteStatus ChecksiteStatusId = AllSiteStatusInTLIS
+                                    .FirstOrDefault(x => x.Name.ToLower() == siteStatusId.ToLower());
+
                                 if (ChecksiteStatusId != null)
                                 {
                                     NewSite.siteStatusId = ChecksiteStatusId.Id;
@@ -454,7 +456,26 @@ namespace TLIS_Service.Services
                                     continue;
                                 }
                             }
+                            else
+                            {
+                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                {
+                                    CreatedAt = DateTime.Now,
+                                    ErrMsg = $"(siteStatus) coulumn's value can't be null or empty",
+                                    IsDeleted = false,
+                                    IsLib = false,
+                                    RefTable = Helpers.Constants.TablesNames.TLIsiteStatus.ToString(),
+                                    SheetName = "Sites",
+                                    UniqueName = $"(SiteCode) : ({SiteCode})"
+                                };
 
+                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                _unitOfWork.SaveChanges();
+
+                                SiteTransaction.Complete();
+
+                                continue;
+                            }
                             string RegionCode = SiteDataTable.Rows[j]["RegionCode"].ToString();
                             if (!string.IsNullOrEmpty(RegionCode))
                             {
@@ -484,7 +505,26 @@ namespace TLIS_Service.Services
                                     continue;
                                 }
                             }
+                            else
+                            {
+                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                {
+                                    CreatedAt = DateTime.Now,
+                                    ErrMsg = $"(RegionCode) coulumn's value can't be null or empty",
+                                    IsDeleted = false,
+                                    IsLib = false,
+                                    RefTable = Helpers.Constants.TablesNames.TLIregion.ToString(),
+                                    SheetName = "Sites",
+                                    UniqueName = $"(SiteCode) : ({SiteCode})"
+                                };
 
+                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                _unitOfWork.SaveChanges();
+
+                                SiteTransaction.Complete();
+
+                                continue;
+                            }
                             string AreaId = SiteDataTable.Rows[j]["Area"].ToString();
                             if (!string.IsNullOrEmpty(AreaId))
                             {
@@ -514,7 +554,26 @@ namespace TLIS_Service.Services
                                     continue;
                                 }
                             }
+                            else
+                            {
+                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                {
+                                    CreatedAt = DateTime.Now,
+                                    ErrMsg = $"(Area) coulumn's value can't be null or empty",
+                                    IsDeleted = false,
+                                    IsLib = false,
+                                    RefTable = Helpers.Constants.TablesNames.TLIarea.ToString(),
+                                    SheetName = "Sites",
+                                    UniqueName = $"(SiteCode) : ({SiteCode})"
+                                };
 
+                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                _unitOfWork.SaveChanges();
+
+                                SiteTransaction.Complete();
+
+                                continue;
+                            }
                             _unitOfWork.SiteRepository.Add(NewSite);
                             SiteService._MySites.Add(NewSite);
 
@@ -787,6 +846,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckSideArmModelIfExist != null)
                                         {
+                                            SideArmTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -800,8 +861,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            SideArmTransaction.Complete();
 
                                             continue;
                                         }
@@ -822,6 +881,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                SideArmTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -835,8 +896,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                SideArmTransaction.Complete();
 
                                                 continue;
                                             }
@@ -854,6 +913,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                SideArmTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -867,8 +928,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                SideArmTransaction.Complete();
 
                                                 continue;
                                             }
@@ -886,6 +945,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                SideArmTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -899,8 +960,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                SideArmTransaction.Complete();
 
                                                 continue;
                                             }
@@ -940,8 +999,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    SideArmTransaction.Complete();
 
                                     continue;
                                 }
@@ -1020,6 +1077,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckMastModelIfExist != null)
                                         {
+                                            MastTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -1034,8 +1093,6 @@ namespace TLIS_Service.Services
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
 
-                                            MastTransaction.Complete();
-
                                             continue;
                                         }
 
@@ -1045,25 +1102,28 @@ namespace TLIS_Service.Services
 
                                         string Type = MastDataTable.Rows[j]["Type1"].ToString();
 
-                                        TLIinstallationCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == Type.ToLower() && !x.Deleted);
-
-                                        if (CheckInstallationTypeIfExist != null)
-                                            NewMastEntity.InstallationCivilwithoutLegsTypeId = CheckInstallationTypeIfExist.Id;
-
-                                        else
+                                        if (!string.IsNullOrEmpty(Type))
                                         {
-                                            TLIinstallationCivilwithoutLegsType NewInstallationTypeEntity = new TLIinstallationCivilwithoutLegsType()
+                                            TLIinstallationCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == Type.ToLower() && !x.Deleted);
+
+                                            if (CheckInstallationTypeIfExist != null)
+                                                NewMastEntity.InstallationCivilwithoutLegsTypeId = CheckInstallationTypeIfExist.Id;
+
+                                            else
                                             {
-                                                Name = Type,
-                                                Deleted = false,
-                                                Disable = false
-                                            };
+                                                TLIinstallationCivilwithoutLegsType NewInstallationTypeEntity = new TLIinstallationCivilwithoutLegsType()
+                                                {
+                                                    Name = Type,
+                                                    Deleted = false,
+                                                    Disable = false
+                                                };
 
-                                            _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Add(NewInstallationTypeEntity);
-                                            _unitOfWork.SaveChanges();
+                                                _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Add(NewInstallationTypeEntity);
+                                                _unitOfWork.SaveChanges();
 
-                                            NewMastEntity.InstallationCivilwithoutLegsTypeId = NewInstallationTypeEntity.Id;
+                                                NewMastEntity.InstallationCivilwithoutLegsTypeId = NewInstallationTypeEntity.Id;
+                                            }
                                         }
 
                                         string MastHeight_Designed = MastDataTable.Rows[j]["Height As Design (m)"].ToString();
@@ -1077,6 +1137,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MastTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1090,8 +1152,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                MastTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1108,6 +1168,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MastTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1121,8 +1183,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                MastTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1162,13 +1222,14 @@ namespace TLIS_Service.Services
                                         _unitOfWork.CivilWithoutLegLibraryRepository.Add(NewMastEntity);
                                         _unitOfWork.SaveChanges();
 
-                                        MastTransaction.Complete();
-
                                         var ObjectForAddInCashList = _unitOfWork.CivilWithoutLegLibraryRepository
                                             .GetIncludeWhereFirst(x => x.Id == NewMastEntity.Id, x => x.CivilSteelSupportCategory,
                                                 x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType, x => x.structureType);
 
+                                        MastTransaction.Complete();
+
                                         CivilLibraryService._CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
+
                                     }
                                     else
                                     {
@@ -1178,6 +1239,8 @@ namespace TLIS_Service.Services
                                 }
                                 catch (Exception err)
                                 {
+                                    MastTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -1191,8 +1254,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    MastTransaction.Complete();
 
                                     continue;
                                 }
@@ -1273,6 +1334,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckMW_ODUModelIfExist != null)
                                         {
+                                            MW_ODUTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -1286,8 +1349,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            MW_ODUTransaction.Complete();
 
                                             continue;
                                         }
@@ -1319,6 +1380,8 @@ namespace TLIS_Service.Services
 
                                             if (!CheckParser)
                                             {
+                                                MW_ODUTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1333,8 +1396,6 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
 
-                                                MW_ODUTransaction.Complete();
-
                                                 continue;
                                             }
                                             else
@@ -1343,25 +1404,28 @@ namespace TLIS_Service.Services
 
                                         string Party = MW_ODUDataTable.Rows[j]["Party"].ToString();
 
-                                        TLIparity CheckParityIfExist = _unitOfWork.ParityRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == Party.ToLower() && !x.Delete);
-
-                                        if (CheckParityIfExist != null)
-                                            NewMWODULibraryEntity.parityId = CheckParityIfExist.Id;
-
-                                        else
+                                        if (!string.IsNullOrEmpty(Party))
                                         {
-                                            TLIparity NewParityEntity = new TLIparity()
+                                            TLIparity CheckParityIfExist = _unitOfWork.ParityRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == Party.ToLower() && !x.Delete);
+
+                                            if (CheckParityIfExist != null)
+                                                NewMWODULibraryEntity.parityId = CheckParityIfExist.Id;
+
+                                            else
                                             {
-                                                Name = Party,
-                                                Delete = false,
-                                                Disable = false
-                                            };
+                                                TLIparity NewParityEntity = new TLIparity()
+                                                {
+                                                    Name = Party,
+                                                    Delete = false,
+                                                    Disable = false
+                                                };
 
-                                            _unitOfWork.ParityRepository.Add(NewParityEntity);
-                                            _unitOfWork.SaveChanges();
+                                                _unitOfWork.ParityRepository.Add(NewParityEntity);
+                                                _unitOfWork.SaveChanges();
 
-                                            NewMWODULibraryEntity.parityId = NewParityEntity.Id;
+                                                NewMWODULibraryEntity.parityId = NewParityEntity.Id;
+                                            }
                                         }
 
                                         NewMWODULibraryEntity.frequency_range = MW_ODUDataTable.Rows[j]["Frequency Range"].ToString();
@@ -1378,6 +1442,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MW_ODUTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1391,8 +1457,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                MW_ODUTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1447,6 +1511,8 @@ namespace TLIS_Service.Services
 
                                                     else
                                                     {
+                                                        MW_ODUTransaction.Dispose();
+
                                                         TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                         {
                                                             CreatedAt = DateTime.Now,
@@ -1460,8 +1526,6 @@ namespace TLIS_Service.Services
 
                                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                         _unitOfWork.SaveChanges();
-
-                                                        MW_ODUTransaction.Complete();
 
                                                         continue;
                                                     }
@@ -1518,6 +1582,8 @@ namespace TLIS_Service.Services
 
                                                         else
                                                         {
+                                                            MW_ODUTransaction.Dispose();
+
                                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                             {
                                                                 CreatedAt = DateTime.Now,
@@ -1531,8 +1597,6 @@ namespace TLIS_Service.Services
 
                                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                             _unitOfWork.SaveChanges();
-
-                                                            MW_ODUTransaction.Complete();
 
                                                             continue;
                                                         }
@@ -1565,15 +1629,17 @@ namespace TLIS_Service.Services
                                         continue;
                                     }
 
-                                    MW_ODUTransaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_ODULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == NewMWODULibraryEntity.Id, x => x.parity);
 
+                                    MW_ODUTransaction.Complete();
+                                    
                                     MWLibraryService._MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
+                                    MW_ODUTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -1587,8 +1653,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    MW_ODUTransaction.Complete();
 
                                     continue;
                                 }
@@ -1669,6 +1733,8 @@ namespace TLIS_Service.Services
 
                                         if (radioAntennaLibrary != null)
                                         {
+                                            RadioAntennaTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -1682,8 +1748,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            RadioAntennaTransaction.Complete();
 
                                             continue;
                                         }
@@ -1703,6 +1767,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                RadioAntennaTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1716,8 +1782,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                RadioAntennaTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1735,6 +1799,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                RadioAntennaTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1748,8 +1814,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                RadioAntennaTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1770,6 +1834,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                RadioAntennaTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1783,8 +1849,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                RadioAntennaTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1804,6 +1868,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                RadioAntennaTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -1817,8 +1883,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                RadioAntennaTransaction.Complete();
 
                                                 continue;
                                             }
@@ -1901,15 +1965,17 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    RadioAntennaTransaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.RadioAntennaLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == NewRadioAntennaLibraryEntity.Id);
+
+                                    RadioAntennaTransaction.Complete();
 
                                     RadioLibraryService._RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
+                                    RadioAntennaTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -1923,8 +1989,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    RadioAntennaTransaction.Complete();
 
                                     continue;
                                 }
@@ -2041,6 +2105,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                RadioRRUTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -2054,8 +2120,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                RadioRRUTransaction.Complete();
 
                                                 continue;
                                             }
@@ -2088,6 +2152,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    RadioRRUTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -2102,8 +2168,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    RadioRRUTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -2131,6 +2195,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    RadioRRUTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -2145,8 +2211,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    RadioRRUTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -2163,7 +2227,8 @@ namespace TLIS_Service.Services
 
                                         List<KeyValuePair<string, string>> RadioRRUDynamicAttributesToAdd = new List<KeyValuePair<string, string>>()
                                         {
-                                            new KeyValuePair<string, string>("Created By", RadioRRUDataTable.Rows[j]["Created By"].ToString())
+                                            new KeyValuePair<string, string>("Created By", RadioRRUDataTable.Rows[j]["Created By"].ToString()),
+                                            new KeyValuePair<string, string>("Created", RadioRRUDataTable.Rows[j]["Created By"].ToString())
                                         };
 
                                         foreach (KeyValuePair<string, string> RadioRRUDynamicAttribute in RadioRRUDynamicAttributesToAdd)
@@ -2232,15 +2297,17 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    RadioRRUTransaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.RadioAntennaLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == NewRadioRRULibraryEntity.Id);
+
+                                    RadioRRUTransaction.Complete();
 
                                     RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
+                                    RadioRRUTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -2254,8 +2321,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    RadioRRUTransaction.Complete();
 
                                     continue;
                                 }
@@ -2334,6 +2399,8 @@ namespace TLIS_Service.Services
 
                                     if (CheckMW_RFULibraryModelIfExist != null)
                                     {
+                                        MW_RFUTransaction.Dispose();
+
                                         TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                         {
                                             CreatedAt = DateTime.Now,
@@ -2347,8 +2414,6 @@ namespace TLIS_Service.Services
 
                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                         _unitOfWork.SaveChanges();
-
-                                        MW_RFUTransaction.Complete();
 
                                         continue;
                                     }
@@ -2372,6 +2437,8 @@ namespace TLIS_Service.Services
 
                                         else
                                         {
+                                            MW_RFUTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -2385,8 +2452,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            MW_RFUTransaction.Complete();
 
                                             continue;
                                         }
@@ -2415,6 +2480,8 @@ namespace TLIS_Service.Services
 
                                         else
                                         {
+                                            MW_RFUTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -2429,8 +2496,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            MW_RFUTransaction.Complete();
 
                                             continue;
                                         }
@@ -2472,15 +2537,17 @@ namespace TLIS_Service.Services
                                         AddLogistical(MW_RDULibraryVendor, "Vendor", "MW", "TLImwRFULibrary", NewMW_RFULibraryEntity.Id);
                                     }
 
-                                    MW_RFUTransaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_RFULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == NewMW_RFULibraryEntity.Id, x => x.boardType, x => x.diversityType);
+
+                                    MW_RFUTransaction.Complete();
 
                                     MWLibraryService._MW_RFULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
+                                    MW_RFUTransaction.Dispose();
+
                                     string MW_RFULibraryModel = $"NA/{DateTime.Now} + // {j}";
 
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
@@ -2496,8 +2563,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    MW_RFUTransaction.Complete();
 
                                     continue;
                                 }
@@ -2578,6 +2643,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckMW_BULibraryModelIfExist != null)
                                         {
+                                            MW_BUTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -2591,8 +2658,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            MW_BUTransaction.Complete();
 
                                             continue;
                                         }
@@ -2616,6 +2681,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MW_BUTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -2630,8 +2697,6 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
 
-                                                MW_BUTransaction.Complete();
-
                                                 continue;
                                             }
                                         }
@@ -2644,6 +2709,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MW_BUTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -2657,8 +2724,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                MW_BUTransaction.Complete();
 
                                                 continue;
                                             }
@@ -2674,6 +2739,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MW_BUTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -2687,8 +2754,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                MW_BUTransaction.Complete();
 
                                                 continue;
                                             }
@@ -2717,6 +2782,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    MW_BUTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -2731,8 +2798,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    MW_BUTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -2760,6 +2825,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    MW_BUTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -2774,8 +2841,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    MW_BUTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -2866,15 +2931,17 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    MW_BUTransaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_BULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MWBULibrary.Id, x => x.diversityType);
+
+                                    MW_BUTransaction.Complete();
 
                                     MWLibraryService._MW_BULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
+                                    MW_BUTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -2888,8 +2955,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    MW_BUTransaction.Complete();
 
                                     continue;
                                 }
@@ -2951,7 +3016,7 @@ namespace TLIS_Service.Services
 
                         for (int j = 0; j <= MW_DishDataTable.Rows.Count - 1; j++)
                         {
-                            using (TransactionScope MW_BUTransaction = new TransactionScope(TransactionScopeOption.Required,
+                            using (TransactionScope MW_DishTransaction = new TransactionScope(TransactionScopeOption.Required,
                                 new System.TimeSpan(0, 15, 0)))
                             {
                                 try
@@ -2967,6 +3032,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckMW_DishLibraryModelIfExist != null)
                                         {
+                                            MW_DishTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -2980,8 +3047,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            MW_BUTransaction.Complete();
 
                                             continue;
                                         }
@@ -3016,6 +3081,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    MW_DishTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -3030,8 +3097,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    MW_BUTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -3059,6 +3124,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    MW_DishTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -3073,8 +3140,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    MW_BUTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -3094,6 +3159,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MW_DishTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -3107,8 +3174,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                MW_BUTransaction.Complete();
 
                                                 continue;
                                             }
@@ -3124,6 +3189,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                MW_DishTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -3138,58 +3205,62 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
 
-                                                MW_BUTransaction.Complete();
-
                                                 continue;
                                             }
                                         }
 
                                         string CSVMW_DishAsType = MW_DishDataTable.Rows[j]["AS_TYPE"].ToString();
 
-                                        TLIasType CheckAsType = _unitOfWork.AsTypeRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == CSVMW_DishAsType.ToLower() && !x.Delete);
-
-                                        if (CheckAsType != null)
-                                            NewMWDishLibraryEntity.asTypeId = CheckAsType.Id;
-
-                                        else
+                                        if (!string.IsNullOrEmpty(CSVMW_DishAsType))
                                         {
-                                            TLIasType NewAsTypeEntity = new TLIasType()
+                                            TLIasType CheckAsType = _unitOfWork.AsTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == CSVMW_DishAsType.ToLower() && !x.Delete);
+
+                                            if (CheckAsType != null)
+                                                NewMWDishLibraryEntity.asTypeId = CheckAsType.Id;
+
+                                            else
                                             {
-                                                Name = CSVMW_DishAsType,
-                                                Delete = false,
-                                                Disable = false
-                                            };
+                                                TLIasType NewAsTypeEntity = new TLIasType()
+                                                {
+                                                    Name = CSVMW_DishAsType,
+                                                    Delete = false,
+                                                    Disable = false
+                                                };
 
-                                            _unitOfWork.AsTypeRepository.Add(NewAsTypeEntity);
-                                            _unitOfWork.SaveChanges();
+                                                _unitOfWork.AsTypeRepository.Add(NewAsTypeEntity);
+                                                _unitOfWork.SaveChanges();
 
-                                            NewMWDishLibraryEntity.asTypeId = NewAsTypeEntity.Id;
-                                        }
+                                                NewMWDishLibraryEntity.asTypeId = NewAsTypeEntity.Id;
+                                            }
+                                        } 
 
                                         string CSVMW_DishPolarityType = MW_DishDataTable.Rows[j]["POLARITY"].ToString();
 
-                                        TLIpolarityType PolarityType = _unitOfWork.PolarityTypeRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == CSVMW_DishPolarityType.ToLower() && !x.Delete);
-
-                                        if (PolarityType != null)
-                                            NewMWDishLibraryEntity.polarityTypeId = PolarityType.Id;
-
-                                        else
+                                        if (!string.IsNullOrEmpty(CSVMW_DishPolarityType))
                                         {
-                                            TLIpolarityType NewPolarityTypeEntity = new TLIpolarityType()
+                                            TLIpolarityType PolarityType = _unitOfWork.PolarityTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == CSVMW_DishPolarityType.ToLower() && !x.Delete);
+
+                                            if (PolarityType != null)
+                                                NewMWDishLibraryEntity.polarityTypeId = PolarityType.Id;
+
+                                            else
                                             {
-                                                Name = CSVMW_DishPolarityType,
-                                                Delete = false,
-                                                Disable = false
-                                            };
+                                                TLIpolarityType NewPolarityTypeEntity = new TLIpolarityType()
+                                                {
+                                                    Name = CSVMW_DishPolarityType,
+                                                    Delete = false,
+                                                    Disable = false
+                                                };
 
-                                            _unitOfWork.PolarityTypeRepository.Add(NewPolarityTypeEntity);
-                                            _unitOfWork.SaveChanges();
+                                                _unitOfWork.PolarityTypeRepository.Add(NewPolarityTypeEntity);
+                                                _unitOfWork.SaveChanges();
 
-                                            NewMWDishLibraryEntity.polarityTypeId = NewPolarityTypeEntity.Id;
+                                                NewMWDishLibraryEntity.polarityTypeId = NewPolarityTypeEntity.Id;
+                                            }
                                         }
-
+                                        
                                         _unitOfWork.MW_DishLibraryRepository.Add(NewMWDishLibraryEntity);
                                         _unitOfWork.SaveChanges();
 
@@ -3201,15 +3272,17 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    MW_BUTransaction.Complete();
-
                                     var ObjectForAddInCashList = _unitOfWork.MW_DishLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == NewMWDishLibraryEntity.Id, x => x.asType, x => x.polarityType);
+
+                                    MW_DishTransaction.Complete();
 
                                     MWLibraryService._MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
+                                    MW_DishTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -3223,8 +3296,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    MW_BUTransaction.Complete();
 
                                     continue;
                                 }
@@ -3303,6 +3374,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckPowerLibraryModelIfExist != null)
                                         {
+                                            PowerTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -3316,8 +3389,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            PowerTransaction.Complete();
 
                                             continue;
                                         }
@@ -3351,6 +3422,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    PowerTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -3365,8 +3438,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    PowerTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -3394,6 +3465,8 @@ namespace TLIS_Service.Services
 
                                                 else
                                                 {
+                                                    PowerTransaction.Dispose();
+
                                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                     {
                                                         CreatedAt = DateTime.Now,
@@ -3408,8 +3481,6 @@ namespace TLIS_Service.Services
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                     _unitOfWork.SaveChanges();
-
-                                                    PowerTransaction.Complete();
 
                                                     continue;
                                                 }
@@ -3432,6 +3503,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                PowerTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -3445,8 +3518,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                PowerTransaction.Complete();
 
                                                 continue;
                                             }
@@ -3463,6 +3534,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                PowerTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -3476,8 +3549,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                PowerTransaction.Complete();
 
                                                 continue;
                                             }
@@ -3544,16 +3615,18 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        PowerTransaction.Complete();
-
                                         var ObjectForAddInCashList = _unitOfWork.PowerLibraryRepository
                                             .GetIncludeWhereFirst(x => x.Id == NewPowerLibraryEntity.Id);
+
+                                        PowerTransaction.Complete();
 
                                         PowerLibraryService._PowerLibraryEntities.Add(ObjectForAddInCashList);
                                     }
                                 }
                                 catch (Exception err)
                                 {
+                                    PowerTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -3567,8 +3640,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    PowerTransaction.Complete();
 
                                     continue;
                                 }
@@ -3643,6 +3714,8 @@ namespace TLIS_Service.Services
 
                                         if (CheckSideArmModelIfExist != null)
                                         {
+                                            CivilWithLegsTransaction.Dispose();
+
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
@@ -3656,8 +3729,6 @@ namespace TLIS_Service.Services
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                             _unitOfWork.SaveChanges();
-
-                                            CivilWithLegsTransaction.Complete();
 
                                             continue;
                                         }
@@ -3674,6 +3745,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                CivilWithLegsTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -3687,8 +3760,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                CivilWithLegsTransaction.Complete();
 
                                                 continue;
                                             }
@@ -3732,6 +3803,8 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
+                                                CivilWithLegsTransaction.Dispose();
+
                                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                 {
                                                     CreatedAt = DateTime.Now,
@@ -3745,8 +3818,6 @@ namespace TLIS_Service.Services
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                                 _unitOfWork.SaveChanges();
-
-                                                CivilWithLegsTransaction.Complete();
 
                                                 continue;
                                             }
@@ -3816,11 +3887,11 @@ namespace TLIS_Service.Services
                                             AddLogistical(Supplier, "Supplier", "CivilSupport", "TLIcivilWithLegLibrary", NewCivilWithLegsLibraryEntity.Id);
                                         }
 
-                                        CivilWithLegsTransaction.Complete();
-
                                         var ObjectForAddInCashList = _unitOfWork.CivilWithLegLibraryRepository
                                             .GetIncludeWhereFirst(x => x.Id == NewCivilWithLegsLibraryEntity.Id, x => x.civilSteelSupportCategory,
                                                 x => x.sectionsLegType, x => x.structureType, x => x.supportTypeDesigned);
+
+                                        CivilWithLegsTransaction.Complete();
 
                                         CivilLibraryService._CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
 
@@ -3833,6 +3904,8 @@ namespace TLIS_Service.Services
                                 }
                                 catch (Exception err)
                                 {
+                                    CivilWithLegsTransaction.Dispose();
+
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
@@ -3846,8 +3919,6 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                     _unitOfWork.SaveChanges();
-
-                                    CivilWithLegsTransaction.Complete();
 
                                     continue;
                                 }
@@ -19150,9 +19221,7 @@ namespace TLIS_Service.Services
 
                                                 NewCivilWithLegsEntity.baseTypeId = NewBaseTypeForeignKeyEntity.Id;
                                             }
-                                        }
-                                        if (!string.IsNullOrEmpty(TowerBaseCivilWithLegsTypeName))
-                                        {
+
                                             TLIbaseCivilWithLegsType baseCivilWithLegsType = _unitOfWork.BaseCivilWithLegsTypeRepository
                                                 .GetWhereFirst(x => x.Name.ToLower() == TowerBaseCivilWithLegsTypeName.ToLower() && !x.Deleted);
 
@@ -19168,7 +19237,32 @@ namespace TLIS_Service.Services
                                                 NewCivilWithLegsEntity.BaseCivilWithLegTypeId = NewbaseCivilWithLegsType.Id;
                                             }
                                         }
+                                        else
+                                        {
+                                            TLIbaseType BaseTypeForeignKeyEntity = _unitOfWork.BaseTypeRepository
+                                                .GetWhereFirst(x => x.Id == 0);
 
+                                            if (BaseTypeForeignKeyEntity != null)
+                                            {
+                                                NewCivilWithLegsEntity.baseTypeId = 0;
+                                            }
+                                            else
+                                            {
+                                                TLIbaseType NewBaseTypeForeignKeyEntity = new TLIbaseType
+                                                {
+                                                    Id = 0,
+                                                    Name = "NA",
+                                                    Disable = false,
+                                                    Deleted = false
+                                                };
+
+                                                _unitOfWork.BaseTypeRepository.Add(NewBaseTypeForeignKeyEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                NewCivilWithLegsEntity.baseTypeId = NewBaseTypeForeignKeyEntity.Id;
+                                            }
+                                        }
+                                        
                                         string TowerGuyLineType = TypeOfSupportInfoDataTable.Rows[j]["Guyed Type"].ToString();
                                         if (!string.IsNullOrEmpty(TowerGuyLineType))
                                         {
@@ -19414,6 +19508,7 @@ namespace TLIS_Service.Services
                                                 legname += " as per 0 north";
 
                                             leg.CiviLegName = "Leg" + LegLetters[k];
+
                                             leg.LegAzimuth = float.Parse(TypeOfSupportInfoDataTable.Rows[j][legname].ToString());
                                             leg.CivilWithLegInstId = NewCivilWithLegsEntity.Id;
 
@@ -19475,40 +19570,40 @@ namespace TLIS_Service.Services
 
                                                 continue;
                                             }
-                                        }
 
-                                        string TowerAzimuthWithReferenceString = TypeOfSupportInfoDataTable.Rows[j]["Azimuth with reference civil steel"].ToString();
-                                        float TowerAzimuthWithReference = 0;
-                                        if (!string.IsNullOrEmpty(TowerAzimuthWithReferenceString))
-                                        {
-                                            CheckParser = float.TryParse(TowerAzimuthWithReferenceString, out FloatParser);
-
-                                            if (CheckParser)
-                                                TowerAzimuthWithReference = FloatParser;
-
-                                            else
+                                            string TowerAzimuthWithReferenceString = TypeOfSupportInfoDataTable.Rows[j]["Azimuth with reference civil steel"].ToString();
+                                            float TowerAzimuthWithReference = 0;
+                                            if (!string.IsNullOrEmpty(TowerAzimuthWithReferenceString))
                                             {
-                                                TowerTransaction.Dispose();
+                                                CheckParser = float.TryParse(TowerAzimuthWithReferenceString, out FloatParser);
 
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                if (CheckParser)
+                                                    TowerAzimuthWithReference = FloatParser;
+
+                                                else
                                                 {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Azimuth with reference civil steel) coulumn's value must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                    SheetName = "Type of support info",
-                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                };
+                                                    TowerTransaction.Dispose();
 
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"(Azimuth with reference civil steel) coulumn's value must be a number",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                        SheetName = "Type of support info",
+                                                        UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                    };
 
-                                                continue;
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+
+                                                AddDistance(TowerReferenceName, TowerAllCivilInst.Id, TowerAzimuthWithReference, TowerReferenceCivilSteelDistance, CivilWithLegsSiteCode);
                                             }
                                         }
-
-                                        AddDistance(TowerReferenceName, TowerAllCivilInst.Id, TowerAzimuthWithReference, TowerReferenceCivilSteelDistance, CivilWithLegsSiteCode);
 
                                         //
                                         // Logistical Information
@@ -20712,6 +20807,8 @@ namespace TLIS_Service.Services
                                                 continue;
                                             }
                                         }
+                                        else
+                                            MastCivilSiteDateEntity.InstallationDate = DateTime.Now;
 
                                         _unitOfWork.CivilSiteDateRepository.Add(MastCivilSiteDateEntity);
                                         _unitOfWork.SaveChanges();
@@ -21030,32 +21127,23 @@ namespace TLIS_Service.Services
 
                                         if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Subtype"].ToString()))
                                         {
-                                            int IntegerParser = 0;
-
-                                            CheckParser = int.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Subtype"].ToString(), out IntegerParser);
-
-                                            if (CheckParser)
-                                                NewMonopoleEntity.subTypeId = IntegerParser;
-
-                                            else
+                                            string MonopoleSubType = TypeOfSupportInfoDataTable.Rows[j]["Subtype"].ToString();
+                                            if (!string.IsNullOrEmpty(MonopoleSubType))
                                             {
-                                                MonopoleTransaction.Dispose();
+                                                TLIsubType SubTypeEntity = _unitOfWork.SubTypeRepository
+                                                    .GetWhereFirst(x => x.Name.ToLower() == MonopoleSubType.ToLower() && !x.Delete);
 
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                if (SubTypeEntity != null)
+                                                    NewMonopoleEntity.subTypeId = SubTypeEntity.Id;
+
+                                                else
                                                 {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Subtype) coulumn's value must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(),
-                                                    SheetName = "Type of support info",
-                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
+                                                    TLIsubType NewSubTypeEntity = new TLIsubType();
+                                                    NewSubTypeEntity.Name = MonopoleSubType;
+                                                    _unitOfWork.SubTypeRepository.Add(NewSubTypeEntity);
+                                                    _unitOfWork.SaveChanges();
+                                                    NewMonopoleEntity.subTypeId = NewSubTypeEntity.Id;
+                                                }
                                             }
                                         }
                                         if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Height (m)"].ToString()))
@@ -21116,13 +21204,12 @@ namespace TLIS_Service.Services
                                         }
 
                                         string MonopoleReinforcedForType = TypeOfSupportInfoDataTable.Rows[j]["Reinforced"].ToString();
+                                        NewMonopoleEntity.reinforced = Reinforced.No;
+
                                         if (!string.IsNullOrEmpty(MonopoleReinforcedForType))
                                         {
                                             if (MonopoleReinforcedForType.ToLower() == "Yes".ToLower())
                                                 NewMonopoleEntity.reinforced = Reinforced.Yes;
-
-                                            else
-                                                NewMonopoleEntity.reinforced = Reinforced.No;
                                         }
 
                                         string MonopoleLadder_Steps = TypeOfSupportInfoDataTable.Rows[j]["Ladder /steps"].ToString();
@@ -21136,13 +21223,12 @@ namespace TLIS_Service.Services
                                         }
 
                                         string MonopoleAvailablityOfWorkPlatforms = TypeOfSupportInfoDataTable.Rows[j]["Availability of work platforms"].ToString();
+                                        NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.No;
+
                                         if (!string.IsNullOrEmpty(MonopoleAvailablityOfWorkPlatforms))
                                         {
                                             if (MonopoleAvailablityOfWorkPlatforms.ToLower() == "Yes".ToLower())
                                                 NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.Yes;
-
-                                            else
-                                                NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.No;
                                         }
 
                                         string MonopoleEquipmentsLocation = TypeOfSupportInfoDataTable.Rows[j]["Equipments Location"].ToString();
@@ -21154,8 +21240,8 @@ namespace TLIS_Service.Services
                                             else if (MonopoleEquipmentsLocation.ToLower() == "Together".ToLower())
                                                 NewMonopoleEntity.equipmentsLocation = EquipmentsLocation.Together;
 
-                                            else if (MonopoleEquipmentsLocation.ToLower() == "Together".ToLower())
-                                                NewMonopoleEntity.equipmentsLocation = EquipmentsLocation.Together;
+                                            else if (MonopoleEquipmentsLocation.ToLower() == "Body".ToLower())
+                                                NewMonopoleEntity.equipmentsLocation = EquipmentsLocation.Body;
                                         }
 
                                         _unitOfWork.CivilWithoutLegRepository.Add(NewMonopoleEntity);
@@ -21318,11 +21404,6 @@ namespace TLIS_Service.Services
                                         // Civil Site Date..
                                         //
 
-
-                                        //
-                                        // Civil Site Date..
-                                        //
-
                                         TLIcivilSiteDate MonopoleCivilSiteDateEntity = new TLIcivilSiteDate();
 
                                         MonopoleCivilSiteDateEntity.SiteCode = MonopoleSiteCode;
@@ -21359,6 +21440,8 @@ namespace TLIS_Service.Services
                                                 continue;
                                             }
                                         }
+                                        else
+                                            MonopoleCivilSiteDateEntity.InstallationDate = DateTime.Now;
 
                                         _unitOfWork.CivilSiteDateRepository.Add(MonopoleCivilSiteDateEntity);
                                         _unitOfWork.SaveChanges();
@@ -21473,13 +21556,15 @@ namespace TLIS_Service.Services
 
                                 // Dummy Library For All Civil Non Steel Types..
 
-                                TLIcivilNonSteelLibrary CheckNALibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetByID(CivilNonSteelTypeCheckIfExist.Id * -1);
+                                TLIcivilNonSteelLibrary CheckNALibrary = _unitOfWork.CivilNonSteelLibraryRepository
+                                    .GetByID(CivilNonSteelTypeCheckIfExist.Id * 1);
+
                                 int CivilNonSteelLibraryId = CheckNALibrary.Id;
                                 if (CheckNALibrary == null)
                                 {
                                     TLIcivilNonSteelLibrary DefaultLibrary = new TLIcivilNonSteelLibrary()
                                     {
-                                        Id = -1 * CivilNonSteelTypeCheckIfExist.Id,
+                                        Id = 1 * CivilNonSteelTypeCheckIfExist.Id,
                                         Model = CivilNonSteelTypeCheckIfExist.Name,
                                         Active = false,
                                         civilNonSteelTypeId = CivilNonSteelTypeCheckIfExist.Id,
@@ -22275,14 +22360,13 @@ namespace TLIS_Service.Services
                                     }
 
                                     string SideArmActiveComponent = SideArmDataTable.Rows[j]["Active component"].ToString();
-                                    if (string.IsNullOrEmpty(SideArmActiveComponent))
-                                        NewSideArmEntity.Active = true;
+                                    NewSideArmEntity.Active = true;
 
-                                    else if (SideArmActiveComponent.ToLower() == "Yes".ToLower())
-                                        NewSideArmEntity.Active = true;
-
-                                    else
-                                        NewSideArmEntity.Active = false;
+                                    if (!string.IsNullOrEmpty(SideArmActiveComponent))
+                                    {
+                                        if (SideArmActiveComponent.ToLower() != "Yes".ToLower())
+                                            NewSideArmEntity.Active = false;
+                                    }
 
                                     string SideArmOwnerName = SideArmDataTable.Rows[j]["Side Arm Owner"].ToString();
 
@@ -22345,6 +22429,26 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
+                                    }
+                                    else
+                                    {
+                                        SideArmTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(Side Arm Type) coulumn's value: ({SideArmTypeName}) can't be null or empty",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIsideArmType.ToString(),
+                                            SheetName = "Side Arm info",
+                                            UniqueName = $"(Side Arm Name) : {NewSideArmEntity.Name}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
                                     }
 
                                     string SideArmInstallationPlaceName = SideArmDataTable.Rows[j]["Side Arm installation place"].ToString();
@@ -22823,7 +22927,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                    ////S////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////
                     /////////////////// MW Dish //////////////////////////////////
                     ////////////////////////////////////////////////////////////
 
@@ -23505,8 +23609,8 @@ namespace TLIS_Service.Services
                                                 IsDeleted = false,
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "Branching Unit Info",
-                                                UniqueName = $"(Branching Unit Name) : {MW_DishDataTable.Rows[j]["Branching Unit Name"]}"
+                                                SheetName = "MW Dish Info",
+                                                UniqueName = $"(MW Dish Name) : {MW_DishDataTable.Rows[j]["MW Dish Name"]}"
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -23898,10 +24002,9 @@ namespace TLIS_Service.Services
                                     NewMW_DishAllLoadInstEntity.mwDishId = NewMW_DishEntity.Id;
 
                                     string MW_DishActive = MW_DishDataTable.Rows[j]["Active component"].ToString();
-                                    if (MW_DishActive.ToLower() == "Yes".ToLower())
-                                        NewMW_DishAllLoadInstEntity.Active = true;
+                                    NewMW_DishAllLoadInstEntity.Active = true;
 
-                                    else
+                                    if (MW_DishActive.ToLower() != "Yes".ToLower())
                                         NewMW_DishAllLoadInstEntity.Active = false;
 
                                     string MW_DishCurrentStatus = MW_DishDataTable.Rows[j]["Current Status"].ToString();
@@ -23952,6 +24055,8 @@ namespace TLIS_Service.Services
                                         else
                                             NewMW_DishCivilLoadsEntity.InstallationDate = DateTime.Now;
                                     }
+                                    else
+                                        NewMW_DishCivilLoadsEntity.InstallationDate = DateTime.Now;
 
                                     _unitOfWork.CivilLoadsRepository.Add(NewMW_DishCivilLoadsEntity);
                                     _unitOfWork.SaveChanges();
@@ -24553,6 +24658,26 @@ namespace TLIS_Service.Services
                                             continue;
                                         }
                                     }
+                                    else
+                                    {
+                                        MW_BUTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(Serial_Number) coulumn's value can't be null or empty",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLImwBU.ToString(),
+                                            SheetName = "Branching Unit Info",
+                                            UniqueName = $"(Branching Unit Name) : {MW_BUDataTable.Rows[j]["Branching Unit Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
 
                                     string MW_BUNumber = MW_BUDataTable.Rows[j]["Branching Unit Number"].ToString();
                                     if (string.IsNullOrEmpty(MW_BUNumber))
@@ -25019,12 +25144,11 @@ namespace TLIS_Service.Services
                                     }
 
                                     string MW_BUActive = MW_BUDataTable.Rows[j]["Active component"].ToString();
+                                    NewMW_BUAllLoadInstEntity.Active = true;
+
                                     if (!string.IsNullOrEmpty(MW_BUActive))
                                     {
-                                        if (MW_BUActive.ToLower() == "Yes".ToLower())
-                                            NewMW_BUAllLoadInstEntity.Active = true;
-
-                                        else
+                                        if (MW_BUActive.ToLower() != "Yes".ToLower())
                                             NewMW_BUAllLoadInstEntity.Active = false;
                                     }
 
@@ -26168,12 +26292,11 @@ namespace TLIS_Service.Services
                                     NewRadioAntennaAlLLoadInstEntity.radioAntennaId = NewRadioAntennaEntity.Id;
 
                                     string RadioAntennaActiveComponent = RadioAntannaDataTable.Rows[j]["Active component"].ToString();
+                                    NewRadioAntennaAlLLoadInstEntity.Active = true;
+
                                     if (!string.IsNullOrEmpty(RadioAntennaActiveComponent))
                                     {
                                         if (RadioAntennaActiveComponent.ToLower() == "Yes".ToLower())
-                                            NewRadioAntennaAlLLoadInstEntity.Active = true;
-
-                                        else
                                             NewRadioAntennaAlLLoadInstEntity.Active = false;
                                     }
 
@@ -27077,10 +27200,10 @@ namespace TLIS_Service.Services
                                     //
 
                                     string MW_RFUAllLoadActiveName = MW_RFUDataTable.Rows[j]["Active component"].ToString();
-                                    bool MW_RFUAllLoadActive = false;
+                                    bool MW_RFUAllLoadActive = true;
                                     if (!string.IsNullOrEmpty(MW_RFUAllLoadActiveName))
-                                        if (MW_RFUAllLoadActiveName.ToLower() == "Yes".ToLower())
-                                            MW_RFUAllLoadActive = true;
+                                        if (MW_RFUAllLoadActiveName.ToLower() != "Yes".ToLower())
+                                            MW_RFUAllLoadActive = false;
 
                                     string MW_RFUAllLoadInstCurrentStatusName = MW_RFUDataTable.Rows[j]["Current Status"].ToString();
                                     int? MW_RFUAllLoadInstCurrentStatus = null;
@@ -27667,6 +27790,27 @@ namespace TLIS_Service.Services
                                     int MW_ODUCivilSupportCategoryId = 0;
                                     string MW_ODUTowerType = MW_ODUDataTable.Rows[j]["type"].ToString();
 
+                                    if (string.IsNullOrEmpty(MW_ODU_MW_DishName))
+                                    {
+                                        MW_ODUTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(ODU MW Dish Name) column's : ({MW_ODU_MW_DishName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                                            SheetName = "ODU info",
+                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
+
                                     TLIcivilLoads CheckMW_ODU_MW_DishName = _unitOfWork.CivilLoadsRepository
                                         .GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInstId != null ?
                                             (x.allLoadInst.mwDishId != null ? (!x.allLoadInst.Draft &&
@@ -28084,7 +28228,26 @@ namespace TLIS_Service.Services
                                             continue;
                                         }
                                     }
+                                    else
+                                    {
+                                        MW_ODUTransaction.Dispose();
 
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(ODU Connections) coulumn's value can't be null or empty",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                                            SheetName = "ODU info",
+                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
                                     _unitOfWork.MW_ODURepository.Add(NewMW_ODUEntity);
                                     _unitOfWork.SaveChanges();
 
@@ -28213,13 +28376,10 @@ namespace TLIS_Service.Services
                                     // AllLoadInst Information..
                                     //
 
-                                    bool MW_ODUAllLoadInstActiveComponent = false;
+                                    bool MW_ODUAllLoadInstActiveComponent = true;
                                     if (!string.IsNullOrEmpty(MW_ODUDataTable.Rows[j]["Active component"].ToString()))
                                     {
-                                        if (MW_ODUDataTable.Rows[j]["Active component"].ToString().ToLower() == "Yes".ToLower())
-                                            MW_ODUAllLoadInstActiveComponent = true;
-
-                                        else
+                                        if (MW_ODUDataTable.Rows[j]["Active component"].ToString().ToLower() != "Yes".ToLower())
                                             MW_ODUAllLoadInstActiveComponent = false;
                                     }
 
@@ -29226,9 +29386,9 @@ namespace TLIS_Service.Services
                                     }
 
                                     string RRUActiveComponentName = RadioRRUDataTable.Rows[j]["Active component"].ToString();
-                                    bool RRUActiveComponent = false;
-                                    if (RRUActiveComponentName.ToLower() == "Yes".ToLower())
-                                        RRUActiveComponent = true;
+                                    bool RRUActiveComponent = true;
+                                    if (RRUActiveComponentName.ToLower() != "Yes".ToLower())
+                                        RRUActiveComponent = false;
 
                                     TLIallLoadInst NewRRU_AllLoadInstEntity = new TLIallLoadInst()
                                     {
