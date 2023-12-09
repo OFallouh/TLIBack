@@ -871,10 +871,9 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.InternalApiService.GetAttForAddSideArm(LibId);
             return Ok(response);
         }
-
         [HttpPost("getSideArmsWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
-        public IActionResult getSideArmsWithEnabledAtt([FromBody] CombineFilters CombineFilters, CivilLoadsFilter BaseFilter, bool WithFilterData, int? CivilRecordId, string CivilType, [FromQuery] ParameterPagination parameters)
+        public IActionResult getSideArmsWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] CivilLoadsFilter BaseFilter, [FromQuery] bool WithFilterData, [FromQuery] int? CivilRecordId, [FromQuery] string CivilType, [FromQuery] ParameterPagination parameters)
         {
             var response = _unitOfWorkService.InternalApiService.GetSideArmsWithEnabledAtt(BaseFilter, WithFilterData, parameters, CombineFilters, CivilRecordId, CivilType);
             return Ok(response);
