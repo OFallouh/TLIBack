@@ -109,7 +109,6 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [HttpPost("DismantlesideArm")]
-
         public IActionResult DismantlesideArm(string SiteCode, int sideArmId)
         {
             var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId);
