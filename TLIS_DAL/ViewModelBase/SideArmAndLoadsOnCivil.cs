@@ -17,5 +17,9 @@ namespace TLIS_DAL.ViewModelBase
         public int OtherRadiosCount { get; set; }
         public int OtherLoadsCount { get; set; }
         public int SideArmsCount { get; set; }
+        public double Availablespace { get; set; }  
+        public double? CurrentLoads { get; set; }
+
+        public double? CivilMaxLoad { get; set; }
     }
 }

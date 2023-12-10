@@ -590,80 +590,127 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    var UserName = _unitOfWork.UserRepository.GetWhereFirst(x=>x.UserName==model.UserName && x.Id !=model.Id);
-                    if(UserName != null)
+                    if (model.UserType == 2)
                     {
-                        return new Response<UserViewModel>(false, null, null, $"This User Name {model.UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    TLIuser UserEntity = _mapper.Map<TLIuser>(model);
-
-                    UserEntity.Password = null;
-
-                    string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
-                    if (!string.IsNullOrEmpty(model.Password))
-                    {
-                         OldP = Decrypt(OldPassword);
-                         NewP = Decrypt(model.Password);
-                        if (NewP != OldP)
+                        var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == model.UserName && x.Id != model.Id);
+                        if (UserName != null)
                         {
-                            UserEntity.Password = model.Password;
-                            UserEntity.ChangedPasswordDate = DateTime.Now;
+                            return new Response<UserViewModel>(false, null, null, $"This User Name {model.UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        TLIuser UserEntity = _mapper.Map<TLIuser>(model);
+
+                        UserEntity.Password = null;
+
+                        string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
+                        if (!string.IsNullOrEmpty(model.Password))
+                        {
+                            OldP = Decrypt(OldPassword);
+                            NewP = Decrypt(model.Password);
+                            if (NewP != OldP)
+                            {
+                                UserEntity.Password = model.Password;
+                                UserEntity.ChangedPasswordDate = DateTime.Now;
+                            }
+                            else
+                            {
+                                UserEntity.Password = OldPassword;
+                            }
                         }
                         else
                         {
                             UserEntity.Password = OldPassword;
                         }
-                    }
-                    else
-                    {
-                        UserEntity.Password = OldPassword;
-                    }
-                    _unitOfWork.UserRepository.Update(UserEntity);
-                    await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.UserRepository.Update(UserEntity);
+                        await _unitOfWork.SaveChangesAsync();
 
-                    List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                      .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
+                        List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
+                          .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                    var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
-                     _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
-                    await _unitOfWork.SaveChangesAsync();
+                        var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
+                        _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
+                        await _unitOfWork.SaveChangesAsync();
 
-                    foreach (var item in model.permissions)
-                    {
-                        TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
-                        tLIuserPermissions = new TLIuser_Permissions()
+                        foreach (var item in model.permissions)
                         {
-                            UserId = model.Id,
-                            PageUrl = item,
-                            Active = true,
-                            Delete = false
-                        };
-                        _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
-                    }
-                    await _unitOfWork.SaveChangesAsync();
-                    List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
-                        x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
-                    List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
+                            TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
+                            tLIuserPermissions = new TLIuser_Permissions()
+                            {
+                                UserId = model.Id,
+                                PageUrl = item,
+                                Active = true,
+                                Delete = false
+                            };
+                            _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+                        List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                            x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
+                        List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
 
-                    List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
-                    foreach (var GroupId in GroupsToDelete)
+                        List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
+                        foreach (var GroupId in GroupsToDelete)
+                        {
+                            TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
+                            _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
+                        }
+
+                        List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
+                        foreach (var GroupId in GroupsToAdd)
+                        {
+                            TLIgroupUser GroupUser = new TLIgroupUser();
+                            GroupUser.userId = UserEntity.Id;
+                            GroupUser.groupId = GroupId;
+                            _unitOfWork.GroupUserRepository.Add(GroupUser);
+                        }
+
+                        await _unitOfWork.SaveChangesAsync();
+                        transaction.Complete();
+                    }
+                    else if(model.UserType == 1)
                     {
-                        TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
-                        _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
+                        List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
+                         .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
+
+                        var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
+                        _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
+                        await _unitOfWork.SaveChangesAsync();
+
+                        foreach (var item in model.permissions)
+                        {
+                            TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
+                            tLIuserPermissions = new TLIuser_Permissions()
+                            {
+                                UserId = model.Id,
+                                PageUrl = item,
+                                Active = true,
+                                Delete = false
+                            };
+                            _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+                        List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                            x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
+                        List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
+
+                        List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
+                        foreach (var GroupId in GroupsToDelete)
+                        {
+                            TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
+                            _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
+                        }
+
+                        List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
+                        foreach (var GroupId in GroupsToAdd)
+                        {
+                            TLIgroupUser GroupUser = new TLIgroupUser();
+                            GroupUser.userId = model.Id;
+                            GroupUser.groupId = GroupId;
+                            _unitOfWork.GroupUserRepository.Add(GroupUser);
+                        }
+
+                        await _unitOfWork.SaveChangesAsync();
+                        transaction.Complete();
                     }
-
-                    List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
-                    foreach (var GroupId in GroupsToAdd)
-                    {
-                        TLIgroupUser GroupUser = new TLIgroupUser();
-                        GroupUser.userId = UserEntity.Id;
-                        GroupUser.groupId = GroupId;
-                        _unitOfWork.GroupUserRepository.Add(GroupUser);
-                    }
-
-                    await _unitOfWork.SaveChangesAsync();
-                    transaction.Complete();
-
                     return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)

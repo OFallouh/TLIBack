@@ -7590,6 +7590,73 @@ namespace TLIS_Service.Services
             OutPutData.OtherLoadsCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id && !x.Dismantle &&
                 x.allLoadInstId != null ? (x.allLoadInst.loadOtherId != null && !x.allLoadInst.Draft) : false,
                     x => x.allLoadInst).Select(x => x.allLoadInst.loadOtherId.Value).Distinct().ToList().Count();
+            double Availablespace = 0;
+            if (CivilType == "TLIcivilWithLegs")
+            {
+                var TLIcivilWithLegsInstallation = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == CivilId);
+                if (TLIcivilWithLegsInstallation != null)
+                {
+                    var civilWithLegsLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == TLIcivilWithLegsInstallation.CivilWithLegsLibId);
+
+                    if (TLIcivilWithLegsInstallation.IsEnforeced == true)
+                    {
+                        if(TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement != null && TLIcivilWithLegsInstallation.CurrentLoads!=null)
+                        {
+                            Availablespace = TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement.Value - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                       
+                        }
+                        OutPutData.CivilMaxLoad = TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement;
+                    }
+
+                    else if (TLIcivilWithLegsInstallation.Support_Limited_Load != 0)
+                    {
+                        if (TLIcivilWithLegsInstallation.CurrentLoads != null )
+                        {
+                            Availablespace = TLIcivilWithLegsInstallation.Support_Limited_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                        }
+                        OutPutData.CivilMaxLoad = TLIcivilWithLegsInstallation.Support_Limited_Load;
+                    }
+                    else
+                    {
+                        if (TLIcivilWithLegsInstallation.CurrentLoads != null)
+                        {
+                            Availablespace = civilWithLegsLibrary.Manufactured_Max_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
+                        }
+                        OutPutData.CivilMaxLoad = civilWithLegsLibrary.Manufactured_Max_Load;
+                    }
+                }
+                OutPutData.CurrentLoads = TLIcivilWithLegsInstallation.CurrentLoads;
+                OutPutData.Availablespace = Availablespace;
+            }
+            else if (CivilType == "TLIcivilWithoutLeg")
+            {
+                var TLIcivilWithoutLegInstallation = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == CivilId);
+                if (TLIcivilWithoutLegInstallation != null)
+                {
+                    var civilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == TLIcivilWithoutLegInstallation.CivilWithoutlegsLibId);
+
+                    if (TLIcivilWithoutLegInstallation.Support_Limited_Load != 0)
+                    {
+                        if (TLIcivilWithoutLegInstallation.CurrentLoads != null)
+                        {
+                            Availablespace = TLIcivilWithoutLegInstallation.Support_Limited_Load - TLIcivilWithoutLegInstallation.CurrentLoads.Value;
+                        }
+                        OutPutData.CivilMaxLoad = TLIcivilWithoutLegInstallation.Support_Limited_Load;
+                    }
+                    else
+                    {
+                        if (TLIcivilWithoutLegInstallation.CurrentLoads != null)
+                        {
+                            Availablespace = civilWithoutLegLibrary.Manufactured_Max_Load - TLIcivilWithoutLegInstallation.CurrentLoads.Value;
+                        }
+                        OutPutData.CivilMaxLoad = civilWithoutLegLibrary.Manufactured_Max_Load;
+
+                    }
+                }
+                OutPutData.CurrentLoads = Convert.ToDouble( TLIcivilWithoutLegInstallation.CurrentLoads);
+                OutPutData.Availablespace = Availablespace;
+            }
+          
 
             return new Response<SideArmAndLoadsOnCivil>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
