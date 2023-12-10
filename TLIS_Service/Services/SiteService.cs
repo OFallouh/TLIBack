@@ -423,7 +423,7 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, bool? isRefresh, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, bool? isRefresh, bool? isUsed, List<FilterObjectList> filters = null)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -473,6 +473,21 @@ namespace TLIS_Service.Services
                             SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
                                 filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
                         }
+                    }
+
+                    if (isUsed != null)
+                    {
+                        List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+                        List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+                        List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                        List<string> all = UsedSitesInLoads.Concat(UsedSitesInCivils).Concat(UsedSitesInOtherInventories).Distinct().ToList();
+
+                        if (isUsed.Value)
+                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => all.Contains(x.SiteCode.ToLower())).ToList());
+
+                        else
+                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => !all.Contains(x.SiteCode.ToLower())).ToList());
                     }
 
                     int Count = SitesViewModels.Count();
@@ -546,6 +561,23 @@ namespace TLIS_Service.Services
                         SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
                     }
 
+                    if (isUsed != null)
+                    {
+                        List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+                        List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+                        List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                        List<string> all = UsedSitesInLoads.Concat(UsedSitesInCivils).Concat(UsedSitesInOtherInventories).Distinct().ToList();
+
+                        if (isUsed.Value)
+                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => all.Contains(x.SiteCode.ToLower())).ToList());
+
+                        else
+                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => !all.Contains(x.SiteCode.ToLower())).ToList());
+                    }
+
+                    int Count = SitesViewModels.Count();
+
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                         .Take(parameterPagination.PageSize));
 
@@ -566,7 +598,7 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
+                    return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
             }
             catch (Exception)
@@ -7468,7 +7500,7 @@ namespace TLIS_Service.Services
 
             List<string> all = UsedSitesInLoads.Concat(UsedSitesInCivils).Concat(UsedSitesInOtherInventories).Distinct().ToList();
 
-            int UsedSitesCount = _MySites.Select(x => x.SiteCode.ToLower()).Where(x => all.Contains(x)).ToList().Count();
+            int UsedSitesCount = _MySites.Select(x => x.SiteCode.ToLower()).Where(all.Contains).ToList().Count();
             int AllSitesCount = _MySites.Count();
             int UnUsedSitesCount = AllSitesCount - UsedSitesCount;
 
@@ -7487,7 +7519,8 @@ namespace TLIS_Service.Services
 
             List<TLIcivilLoads> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
                 .Include(x => x.allLoadInst)
-                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
+                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle &&
+                    x.allLoadInstId != null ? !x.allLoadInst.Draft : !x.sideArm.Draft).ToList();
 
             OutPut.PowerCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.powerId != null : false).Count();
             OutPut.MW_RFUCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwRFUId != null : false).Count();
@@ -7502,12 +7535,13 @@ namespace TLIS_Service.Services
             OutPut.SideArmCount = UsedSitesInLoads.Where(x => x.allLoadInstId != null ? x.sideArmId != null : false).Count();
 
             List<TLIallCivilInst> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
-                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower())
+                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle && !x.allCivilInst.Draft)
                 .Include(x => x.allCivilInst)
                 .ThenInclude(x => x.civilWithoutLeg)
                 .ThenInclude(x => x.CivilWithoutlegsLib)
                 .ThenInclude(x => x.CivilWithoutLegCategory)
                 .Select(x => x.allCivilInst).ToList();
+            int xxx = UsedSitesInCivils.Count();
 
             OutPut.SteelWithLegsCount = UsedSitesInCivils.Where(x => x.civilWithLegsId != null).Count();
             OutPut.SteelWithoutLegs_MastCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ? 
@@ -7522,7 +7556,7 @@ namespace TLIS_Service.Services
             OutPut.NonSteelCount = UsedSitesInCivils.Where(x => x.civilNonSteelId != null).Count();
 
             List<TLIallOtherInventoryInst> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
-                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower())
+                .Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle && !x.allOtherInventoryInst.Draft)
                 .Include(x => x.allOtherInventoryInst)
                 .ThenInclude(x => x.cabinet)
                 .Select(x => x.allOtherInventoryInst).ToList();
