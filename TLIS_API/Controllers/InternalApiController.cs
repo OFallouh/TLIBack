@@ -68,9 +68,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetCivilsInstalledonSite")]
         [ProducesResponseType(200, Type = typeof(AllCivilInstallationViewModel))]
-        public IActionResult GetCivilsBySiteCode([FromQuery] SiteFilter BaseFilter, CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetCivilsBySiteCode(string SiteCode, CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(BaseFilter, CombineFilters, WithFilterData, parameterPagination);
+            var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, CombineFilters, WithFilterData, parameterPagination);
             return Ok(response);
         }
         [HttpPost("GetSideArmsInstalledonCivil")]
@@ -873,7 +873,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("getSideArmsWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
-        public IActionResult getSideArmsWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] CivilLoadsFilter BaseFilter, [FromQuery] bool WithFilterData, [FromQuery] int? CivilRecordId, [FromQuery] string CivilType, [FromQuery] ParameterPagination parameters)
+        public IActionResult getSideArmsWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] CivilLoadsFilter BaseFilter, [FromQuery] bool WithFilterData, [FromQuery] int? CivilRecordId, string CivilType, [FromQuery] ParameterPagination parameters)
         {
             var response = _unitOfWorkService.InternalApiService.GetSideArmsWithEnabledAtt(BaseFilter, WithFilterData, parameters, CombineFilters, CivilRecordId, CivilType);
             return Ok(response);
@@ -1137,6 +1137,259 @@ namespace TLIS_API.Controllers
         {
             var response = _unitOfWorkService.InternalApiService.GetSolarLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
             return Ok(response);
+        }
+        [HttpGet("GetAttForAddCivilWithLegs")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId, string SiteCode, int? CategoryId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, CategoryId, SiteCode);
+            return Ok(response);
+        }
+
+        [HttpPost("GetCivilWithLegsWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsWithEnableAtt(siteCode, WithFilterData, CombineFilters, parameterPagination);
+            return Ok(response);
+        }
+        [HttpPost("GetCivilWithoutLegWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithoutLegWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, int CategoryId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegWithEnableAtt(siteCode,WithFilterData, CombineFilters, parameterPagination, CategoryId);
+            return Ok(response);
+        }
+        [HttpPost("GetCivilNonSteelWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilNonSteelWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelWithEnableAtt(siteCode,WithFilterData, CombineFilters, parameterPagination);
+            return Ok(response);
+        }
+        [HttpGet("GetAttForAddCivilWithoutLegs")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddCivilWithoutLegs(int CivilLibraryId, string SiteCode, int? CategoryId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, CategoryId, SiteCode);
+            return Ok(response);
+        }
+        [HttpGet("GetAttForAddCivilNonSteel")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddCivilNonSteel(int CivilLibraryId, string SiteCode, int? CategoryId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, CategoryId, SiteCode);
+            return Ok(response);
+        }
+        [HttpPost("AddCivilWithLegs/{SiteCode}")]
+        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == true)
+            {
+                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithLeg.SpaceInstallation);
+                if (CheckReservedSapce == true)
+                {
+                    if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
+                    {
+                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        var ErrorMessages = from state in ModelState.Values
+                                            from error in state.Errors
+                                            select error.ErrorMessage;
+                        return Ok(new Response<AddCivilWithLegsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                    }
+                }
+            }
+            else if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == false)
+            {
+                if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
+                {
+                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString);
+                    return Ok(response);
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithLegsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+            }
+            return Ok(new Response<AddCivilWithLegsViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
+
+        }
+
+        [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
+        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == true)
+            {
+                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithoutLeg.SpaceInstallation);
+                if (CheckReservedSapce == true)
+                {
+                    if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
+                    {
+                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        var ErrorMessages = from state in ModelState.Values
+                                            from error in state.Errors
+                                            select error.ErrorMessage;
+                        return Ok(new Response<AddCivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                    }
+                }
+            }
+            else if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == false)
+            {
+                if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
+                {
+                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString);
+                    return Ok(response);
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+            }
+            return Ok(new Response<AddCivilWithoutLegViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
+
+        }
+
+        [HttpPost("AddCivilNonSteel/{SiteCode}")]
+        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelViewModel))]
+        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == true)
+            {
+                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilNonSteel.SpaceInstallation);
+                if (CheckReservedSapce == true)
+                {
+                    if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
+                    {
+                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        var ErrorMessages = from state in ModelState.Values
+                                            from error in state.Errors
+                                            select error.ErrorMessage;
+                        return Ok(new Response<AddCivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                    }
+                }
+            }
+            else if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == false)
+            {
+                if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
+                {
+                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString);
+                    return Ok(response);
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+            }
+            return Ok(new Response<AddCivilNonSteelViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
+        }
+        [HttpGet("GetCivilWithLegsById")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCivilWithLegsById(int CivilId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetCivilInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetCivilWithoutLegsById")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCivilWithoutLegsById(int CivilId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetCivilInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetCivilNonSteelById")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCivilNonSteelById(int CivilId)
+        {
+            var response = _unitOfWorkService.InternalApiService.GetCivilInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+            return Ok(response);
+        }
+
+        [HttpPost("EditCivilWithLegs")]
+        [ProducesResponseType(200, Type = typeof(CivilWithLegsViewModel))]
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModel CivilWithLeg)
+        {
+            if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsViewModel)))
+            {
+                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<CivilWithLegsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+
+        [HttpPost("EditCivilWithoutLegs")]
+        [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
+        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg)
+        {
+            if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
+            {
+                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<CivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+
+        [HttpPost("EditCivilNonSteel")]
+        [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel)
+        {
+            if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
+            {
+                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<CivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("DismantleCivil")]
+
+        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName)
+        {
+            var response = _unitOfWorkService.InternalApiService.DismantleCivil(SiteCode, CivilId, CivilName);
+            return Ok(response);
+
         }
     }
 }

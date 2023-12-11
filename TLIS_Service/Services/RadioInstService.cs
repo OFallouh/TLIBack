@@ -1556,7 +1556,7 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                                 var radioAntennaLibrary = _dbContext.TLIradioAntennaLibrary.Where(x => x.Id == RadioAntennaModel.radioAntennaLibraryId).FirstOrDefault();
-                                if (RadioAntennaEntity.CenterHigh == 0 || RadioAntennaEntity.CenterHigh == null)
+                                if (RadioAntennaEntity.CenterHigh == 0 )
                                 {
                                     RadioAntennaEntity.CenterHigh = RadioAntennaEntity.HBA + radioAntennaLibrary.Length / 2;
                                 }
@@ -1564,20 +1564,6 @@ namespace TLIS_Service.Services
                                 if (message != "Success")
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, message, (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-
-                                if (RadioAntennaModel.TLIcivilLoads.ReservedSpace == true && RadioAntennaEntity.SpaceInstallation == 0)
-                                {
-                                    RadioAntennaEntity.SpaceInstallation = radioAntennaLibrary.SpaceLibrary;
-
-                                    if (radioAntennaLibrary.SpaceLibrary == 0)
-                                    {
-                                        RadioAntennaEntity.SpaceInstallation = radioAntennaLibrary.Length * radioAntennaLibrary.Width;
-                                    }
-                                }
-                                if (RadioAntennaModel.TLIcivilLoads.ReservedSpace == true && (RadioAntennaModel.TLIcivilLoads.sideArmId == null || RadioAntennaModel.TLIcivilLoads.sideArmId == 0))
-                                {
-                                    RadioAntennaEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(RadioAntennaModel.TLIcivilLoads.allCivilInstId, TableName, RadioAntennaEntity.SpaceInstallation, RadioAntennaEntity.CenterHigh, RadioAntennaModel.radioAntennaLibraryId, RadioAntennaModel.HBA).Data;
                                 }
                                 bool test = true;
 
@@ -1678,7 +1664,7 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                                 var radioRRULibrary = _dbContext.TLIradioRRULibrary.Where(x => x.Id == RadioRRuModel.radioRRULibraryId).FirstOrDefault();
-                                if (RadioRRuEntity.CenterHigh == 0 || RadioRRuEntity.CenterHigh == null)
+                                if (RadioRRuEntity.CenterHigh == 0)
                                 {
                                     RadioRRuEntity.CenterHigh = RadioRRuEntity.HBA + radioRRULibrary.Length / 2;
                                 }
@@ -1686,20 +1672,6 @@ namespace TLIS_Service.Services
                                 if (message != "Success")
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, message, (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-
-                                if (RadioRRuModel.TLIcivilLoads.ReservedSpace == true && RadioRRuEntity.SpaceInstallation == 0)
-                                {
-                                    RadioRRuEntity.SpaceInstallation = radioRRULibrary.SpaceLibrary;
-
-                                    if (radioRRULibrary.SpaceLibrary == 0)
-                                    {
-                                        RadioRRuEntity.SpaceInstallation = radioRRULibrary.Length * radioRRULibrary.Width;
-                                    }
-                                }
-                                if (RadioRRuModel.TLIcivilLoads.ReservedSpace == true && (RadioRRuModel.TLIcivilLoads.sideArmId == null || RadioRRuModel.TLIcivilLoads.sideArmId == 0))
-                                {
-                                    RadioRRuEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(RadioRRuModel.TLIcivilLoads.allCivilInstId, TableName, RadioRRuEntity.SpaceInstallation, RadioRRuEntity.CenterHigh, RadioRRuModel.radioRRULibraryId, RadioRRuModel.HBA).Data;
                                 }
                                 bool test = true;
                                 string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioInstallationViewModel, TableName, SiteCode);
@@ -1787,22 +1759,9 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                                 var radioOtherLibrary = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == RadioOtherModel.radioOtherLibraryId).FirstOrDefault();
-                                if (RadioOtherEntity.CenterHigh == 0 || RadioOtherEntity.CenterHigh == null)
+                                if (RadioOtherEntity.CenterHigh == 0)
                                 {
                                     RadioOtherEntity.CenterHigh = RadioOtherEntity.HBA + radioOtherLibrary.Length / 2;
-                                }
-                                if (RadioOtherModel.TLIcivilLoads.ReservedSpace == true && RadioOtherEntity.Spaceinstallation == 0)
-                                {
-                                    RadioOtherEntity.Spaceinstallation = radioOtherLibrary.SpaceLibrary;
-
-                                    if (radioOtherLibrary.SpaceLibrary == 0)
-                                    {
-                                        RadioOtherEntity.Spaceinstallation = radioOtherLibrary.Length * radioOtherLibrary.Width;
-                                    }
-                                }
-                                if (RadioOtherModel.TLIcivilLoads.ReservedSpace == true && (RadioOtherModel.TLIcivilLoads.sideArmId == null || RadioOtherModel.TLIcivilLoads.sideArmId == 0))
-                                {
-                                    RadioOtherEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(RadioOtherModel.TLIcivilLoads.allCivilInstId, TableName, RadioOtherEntity.Spaceinstallation, RadioOtherEntity.CenterHigh, RadioOtherModel.radioOtherLibraryId, RadioOtherModel.HBA).Data;
                                 }
                                 bool test = true;
                                 string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioInstallationViewModel, TableName, SiteCode);

@@ -369,6 +369,13 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.CheckFilterSideArm_LoadsOnCivils(CivilId, CivilType);
             return Ok(response);
         }
+        [HttpGet("RecalculatSpace")]
+        [ProducesResponseType(200, Type = typeof(List<RecalculatSpace>))]
+        public IActionResult RecalculatSpace(int CivilId, string CivilType)
+        {
+            var response = _unitOfWorkService.CivilInstService.RecalculatSpace(CivilId, CivilType);
+            return Ok(response);
+        }
         [HttpGet("CheckLoadsOnSideArm")]
         [ProducesResponseType(200, Type = typeof(LoadsCountOnSideArm))]
         public IActionResult CheckLoadsOnSideArm(int SideArmId)

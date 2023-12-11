@@ -67,6 +67,9 @@ using TLIS_DAL.ViewModels.LegDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
 using Remotion.Utilities;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyModel;
+using LoadSubType = TLIS_Service.Helpers.Constants.LoadSubType;
 
 namespace TLIS_Service.Services
 {
@@ -7590,6 +7593,446 @@ namespace TLIS_Service.Services
             OutPutData.OtherLoadsCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id && !x.Dismantle &&
                 x.allLoadInstId != null ? (x.allLoadInst.loadOtherId != null && !x.allLoadInst.Draft) : false,
                     x => x.allLoadInst).Select(x => x.allLoadInst.loadOtherId.Value).Distinct().ToList().Count();
+            if (CivilType == "TLIcivilWithLegs")
+            {
+                float EquivalentSpace = 0;
+                float CenterHigh = 0;
+                var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId,x=>x.civilWithLegs
+                , x => x.civilLoads , x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                if (AllCivilInfo != null)
+                {
+                    var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
+                    AllCivilInfo.civilWithLegs.CurrentLoads = null;
+                    foreach (var item in AllLoadOnCivil)
+                    {
+                        var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
+                            x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
+                            , x => x.loadOther).FirstOrDefault();
+                        if (LoadInfo != null)
+                        {
+                            if (LoadInfo.mwBUId != null)
+                            {
+                                var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == LoadInfo.mwBU.MwBULibraryId);
+                                if (LibraryInfo != null)
+                                {
+                                    if (LoadInfo.mwBU.CenterHigh == 0)
+                                    {
+                                        CenterHigh = LoadInfo.mwBU.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.mwBU.CenterHigh;
+                                    }
+                                }
+                                if (LoadInfo.mwBU.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.mwBU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.mwBU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.mwDish != null)
+                            {
+                                var LibraryInfo = _dbContext.TLImwDishLibrary.Where(x => x.Id == LoadInfo.mwDish.MwDishLibraryId).FirstOrDefault();
+                                if (LoadInfo.mwDish.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.mwDish.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.mwDish.CenterHigh;
+                                }
+                                if (LoadInfo.mwDish.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.mwDish.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(LibraryInfo.diameter / 2, 2);
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.mwOtherId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLImwOtherLibrary.Where(x => x.Id == LoadInfo.mwOther.mwOtherLibraryId).FirstOrDefault();
+                                if (LoadInfo.mwOther.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.mwOther.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.mwOther.CenterHigh;
+                                }
+                                if ( LoadInfo.mwOther.Spaceinstallation == 0)
+                                {
+                                    LoadInfo.mwOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.radioAntennaId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIradioAntennaLibrary.Where(x => x.Id == LoadInfo.radioAntenna.radioAntennaLibraryId).FirstOrDefault();
+                                if (LoadInfo.radioAntenna.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.radioAntenna.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.radioAntenna.CenterHigh;
+                                }
+                                if ( LoadInfo.radioAntenna.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.radioRRUId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIradioRRULibrary.Where(x => x.Id == LoadInfo.radioRRU.radioRRULibraryId).FirstOrDefault();
+                                if (LoadInfo.radioRRU.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.radioRRU.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.radioRRU.CenterHigh;
+                                }
+                                if ( LoadInfo.radioRRU.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.radioOtherId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == LoadInfo.radioOther.radioOtherLibraryId).FirstOrDefault();
+                                if (LoadInfo.radioOther.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.radioOther.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.radioOther.CenterHigh;
+                                }
+                                if (LoadInfo.radioOther.Spaceinstallation == 0)
+                                {
+                                    LoadInfo.radioOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.radioOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.powerId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIpowerLibrary.Where(x => x.Id == LoadInfo.power.powerLibraryId).FirstOrDefault();
+                                if (LoadInfo.power.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.power.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.power.CenterHigh;
+                                }
+                                if ( LoadInfo.power.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.power.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                            }
+                            else if (LoadInfo.loadOtherId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIloadOtherLibrary.Where(x => x.Id == LoadInfo.loadOther.loadOtherLibraryId).FirstOrDefault();
+                                if (LoadInfo.loadOther.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.loadOther.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.loadOther.CenterHigh;
+                                }
+                                if ( LoadInfo.loadOther.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.loadOther.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.loadOther.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+
+                                _dbContext.SaveChanges();
+
+                            }
+                            _dbContext.SaveChanges();
+                        }
+                    }
+                }
+            }
+            else if(CivilType== "TLIcivilWithoutLeg")
+            {
+                float EquivalentSpace = 0;
+                float CenterHigh = 0;
+                var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithoutLegId == CivilId, x => x.civilWithLegs,
+                 x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                if (AllCivilInfo != null)
+                {
+                    var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle==false);
+                    AllCivilInfo.civilWithoutLeg.CurrentLoads = null;
+                    foreach (var item in AllLoadOnCivil)
+                    {
+                        var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
+                            x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
+                            , x => x.loadOther).FirstOrDefault();
+                        if (LoadInfo != null)
+                        {
+                            if (LoadInfo.mwBUId != null)
+                            {
+                                var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == LoadInfo.mwBU.MwBULibraryId);
+                                if (LibraryInfo != null)
+                                {
+                                    if (LoadInfo.mwBU.CenterHigh == 0 )
+                                    {
+                                        CenterHigh = LoadInfo.mwBU.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.mwBU.CenterHigh;
+                                    }
+                                }
+                                if ( LoadInfo.mwBU.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.mwBU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.mwBU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }                    
+                                EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.mwDish != null)
+                            {
+                                var LibraryInfo = _dbContext.TLImwDishLibrary.Where(x => x.Id == LoadInfo.mwDish.MwDishLibraryId).FirstOrDefault();
+                                if (LoadInfo.mwDish.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.mwDish.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.mwDish.CenterHigh;
+                                }
+                                if ( LoadInfo.mwDish.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.mwDish.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(LibraryInfo.diameter / 2, 2);
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.mwOtherId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLImwOtherLibrary.Where(x => x.Id == LoadInfo.mwOther.mwOtherLibraryId).FirstOrDefault();
+                                if (LoadInfo.mwOther.CenterHigh == 0 )
+                                {
+                                    CenterHigh = LoadInfo.mwOther.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.mwOther.CenterHigh;
+                                }
+                                if ( LoadInfo.mwOther.Spaceinstallation == 0)
+                                {
+                                    LoadInfo.mwOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.radioAntennaId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIradioAntennaLibrary.Where(x => x.Id == LoadInfo.radioAntenna.radioAntennaLibraryId).FirstOrDefault();
+                                if (LoadInfo.radioAntenna.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.radioAntenna.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.radioAntenna.CenterHigh;
+                                }
+                                if ( LoadInfo.radioAntenna.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.radioRRUId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIradioRRULibrary.Where(x => x.Id == LoadInfo.radioRRU.radioRRULibraryId).FirstOrDefault();
+                                if (LoadInfo.radioRRU.CenterHigh == 0 )
+                                {
+                                    CenterHigh = LoadInfo.radioRRU.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.radioRRU.CenterHigh;
+                                }
+                                if ( LoadInfo.radioRRU.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.radioOtherId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == LoadInfo.radioOther.radioOtherLibraryId).FirstOrDefault();
+                                if (LoadInfo.radioOther.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.radioOther.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.radioOther.CenterHigh;
+                                }
+                                if ( LoadInfo.radioOther.Spaceinstallation == 0)
+                                {
+                                    LoadInfo.radioOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.radioOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.powerId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIpowerLibrary.Where(x => x.Id == LoadInfo.power.powerLibraryId).FirstOrDefault();
+                                if (LoadInfo.power.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.power.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.power.CenterHigh;
+                                }
+                                if (LoadInfo.power.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.power.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            else if (LoadInfo.loadOtherId != null)
+                            {
+                                var LibraryInfo = _dbContext.TLIloadOtherLibrary.Where(x => x.Id == LoadInfo.loadOther.loadOtherLibraryId).FirstOrDefault();
+                                if (LoadInfo.loadOther.CenterHigh == 0)
+                                {
+                                    CenterHigh = LoadInfo.loadOther.HBA + LibraryInfo.Length / 2;
+                                }
+                                else
+                                {
+                                    CenterHigh = LoadInfo.loadOther.CenterHigh;
+                                }
+                                if (LoadInfo.loadOther.SpaceInstallation == 0)
+                                {
+                                    LoadInfo.loadOther.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                    if (LibraryInfo.SpaceLibrary == 0)
+                                    {
+                                        LoadInfo.loadOther.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                    }
+                                }
+                                EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                            }
+                            _dbContext.SaveChanges();
+                        }
+                    }
+
+                }
+            }
+               
+          
             double Availablespace = 0;
             if (CivilType == "TLIcivilWithLegs")
             {
@@ -7659,6 +8102,1108 @@ namespace TLIS_Service.Services
           
 
             return new Response<SideArmAndLoadsOnCivil>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+        }
+        public Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType )
+        {
+            try
+            {
+                List<RecalculatSpace> recalculatSpaces = new List<RecalculatSpace>();
+                if (CivilType == "TLIcivilWithLegs")
+                {
+                    float EquivalentSpace = 0;
+                    float CenterHigh = 0;
+                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId, x => x.civilWithLegs
+                    , x => x.civilLoads, x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                    if (AllCivilInfo != null)
+                    {
+                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
+                        AllCivilInfo.civilWithLegs.CurrentLoads = null;
+                        foreach (var item in AllLoadOnCivil)
+                        {
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
+                                x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
+                                , x => x.loadOther).FirstOrDefault();
+                            if (LoadInfo != null)
+                            {
+                                if (LoadInfo.mwBUId != null)
+                                {
+                                    var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == LoadInfo.mwBU.MwBULibraryId);
+                                    if (LibraryInfo != null)
+                                    {
+                                        if (LoadInfo.mwBU.CenterHigh == 0)
+                                        {
+                                            if (LoadInfo.mwBU.HBA == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "HBA",
+                                                    LoadName = "MWBU",
+                                                    Type = "Installation"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            if (LibraryInfo.Length == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Length",
+                                                    LoadName = "MWBU",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            CenterHigh = LoadInfo.mwBU.HBA + LibraryInfo.Length / 2;
+                                        }
+                                        else
+                                        {
+                                            CenterHigh = LoadInfo.mwBU.CenterHigh;
+                                        }
+                                    }
+                                    if (LoadInfo.mwBU.SpaceInstallation == 0)
+                                    {
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "MWBU",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.mwBU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                        else
+                                        {
+                                            LoadInfo.mwBU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "MWBU",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.mwDish != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLImwDishLibrary.Where(x => x.Id == LoadInfo.mwDish.MwDishLibraryId).FirstOrDefault();
+                                    if (LoadInfo.mwDish.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.mwDish.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "MWDish",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "MWDish",
+                                                Type = "Library"
+
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.mwDish.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.mwDish.CenterHigh;
+                                    }
+                                    if (LoadInfo.mwDish.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.mwDish.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Diameter",
+                                                    LoadName = "MWDish",
+                                                    Type = "Library"
+
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(LibraryInfo.diameter / 2, 2);
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "MWDish",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.mwOtherId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLImwOtherLibrary.Where(x => x.Id == LoadInfo.mwOther.mwOtherLibraryId).FirstOrDefault();
+                                    if (LoadInfo.mwOther.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.mwOther.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "MWOther",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "MWOther",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.mwOther.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.mwOther.CenterHigh;
+                                    }
+                                    if (LoadInfo.mwOther.Spaceinstallation == 0)
+                                    {
+                                        LoadInfo.mwOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "MWOther",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "MWOther",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.radioAntennaId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIradioAntennaLibrary.Where(x => x.Id == LoadInfo.radioAntenna.radioAntennaLibraryId).FirstOrDefault();
+                                    if (LoadInfo.radioAntenna.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.radioAntenna.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "RadioAntenna",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "RadioAntenna",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.radioAntenna.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.radioAntenna.CenterHigh;
+                                    }
+                                    if (LoadInfo.radioAntenna.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "RadioAntenna",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "RadioAntenna",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.radioRRUId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIradioRRULibrary.Where(x => x.Id == LoadInfo.radioRRU.radioRRULibraryId).FirstOrDefault();
+                                    if (LoadInfo.radioRRU.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.radioRRU.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "RadioRRU",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "RadioRRU",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.radioRRU.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.radioRRU.CenterHigh;
+                                    }
+                                    if (LoadInfo.radioRRU.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "RadioRRU",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "RadioRRU",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.radioOtherId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == LoadInfo.radioOther.radioOtherLibraryId).FirstOrDefault();
+                                    if (LoadInfo.radioOther.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.radioOther.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "RadioOther",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "RadioOther",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.radioOther.CenterHigh;
+                                    }
+                                    if (LoadInfo.radioOther.Spaceinstallation == 0)
+                                    {
+                                        LoadInfo.radioOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "RadioOther",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.radioOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "RadioOther",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.powerId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIpowerLibrary.Where(x => x.Id == LoadInfo.power.powerLibraryId).FirstOrDefault();
+                                    if (LoadInfo.power.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.power.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "Power",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "Power",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.power.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.power.CenterHigh;
+                                    }
+                                    if (LoadInfo.power.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.power.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "width",
+                                                    LoadName = "Power",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "Power",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+                                }
+                                else if (LoadInfo.loadOtherId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIloadOtherLibrary.Where(x => x.Id == LoadInfo.loadOther.loadOtherLibraryId).FirstOrDefault();
+                                    if (LoadInfo.loadOther.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.loadOther.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "LoadOther",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "LoadOther",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.loadOther.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.loadOther.CenterHigh;
+                                    }
+                                    if (LoadInfo.loadOther.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.loadOther.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "LoadOther",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.loadOther.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "LoadOther",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
+
+                                    _dbContext.SaveChanges();
+
+                                }
+                                _dbContext.SaveChanges();
+
+                            }
+                        }
+                    }
+                }
+                else if (CivilType == "TLIcivilWithoutLeg")
+                {
+                    float EquivalentSpace = 0;
+                    float CenterHigh = 0;
+                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithoutLegId == CivilId, x => x.civilWithLegs,
+                     x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                    if (AllCivilInfo != null)
+                    {
+                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
+                        AllCivilInfo.civilWithoutLeg.CurrentLoads = null;
+                        foreach (var item in AllLoadOnCivil)
+                        {
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
+                                x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
+                                , x => x.loadOther).FirstOrDefault();
+                            if (LoadInfo != null)
+                            {
+                                if (LoadInfo.mwBUId != null)
+                                {
+                                    var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == LoadInfo.mwBU.MwBULibraryId);
+                                    if (LibraryInfo != null)
+                                    {
+                                        if (LoadInfo.mwBU.CenterHigh == 0)
+                                        {
+                                            if (LoadInfo.mwBU.HBA == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "HBA",
+                                                    LoadName = "MWBU",
+                                                    Type = "Installation"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            if (LibraryInfo.Length == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Length",
+                                                    LoadName = "MWBU",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            CenterHigh = LoadInfo.mwBU.HBA + LibraryInfo.Length / 2;
+                                        }
+                                        else
+                                        {
+                                            CenterHigh = LoadInfo.mwBU.CenterHigh;
+                                        }
+                                    }
+                                    if (LoadInfo.mwBU.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.mwBU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "MWBU",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+
+                                            LoadInfo.mwBU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "MWBU",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    var mwBULibrary = _dbContext.TLImwBULibrary.Where(x => x.Id == LoadInfo.mwBU.MwBULibraryId).FirstOrDefault();
+                                    EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.mwDish != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLImwDishLibrary.Where(x => x.Id == LoadInfo.mwDish.MwDishLibraryId).FirstOrDefault();
+                                    if (LoadInfo.mwDish.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.mwDish.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "MWDish",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "MWDish",
+                                                Type = "Library"
+
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.mwDish.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.mwDish.CenterHigh;
+                                    }
+                                    if (LoadInfo.mwDish.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.mwDish.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Diameter",
+                                                    LoadName = "MWDish",
+                                                    Type = "Library"
+
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(LibraryInfo.diameter / 2, 2);
+                                        }
+
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "MWDish",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.mwOtherId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLImwOtherLibrary.Where(x => x.Id == LoadInfo.mwOther.mwOtherLibraryId).FirstOrDefault();
+                                    if (LoadInfo.mwOther.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.mwOther.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "MWOther",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "MWOther",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.mwOther.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.mwOther.CenterHigh;
+                                    }
+                                    if (LoadInfo.mwOther.Spaceinstallation == 0)
+                                    {
+                                        LoadInfo.mwOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "MWOther",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "MWOther",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.radioAntennaId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIradioAntennaLibrary.Where(x => x.Id == LoadInfo.radioAntenna.radioAntennaLibraryId).FirstOrDefault();
+                                    if (LoadInfo.radioAntenna.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.radioAntenna.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "RadioAntenna",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "RadioAntenna",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.radioAntenna.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.radioAntenna.CenterHigh;
+                                    }
+                                    if (LoadInfo.radioAntenna.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "RadioAntenna",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "RadioAntenna",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.radioRRUId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIradioRRULibrary.Where(x => x.Id == LoadInfo.radioRRU.radioRRULibraryId).FirstOrDefault();
+                                    if (LoadInfo.radioRRU.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.radioRRU.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "RadioRRU",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "RadioRRU",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.radioRRU.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.radioRRU.CenterHigh;
+                                    }
+                                    if (LoadInfo.radioRRU.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "RadioRRU",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "RadioRRU",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.radioOtherId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == LoadInfo.radioOther.radioOtherLibraryId).FirstOrDefault();
+                                    if (LoadInfo.radioOther.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.radioOther.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "RadioOther",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "RadioOther",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.radioOther.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.radioOther.CenterHigh;
+                                    }
+                                    if (LoadInfo.radioOther.Spaceinstallation == 0)
+                                    {
+                                        LoadInfo.radioOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "Width",
+                                                    LoadName = "RadioOther",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+
+                                            LoadInfo.radioOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "RadioOther",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.powerId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIpowerLibrary.Where(x => x.Id == LoadInfo.power.powerLibraryId).FirstOrDefault();
+                                    if (LoadInfo.power.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.power.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "Power",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "Power",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.power.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.power.CenterHigh;
+                                    }
+                                    if (LoadInfo.power.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.power.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "width",
+                                                    LoadName = "Power",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
+                                        }
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "Power",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                else if (LoadInfo.loadOtherId != null)
+                                {
+                                    var LibraryInfo = _dbContext.TLIloadOtherLibrary.Where(x => x.Id == LoadInfo.loadOther.loadOtherLibraryId).FirstOrDefault();
+                                    if (LoadInfo.loadOther.CenterHigh == 0)
+                                    {
+                                        if (LoadInfo.power.HBA == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "HBA",
+                                                LoadName = "Power",
+                                                Type = "Installation"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        if (LibraryInfo.Length == 0)
+                                        {
+                                            RecalculatSpace recalculat = new RecalculatSpace()
+                                            {
+                                                AttributeName = "Length",
+                                                LoadName = "Power",
+                                                Type = "Library"
+                                            };
+                                            recalculatSpaces.Add(recalculat);
+                                        }
+                                        CenterHigh = LoadInfo.loadOther.HBA + LibraryInfo.Length / 2;
+                                    }
+                                    else
+                                    {
+                                        CenterHigh = LoadInfo.loadOther.CenterHigh;
+                                    }
+                                    if (LoadInfo.loadOther.SpaceInstallation == 0)
+                                    {
+                                        LoadInfo.loadOther.SpaceInstallation = LibraryInfo.SpaceLibrary;
+
+                                        if (LibraryInfo.SpaceLibrary == 0)
+                                        {
+                                            if (LibraryInfo.Width == 0)
+                                            {
+                                                RecalculatSpace recalculat = new RecalculatSpace()
+                                                {
+                                                    AttributeName = "width",
+                                                    LoadName = "Power",
+                                                    Type = "Library"
+                                                };
+                                                recalculatSpaces.Add(recalculat);
+                                            }
+                                            LoadInfo.loadOther.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
+                                        }
+
+                                    }
+                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0)
+                                    {
+                                        RecalculatSpace recalculat = new RecalculatSpace()
+                                        {
+                                            AttributeName = "HeightImplemented",
+                                            LoadName = "Power",
+                                            Type = "Installation"
+                                        };
+                                        recalculatSpaces.Add(recalculat);
+                                    }
+                                    EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
+                                    _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
+                                }
+                                _dbContext.SaveChanges();
+                            }
+                        }
+
+                    }
+                }
+                return new Response<List<RecalculatSpace>>(true, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception ex )
+            {
+
+                return new Response<List<RecalculatSpace>>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
         }
         public Response<LoadsCountOnSideArm> CheckLoadsOnSideArm(int SideArmId)
         {

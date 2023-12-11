@@ -784,22 +784,9 @@ namespace TLIS_Service.Services
                                 return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                             var loadOtherLibrary = _dbContext.TLIloadOtherLibrary.Where(x => x.Id == LoadOtherViewModel.loadOtherLibraryId).FirstOrDefault();
-                            if (LoadOtherEntity.CenterHigh == 0 || LoadOtherEntity.CenterHigh == null)
+                            if (LoadOtherEntity.CenterHigh == 0)
                             {
                                 LoadOtherEntity.CenterHigh = LoadOtherEntity.HBA + loadOtherLibrary.Length / 2;
-                            }
-                            if (LoadOtherViewModel.TLIcivilLoads.ReservedSpace == true && LoadOtherEntity.SpaceInstallation == 0)
-                            {
-                                LoadOtherEntity.SpaceInstallation = loadOtherLibrary.SpaceLibrary;
-
-                                if (loadOtherLibrary.SpaceLibrary == 0)
-                                {
-                                    LoadOtherEntity.SpaceInstallation = loadOtherLibrary.Length * loadOtherLibrary.Width;
-                                }
-                            }
-                            if (LoadOtherViewModel.TLIcivilLoads.ReservedSpace == true && (LoadOtherViewModel.TLIcivilLoads.sideArmId == null || LoadOtherViewModel.TLIcivilLoads.sideArmId == 0))
-                            {
-                                LoadOtherEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(LoadOtherViewModel.TLIcivilLoads.allCivilInstId, Helpers.Constants.TablesNames.TLIloadOther.ToString(), LoadOtherEntity.SpaceInstallation, LoadOtherEntity.CenterHigh, LoadOtherViewModel.loadOtherLibraryId, LoadOtherViewModel.HBA).Data;
                             }
                             var test = true;
 
