@@ -1147,35 +1147,35 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("GetCivilWithLegsWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
         {
             var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsWithEnableAtt(siteCode, WithFilterData, CombineFilters, parameterPagination);
             return Ok(response);
         }
         [HttpPost("GetCivilWithoutLegWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithoutLegWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, int CategoryId)
         {
             var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegWithEnableAtt(siteCode,WithFilterData, CombineFilters, parameterPagination, CategoryId);
             return Ok(response);
         }
         [HttpPost("GetCivilNonSteelWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilNonSteelWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
         {
             var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelWithEnableAtt(siteCode,WithFilterData, CombineFilters, parameterPagination);
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilWithoutLegs")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(ObjectAttributeInst))]
         public IActionResult GetAttForAddCivilWithoutLegs(int CivilLibraryId, string SiteCode, int? CategoryId)
         {
             var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, CategoryId, SiteCode);
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilNonSteel")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(ObjectAttributeInst))]
         public IActionResult GetAttForAddCivilNonSteel(int CivilLibraryId, string SiteCode, int? CategoryId)
         {
             var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, CategoryId, SiteCode);

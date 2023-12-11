@@ -8117,7 +8117,7 @@ namespace TLIS_Service.Services
                     if (AllCivilInfo != null)
                     {
                         var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
-                        AllCivilInfo.civilWithLegs.CurrentLoads = null;
+                        AllCivilInfo.civilWithLegs.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
                             var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
@@ -8644,8 +8644,11 @@ namespace TLIS_Service.Services
                                     _dbContext.SaveChanges();
 
                                 }
-                                _dbContext.SaveChanges();
+                                if (recalculatSpaces == null)
+                                {
+                                    _dbContext.SaveChanges();
 
+                                }
                             }
                         }
                     }
@@ -8659,7 +8662,7 @@ namespace TLIS_Service.Services
                     if (AllCivilInfo != null)
                     {
                         var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
-                        AllCivilInfo.civilWithoutLeg.CurrentLoads = null;
+                        AllCivilInfo.civilWithoutLeg.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
                             var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
@@ -9191,7 +9194,11 @@ namespace TLIS_Service.Services
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
-                                _dbContext.SaveChanges();
+                                if (recalculatSpaces == null)
+                                {
+                                    _dbContext.SaveChanges();
+
+                                }
                             }
                         }
 

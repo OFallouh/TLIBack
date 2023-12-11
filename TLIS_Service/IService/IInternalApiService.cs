@@ -103,7 +103,7 @@ namespace TLIS_Service.IService
         string CheckDependencyValidationForMWTypesss(object Input, string MWType);
         Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
         string CheckDependencyValidationForMWTypees(object Input, string MWType);
-        Response<ObjectInst> GetAttForAddCivilInstallation(string CivilType, int CivilLibraryId, int? CategoryId, string SiteCode);
+        Response<ObjectAttributeInst> GetAttForAddCivilInstallation(string CivilType, int CivilLibraryId, int? CategoryId, string SiteCode);
         Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string CivilType, string SiteCode, string connectionString);
         Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType);
         Response<ObjectInstAtts> GetCivilInstallationById(int CivilInsId, string CivilType);
