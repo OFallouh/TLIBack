@@ -2733,7 +2733,7 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
                                 }
                                 var mwBULibrary = _dbContext.TLImwBULibrary.Where(x => x.Id == addMW_BU.MwBULibraryId).AsNoTracking().FirstOrDefault();
-                                if (mwBU.CenterHigh == 0 || mwBU.CenterHigh == null)
+                                if (mwBU.CenterHigh == 0)
                                 {
                                     mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
                                 }
@@ -2743,19 +2743,6 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
                                 }
 
-                                if (addMW_BU.TLIcivilLoads.ReservedSpace == true && mwBU.SpaceInstallation == 0)
-                                {
-                                    mwBU.SpaceInstallation = mwBULibrary.SpaceLibrary;
-
-                                    if (mwBULibrary.SpaceLibrary == 0)
-                                    {
-                                        mwBU.SpaceInstallation = mwBULibrary.Length * mwBULibrary.Width;
-                                    }
-                                }
-                                if (addMW_BU.TLIcivilLoads.ReservedSpace == true && (addMW_BU.TLIcivilLoads.sideArmId == null || addMW_BU.TLIcivilLoads.sideArmId == 0))
-                                {
-                                    mwBU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(addMW_BU.TLIcivilLoads.allCivilInstId, TableName, mwBU.SpaceInstallation, mwBU.CenterHigh, addMW_BU.MwBULibraryId, addMW_BU.HBA).Data;
-                                }
                                 bool test = true;
                                 string CheckDependencyValidation = CheckDependencyValidationForMWTypes(MWInstallationViewModel, TableName, SiteCode);
 
@@ -2867,7 +2854,7 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
                                 }
                                 var mwDishLibrary = _dbContext.TLImwDishLibrary.Where(x => x.Id == AddMW_Dish.MwDishLibraryId).AsNoTracking().FirstOrDefault();
-                                if (mwDish.CenterHigh == 0 || mwDish.CenterHigh == null)
+                                if (mwDish.CenterHigh == 0 )
                                 {
                                     mwDish.CenterHigh = mwDish.HBA + mwDishLibrary.Length / 2;
                                 }
@@ -2875,20 +2862,6 @@ namespace TLIS_Service.Services
                                 if (message != "Success")
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                                }
-
-                                if (AddMW_Dish.TLIcivilLoads.ReservedSpace == true && mwDish.SpaceInstallation == 0)
-                                {
-                                    mwDish.SpaceInstallation = mwDishLibrary.SpaceLibrary;
-
-                                    if (mwDishLibrary.SpaceLibrary == 0)
-                                    {
-                                        mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(mwDishLibrary.diameter / 2, 2);
-                                    }
-                                }
-                                if (AddMW_Dish.TLIcivilLoads.ReservedSpace == true && (AddMW_Dish.TLIcivilLoads.sideArmId == null || AddMW_Dish.TLIcivilLoads.sideArmId == 0))
-                                {
-                                    mwDish.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(AddMW_Dish.TLIcivilLoads.allCivilInstId, TableName, mwDish.SpaceInstallation, mwDish.CenterHigh, AddMW_Dish.MwDishLibraryId, AddMW_Dish.HBA).Data;
                                 }
                                 //TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
                                 //        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
@@ -2996,33 +2969,6 @@ namespace TLIS_Service.Services
                             {
                                 AddMW_RFUViewModel AddMW_RFU = _mapper.Map<AddMW_RFUViewModel>(MWInstallationViewModel);
                                 TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(AddMW_RFU);
-                                if (AddMW_RFU.MwPortId == null)
-                                {
-                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_RFU.TLIcivilLoads.allCivilInstId).Message;
-                                    if (Message != "Success")
-                                    {
-                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                    }
-                                    var mwRFULibrary = _dbContext.TLImwRFULibrary.Where(x => x.Id == AddMW_RFU.MwRFULibraryId).FirstOrDefault();
-                                    if (mwRFU.CenterHigh == 0 || mwRFU.CenterHigh == null)
-                                    {
-                                        mwRFU.CenterHigh = mwRFU.HBA + mwRFULibrary.Length / 2;
-                                    }
-                                    if (AddMW_RFU.TLIcivilLoads.ReservedSpace == true && mwRFU.SpaceInstallation == 0)
-                                    {
-                                        mwRFU.SpaceInstallation = mwRFULibrary.SpaceLibrary;
-
-                                        if (mwRFULibrary.SpaceLibrary == 0)
-                                        {
-                                            mwRFU.SpaceInstallation = mwRFULibrary.Length * mwRFULibrary.Width;
-                                        }
-                                    }
-                                    if (AddMW_RFU.TLIcivilLoads.ReservedSpace == true && (AddMW_RFU.TLIcivilLoads.sideArmId == null || AddMW_RFU.TLIcivilLoads.sideArmId == 0))
-                                    {
-                                        mwRFU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(AddMW_RFU.TLIcivilLoads.allCivilInstId, TableName, mwRFU.SpaceInstallation, mwRFU.CenterHigh, AddMW_RFU.MwRFULibraryId, AddMW_RFU.HBA).Data;
-                                    }
-                                }
-
                                 bool test = false;
                                 if (AddMW_RFU.TLIdynamicAttInstValue != null ? AddMW_RFU.TLIdynamicAttInstValue.Count > 0 : false)
                                 {
@@ -3086,22 +3032,9 @@ namespace TLIS_Service.Services
                                     return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
                                 }
                                 var mwOtherLibrary = _dbContext.TLImwOtherLibrary.Where(x => x.Id == AddMW_Other.mwOtherLibraryId).FirstOrDefault();
-                                if (mwOther.CenterHigh == 0 || mwOther.CenterHigh == null)
+                                if (mwOther.CenterHigh == 0)
                                 {
                                     mwOther.CenterHigh = mwOther.HBA + mwOtherLibrary.Length / 2;
-                                }
-                                if (AddMW_Other.TLIcivilLoads.ReservedSpace == true && mwOther.Spaceinstallation == 0)
-                                {
-                                    mwOther.Spaceinstallation = mwOtherLibrary.SpaceLibrary;
-
-                                    if (mwOtherLibrary.SpaceLibrary == 0)
-                                    {
-                                        mwOther.Spaceinstallation = mwOtherLibrary.Length * mwOtherLibrary.Width;
-                                    }
-                                }
-                                if (AddMW_Other.TLIcivilLoads.ReservedSpace == true && (AddMW_Other.TLIcivilLoads.sideArmId == null || AddMW_Other.TLIcivilLoads.sideArmId == 0))
-                                {
-                                    mwOther.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(AddMW_Other.TLIcivilLoads.allCivilInstId, TableName, mwOther.Spaceinstallation, mwOther.CenterHigh, AddMW_Other.mwOtherLibraryId, AddMW_Other.HBA).Data;
                                 }
                                 bool test = false;
                                 if (AddMW_Other.TLIdynamicAttInstValue != null ? AddMW_Other.TLIdynamicAttInstValue.Count > 0 : false)

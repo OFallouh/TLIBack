@@ -24,7 +24,7 @@ namespace TLIS_Service.IService
 {
     public interface IInternalApiService
     {
-        Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(SiteFilter BaseFilter, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
+        Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<List<ObjectInstAttForSideArm>> GetSideArmsBySiteCode(string SiteCode, int? CivilId, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase);
         Response<ReturnWithFilters<object>> GetLibraryforSpecificType(string TableNameLibrary, int CategoryId, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
@@ -103,6 +103,15 @@ namespace TLIS_Service.IService
         string CheckDependencyValidationForMWTypesss(object Input, string MWType);
         Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
         string CheckDependencyValidationForMWTypees(object Input, string MWType);
+        Response<ObjectAttributeInst> GetAttForAddCivilInstallation(string CivilType, int CivilLibraryId, int? CategoryId, string SiteCode);
+        Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string CivilType, string SiteCode, string connectionString);
+        Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType);
+        Response<ObjectInstAtts> GetCivilInstallationById(int CivilInsId, string CivilType);
+        Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName);
+        Response<ReturnWithFilters<object>> GetCivilNonSteelWithEnableAtt(string siteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
+        Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(string siteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
+        Response<ReturnWithFilters<object>> GetCivilWithLegsWithEnableAtt(string siteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
+
     }
 
 }

@@ -48,5 +48,6 @@ namespace TLIS_Service.IService
         Response<List<LogicalOperationViewModel>> GetlogicalOperation();
         Response<SideArmAndLoadsOnCivil> CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType);
         Response<LoadsCountOnSideArm> CheckLoadsOnSideArm(int SideArmId);
+        Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
     }
 }

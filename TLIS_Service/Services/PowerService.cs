@@ -787,24 +787,10 @@ namespace TLIS_Service.Services
                                 return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                             var powerLibrary = _dbContext.TLIpowerLibrary.Where(x => x.Id == PowerViewModel.powerLibraryId).FirstOrDefault();
-                            if (PowerEntity.CenterHigh == 0 || PowerEntity.CenterHigh == null)
+                            if (PowerEntity.CenterHigh == 0 )
                             {
                                 PowerEntity.CenterHigh = PowerEntity.HBA + powerLibrary.Length / 2;
                             }
-                            if (PowerViewModel.TLIcivilLoads.ReservedSpace == true && PowerEntity.SpaceInstallation == 0)
-                            {
-                                PowerEntity.SpaceInstallation = powerLibrary.SpaceLibrary;
-
-                                if (powerLibrary.SpaceLibrary == 0)
-                                {
-                                    PowerEntity.SpaceInstallation = powerLibrary.Length * powerLibrary.width;
-                                }
-                            }
-                            if (PowerViewModel.TLIcivilLoads.ReservedSpace == true && (PowerViewModel.TLIcivilLoads.sideArmId == null || PowerViewModel.TLIcivilLoads.sideArmId == 0))
-                            {
-                                PowerEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(PowerViewModel.TLIcivilLoads.allCivilInstId, TablesNames.TLIpower.ToString(), PowerEntity.SpaceInstallation, PowerEntity.CenterHigh, PowerViewModel.powerLibraryId, PowerViewModel.HBA).Data;
-                            }
-
                             string CheckGeneralValidation = CheckGeneralValidationFunction(PowerViewModel.TLIdynamicAttInstValue, TablesNames.TLIpower.ToString());
 
                             if (!string.IsNullOrEmpty(CheckGeneralValidation))
