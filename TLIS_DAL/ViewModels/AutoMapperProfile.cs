@@ -385,8 +385,13 @@ namespace TLIS_DAL.ViewModels
                 .ForMember(x => x.Status, y => y.MapFrom(s => s.siteStatus.Name))
                 .ForMember(x => x.CityName, y => y.MapFrom(s => s.Zone));
 
-            CreateMap<TLIsite, AddSiteViewModel>().ReverseMap();
+            CreateMap<TLIsite, SiteViewModelForGetAll>()
+                .ForMember(dst => dst.Area, opt => opt.MapFrom(src => src.Area.AreaName))
+                .ForMember(dst => dst.Region, opt => opt.MapFrom(src => src.Region.RegionName))
+                .ForMember(x => x.Status, y => y.MapFrom(s => s.siteStatus.Name))
+                .ForMember(x => x.CityName, y => y.MapFrom(s => s.Zone));
 
+            CreateMap<TLIsite, AddSiteViewModel>().ReverseMap();
 
             CreateMap<TLIowner, OwnerViewModel>()
                 .ForMember(x => x.Name, x => x.MapFrom(f => f.OwnerName));
