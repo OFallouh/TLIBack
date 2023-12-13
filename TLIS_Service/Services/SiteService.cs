@@ -423,7 +423,7 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, bool? isRefresh, bool? isUsed, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? isRefresh, bool? isUsed, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -432,26 +432,44 @@ namespace TLIS_Service.Services
             {
                 List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
 
+                List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                UsedSitesInCivils.AddRange(UsedSitesInLoads);
+
+                List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                UsedSitesInOtherInventories.AddRange(UsedSitesInCivils);
+                
+                List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
+
                 if (filters != null ? filters.Count() > 0 : false)
                 {
-                    IEnumerable<SiteViewModel> SitesViewModels;
+                    IEnumerable<SiteViewModelForGetAll> SitesViewModels;
 
                     if (isRefresh != null ? isRefresh.Value : false)
                     {
                         _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                                 .Include(x => x.siteStatus).ToList();
 
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
                     else
                     {
                         _MySites.Count();
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
 
                     foreach (FilterObjectList filter in filters)
                     {
-                        PropertyInfo Property = typeof(SiteViewModel).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
+                        PropertyInfo Property = typeof(SiteViewModelForGetAll).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
 
                         if (Property.PropertyType == typeof(string))
                         {
@@ -474,20 +492,13 @@ namespace TLIS_Service.Services
                                 filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
                         }
                     }
-
                     if (isUsed != null)
                     {
-                        List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-                        List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-                        List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-
-                        List<string> all = UsedSitesInLoads.Concat(UsedSitesInCivils).Concat(UsedSitesInOtherInventories).Distinct().ToList();
-
                         if (isUsed.Value)
-                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => all.Contains(x.SiteCode.ToLower())).ToList());
+                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(SitesViewModels.Where(x => AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
 
                         else
-                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => !all.Contains(x.SiteCode.ToLower())).ToList());
+                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(SitesViewModels.Where(x => !AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
                     }
 
                     int Count = SitesViewModels.Count();
@@ -495,9 +506,9 @@ namespace TLIS_Service.Services
                     SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                         .Take(parameterPagination.PageSize);
 
-                    List<SiteViewModel> ListForOutPutOnly = new List<SiteViewModel>();
+                    List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
-                    foreach (SiteViewModel SitesViewModel in SitesViewModels)
+                    foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
                     {
                         string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
                             .LocationType;
@@ -506,7 +517,7 @@ namespace TLIS_Service.Services
                         {
                             TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
 
-                            ListForOutPutOnly.Add(new SiteViewModel()
+                            ListForOutPutOnly.Add(new SiteViewModelForGetAll()
                             {
                                 SiteCode = SitesViewModel.SiteCode,
                                 LocationType = CheckLocation != null ? CheckLocation.Name : "NA",
@@ -519,12 +530,15 @@ namespace TLIS_Service.Services
                                 Region = SitesViewModel.Region,
                                 RentedSpace = SitesViewModel.RentedSpace,
                                 ReservedSpace = SitesViewModel.ReservedSpace,
-                                Status = SitesViewModel.Status
+                                Status = SitesViewModel.Status,
+                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+                                ItemsOnSite = GetItemsCountOnEachSite != null ? 
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null 
                             });
                         }
                         else
                         {
-                            ListForOutPutOnly.Add(new SiteViewModel()
+                            ListForOutPutOnly.Add(new SiteViewModelForGetAll()
                             {
                                 SiteCode = SitesViewModel.SiteCode,
                                 LocationType = "NA",
@@ -537,68 +551,101 @@ namespace TLIS_Service.Services
                                 Region = SitesViewModel.Region,
                                 RentedSpace = SitesViewModel.RentedSpace,
                                 ReservedSpace = SitesViewModel.ReservedSpace,
-                                Status = SitesViewModel.Status
+                                Status = SitesViewModel.Status,
+                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
                             });
                         }
                     }
 
-                    return new Response<IEnumerable<SiteViewModel>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                    return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
                 else
                 {
-                    IEnumerable<SiteViewModel> SitesViewModels;
+                    IEnumerable<SiteViewModelForGetAll> SitesViewModels;
 
                     if (isRefresh != null ? isRefresh.Value : false)
                     {
                         _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                                 .Include(x => x.siteStatus).ToList();
 
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
                     else
                     {
                         _MySites.Count();
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
 
                     if (isUsed != null)
                     {
-                        List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-                        List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-                        List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking().Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-
-                        List<string> all = UsedSitesInLoads.Concat(UsedSitesInCivils).Concat(UsedSitesInOtherInventories).Distinct().ToList();
-
                         if (isUsed.Value)
-                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => all.Contains(x.SiteCode.ToLower())).ToList());
+                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(_MySites.Where(x => AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
 
                         else
-                            SitesViewModels = _mapper.Map<List<SiteViewModel>>(_MySites.Where(x => !all.Contains(x.SiteCode.ToLower())).ToList());
+                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(_MySites.Where(x => !AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
                     }
 
                     int Count = SitesViewModels.Count();
 
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                         .Take(parameterPagination.PageSize));
 
-                    foreach (SiteViewModel SitesViewModel in SitesViewModels)
+                    List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
+
+                    foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
                     {
                         string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
                             .LocationType;
 
                         if (!string.IsNullOrEmpty(LocationTypeInModel))
                         {
-                            TLIlocationType CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+                            TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
 
-                            if (CheckLocation != null)
-                                SitesViewModel.LocationType = CheckLocation.Name;
-
-                            else
-                                SitesViewModel.LocationType = "NA";
+                            ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+                            {
+                                SiteCode = SitesViewModel.SiteCode,
+                                LocationType = CheckLocation != null ? CheckLocation.Name : "NA",
+                                SiteName = SitesViewModel.SiteName,
+                                Area = SitesViewModel.Area,
+                                CityName = SitesViewModel.CityName,
+                                Latitude = SitesViewModel.Latitude,
+                                LocationHieght = SitesViewModel.LocationHieght,
+                                Longitude = SitesViewModel.Longitude,
+                                Region = SitesViewModel.Region,
+                                RentedSpace = SitesViewModel.RentedSpace,
+                                ReservedSpace = SitesViewModel.ReservedSpace,
+                                Status = SitesViewModel.Status,
+                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+                            });
+                        }
+                        else
+                        {
+                            ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+                            {
+                                SiteCode = SitesViewModel.SiteCode,
+                                LocationType = "NA",
+                                SiteName = SitesViewModel.SiteName,
+                                Area = SitesViewModel.Area,
+                                CityName = SitesViewModel.CityName,
+                                Latitude = SitesViewModel.Latitude,
+                                LocationHieght = SitesViewModel.LocationHieght,
+                                Longitude = SitesViewModel.Longitude,
+                                Region = SitesViewModel.Region,
+                                RentedSpace = SitesViewModel.RentedSpace,
+                                ReservedSpace = SitesViewModel.ReservedSpace,
+                                Status = SitesViewModel.Status,
+                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+                            });
                         }
                     }
 
-                    return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                    return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
             }
             catch (Exception)
@@ -613,8 +660,7 @@ namespace TLIS_Service.Services
                     goto StartAgainWithRefresh;
                 }
 
-                return new Response<IEnumerable<SiteViewModel>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
-
+                return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
