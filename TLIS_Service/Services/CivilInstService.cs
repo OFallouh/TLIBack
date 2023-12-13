@@ -8112,15 +8112,16 @@ namespace TLIS_Service.Services
                 {
                     float EquivalentSpace = 0;
                     float CenterHigh = 0;
-                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId, x => x.civilWithLegs
+                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId && x.Draft == false, x => x.civilWithLegs
                     , x => x.civilLoads, x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
                     if (AllCivilInfo != null)
                     {
-                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
+                        List<TLIcivilLoads> AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true &&
+                        x.Dismantle == false && x.allLoadInstId!=null).ToList();
                         AllCivilInfo.civilWithLegs.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
-                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId && x.Draft==false,
                                 x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
                                 , x => x.loadOther).FirstOrDefault();
                             if (LoadInfo != null)
@@ -8137,7 +8138,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "HBA",
-                                                    LoadName = "MWBU",
+                                                    LoadType = "MWBU",
+                                                    LoadName = LoadInfo.mwBU.Name,
                                                     Type = "Installation"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8147,7 +8149,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Length",
-                                                    LoadName = "MWBU",
+                                                    LoadType = "MWBU",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8169,7 +8172,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "MWBU",
+                                                    LoadType = "MWBU",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8181,17 +8185,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwBU.SpaceInstallation = LibraryInfo.SpaceLibrary;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented==null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "MWBU",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "MWBU",
+                                            LoadName = LoadInfo.mwBU.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8205,7 +8210,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "MWDish",
+                                                LoadType = "MWDish",
+                                                LoadModel= LoadInfo.mwDish.DishName,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8215,7 +8221,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "MWDish",
+                                                LoadType = "MWDish",
+                                                LoadModel= LibraryInfo.Model,
                                                 Type = "Library"
 
                                             };
@@ -8238,7 +8245,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Diameter",
-                                                    LoadName = "MWDish",
+                                                    LoadType = "MWDish",
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
 
                                                 };
@@ -8247,17 +8255,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(LibraryInfo.diameter / 2, 2);
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0  || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "MWDish",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "MWDish",
+                                            LoadModel = LoadInfo.mwDish.DishName,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8271,7 +8280,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "MWOther",
+                                                LoadType = "MWOther",
+                                                LoadName = LoadInfo.mwBU.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8281,7 +8291,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "MWOther",
+                                                LoadType = "MWOther",
+                                                LoadModel = LoadInfo.mwDish.DishName,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8302,8 +8313,9 @@ namespace TLIS_Service.Services
                                             {
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
-                                                    AttributeName = "Width",
-                                                    LoadName = "MWOther",
+                                                    AttributeName = "Width",                 
+                                                    LoadType = "MWOther",
+                                                    LoadModel = LoadInfo.mwOther.Name,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8311,17 +8323,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "MWOther",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "MWOther",
+                                            LoadModel = LoadInfo.mwOther.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8335,7 +8348,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "RadioAntenna",
+                                                LoadType = "RadioAntenna",
+                                                LoadModel = LoadInfo.radioAntenna.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8345,7 +8359,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "RadioAntenna",
+                                                LoadType = "RadioAntenna",
+                                                LoadModel= LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8367,7 +8382,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "RadioAntenna",
+                                                    LoadType = "RadioAntenna",
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8375,17 +8391,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "RadioAntenna",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "RadioAntenna",
+                                            LoadName = LoadInfo.radioAntenna.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8399,7 +8416,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "RadioRRU",
+                                                LoadName = LoadInfo.radioRRU.Name,
+                                                LoadType = "RadioRRU",
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8409,7 +8427,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "RadioRRU",
+                                                LoadType = "RadioRRU",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8431,7 +8450,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "RadioRRU",
+                                                    LoadType = "RadioRRU",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8439,17 +8459,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "RadioRRU",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "RadioRRU",
+                                            LoadName = LoadInfo.radioRRU.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8463,7 +8484,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "RadioOther",
+                                                LoadType = "RadioOther",
+                                                LoadName = LoadInfo.radioOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8473,7 +8495,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "RadioOther",
+                                                LoadType = "RadioOther",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8491,7 +8514,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "RadioOther",
+                                                    LoadType = "RadioOther",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8499,17 +8523,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "RadioOther",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "RadioOther",
+                                            LoadName = LoadInfo.radioOther.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8523,7 +8548,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "power",
+                                                LoadType = "power",
+                                                LoadName= LoadInfo.power.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8533,7 +8559,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "power",
+                                                LoadType = "power",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8555,7 +8582,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "width",
-                                                    LoadName = "power",
+                                                    LoadType = "power",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8563,17 +8591,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "power",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "power",
+                                            LoadName = LoadInfo.power.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
                                 }
@@ -8587,7 +8616,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "loadOther",
+                                                LoadType = "loadOther",
+                                                LoadName= LoadInfo.loadOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8597,7 +8627,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "loadOther",
+                                                LoadType = "loadOther",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8619,7 +8650,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "loadOther",
+                                                    LoadType = "loadOther",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8627,27 +8659,25 @@ namespace TLIS_Service.Services
                                             LoadInfo.loadOther.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightImplemented == 0 || AllCivilInfo.civilWithLegs.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "loadOther",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "loadOther",
+                                            LoadName = LoadInfo.loadOther.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithLegs.HeightBase);
                                     AllCivilInfo.civilWithLegs.CurrentLoads = AllCivilInfo.civilWithLegs.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithLegs.Update(AllCivilInfo.civilWithLegs);
-
-                                    _dbContext.SaveChanges();
-
                                 }
                                 if (recalculatSpaces == null)
                                 {
                                     _dbContext.SaveChanges();
-
+                                    return new Response<List<RecalculatSpace>>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                                 }
                             }
                         }
@@ -8657,16 +8687,17 @@ namespace TLIS_Service.Services
                 {
                     float EquivalentSpace = 0;
                     float CenterHigh = 0;
-                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithoutLegId == CivilId, x => x.civilWithLegs,
+                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithoutLegId == CivilId &&x.Draft==false, x => x.civilWithLegs,
                      x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
                     if (AllCivilInfo != null)
                     {
-                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
+                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true 
+                        && x.Dismantle == false && x.allLoadInstId != null);
                         AllCivilInfo.civilWithoutLeg.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
-                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId,
-                                x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId &&x.Draft==false
+                            , x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
                                 , x => x.loadOther).FirstOrDefault();
                             if (LoadInfo != null)
                             {
@@ -8682,7 +8713,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "HBA",
-                                                    LoadName = "MWBU",
+                                                    LoadType = "MWBU",
+                                                    LoadName= LoadInfo.mwBU.Name,
                                                     Type = "Installation"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8692,7 +8724,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Length",
-                                                    LoadName = "MWBU",
+                                                    LoadType = "MWBU",
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8715,7 +8748,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "MWBU",
+                                                    LoadType = "MWBU",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8725,18 +8759,18 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "MWBU",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "MWBU",
+                                            LoadName = LoadInfo.mwBU.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    var mwBULibrary = _dbContext.TLImwBULibrary.Where(x => x.Id == LoadInfo.mwBU.MwBULibraryId).FirstOrDefault();
-                                    EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -8750,7 +8784,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "MWDish",
+                                                LoadType = "MWDish",
+                                                LoadName= LoadInfo.mwDish.DishName,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8760,7 +8795,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "MWDish",
+                                                LoadType = "MWDish",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
 
                                             };
@@ -8783,7 +8819,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Diameter",
-                                                    LoadName = "MWDish",
+                                                    LoadType = "MWDish",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
 
                                                 };
@@ -8793,17 +8830,18 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "MWDish",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "MWDish",
+                                            LoadName = LoadInfo.mwDish.DishName,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.mwDish.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -8817,7 +8855,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "MWOther",
+                                                LoadType = "MWOther",
+                                                LoadName= LoadInfo.mwOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8827,7 +8866,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "MWOther",
+                                                LoadType = "MWOther",
+                                                  LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8849,7 +8889,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "MWOther",
+                                                    LoadType = "MWOther",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8857,17 +8898,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "MWOther",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "MWOther",
+                                            LoadName = LoadInfo.mwOther.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.mwOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -8881,7 +8923,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "RadioAntenna",
+                                                LoadType = "RadioAntenna",
+                                                LoadModel= LoadInfo.radioAntenna.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8891,7 +8934,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "RadioAntenna",
+                                                LoadType = "RadioAntenna",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8913,7 +8957,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "RadioAntenna",
+                                                    LoadType = "RadioAntenna",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8922,17 +8967,18 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "RadioAntenna",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "RadioAntenna",
+                                            LoadModel = LoadInfo.radioAntenna.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.radioAntenna.SpaceInstallation + (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -8946,7 +8992,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "RadioRRU",
+                                                LoadType = "RadioRRU",
+                                                LoadName= LoadInfo.radioRRU.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8956,7 +9003,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "RadioRRU",
+                                                LoadType = "RadioRRU",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8978,7 +9026,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "RadioRRU",
+                                                    LoadType = "RadioRRU",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8986,17 +9035,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "RadioRRU",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "RadioRRU",
+                                            LoadName = LoadInfo.radioRRU.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.radioRRU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -9010,7 +9060,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "RadioOther",
+                                                LoadType = "RadioOther",
+                                                LoadModel= LoadInfo.radioOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9020,7 +9071,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "RadioOther",
+                                                LoadType = "RadioOther",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9042,7 +9094,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "Width",
-                                                    LoadName = "RadioOther",
+                                                    LoadType = "RadioOther",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9051,17 +9104,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "RadioOther",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "RadioOther",
+                                            LoadModel = LoadInfo.radioOther.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.radioOther.Spaceinstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -9075,7 +9129,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "Power",
+                                                LoadType = "Power",
+                                                LoadName= LoadInfo.power.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9085,7 +9140,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "Power",
+                                                LoadType = "Power",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9107,7 +9163,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "width",
-                                                    LoadName = "Power",
+                                                    LoadType = "Power",
+                                                    LoadModel= LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9115,17 +9172,18 @@ namespace TLIS_Service.Services
                                             LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "Power",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "Power",
+                                            LoadName = LoadInfo.power.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.power.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
@@ -9139,7 +9197,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "HBA",
-                                                LoadName = "loadOther",
+                                                LoadType = "loadOther",
+                                                LoadName= LoadInfo.loadOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9149,7 +9208,8 @@ namespace TLIS_Service.Services
                                             RecalculatSpace recalculat = new RecalculatSpace()
                                             {
                                                 AttributeName = "Length",
-                                                LoadName = "loadOther",
+                                                LoadType = "loadOther",
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9171,7 +9231,8 @@ namespace TLIS_Service.Services
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
                                                     AttributeName = "width",
-                                                    LoadName = "loadOther",
+                                                    LoadType = "loadOther",
+                                                    LoadModel=LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9180,31 +9241,33 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightImplemented == 0 || AllCivilInfo.civilWithoutLeg.HeightImplemented == null)
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
-                                            AttributeName = "HeightImplemented",
-                                            LoadName = "loadOther",
+                                            AttributeName = "HeightBase",
+                                            LoadType = "loadOther",
+                                            LoadName = LoadInfo.loadOther.Name,
                                             Type = "Installation"
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
+                                    EquivalentSpace = LoadInfo.loadOther.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightBase);
                                     AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                     _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
                                 }
                                 if (recalculatSpaces == null)
                                 {
                                     _dbContext.SaveChanges();
-
+                                    return new Response<List<RecalculatSpace>>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                                 }
+                              
                             }
                         }
 
                     }
                 }
-                return new Response<List<RecalculatSpace>>(true, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<List<RecalculatSpace>>(false, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception ex )
             {

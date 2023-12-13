@@ -54,7 +54,7 @@ using static TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(LogFilterAttribute))]
+    [ServiceFilter(typeof(ExternalSystemFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class InternalApiController : ControllerBase
