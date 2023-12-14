@@ -81,10 +81,10 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("getAllSites")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
-        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? isUsed, bool? GetItemsCountOnEachSite)
+        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.SiteService.GetSites(parameterPagination, isRefresh, isUsed, GetItemsCountOnEachSite, filters);
+            var response = _unitOfWorkService.SiteService.GetSites(parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
             return Ok(response);
         }
         [HttpPost("GetSiteMainSpaces")]

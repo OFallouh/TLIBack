@@ -423,7 +423,7 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? isRefresh, bool? isUsed, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -469,42 +469,47 @@ namespace TLIS_Service.Services
 
                     foreach (FilterObjectList filter in filters)
                     {
-                        PropertyInfo Property = typeof(SiteViewModelForGetAll).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
-
-                        if (Property.PropertyType == typeof(string))
+                        if(filter.key != "isUsed")
                         {
-                            if (Property.Name.ToLower() == "LocationType".ToLower())
+                            PropertyInfo Property = typeof(SiteViewModelForGetAll).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
+
+                            if (Property.PropertyType == typeof(string))
                             {
-                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
-                                        filter.value.Select(z => z.ToString().ToLower()).Any(z => Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower()
-                                            .StartsWith(z)) : false) : false);
+                                if (Property.Name.ToLower() == "LocationType".ToLower())
+                                {
+                                    SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                                        (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
+                                            filter.value.Select(z => z.ToString().ToLower()).Any(z => Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower()
+                                                .StartsWith(z)) : false) : false);
+                                }
+                                else
+                                {
+                                    SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+                                        filter.value.Select(z => z.ToString().ToLower()).Any(z => Property.GetValue(x).ToString().ToLower().StartsWith(z)) : false).ToList();
+                                }
                             }
                             else
                             {
                                 SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    filter.value.Select(z => z.ToString().ToLower()).Any(z => Property.GetValue(x).ToString().ToLower().StartsWith(z)) : false).ToList();
+                                    filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
                             }
                         }
-                        else
-                        {
-                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
-                        }
+                        
                     }
-                    if (isUsed != null)
-                    {
-                        if (isUsed.Value)
-                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(SitesViewModels.Where(x => AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
-
-                        else
-                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(SitesViewModels.Where(x => !AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
-                    }
-
+                  
                     int Count = SitesViewModels.Count();
-
-                    SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                    var UsedFilter = filters.Find(x => x.key == "isUsed").value.FirstOrDefault();
+                    if(UsedFilter != null)
+                    {
+                        SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower()).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                         .Take(parameterPagination.PageSize);
+                    }
+                    else
+                    {
+                        SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower())).Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                                                .Take(parameterPagination.PageSize);
+                    }
+                    
 
                     List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
@@ -558,7 +563,7 @@ namespace TLIS_Service.Services
                             });
                         }
                     }
-
+                    
                     return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
                 else
@@ -577,16 +582,6 @@ namespace TLIS_Service.Services
                         _MySites.Count();
                         SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
-
-                    if (isUsed != null)
-                    {
-                        if (isUsed.Value)
-                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(_MySites.Where(x => AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
-
-                        else
-                            SitesViewModels = _mapper.Map<List<SiteViewModelForGetAll>>(_MySites.Where(x => !AllUsedSites.Contains(x.SiteCode.ToLower())).ToList());
-                    }
-
                     int Count = SitesViewModels.Count();
 
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
@@ -644,7 +639,21 @@ namespace TLIS_Service.Services
                             });
                         }
                     }
-
+                    foreach (var f in filters)
+                    {
+                        if (f.key == "isUsed")
+                        {
+                            if (f.value.FirstOrDefault().ToString().ToLower() == "true")
+                            {
+                                ListForOutPutOnly = ListForOutPutOnly.Where(x => x.isUsed == true).ToList();
+                            }
+                            else
+                            {
+                                ListForOutPutOnly = ListForOutPutOnly.Where(x => x.isUsed == false).ToList();
+                            }
+                        }
+                    }
+                   
                     return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
             }
@@ -7577,6 +7586,7 @@ namespace TLIS_Service.Services
             OutPut.RadioOtherCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.radioOtherId != null).Count();
             OutPut.LoadOtherCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.loadOtherId != null).Count();
             OutPut.SideArmCount = UsedSitesInLoads.Where(x=> x.sideArmId != null&& x.sideArm.Draft == false  ).Count();
+
             List<TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
             && !x.Dismantle && x.allCivilInst.Draft == false, x => x.allCivilInst,x=>x.allCivilInst.civilWithLegs,x=> x.allCivilInst.civilWithoutLeg,
             x=>x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib, x=>x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory ).Select(x=>x.allCivilInst).ToList();
