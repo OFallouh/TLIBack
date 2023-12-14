@@ -778,10 +778,13 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == LoadSubType.TLIloadOther.ToString());
                             var LoadOtherEntity = _mapper.Map<TLIloadOther>(LoadOtherViewModel);
-                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(LoadOtherViewModel.TLIcivilLoads.allCivilInstId).Message;
-                            if (Message != "Success")
+                            if (LoadOtherViewModel.TLIcivilLoads.ReservedSpace == true)
                             {
-                                return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(LoadOtherViewModel.TLIcivilLoads.allCivilInstId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                             }
                             var loadOtherLibrary = _dbContext.TLIloadOtherLibrary.Where(x => x.Id == LoadOtherViewModel.loadOtherLibraryId).FirstOrDefault();
                             if (LoadOtherEntity.CenterHigh == 0)

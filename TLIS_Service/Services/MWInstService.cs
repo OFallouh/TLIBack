@@ -2727,10 +2727,13 @@ namespace TLIS_Service.Services
                             {
                                 AddMW_BUViewModel addMW_BU = _mapper.Map<AddMW_BUViewModel>(MWInstallationViewModel);
                                 TLImwBU mwBU = _mapper.Map<TLImwBU>(addMW_BU);
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(addMW_BU.TLIcivilLoads.allCivilInstId).Message;
-                                if (Message != "Success")
+                                if (addMW_BU.TLIcivilLoads.ReservedSpace == true)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(addMW_BU.TLIcivilLoads.allCivilInstId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
                                 }
                                 var mwBULibrary = _dbContext.TLImwBULibrary.Where(x => x.Id == addMW_BU.MwBULibraryId).AsNoTracking().FirstOrDefault();
                                 if (mwBU.CenterHigh == 0)
@@ -2848,10 +2851,14 @@ namespace TLIS_Service.Services
                                 AddMW_DishViewModel AddMW_Dish = _mapper.Map<AddMW_DishViewModel>(MWInstallationViewModel);
 
                                 TLImwDish mwDish = _mapper.Map<TLImwDish>(AddMW_Dish);
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Dish.TLIcivilLoads.allCivilInstId).Message;
-                                if (Message != "Success")
+                                if (AddMW_Dish.TLIcivilLoads.ReservedSpace == true)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Dish.TLIcivilLoads.allCivilInstId).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
                                 }
                                 var mwDishLibrary = _dbContext.TLImwDishLibrary.Where(x => x.Id == AddMW_Dish.MwDishLibraryId).AsNoTracking().FirstOrDefault();
                                 if (mwDish.CenterHigh == 0 )
@@ -3026,10 +3033,13 @@ namespace TLIS_Service.Services
                             {
                                 AddMw_OtherViewModel AddMW_Other = _mapper.Map<AddMw_OtherViewModel>(MWInstallationViewModel);
                                 TLImwOther mwOther = _mapper.Map<TLImwOther>(AddMW_Other);
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Other.TLIcivilLoads.allCivilInstId).Message;
-                                if (Message != "Success")
+                                if (AddMW_Other.TLIcivilLoads.ReservedSpace == true)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Other.TLIcivilLoads.allCivilInstId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
                                 }
                                 var mwOtherLibrary = _dbContext.TLImwOtherLibrary.Where(x => x.Id == AddMW_Other.mwOtherLibraryId).FirstOrDefault();
                                 if (mwOther.CenterHigh == 0)

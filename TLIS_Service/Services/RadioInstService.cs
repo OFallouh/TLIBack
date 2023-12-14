@@ -1550,10 +1550,13 @@ namespace TLIS_Service.Services
                             {
                                 AddRadioAntennaViewModel RadioAntennaModel = _mapper.Map<AddRadioAntennaViewModel>(RadioInstallationViewModel);
                                 TLIradioAntenna RadioAntennaEntity = _mapper.Map<TLIradioAntenna>(RadioAntennaModel);
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(RadioAntennaModel.TLIcivilLoads.allCivilInstId).Message;
-                                if (Message != "Success")
+                                if (RadioAntennaModel.TLIcivilLoads.ReservedSpace == true)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(RadioAntennaModel.TLIcivilLoads.allCivilInstId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
                                 var radioAntennaLibrary = _dbContext.TLIradioAntennaLibrary.Where(x => x.Id == RadioAntennaModel.radioAntennaLibraryId).FirstOrDefault();
                                 if (RadioAntennaEntity.CenterHigh == 0 )
@@ -1658,10 +1661,13 @@ namespace TLIS_Service.Services
                             {
                                 var RadioRRuModel = _mapper.Map<AddRadioRRUViewModel>(RadioInstallationViewModel);
                                 var RadioRRuEntity = _mapper.Map<TLIRadioRRU>(RadioRRuModel);
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(RadioRRuModel.TLIcivilLoads.allCivilInstId).Message;
-                                if (Message != "Success")
+                                if (RadioRRuModel.TLIcivilLoads.ReservedSpace == true)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(RadioRRuModel.TLIcivilLoads.allCivilInstId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
                                 var radioRRULibrary = _dbContext.TLIradioRRULibrary.Where(x => x.Id == RadioRRuModel.radioRRULibraryId).FirstOrDefault();
                                 if (RadioRRuEntity.CenterHigh == 0)
@@ -1753,10 +1759,13 @@ namespace TLIS_Service.Services
                             {
                                 var RadioOtherModel = _mapper.Map<AddRadioOtherViewModel>(RadioInstallationViewModel);
                                 var RadioOtherEntity = _mapper.Map<TLIradioOther>(RadioOtherModel);
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(RadioOtherModel.TLIcivilLoads.allCivilInstId).Message;
-                                if (Message != "Success")
+                                if (RadioOtherModel.TLIcivilLoads.ReservedSpace == true)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(RadioOtherModel.TLIcivilLoads.allCivilInstId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
                                 var radioOtherLibrary = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == RadioOtherModel.radioOtherLibraryId).FirstOrDefault();
                                 if (RadioOtherEntity.CenterHigh == 0)

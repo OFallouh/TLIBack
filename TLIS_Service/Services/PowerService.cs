@@ -781,10 +781,14 @@ namespace TLIS_Service.Services
                         {
                             string ErrorMessage = string.Empty;
                             var PowerEntity = _mapper.Map<TLIpower>(PowerViewModel);
-                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(PowerViewModel.TLIcivilLoads.allCivilInstId).Message;
-                            if (Message != "Success")
+                            if (PowerViewModel.TLIcivilLoads.ReservedSpace == true)
                             {
-                                return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(PowerViewModel.TLIcivilLoads.allCivilInstId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                             }
                             var powerLibrary = _dbContext.TLIpowerLibrary.Where(x => x.Id == PowerViewModel.powerLibraryId).FirstOrDefault();
                             if (PowerEntity.CenterHigh == 0 )

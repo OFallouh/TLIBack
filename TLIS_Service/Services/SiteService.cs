@@ -7563,7 +7563,7 @@ namespace TLIS_Service.Services
         {
             ItemsOnSite OutPut = new ItemsOnSite();
 
-            List<TLIcivilLoads> UsedSitesInLoads = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x=>x.SiteCode.ToLower()==SiteCode &&!x.Dismantle
+            List<TLIcivilLoads> UsedSitesInLoads = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x=>x.SiteCode.ToLower()==SiteCode.ToLower() &&!x.Dismantle
             &&x.allLoadInstId!=null, x=>x.allLoadInst,x=> x.sideArm).ToList();
 
             OutPut.PowerCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft ==false && x.allLoadInst.powerId != null ).Count();

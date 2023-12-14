@@ -129,9 +129,7 @@ namespace TLIS_Service.Services
                 using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind, null, null))
                 {
                     UserPrincipal principal = new UserPrincipal(context);
-
-                    string UserWithouDomain = login.Wedcto;
-                    var usernotfound = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == login.Wedcto);
+                    var usernotfound = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == login.Wedcto.ToLower());
                     if(usernotfound == null)
                     {
                         return response = new Response<string>(false, null, null, $"This User Is Not Found In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
@@ -140,10 +138,10 @@ namespace TLIS_Service.Services
                     {
                         return response = new Response<string>(false, null, null, $"This Account Is Blocked In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
-                    else if (IsPasswordValid(login.Wedcto, login.beresd) == true)
+                    else if (IsPasswordValid(login.Wedcto.ToLower(), login.beresd) == true)
                     {
 
-                        principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto);
+                        principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto.ToLower());
                         GroupPrincipal group = GroupPrincipal.FindByIdentity(context, domainGroup);
 
                         //add check with TLI group 
@@ -251,8 +249,8 @@ namespace TLIS_Service.Services
         //    }
         //}
       
-            public static string Decrypt(string encryptedText)
-             {
+        public static string Decrypt(string encryptedText)
+            {
             using (Aes aesAlg = Aes.Create())
             {
                 string Key = "9443a09ae2e433750868beaeec0fd681";
@@ -275,12 +273,11 @@ namespace TLIS_Service.Services
 
         }
 
-
         private bool IsPasswordValid(string username, string password)
         {
             using (PrincipalContext context = new PrincipalContext(ContextType.Domain))
             {
-                return context.ValidateCredentials(username, password);
+                return context.ValidateCredentials(username.ToLower(), password);
             }
         }
 
