@@ -585,21 +585,14 @@ namespace TLIS_Service.Services
                         _MySites.Count();
                         SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
-                    var UsedFilter = filters.Find(x => x.key == "isUsed").value.FirstOrDefault();
-                    int Count = 0;
-                    if (UsedFilter != null)
-                    {
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower()));
-                        Count = SitesViewModels.Count();
-                        SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                        .Take(parameterPagination.PageSize); 
-                    }
-                    else
-                    {
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+
+
+
+                    int Count = SitesViewModels.Count();
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                                                 .Take(parameterPagination.PageSize));
-                        Count = SitesViewModels.Count();
-                    }
+                        
+                   
                     
                     
 
