@@ -496,18 +496,21 @@ namespace TLIS_Service.Services
                         }
                         
                     }
-                  
-                    int Count = SitesViewModels.Count();
+                 
                     var UsedFilter = filters.Find(x => x.key == "isUsed").value.FirstOrDefault();
-                    if(UsedFilter != null)
+                    int Count = 0;
+                    if (UsedFilter != null)
                     {
-                        SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower()).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower());
+                        Count = SitesViewModels.Count();
+                        SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                         .Take(parameterPagination.PageSize);
                     }
                     else
                     {
-                        SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower())).Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                                                 .Take(parameterPagination.PageSize);
+                        Count = SitesViewModels.Count();
                     }
                     
 
@@ -582,10 +585,23 @@ namespace TLIS_Service.Services
                         _MySites.Count();
                         SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                     }
-                    int Count = SitesViewModels.Count();
-
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                        .Take(parameterPagination.PageSize));
+                    var UsedFilter = filters.Find(x => x.key == "isUsed").value.FirstOrDefault();
+                    int Count = 0;
+                    if (UsedFilter != null)
+                    {
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower()));
+                        Count = SitesViewModels.Count();
+                        SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        .Take(parameterPagination.PageSize); 
+                    }
+                    else
+                    {
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                                                .Take(parameterPagination.PageSize));
+                        Count = SitesViewModels.Count();
+                    }
+                    
+                    
 
                     List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
@@ -637,20 +653,6 @@ namespace TLIS_Service.Services
                                 ItemsOnSite = GetItemsCountOnEachSite != null ?
                                     (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
                             });
-                        }
-                    }
-                    foreach (var f in filters)
-                    {
-                        if (f.key == "isUsed")
-                        {
-                            if (f.value.FirstOrDefault().ToString().ToLower() == "true")
-                            {
-                                ListForOutPutOnly = ListForOutPutOnly.Where(x => x.isUsed == true).ToList();
-                            }
-                            else
-                            {
-                                ListForOutPutOnly = ListForOutPutOnly.Where(x => x.isUsed == false).ToList();
-                            }
                         }
                     }
                    
