@@ -54,7 +54,7 @@ using static TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(ExternalSystemFilter))]
+    //[ServiceFilter(typeof(ExternalSystemFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class InternalApiController : ControllerBase
@@ -864,7 +864,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.InternalApiService.UpdateSideArm(SideArmViewModel);
             return Ok(response);
         }
-        [HttpGet("GetAttForAdd")]
+        [HttpGet("GetAttForAddSideArm")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibId)
         {
