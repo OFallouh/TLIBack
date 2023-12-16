@@ -1627,6 +1627,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIuser, UserNameViewModel>().ReverseMap();
             CreateMap<TLIuser, EscalationViewModel>().ReverseMap();
             CreateMap<TLIuser, UserWithoutGroupViewModel>().ReverseMap();
+            CreateMap<TLIcivilWithLegs, AddCivilWithLegsViewModelInternal>().ReverseMap();
+            CreateMap<TLIcivilWithoutLeg, AddCivilWithoutLegViewModelIntegration>().ReverseMap();
+            CreateMap<TLIcivilNonSteel, AddCivilNonSteelViewModelIntegration>().ReverseMap();
+            CreateMap<TLIcivilWithLegs, EditCivilWithLegsViewModelIntegration>().ReverseMap();
         }
        
     }
