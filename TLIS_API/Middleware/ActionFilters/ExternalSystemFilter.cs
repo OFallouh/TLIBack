@@ -67,7 +67,7 @@ namespace TLIS_API.Middleware.ActionFilters
                 bool isAuthenticated = ValidateUser(username, password, clientIPAddress);
 
                 // If the authentication fails, return a 401 Unauthorized response
-                if (isAuthenticated)
+                if (!isAuthenticated)
                 {
                     // The "Authorization" header is missing, so return a 401 Unauthorized response
                     TLIintegrationAccessLog log = new TLIintegrationAccessLog("NA", "NA", clientIPAddress, "Username or Password is invalid.");
@@ -76,16 +76,16 @@ namespace TLIS_API.Middleware.ActionFilters
                     context.Result = new UnauthorizedObjectResult("Please Contact to administrator. ");
                     return;
                 }
-                else if(!isAuthenticated)
+                else if(isAuthenticated)
                 {
                     string controllerName = context.RouteData.Values["controller"].ToString();
                     string actionName = context.RouteData.Values["action"].ToString();
-                    var sys = db.TLIexternalSys.Where(x => x.UserName == username && x.IsDeleted == false && x.IsActive == true);
+                    var sys = db.TLIexternalSys.Where(x => x.UserName == username && x.IsDeleted == false && x.IsActive == true).Include(x=>x.TLIexternalSysPermissions);
                     foreach (var item in sys)
                     {
                         var passwordDecrypt = Decrypt(item.Password);
                         if (passwordDecrypt == password)
-
+                        {
                             if (item.IP != clientIPAddress)
                             {
                                 TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
@@ -94,24 +94,46 @@ namespace TLIS_API.Middleware.ActionFilters
                                 context.Result = new UnauthorizedObjectResult("Ip is invalid,Please Contact to administrator. ");
                                 return;
                             }
-                        if (item.TLIexternalSysPermissions != null)
-                        {
-                            foreach (var s in item.TLIexternalSysPermissions)
+
+                            if (item.TLIexternalSysPermissions != null)
                             {
-                                var AccessApi = db.TLIinternalApis.FirstOrDefault(x => x.Id == s.InternalApiId && x.IsDeleted == false && x.IsActive == true);
-                                if (AccessApi.ControllerName == controllerName && AccessApi.ActionName == actionName)
+                                foreach (var s in item.TLIexternalSysPermissions)
                                 {
-                                    context.Result = null;
-                                    return;
+                                    var AccessApi = db.TLIinternalApis.FirstOrDefault(x => x.Id == s.InternalApiId && x.IsDeleted == false && x.IsActive == true);
+                                    if (AccessApi.ControllerName == controllerName && AccessApi.ActionName == actionName)
+                                    {
+                                        context.Result=context.Result ;
+                                        return;
+                                    }
                                 }
+                                TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
+                                db.TLIintegrationAccessLog.Add(log);
+                                db.SaveChanges();
+                                context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator. ");
+                                return;
+
+
                             }
-                            TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
-                            db.TLIintegrationAccessLog.Add(log);
-                            db.SaveChanges();
-                            context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator. ");
-                            return;
+                            else if(item.TLIexternalSysPermissions==null)
+                            {
+                                TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
+                                db.TLIintegrationAccessLog.Add(log);
+                                db.SaveChanges();
+                                context.Result = new UnauthorizedObjectResult("This System Not have Permission,Please Contact to administrator.. ");
+                                return;
 
 
+                            }
+                            else
+                            {
+                                TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
+                                db.TLIintegrationAccessLog.Add(log);
+                                db.SaveChanges();
+                                context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator.. ");
+                                return;
+
+
+                            }
                         }
                         else
                         {
@@ -125,6 +147,7 @@ namespace TLIS_API.Middleware.ActionFilters
                         }
 
                     }
+                   
                 }
                 else
                 {
