@@ -21,6 +21,7 @@ using Castle.Core.Internal;
 using TLIS_DAL.Models;
 using Microsoft.EntityFrameworkCore.Internal;
 using NuGet.Common;
+using System.IO;
 
 namespace TLIS_API.Middleware.ActionFilters
 {
@@ -41,7 +42,7 @@ namespace TLIS_API.Middleware.ActionFilters
             {
                 return;
             }
-                var clientIPAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
+            var clientIPAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
 
             if (context.HttpContext.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
             {
@@ -66,7 +67,7 @@ namespace TLIS_API.Middleware.ActionFilters
                 bool isAuthenticated = ValidateUser(username, password, clientIPAddress);
 
                 // If the authentication fails, return a 401 Unauthorized response
-                if (!isAuthenticated)
+                if (isAuthenticated)
                 {
                     // The "Authorization" header is missing, so return a 401 Unauthorized response
                     TLIintegrationAccessLog log = new TLIintegrationAccessLog("NA", "NA", clientIPAddress, "Username or Password is invalid.");
@@ -75,59 +76,89 @@ namespace TLIS_API.Middleware.ActionFilters
                     context.Result = new UnauthorizedObjectResult("Please Contact to administrator. ");
                     return;
                 }
-                else
+                else if(!isAuthenticated)
                 {
                     string controllerName = context.RouteData.Values["controller"].ToString();
                     string actionName = context.RouteData.Values["action"].ToString();
-                    var sys = db.TLIexternalSys.FirstOrDefault(x => x.UserName == username && x.Password == password && x.IsDeleted == false && x.IsActive == true);
-                    if (sys.IP != clientIPAddress)
+                    var sys = db.TLIexternalSys.Where(x => x.UserName == username && x.IsDeleted == false && x.IsActive == true);
+                    foreach (var item in sys)
                     {
-                        TLIintegrationAccessLog log = new TLIintegrationAccessLog(sys.SysName, sys.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
-                        db.TLIintegrationAccessLog.Add(log);
-                        db.SaveChanges();
-                        context.Result = new UnauthorizedObjectResult("Ip is invalid,Please Contact to administrator. ");
-                        return;
-                    }
-                    if (sys.TLIexternalSysPermissions != null)
-                    {
-                        foreach (var s in sys.TLIexternalSysPermissions)
-                        {
-                            var AccessApi = db.TLIinternalApis.FirstOrDefault(x => x.Id == s.InternalApiId && x.IsDeleted == false && x.IsActive == true);
-                            if (AccessApi.ControllerName == controllerName && AccessApi.ActionName == actionName)
+                        var passwordDecrypt = Decrypt(item.Password);
+                        if (passwordDecrypt == password)
+
+                            if (item.IP != clientIPAddress)
                             {
-                                context.Result = null;
+                                TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
+                                db.TLIintegrationAccessLog.Add(log);
+                                db.SaveChanges();
+                                context.Result = new UnauthorizedObjectResult("Ip is invalid,Please Contact to administrator. ");
                                 return;
                             }
+                        if (item.TLIexternalSysPermissions != null)
+                        {
+                            foreach (var s in item.TLIexternalSysPermissions)
+                            {
+                                var AccessApi = db.TLIinternalApis.FirstOrDefault(x => x.Id == s.InternalApiId && x.IsDeleted == false && x.IsActive == true);
+                                if (AccessApi.ControllerName == controllerName && AccessApi.ActionName == actionName)
+                                {
+                                    context.Result = null;
+                                    return;
+                                }
+                            }
+                            TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
+                            db.TLIintegrationAccessLog.Add(log);
+                            db.SaveChanges();
+                            context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator. ");
+                            return;
+
+
                         }
-                        TLIintegrationAccessLog log = new TLIintegrationAccessLog(sys.SysName, sys.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
-                        db.TLIintegrationAccessLog.Add(log);
-                        db.SaveChanges();
-                        context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator. ");
-                        return;
+                        else
+                        {
+                            TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
+                            db.TLIintegrationAccessLog.Add(log);
+                            db.SaveChanges();
+                            context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator.. ");
+                            return;
 
 
-                    }
-                    else
-                    {
-                        TLIintegrationAccessLog log = new TLIintegrationAccessLog(sys.SysName, sys.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
-                        db.TLIintegrationAccessLog.Add(log);
-                        db.SaveChanges();
-                        context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator.. ");
-                        return;
-
+                        }
 
                     }
                 }
+                else
+                {
+                    // If the Authorization header is not present or is not of type Basic, return a 401 Unauthorized response
+                    TLIintegrationAccessLog log = new TLIintegrationAccessLog("NA", "NA", clientIPAddress, "Authorization header is not present or is not of type Basic or bearer ");
+                    db.TLIintegrationAccessLog.Add(log);
+                    db.SaveChanges();
+                    context.Result = new UnauthorizedObjectResult("Please Contact to administrator. ");
+                    return;
+                }
             }
-            else
+        }
+        public static string Decrypt(string encryptedText)
+        {
+            using (Aes aesAlg = Aes.Create())
             {
-                // If the Authorization header is not present or is not of type Basic, return a 401 Unauthorized response
-                TLIintegrationAccessLog log = new TLIintegrationAccessLog("NA", "NA", clientIPAddress, "Authorization header is not present or is not of type Basic or bearer ");
-                db.TLIintegrationAccessLog.Add(log);
-                db.SaveChanges();
-                context.Result = new UnauthorizedObjectResult("Please Contact to administrator. ");
-                return;
+                string Key = "9443a09ae2e433750868beaeec0fd681";
+                aesAlg.Key = Encoding.UTF8.GetBytes(Key);
+                aesAlg.Mode = CipherMode.ECB; // Use ECB mode (no IV)
+                aesAlg.Padding = PaddingMode.PKCS7;
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(encryptedText)))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
             }
+
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
