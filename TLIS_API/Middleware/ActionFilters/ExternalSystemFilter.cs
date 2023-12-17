@@ -259,7 +259,7 @@ namespace TLIS_API.Middleware.ActionFilters
 
                         if (extSys != null)
                         {
-                            if(extSys.IP!= clientIPAddress)
+                            if (extSys.IP != clientIPAddress)
                             {
                                 TLIintegrationAccessLog log = new TLIintegrationAccessLog(extSys.SysName, extSys.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
                                 db.TLIintegrationAccessLog.Add(log);

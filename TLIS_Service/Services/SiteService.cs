@@ -497,7 +497,7 @@ namespace TLIS_Service.Services
                         
                     }
                  
-                    var UsedFilter = filters.Find(x => x.key == "isUsed").value.FirstOrDefault();
+                    var UsedFilter = filters.FirstOrDefault(x => x.key == "isUsed");
                     int Count = 0;
                     if (UsedFilter != null)
                     {
@@ -512,8 +512,7 @@ namespace TLIS_Service.Services
                                                 .Take(parameterPagination.PageSize);
                         Count = SitesViewModels.Count();
                     }
-                    
-
+                   
                     List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
                     foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
