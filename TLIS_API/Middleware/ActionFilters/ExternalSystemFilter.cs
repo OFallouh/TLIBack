@@ -369,7 +369,7 @@ namespace TLIS_API.Middleware.ActionFilters
         {
             // Implement your authentication logic here
             // Return true if the username and password are valid, false otherwise
-            var sys = db.TLIexternalSys.Any(x => x.UserName == username && x.Password == password && x.IP == ip);
+            var sys = db.TLIexternalSys.Any(x => x.UserName.ToLower() == username.ToLower() && x.Password == password && x.IP == ip);
             if(sys==true)
             {
                 return true;
