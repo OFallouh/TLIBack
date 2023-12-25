@@ -18137,7 +18137,7 @@ namespace TLIS_Service.Services
                                 (Helpers.Constants.CivilWithLegsInstallationMissedAttributes)CivilWithLegsDynamicAttribute);
 
                             TLIdynamicAtt CheckIfDynamicAttributeAlreadyExist = _unitOfWork.DynamicAttRepository
-                                .GetWhereFirst(x => x.Key.ToLower() == CivilWithLegsDynamicAttribute.ToString().ToLower() &&
+                                .GetWhereFirst(x => x.Key.ToLower() == CivilWithLegsDynamicAttribute.ToString().ToLower().Replace('_', ' ') &&
                                     x.tablesNamesId == CivilWithLegsTableNameId);
 
                             if (CheckIfDynamicAttributeAlreadyExist == null)
@@ -18480,7 +18480,9 @@ namespace TLIS_Service.Services
                             .GetWhere(x => x.tablesNamesId == CivilWithoutLegMastTableNameId &&
                                 x.CivilWithoutLegCategoryId == MastCategoryId).ToList();
 
-                        List<TLIdynamicAtt> MastMissedAttributes = MastMissedAttributeCSV.Except(MastAllDynamicAttribute).ToList();
+                        List<TLIdynamicAtt> MastMissedAttributes = MastMissedAttributeCSV
+                           .Except(MastAllDynamicAttribute, new TLIdynamicAttComparer())
+                           .ToList();
 
                         _unitOfWork.DynamicAttRepository.AddRange(MastMissedAttributes);
                         _unitOfWork.SaveChanges();
@@ -18623,7 +18625,8 @@ namespace TLIS_Service.Services
                             .GetWhere(x => x.tablesNamesId == CivilWithoutLegMonopoleTableNameId &&
                                 x.CivilWithoutLegCategoryId == MonopoleCategoryId).ToList();
 
-                        List<TLIdynamicAtt> MonopoleMissedAttributes = MonopoleMissedAttributeCSV.Except(MonopoleAllDynamicAttribute).ToList();
+                        List<TLIdynamicAtt> MonopoleMissedAttributes = MonopoleMissedAttributeCSV.Except(MonopoleAllDynamicAttribute
+                            , new TLIdynamicAttComparer()).ToList();
 
                         _unitOfWork.DynamicAttRepository.AddRange(MonopoleMissedAttributes);
                         _unitOfWork.SaveChanges();
@@ -18643,7 +18646,7 @@ namespace TLIS_Service.Services
                                 (Helpers.Constants.CivilNonSteelInstallationMissedAttributes)CivilNonSteelDynamicAttribute);
 
                             TLIdynamicAtt CheckIfDynamicAttributeAlreadyExist = _unitOfWork.DynamicAttRepository
-                                .GetWhereFirst(x => x.Key.ToLower() == CivilNonSteelDynamicAttribute.ToString().ToLower() &&
+                                .GetWhereFirst(x => x.Key.ToLower() == CivilNonSteelDynamicAttribute.ToString().ToLower().Replace('_', ' ') &&
                                     x.tablesNamesId == CivilNonSteelTableNameId);
 
                             if (CheckIfDynamicAttributeAlreadyExist == null)
@@ -18925,11 +18928,11 @@ namespace TLIS_Service.Services
                                                 continue;
                                             }
                                         }
-                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString()))
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["BoltHoles"].ToString()))
                                         {
                                             int IntegerParser = 0;
 
-                                            CheckParser = int.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString(), out IntegerParser);
+                                            CheckParser = int.TryParse(TypeOfSupportInfoDataTable.Rows[j]["BoltHoles"].ToString(), out IntegerParser);
 
                                             if (CheckParser)
                                                 NewCivilWithLegsEntity.BoltHoles = IntegerParser;
@@ -19262,7 +19265,7 @@ namespace TLIS_Service.Services
                                                 NewCivilWithLegsEntity.baseTypeId = NewBaseTypeForeignKeyEntity.Id;
                                             }
                                         }
-                                        
+
                                         string TowerGuyLineType = TypeOfSupportInfoDataTable.Rows[j]["Guyed Type"].ToString();
                                         if (!string.IsNullOrEmpty(TowerGuyLineType))
                                         {
@@ -19282,8 +19285,8 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        _unitOfWork.CivilWithLegsRepository.Add(NewCivilWithLegsEntity);
-                                        _unitOfWork.SaveChanges();
+                                        db.TLIcivilWithLegs.Add(NewCivilWithLegsEntity);
+                                        db.SaveChanges();
 
                                         //
                                         // Dynamic Attributes..
@@ -19487,6 +19490,7 @@ namespace TLIS_Service.Services
                                         _unitOfWork.CivilSiteDateRepository.Add(TowerCivilSiteDateEntity);
                                         _unitOfWork.SaveChanges();
 
+
                                         //
                                         // Legs Inforamtion..
                                         //
@@ -19616,6 +19620,7 @@ namespace TLIS_Service.Services
                                         string CivilWithLegsTowerContractor = TypeOfSupportInfoDataTable.Rows[j]["Tower Contractor"].ToString();
                                         if (!string.IsNullOrEmpty(CivilWithLegsTowerContractor))
                                             AddLogistical(CivilWithLegsTowerContractor, "Contractor", "CivilSupport", "TLIcivilWithLegLibrary", NewCivilWithLegsEntity.CivilWithLegsLibId);
+                                        _unitOfWork.SaveChanges();
 
                                         TowerTransaction.Complete();
                                     }
@@ -21486,29 +21491,9 @@ namespace TLIS_Service.Services
                             }
                             else if (CivilType.ToLower() == "Non-Steel".ToLower())
                             {
-                                string CivilNonSteelName = TypeOfSupportInfoDataTable.Rows[j]["Non Steel Type"].ToString();
-                                if (string.IsNullOrEmpty(CivilNonSteelName))
-                                {
-                                    // CivilNonSteelTransaction.Dispose();
+                                TLIcivilNonSteelLibrary CheckTowerType = new TLIcivilNonSteelLibrary();
 
-                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                    {
-                                        CreatedAt = DateTime.Now,
-                                        ErrMsg = $"(Non Steel Type) coulumn's value can't be null or empty",
-                                        IsDeleted = false,
-                                        IsLib = true,
-                                        RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(),
-                                        SheetName = "Type Of Support Info",
-                                        UniqueName = CivilNonSteelName
-                                    };
-
-                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                    _unitOfWork.SaveChanges();
-
-                                    continue;
-                                }
-
-                                string CivilNonSteelTypeName = TypeOfSupportInfoDataTable.Rows[j]["Non-Steel Type"].ToString();
+                                string CivilNonSteelTypeName = TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"].ToString();
                                 if (string.IsNullOrEmpty(CivilNonSteelTypeName))
                                 {
                                     // CivilNonSteelTransaction.Dispose();
@@ -21521,7 +21506,7 @@ namespace TLIS_Service.Services
                                         IsLib = true,
                                         RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
                                         SheetName = "Type Of Support Info",
-                                        UniqueName = CivilNonSteelName
+                                        UniqueName = CivilNonSteelTypeName
                                     };
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21530,22 +21515,22 @@ namespace TLIS_Service.Services
                                     continue;
                                 }
 
-                                TLIcivilNonSteelType CivilNonSteelTypeCheckIfExist = _unitOfWork.CivilNonSteelTypeRepository
-                                    .GetWhereFirst(x => x.Name.ToLower() == CivilNonSteelTypeName.ToLower() && !x.Deleted);
+                                string NonSteelModel = TypeOfSupportInfoDataTable.Rows[j]["Tower Type"].ToString();
+                                CheckTowerType = _unitOfWork.CivilNonSteelLibraryRepository
+                                     .GetWhereFirst(x => x.Model.ToLower() == NonSteelModel.ToLower() && !x.Deleted);
 
-                                if (CivilNonSteelTypeCheckIfExist == null)
+                                if (CheckTowerType == null)
                                 {
-                                    // CivilNonSteelTransaction.Dispose();
 
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
-                                        ErrMsg = $"(Non-Steel Type) coulumn's value: {CivilNonSteelTypeName} doesn't exist in TLIS",
+                                        ErrMsg = $"(NonSteel Model Name) coulumn's value: ({NonSteelModel}) doesn't exist in TLIS",
                                         IsDeleted = false,
                                         IsLib = true,
-                                        RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteelType.ToString(),
-                                        SheetName = "Type Of Support Info",
-                                        UniqueName = CivilNonSteelName
+                                        RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
+                                        SheetName = "Type of support info",
+                                        UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
                                     };
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21554,37 +21539,13 @@ namespace TLIS_Service.Services
                                     continue;
                                 }
 
+                                _unitOfWork.SaveChanges();
                                 // Dummy Library For All Civil Non Steel Types..
 
-                                TLIcivilNonSteelLibrary CheckNALibrary = _unitOfWork.CivilNonSteelLibraryRepository
-                                    .GetByID(CivilNonSteelTypeCheckIfExist.Id * 1);
-
-                                int CivilNonSteelLibraryId = CheckNALibrary.Id;
-                                if (CheckNALibrary == null)
-                                {
-                                    TLIcivilNonSteelLibrary DefaultLibrary = new TLIcivilNonSteelLibrary()
-                                    {
-                                        Id = 1 * CivilNonSteelTypeCheckIfExist.Id,
-                                        Model = CivilNonSteelTypeCheckIfExist.Name,
-                                        Active = false,
-                                        civilNonSteelTypeId = CivilNonSteelTypeCheckIfExist.Id,
-                                        Deleted = false,
-                                        Hight = 0,
-                                        Note = null,
-                                        NumberofBoltHoles = 0,
-                                        Manufactured_Max_Load = 0,
-                                        SpaceLibrary = 0,
-                                        VerticalMeasured = false
-                                    };
-
-                                    _unitOfWork.CivilNonSteelLibraryRepository.Add(DefaultLibrary);
-                                    _unitOfWork.SaveChanges();
-
-                                    CivilNonSteelLibraryId = DefaultLibrary.Id;
-                                }
+                                int CivilNonSteelLibraryId = CheckTowerType.Id;
 
                                 TLIcivilNonSteel NewCivilNonSteelEntity = new TLIcivilNonSteel();
-                                NewCivilNonSteelEntity.Name = CivilNonSteelName;
+                                NewCivilNonSteelEntity.Name = CivilNonSteelTypeName;
 
                                 NewCivilNonSteelEntity.CivilNonSteelLibraryId = CivilNonSteelLibraryId;
 
@@ -21616,7 +21577,7 @@ namespace TLIS_Service.Services
                                             IsLib = false,
                                             RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(),
                                             SheetName = "Type Of Support Info",
-                                            UniqueName = CivilNonSteelName
+                                            UniqueName = CivilNonSteelTypeName
                                         };
 
                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21682,7 +21643,7 @@ namespace TLIS_Service.Services
                                                             IsLib = false,
                                                             RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(),
                                                             SheetName = "Type of support info",
-                                                            UniqueName = CivilNonSteelName
+                                                            UniqueName = CivilNonSteelTypeName
                                                         };
 
                                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21712,7 +21673,7 @@ namespace TLIS_Service.Services
                                                             IsLib = false,
                                                             RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(),
                                                             SheetName = "Type of support info",
-                                                            UniqueName = CivilNonSteelName
+                                                            UniqueName = CivilNonSteelTypeName
                                                         };
 
                                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21742,7 +21703,7 @@ namespace TLIS_Service.Services
                                                             IsLib = false,
                                                             RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(),
                                                             SheetName = "Type of support info",
-                                                            UniqueName = CivilNonSteelName
+                                                            UniqueName = CivilNonSteelTypeName
                                                         };
 
                                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21813,7 +21774,7 @@ namespace TLIS_Service.Services
                                                     IsLib = false,
                                                     RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                     SheetName = "Type of support info",
-                                                    UniqueName = CivilNonSteelName
+                                                    UniqueName = CivilNonSteelTypeName
                                                 };
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21842,7 +21803,7 @@ namespace TLIS_Service.Services
                                                     IsLib = false,
                                                     RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                     SheetName = "Type of support info",
-                                                    UniqueName = CivilNonSteelName
+                                                    UniqueName = CivilNonSteelTypeName
                                                 };
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21863,7 +21824,7 @@ namespace TLIS_Service.Services
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                 SheetName = "Type of support info",
-                                                UniqueName = CivilNonSteelName
+                                                UniqueName = CivilNonSteelTypeName
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21875,7 +21836,7 @@ namespace TLIS_Service.Services
                                         TLIcivilSiteDate CheckCivilNonSteelName = _unitOfWork.CivilSiteDateRepository
                                             .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == CivilNonSteelSiteCode.ToLower() &&
                                                 x.allCivilInst.civilNonSteelId != null ?
-                                                    (!x.allCivilInst.Draft && x.allCivilInst.civilNonSteel.Name.ToLower() == CivilNonSteelName.ToLower()) : false,
+                                                    (!x.allCivilInst.Draft && x.allCivilInst.civilNonSteel.Name.ToLower() == CivilNonSteelTypeName.ToLower()) : false,
                                                         x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
 
                                         if (CheckCivilNonSteelName != null)
@@ -21885,13 +21846,13 @@ namespace TLIS_Service.Services
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Non Steel Type) column's value: ({CivilNonSteelName}) is already exist in this " +
+                                                ErrMsg = $"(Non Steel Type) column's value: ({CivilNonSteelTypeName}) is already exist in this " +
                                                     $"site code: ({CivilNonSteelSiteCode})",
                                                 IsDeleted = false,
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                 SheetName = "Type of support info",
-                                                UniqueName = CivilNonSteelName
+                                                UniqueName = CivilNonSteelTypeName
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21926,7 +21887,7 @@ namespace TLIS_Service.Services
                                                     IsLib = false,
                                                     RefTable = Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(),
                                                     SheetName = "Type of support info",
-                                                    UniqueName = CivilNonSteelName
+                                                    UniqueName = CivilNonSteelTypeName
                                                 };
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21939,6 +21900,8 @@ namespace TLIS_Service.Services
                                             TowerCivilSiteDateEntity.InstallationDate = DateTime.Now;
 
                                         _unitOfWork.CivilSiteDateRepository.Add(TowerCivilSiteDateEntity);
+                                        _unitOfWork.SaveChanges();
+
                                         _unitOfWork.SaveChanges();
 
                                         CivilNonSteelTransaction.Complete();
@@ -21955,7 +21918,7 @@ namespace TLIS_Service.Services
                                             IsLib = false,
                                             RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(),
                                             SheetName = "Type of support info",
-                                            UniqueName = CivilNonSteelName
+                                            UniqueName = CivilNonSteelTypeName
                                         };
 
                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -21984,7 +21947,7 @@ namespace TLIS_Service.Services
                                 (Helpers.Constants.SideArmInstallationMissedAttributes)SideArmDynamicAttribute);
 
                             TLIdynamicAtt CheckIfDynamicAttributeAlreadyExist = _unitOfWork.DynamicAttRepository
-                                .GetWhereFirst(x => x.Key.ToLower() == SideArmDynamicAttribute.ToString().ToLower() &&
+                                .GetWhereFirst(x => x.Key.ToLower() == SideArmDynamicAttribute.ToString().ToLower().Replace('_', ' ') &&
                                     x.tablesNamesId == SideArmTableNameId);
 
                             if (CheckIfDynamicAttributeAlreadyExist == null)
@@ -30290,6 +30253,8 @@ namespace TLIS_Service.Services
 
                         System.IO.File.Delete(FilePath);
                         return new Response<string>("Succeed");
+
+
                     }
                 }
                 catch (Exception err)
@@ -30584,6 +30549,20 @@ namespace TLIS_Service.Services
                 Sheet.Cells.AutoFitColumns(0);
                 Package.SaveAs(File);
                 return new Response<string>(true, File.DirectoryName, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+        }
+        public class TLIdynamicAttComparer : IEqualityComparer<TLIdynamicAtt>
+        {
+            public bool Equals(TLIdynamicAtt x, TLIdynamicAtt y)
+            {
+                // Define your criteria for equality here
+                return x.Key == y.Key && x.DataTypeId == y.DataTypeId;
+            }
+
+            public int GetHashCode(TLIdynamicAtt obj)
+            {
+                // Define a hash function here based on the properties you want to consider
+                return (obj.Key + obj.DataTypeId.ToString()).GetHashCode();
             }
         }
     }

@@ -275,40 +275,15 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioRRUIntegration))]
-        public IActionResult AddRadioRRUInstallation([FromForm] AddRadioRRUIntegration addRadioRRU, string SiteCode)
+        [ProducesResponseType(200, Type = typeof(AddRadioRRUViewModel))]
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUViewModel addRadioRRU, string SiteCode)
         {
-            var asset = _configuration["assets"];
-
-            string contentRootPath = _configuration["StoreFiles"];
-
-            string AttachFolder = Path.Combine(contentRootPath, "AttachFiles");
-
-            if (!Directory.Exists(AttachFolder))
-            {
-                DirectoryInfo di = Directory.CreateDirectory(AttachFolder);
-
-            }
-
             if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
                 addRadioRRU.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUIntegration)))
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUViewModel)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString);
-                if (response.Succeeded == true)
-                {
-                    if (addRadioRRU.file != null)
-                    {
-                        foreach (var f in addRadioRRU.file)
-                        {
-                            var response2 = _unitOfWorkService.InternalApiService.AttachFile(f, 1, LoadSubType.TLIradioRRU.ToString(), f.Name,
-                           SiteCode, response.Count.ToString(), LoadSubType.TLIradioRRU.ToString(), ConnectionString, "NA", asset);
-                        }
-                    }
-                }
-
-
+                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString);
                 return Ok(response);
             }
             else
@@ -316,7 +291,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddRadioRRUIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [HttpPost("AddRadioOtherInstallation")]
@@ -1168,14 +1143,14 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilWithoutLegs")]
-        [ProducesResponseType(200, Type = typeof(ObjectAttributeInst))]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilWithoutLegs(int CivilLibraryId, string SiteCode, int? CategoryId)
         {
             var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, CategoryId, SiteCode);
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilNonSteel")]
-        [ProducesResponseType(200, Type = typeof(ObjectAttributeInst))]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilNonSteel(int CivilLibraryId, string SiteCode, int? CategoryId)
         {
             var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, CategoryId, SiteCode);
