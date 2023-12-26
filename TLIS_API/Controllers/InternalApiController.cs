@@ -275,13 +275,13 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioRRUViewModel))]
+        [ProducesResponseType(200, Type = typeof(AddRadioAntennaIntegration))]
         public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUViewModel addRadioRRU, string SiteCode)
         {
             if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
                 addRadioRRU.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUViewModel)))
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioAntennaIntegration)))
             {
                 var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString);
                 return Ok(response);
@@ -1040,9 +1040,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetForAddLibrary")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAdd()
+        public IActionResult GetForAdd(string TableName, int? CategoryId = null)
         {
-            var response = _unitOfWorkService.InternalApiService.GetForAddAllLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString());
+            var response = _unitOfWorkService.InternalApiService.GetForAddAllLibrary( TableName, CategoryId);
             return Ok(response);
         }
         [HttpPost("AddMW_ODULibrary")]
