@@ -25,6 +25,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public bool Deleted { get; set; }
         public string ConfirmationCode { get; set; }
         public bool ValidateAccount { get; set; }
+        public string WorkFlowMode { get; set; }
         public List<String> PermissionsUser { get; set; }
         public List<PermissionsGroup> PermissionsRole { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }

@@ -29,7 +29,6 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
         public int? ownerId { get; set; } = 0;
         public int? radioAntennaId { get; set; } = 0;
         public int? installationPlaceId { get; set; } = 0;
-        public IFormFile[] file { get; set; }
         public AddCivilLoadsViewModel TLIcivilLoads { get; set; }
         public List<AddDynamicAttInstValueViewModel> TLIdynamicAttInstValue { get; set; }
     }

@@ -275,13 +275,13 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioAntennaIntegration))]
-        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUViewModel addRadioRRU, string SiteCode)
+        [ProducesResponseType(200, Type = typeof(AddRadioRRUIntegration))]
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUIntegration addRadioRRU, string SiteCode)
         {
             if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
                 addRadioRRU.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(addRadioRRU, nameof(AddRadioAntennaIntegration)))
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUIntegration)))
             {
                 var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString);
                 return Ok(response);
@@ -291,7 +291,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddRadioRRUIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [HttpPost("AddRadioOtherInstallation")]
