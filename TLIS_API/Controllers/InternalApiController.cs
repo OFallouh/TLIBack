@@ -75,7 +75,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetSideArmsInstalledonCivil")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttForSideArm))]
-        public IActionResult GetSideArmsBySiteCode([Required] string SiteCode, int? CivilId, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase)
+        public IActionResult GetSideArmsInstalledonCivil([Required] string SiteCode, int? CivilId, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase)
         {
             var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilId, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase);
             return Ok(response);
@@ -118,7 +118,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetConfigurationTablesInstallation ")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetConfigurationTables([FromQuery] SiteFilter BaseFilters, [Required] string TableNameInstallation, int CategoryId, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
+        public IActionResult GetConfigurationTablesInstallation([FromQuery] SiteFilter BaseFilters, [Required] string TableNameInstallation, int CategoryId, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
         {
             var response = _unitOfWorkService.InternalApiService.GetConfigurationTables(BaseFilters, TableNameInstallation, CategoryId, WithFilterData, CombineFilters, parameterPagination, LibraryType);
             return Ok(response);
@@ -134,7 +134,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddDynamicAttLibrary")]
         [ProducesResponseType(200, Type = typeof(AddDynamicAttViewModel))]
-        public IActionResult AddDynamicAtts([FromBody] AddDependencyViewModel addDependencyView)
+        public IActionResult AddDynamicAttLibrary([FromBody] AddDependencyViewModel addDependencyView)
         {
             if (ModelState.IsValid)
             {
@@ -153,7 +153,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddDynamicAttInstallation")]
         [ProducesResponseType(200, Type = typeof(List<AddDependencyInstViewModel>))]
-        public IActionResult AddLibDynamicAttLIns([FromBody] AddDependencyInstViewModel addDependencyInstViewModel)
+        public IActionResult AddDynamicAttInstallation([FromBody] AddDependencyInstViewModel addDependencyInstViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -171,7 +171,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditDynamicAttLibraryAndInstallation")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
-        public async Task<IActionResult> EditDynamicAtt([FromBody] EditDynamicAttViewModel dynamicAttViewModel)
+        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation([FromBody] EditDynamicAttViewModel dynamicAttViewModel)
         {
             var response = await _unitOfWorkService.InternalApiService.Edit(dynamicAttViewModel);
             return Ok(response);
@@ -1040,7 +1040,7 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetForAddLibrary")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAdd(string TableName, int? CategoryId = null)
+        public IActionResult GetForAddLibrary(string TableName, int? CategoryId = null)
         {
             var response = _unitOfWorkService.InternalApiService.GetForAddAllLibrary( TableName, CategoryId);
             return Ok(response);

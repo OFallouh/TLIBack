@@ -7015,36 +7015,36 @@ namespace TLIS_Service.Services
                                                 continue;
                                             }
                                         }
-                                        //if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString()))
-                                        //{
-                                        //    int IntegerParser = 0;
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString()))
+                                        {
+                                            int intParser = 0;
 
-                                        //    CheckParser = int.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString(), out IntegerParser);
+                                            CheckParser = int.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString(), out intParser);
 
-                                        //    if (CheckParser)
-                                        //        NewCivilWithLegsEntity.BoltHoles = IntegerParser;
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.BoltHoles = intParser;
 
-                                        //    else
-                                        //    {
-                                        //        TowerTransaction.Dispose();
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
 
-                                        //        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        //        {
-                                        //            CreatedAt = DateTime.Now,
-                                        //            ErrMsg = $"(Bolt Holes) coulumn's value must be a number",
-                                        //            IsDeleted = false,
-                                        //            IsLib = false,
-                                        //            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                        //            SheetName = "Type of support info",
-                                        //            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                        //        };
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Bolt Holes) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
 
-                                        //        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        //        _unitOfWork.SaveChanges();
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
 
-                                        //        continue;
-                                        //    }
-                                        //}
+                                                continue;
+                                            }
+                                        }
                                         if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Base Height H2"].ToString()))
                                         {
                                             double DoubleParser = 0;
