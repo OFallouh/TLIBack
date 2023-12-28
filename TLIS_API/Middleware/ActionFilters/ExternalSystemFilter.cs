@@ -37,7 +37,7 @@ namespace TLIS_API.Middleware.ActionFilters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            string authHeader = context.HttpContext.Request.Headers["Authorization"];
+           string authHeader = context.HttpContext.Request.Headers["Authorization"];
             if (!string.IsNullOrEmpty(authHeader) && authHeader.ToLower().StartsWith("bearer "))
             {
                 return;

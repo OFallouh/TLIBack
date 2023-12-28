@@ -6208,7 +6208,6 @@ namespace TLIS_Service.Services
                             }
                             TypeOfSupportInfoDataTable.Rows.Add(TypeOfSupportInfoDataRow);
                         }
-
                         //
                         // Dynamic Attributes For Civil With Legs..
                         //

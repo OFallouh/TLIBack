@@ -29,9 +29,9 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<object>> GetLibraryforSpecificType(string TableNameLibrary, int CategoryId, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<LoadsDto> GetAllLoadonSitebyPartandType(String SiteCode, string PartName, string TypeName);
-        Response<ReturnWithFilters<object>> GetAlOtherInventoryonSitebyType(string OtherInventoryTypeName, SiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPaginationstring, string LibraryType);
+        Response<ReturnWithFilters<object>> GetAlOtherInventoryonSitebyType(string OtherInventoryTypeName, string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPaginationstring, string LibraryType);
         Response<List<ListOfCivilLoads>> GetAllItemsonSite(string SiteCode);
-        Response<ReturnWithFilters<object>> GetConfigurationTables(SiteFilter BaseFilters, string CheckDependencyValidationForRadioTypes, int CategoryId, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string LibraryType);
+        Response<ReturnWithFilters<object>> GetConfigurationTables(string siteCode, string TableNameInstallation, int CategoryId, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string LibraryType);
         Response<List<BassAttViewModel>> GetConfigurationAttributes(string TableName, bool IsDynamic, int CategoryId);
         Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string ConnectionString);
         Response<AddDependencyViewModel> AddDynamicAtts(AddDependencyViewModel addDependencyViewModel, string ConnectionString);

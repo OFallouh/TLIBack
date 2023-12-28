@@ -104,9 +104,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetAlOtherInventoryonSitebyType")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetAlOtherInventoryonSitebyType([Required] string OtherInventoryTypeName, [FromQuery] SiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
+        public IActionResult GetAlOtherInventoryonSitebyType([Required] string OtherInventoryTypeName, [FromQuery] string SiteCode, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAlOtherInventoryonSitebyType(OtherInventoryTypeName, BaseFilter, WithFilterData, CombineFilters, parameterPagination, LibraryType);
+            var response = _unitOfWorkService.InternalApiService.GetAlOtherInventoryonSitebyType(OtherInventoryTypeName, SiteCode, WithFilterData, CombineFilters, parameterPagination, LibraryType);
             return Ok(response);
         }
         [HttpGet("GetAllItemsonSite ")]
@@ -118,9 +118,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetConfigurationTablesInstallation ")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetConfigurationTablesInstallation([FromQuery] SiteFilter BaseFilters, [Required] string TableNameInstallation, int CategoryId, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
+        public IActionResult GetConfigurationTablesInstallation([FromQuery] string siteCode, [Required] string TableNameInstallation, int CategoryId, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
         {
-            var response = _unitOfWorkService.InternalApiService.GetConfigurationTables(BaseFilters, TableNameInstallation, CategoryId, WithFilterData, CombineFilters, parameterPagination, LibraryType);
+            var response = _unitOfWorkService.InternalApiService.GetConfigurationTables( siteCode, TableNameInstallation, CategoryId, WithFilterData, CombineFilters, parameterPagination, LibraryType);
             return Ok(response);
 
         }
