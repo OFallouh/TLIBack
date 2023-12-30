@@ -6135,6 +6135,902 @@ namespace TLIS_Service.Services
             #endregion
             return new Response<string>("Succeed");
         }
+        public Response<string> ImportInstallationFileDataTower(IFormFile File, string ConnectionString)
+        {
+            List<TLIdataType> DataTypes = _unitOfWork.DataTypeRepository.GetAllWithoutCount().ToList();
+            List<TLItablesNames> TablesName = _unitOfWork.TablesNamesRepository.GetAllWithoutCount().ToList();
+
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                connection.Open();
+                List<KeyValuePair<int, string>> UnsavedRows = new List<KeyValuePair<int, string>>();
+
+                var FilePath = SaveFileAndGetFilePath(File);
+
+                try
+                {
+                    FileInfo existingFile = new FileInfo(FilePath);
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                    using (ExcelPackage package = new ExcelPackage(existingFile))
+                    {
+                        float FloatParser = 0;
+                        bool CheckParser = false;
+
+                        ////////////////////////////////////////////////////////////
+                        /////////////////// Type Of Support Info ///////////////////
+                        ////////////////////////////////////////////////////////////
+
+                        ExcelWorksheet TypeOfSupportInfoSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Type of support info".ToLower());
+                        int TypeOfSupportInfoRows = 0;
+                        try
+                        {
+                            TypeOfSupportInfoRows = TypeOfSupportInfoSheet.Dimension.End.Row;
+                        }
+                        catch (NullReferenceException)
+                        {
+                            return new Response<string>("false");
+                        }
+                        int TypeOfSupportInfoColumns = TypeOfSupportInfoSheet.Dimension.End.Column;
+
+                        DataTable TypeOfSupportInfoDataTable = new DataTable();
+                        List<string> TypeOfSupportInfoSheetColumn = new List<string>();
+
+                        for (int i = 1; i <= TypeOfSupportInfoColumns; i++)
+                        {
+                            string AfterTrim = TypeOfSupportInfoSheet.Cells[1, i].Value.ToString().Trim();
+                            AfterTrim = Regex.Replace(AfterTrim, @"\s+", " ");
+                            TypeOfSupportInfoSheetColumn.Add(AfterTrim);
+                        }
+
+                        for (int i = 1; i <= TypeOfSupportInfoColumns; i++)
+                        {
+                            var ColName = TypeOfSupportInfoSheet.Cells[1, i].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+                            TypeOfSupportInfoDataTable.Columns.Add(ColName);
+                        }
+                        for (int i = 2; i <= TypeOfSupportInfoRows; i++)
+                        {
+                            DataRow TypeOfSupportInfoDataRow = TypeOfSupportInfoDataTable.NewRow();
+                            for (int j = 1; j <= TypeOfSupportInfoColumns; j++)
+                            {
+                                string ColName = TypeOfSupportInfoSheet.Cells[1, j].Value.ToString().Trim();
+                                ColName = Regex.Replace(ColName, @"\s+", " ");
+                                if (TypeOfSupportInfoSheet.Cells[i, j].Value != null)
+                                {
+                                    string ValueAsString = TypeOfSupportInfoSheet.Cells[i, j].Value.ToString().Trim();
+                                    ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+                                    object Value = ValueAsString;
+                                    TypeOfSupportInfoDataRow[ColName] = Value;
+                                }
+                                else
+                                    TypeOfSupportInfoDataRow[ColName] = TypeOfSupportInfoSheet.Cells[i, j].Value;
+                            }
+                            TypeOfSupportInfoDataTable.Rows.Add(TypeOfSupportInfoDataRow);
+                        }
+                        //
+                        // Dynamic Attributes For Civil With Legs..
+                        //
+
+                        Array CivilWithLegsDynamicAttributes = Enum.GetValues(typeof(Helpers.Constants.CivilWithLegsInstallationMissedAttributes));
+
+                        int CivilWithLegsTableNameId = TablesName.FirstOrDefault(x =>
+                            x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString().ToLower()).Id;
+
+                        foreach (object CivilWithLegsDynamicAttribute in CivilWithLegsDynamicAttributes)
+                        {
+                            string DynamicAttributeDataTypeName = Helpers.Constants.GetEnumDescription(
+                                (Helpers.Constants.CivilWithLegsInstallationMissedAttributes)CivilWithLegsDynamicAttribute);
+
+                            TLIdynamicAtt CheckIfDynamicAttributeAlreadyExist = _unitOfWork.DynamicAttRepository
+                                .GetWhereFirst(x => x.Key.ToLower() == CivilWithLegsDynamicAttribute.ToString().ToLower().Replace('_', ' ') &&
+                                    x.tablesNamesId == CivilWithLegsTableNameId);
+
+                            if (CheckIfDynamicAttributeAlreadyExist == null)
+                            {
+                                TLIdynamicAtt SideArmNewDynamicAttribute = new TLIdynamicAtt
+                                {
+                                    Key = CivilWithLegsDynamicAttribute.ToString().Replace('_', ' '),
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == DynamicAttributeDataTypeName.ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = CivilWithLegsTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                };
+
+                                _unitOfWork.DynamicAttRepository.Add(SideArmNewDynamicAttribute);
+                                _unitOfWork.SaveChanges();
+                            }
+                        }
+                        List<TLIdynamicAtt> CivilWithLegsDynamicAttributesInTLIS = _unitOfWork.DynamicAttRepository
+                            .GetIncludeWhere(x => x.tablesNamesId == CivilWithLegsTableNameId, x => x.DataType).ToList();
+
+                        for (int j = 0; j <= TypeOfSupportInfoDataTable.Rows.Count - 1; j++)
+                        {
+                            string CivilType = TypeOfSupportInfoDataTable.Rows[j]["Type"].ToString();
+
+                            if (CivilType.ToLower() == "Tower".ToLower())
+                            {
+                                using (TransactionScope TowerTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                    new System.TimeSpan(0, 15, 0)))
+                                {
+                                    try
+                                    {
+                                        //
+                                        // Library Information..
+                                        //
+
+                                        string CivilWithLegsModel = TypeOfSupportInfoDataTable.Rows[j]["Tower Type"].ToString();
+
+                                        TLIcivilWithLegLibrary CheckTowerType = new TLIcivilWithLegLibrary();
+
+                                        if (string.IsNullOrEmpty(CivilWithLegsModel))
+                                        {
+                                            TowerTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Tower Type) coulumn's value can't be null or empty",
+                                                IsDeleted = false,
+                                                IsLib = true,
+                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                                SheetName = "Type of support info",
+                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            CheckTowerType = _unitOfWork.CivilWithLegLibraryRepository
+                                                .GetWhereFirst(x => x.Model.ToLower() == CivilWithLegsModel.ToLower() && !x.Deleted);
+
+                                            if (CheckTowerType == null)
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Tower Type) coulumn's value: ({CivilWithLegsModel}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = true,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+
+                                            _unitOfWork.SaveChanges();
+                                        }
+
+                                        TLIcivilWithLegs NewCivilWithLegsEntity = new TLIcivilWithLegs();
+
+                                        NewCivilWithLegsEntity.CivilWithLegsLibId = CheckTowerType.Id;
+
+                                        string TowerName = TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"].ToString();
+                                        NewCivilWithLegsEntity.Name = TowerName;
+
+                                        string CivilWithLegsSiteCode = string.Empty;
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Site Code"].ToString()))
+                                        {
+                                            TLIsite SiteEntity = _unitOfWork.SiteRepository
+                                               .GetWhereFirst(x => x.SiteCode.ToLower() == TypeOfSupportInfoDataTable.Rows[j]["Site Code"].ToString().ToLower());
+
+                                            if (SiteEntity != null)
+                                                CivilWithLegsSiteCode = SiteEntity.SiteCode;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"({TypeOfSupportInfoDataTable.Rows[j]["Site Code"]}) coulumn's value: ({TypeOfSupportInfoDataTable.Rows[j]["Site Code"]}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        else if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Site Name"].ToString()))
+                                        {
+                                            TLIsite SiteEntity = _unitOfWork.SiteRepository
+                                                .GetWhereFirst(x => x.SiteName.ToLower() == TypeOfSupportInfoDataTable.Rows[j]["Site Name"].ToString().ToLower());
+
+                                            if (SiteEntity != null)
+                                                CivilWithLegsSiteCode = SiteEntity.SiteCode;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"({TypeOfSupportInfoDataTable.Rows[j]["Site Name"]}) coulumn's value: ({TypeOfSupportInfoDataTable.Rows[j]["Site Name"]}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            TowerTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"One of those columns must have a value: (Site Code, Site Name)",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                SheetName = "Type of support info",
+                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        //
+                                        // Check if This Tower Name is Already Exist in This Site..
+                                        //
+
+                                        TLIcivilSiteDate CheckCivilWithLegsNameIfDuplicate = _unitOfWork.CivilSiteDateRepository
+                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == CivilWithLegsSiteCode.ToLower() &&
+                                                !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                                    x.allCivilInst.civilWithLegs.Name.ToLower() == TowerName.ToLower() : false),
+                                                        x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
+
+                                        if (CheckCivilWithLegsNameIfDuplicate != null)
+                                        {
+                                            TowerTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Civil steel Name) column's value: ({TowerName}) and (type) : (Tower) is already exist in " +
+                                                    $"this (SiteCode): ({CivilWithLegsSiteCode})",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                SheetName = "Type of support info",
+                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        NewCivilWithLegsEntity.OtherBaseType = TypeOfSupportInfoDataTable.Rows[j]["Other Base Type"].ToString();
+                                        NewCivilWithLegsEntity.BaseNote = TypeOfSupportInfoDataTable.Rows[j]["Notes"].ToString();
+                                        NewCivilWithLegsEntity.DiagonalMemberPrefix = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member Prefix"].ToString();
+                                        NewCivilWithLegsEntity.DiagonalMemberDimensions = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member Dimensions(mm)"].ToString();
+                                        NewCivilWithLegsEntity.DiagonalMemberSection = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member section"].ToString();
+                                        NewCivilWithLegsEntity.BasePlateShape = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Shape"].ToString();
+                                        NewCivilWithLegsEntity.BasePlateDimensions = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Dimentions(mm)"].ToString();
+                                        NewCivilWithLegsEntity.BasePlatethickness = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Thickness(mm)"].ToString();
+                                        NewCivilWithLegsEntity.SteelCrossSection = TypeOfSupportInfoDataTable.Rows[j]["Steel Cross Section"].ToString();
+                                        NewCivilWithLegsEntity.VerticalMeasurement = TypeOfSupportInfoDataTable.Rows[j]["Vertical measurement(mm)"].ToString();
+                                        NewCivilWithLegsEntity.DimensionsLeg = TypeOfSupportInfoDataTable.Rows[j]["Dimensions/Leg(mm)"].ToString();
+                                        NewCivilWithLegsEntity.WindMaxLoadm2 = 0;
+                                        NewCivilWithLegsEntity.PoDate = DateTime.Now;
+
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Location Height(m)"].ToString()))
+                                        {
+                                            double DoubleParser = 0;
+
+                                            CheckParser = double.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Location Height(m)"].ToString(), out DoubleParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.LocationHeight = DoubleParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Location Height(m)) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["TOWER HEIGHT"].ToString()))
+                                        {
+                                            CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["TOWER HEIGHT"].ToString(), out FloatParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.HeightBase = FloatParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(TOWER HEIGHT) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString()))
+                                        {
+                                            int intParser = 0;
+
+                                            CheckParser = int.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Bolt Holes"].ToString(), out intParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.BoltHoles = intParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Bolt Holes) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Base Height H2"].ToString()))
+                                        {
+                                            double DoubleParser = 0;
+
+                                            CheckParser = double.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Base Height H2"].ToString(), out DoubleParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.H2height = DoubleParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Base Height H2) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Total Height"].ToString()))
+                                        {
+                                            CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Total Height"].ToString(), out FloatParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.TotalHeight = FloatParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Total Height) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Height of the enforcement"].ToString()))
+                                        {
+                                            CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Height of the enforcement"].ToString(), out FloatParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.EnforcementHeightBase = FloatParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Height of the enforcement) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Enforcement level"].ToString()))
+                                        {
+                                            CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Enforcement level"].ToString(), out FloatParser);
+
+                                            if (CheckParser)
+                                                NewCivilWithLegsEntity.Enforcementlevel = FloatParser;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Enforcement level) coulumn's value must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+
+                                        string TowerStructureType = TypeOfSupportInfoDataTable.Rows[j]["Structure Type Compatible With Design"].ToString();
+                                        if (!string.IsNullOrEmpty(TowerStructureType))
+                                        {
+                                            if (TowerStructureType.ToLower() == "Yes".ToLower())
+                                                NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.Yes;
+
+                                            else if (TowerStructureType.ToLower() == "No".ToLower())
+                                                NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.No;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Structure Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+
+                                        string TowerSectionsLegType = TypeOfSupportInfoDataTable.Rows[j]["Sections(Leg) Type Compatible With Design"].ToString();
+                                        if (!string.IsNullOrEmpty(TowerSectionsLegType))
+                                        {
+                                            if (TowerSectionsLegType.ToLower() == "Yes".ToLower())
+                                                NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.Yes;
+
+                                            else if (TowerSectionsLegType.ToLower() == "No".ToLower())
+                                                NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.No;
+
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Sections(Leg) Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+
+                                        string CivilWithLegsEnforcement = TypeOfSupportInfoDataTable.Rows[j]["Tower enforcement"].ToString();
+                                        NewCivilWithLegsEntity.IsEnforeced = false;
+
+                                        if (!string.IsNullOrEmpty(CivilWithLegsEnforcement))
+                                        {
+                                            if (CivilWithLegsEnforcement.ToLower() == "Yes".ToLower())
+                                                NewCivilWithLegsEntity.IsEnforeced = true;
+                                        }
+
+                                        string TowerOwner = TypeOfSupportInfoDataTable.Rows[j]["Support Owner"].ToString();
+                                        if (!string.IsNullOrEmpty(TowerOwner))
+                                        {
+                                            TLIowner OwnerEntity = _unitOfWork.OwnerRepository
+                                                .GetWhereFirst(x => x.OwnerName.ToLower() == TowerOwner.ToLower() && !x.Deleted);
+
+                                            if (OwnerEntity != null)
+                                                NewCivilWithLegsEntity.OwnerId = OwnerEntity.Id;
+
+                                            else
+                                            {
+                                                TLIowner NewOwnerEntity = new TLIowner();
+                                                NewOwnerEntity.OwnerName = TowerOwner;
+                                                _unitOfWork.OwnerRepository.Add(NewOwnerEntity);
+                                                _unitOfWork.SaveChanges();
+                                                NewCivilWithLegsEntity.OwnerId = NewOwnerEntity.Id;
+                                            }
+                                        }
+
+                                        string TowerLocation = TypeOfSupportInfoDataTable.Rows[j]["Location"].ToString();
+                                        if (!string.IsNullOrEmpty(TowerLocation))
+                                        {
+                                            TLIlocationType CheckLocation = _unitOfWork.LocationTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == TowerLocation.ToLower() && !x.Deleted);
+
+                                            if (CheckLocation != null)
+                                                NewCivilWithLegsEntity.locationTypeId = CheckLocation.Id;
+
+                                            else
+                                            {
+                                                TLIlocationType NewLocationTypeEntity = new TLIlocationType();
+                                                NewLocationTypeEntity.Name = TowerLocation;
+                                                _unitOfWork.LocationTypeRepository.Add(NewLocationTypeEntity);
+                                                _unitOfWork.SaveChanges();
+                                                NewCivilWithLegsEntity.locationTypeId = NewLocationTypeEntity.Id;
+                                            }
+                                        }
+
+                                        string TowerSupportTypeImplemented = TypeOfSupportInfoDataTable.Rows[j]["Support Type"].ToString();
+                                        if (!string.IsNullOrEmpty(TowerSupportTypeImplemented))
+                                        {
+                                            TLIsupportTypeImplemented supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == TowerSupportTypeImplemented.ToLower() && !x.Deleted);
+
+                                            if (supportTypeImplemented != null)
+                                                NewCivilWithLegsEntity.SupportTypeImplementedId = supportTypeImplemented.Id;
+
+                                            else
+                                            {
+                                                TLIsupportTypeImplemented NewSupportTypeImplemented = new TLIsupportTypeImplemented();
+                                                NewSupportTypeImplemented.Name = TowerSupportTypeImplemented;
+                                                _unitOfWork.SupportTypeImplementedRepository.Add(NewSupportTypeImplemented);
+                                                _unitOfWork.SaveChanges();
+                                                NewCivilWithLegsEntity.SupportTypeImplementedId = NewSupportTypeImplemented.Id;
+                                            }
+                                        }
+
+                                        string TowerBaseCivilWithLegsTypeName = TypeOfSupportInfoDataTable.Rows[j]["Base Type"].ToString();
+
+                                        if (!string.IsNullOrEmpty(TowerBaseCivilWithLegsTypeName))
+                                        {
+                                            TLIbaseType BaseTypeForeignKeyEntity = _unitOfWork.BaseTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == TowerBaseCivilWithLegsTypeName.ToLower() && !x.Deleted);
+
+                                            if (BaseTypeForeignKeyEntity != null)
+                                                NewCivilWithLegsEntity.baseTypeId = BaseTypeForeignKeyEntity.Id;
+
+                                            else
+                                            {
+                                                TLIbaseType NewBaseTypeForeignKeyEntity = new TLIbaseType
+                                                {
+                                                    Name = TowerBaseCivilWithLegsTypeName,
+                                                    Disable = false,
+                                                    Deleted = false
+                                                };
+                                                _unitOfWork.BaseTypeRepository.Add(NewBaseTypeForeignKeyEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                NewCivilWithLegsEntity.baseTypeId = NewBaseTypeForeignKeyEntity.Id;
+                                            }
+
+                                            TLIbaseCivilWithLegsType baseCivilWithLegsType = _unitOfWork.BaseCivilWithLegsTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == TowerBaseCivilWithLegsTypeName.ToLower() && !x.Deleted);
+
+                                            if (baseCivilWithLegsType != null)
+                                                NewCivilWithLegsEntity.BaseCivilWithLegTypeId = baseCivilWithLegsType.Id;
+
+                                            else
+                                            {
+                                                TLIbaseCivilWithLegsType NewbaseCivilWithLegsType = new TLIbaseCivilWithLegsType();
+                                                NewbaseCivilWithLegsType.Name = TowerBaseCivilWithLegsTypeName;
+                                                _unitOfWork.BaseCivilWithLegsTypeRepository.Add(NewbaseCivilWithLegsType);
+                                                _unitOfWork.SaveChanges();
+                                                NewCivilWithLegsEntity.BaseCivilWithLegTypeId = NewbaseCivilWithLegsType.Id;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            TLIbaseType BaseTypeForeignKeyEntity = _unitOfWork.BaseTypeRepository
+                                                .GetWhereFirst(x => x.Id == 0);
+
+                                            if (BaseTypeForeignKeyEntity != null)
+                                            {
+                                                NewCivilWithLegsEntity.baseTypeId = 0;
+                                            }
+                                            else
+                                            {
+                                                TLIbaseType NewBaseTypeForeignKeyEntity = new TLIbaseType
+                                                {
+                                                    Id = 0,
+                                                    Name = "NA",
+                                                    Disable = false,
+                                                    Deleted = false
+                                                };
+
+                                                _unitOfWork.BaseTypeRepository.Add(NewBaseTypeForeignKeyEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                NewCivilWithLegsEntity.baseTypeId = NewBaseTypeForeignKeyEntity.Id;
+                                            }
+                                        }
+
+                                        string TowerGuyLineType = TypeOfSupportInfoDataTable.Rows[j]["Guyed Type"].ToString();
+                                        if (!string.IsNullOrEmpty(TowerGuyLineType))
+                                        {
+                                            TLIguyLineType guyLineType = _unitOfWork.GuyLineTypeRepository
+                                                .GetWhereFirst(x => x.Name.ToLower() == TowerGuyLineType.ToLower() && !x.Deleted);
+
+                                            if (guyLineType != null)
+                                                NewCivilWithLegsEntity.GuylineTypeId = guyLineType.Id;
+
+                                            else
+                                            {
+                                                TLIguyLineType NewGuyLineType = new TLIguyLineType();
+                                                NewGuyLineType.Name = TowerGuyLineType;
+                                                _unitOfWork.GuyLineTypeRepository.Add(NewGuyLineType);
+                                                _unitOfWork.SaveChanges();
+                                                NewCivilWithLegsEntity.GuylineTypeId = NewGuyLineType.Id;
+                                            }
+                                        }
+
+                                        db.TLIcivilWithLegs.Add(NewCivilWithLegsEntity);
+                                        db.SaveChanges();
+                                        //
+                                        // Dynamic Attributes..
+                                        //
+
+                                        foreach (object CivilWithLegsDynamicAttribute in CivilWithLegsDynamicAttributes)
+                                        {
+                                            TLIdynamicAtt CivilWithLegsDynamicAttEntity = CivilWithLegsDynamicAttributesInTLIS.FirstOrDefault(x =>
+                                                x.Key.ToLower() == CivilWithLegsDynamicAttribute.ToString().Replace('_', ' ').ToLower());
+
+                                            TLIdynamicAttInstValue NewCivilWithLegsDynamicAttributeInstallationValue = new TLIdynamicAttInstValue()
+                                            {
+                                                DynamicAttId = CivilWithLegsDynamicAttEntity.Id,
+                                                InventoryId = NewCivilWithLegsEntity.Id,
+                                                tablesNamesId = CivilWithLegsTableNameId,
+                                                disable = false
+                                            };
+                                            if (CivilWithLegsDynamicAttEntity.Key.ToLower() == "Path".ToLower())
+                                            {
+                                                //NewCivilWithLegsDynamicAttributeInstallationValue.ValueString = TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString();
+                                                //string ProjectRootPath = _hostingEnvironment.ContentRootPath;
+                                                //System.IO.File.Copy("s", ProjectRootPath + "\\");
+                                            }
+                                            else
+                                            {
+                                                if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString()))
+                                                {
+                                                    if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "string".ToLower())
+                                                        NewCivilWithLegsDynamicAttributeInstallationValue.ValueString = TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString();
+                                                    else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "int".ToLower() ||
+                                                        CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "double".ToLower())
+                                                    {
+                                                        double DoubleParser = 0;
+
+                                                        CheckParser = double.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out DoubleParser);
+
+                                                        if (CheckParser)
+                                                            NewCivilWithLegsDynamicAttributeInstallationValue.ValueDouble = DoubleParser;
+
+                                                        else
+                                                        {
+                                                            TowerTransaction.Dispose();
+
+                                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                            {
+                                                                CreatedAt = DateTime.Now,
+                                                                ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be a number",
+                                                                IsDeleted = false,
+                                                                IsLib = false,
+                                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                                SheetName = "Type of support info",
+                                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                            };
+
+                                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                            _unitOfWork.SaveChanges();
+
+                                                            continue;
+                                                        }
+                                                    }
+                                                    else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "boolean".ToLower())
+                                                    {
+                                                        bool BooleanParser = false;
+
+                                                        CheckParser = bool.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out BooleanParser);
+
+                                                        if (CheckParser)
+                                                            NewCivilWithLegsDynamicAttributeInstallationValue.ValueBoolean = BooleanParser;
+
+                                                        else
+                                                        {
+                                                            TowerTransaction.Dispose();
+
+                                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                            {
+                                                                CreatedAt = DateTime.Now,
+                                                                ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be a number",
+                                                                IsDeleted = false,
+                                                                IsLib = false,
+                                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                                SheetName = "Type of support info",
+                                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                            };
+
+                                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                            _unitOfWork.SaveChanges();
+
+                                                            continue;
+                                                        }
+                                                    }
+                                                    else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "datetime".ToLower())
+                                                    {
+                                                        DateTime DateTimeParser = DateTime.Now;
+
+                                                        CheckParser = DateTime.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out DateTimeParser);
+
+                                                        if (CheckParser)
+                                                            NewCivilWithLegsDynamicAttributeInstallationValue.ValueDateTime = DateTimeParser;
+
+                                                        else
+                                                        {
+                                                            TowerTransaction.Dispose();
+
+                                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                            {
+                                                                CreatedAt = DateTime.Now,
+                                                                ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be date",
+                                                                IsDeleted = false,
+                                                                IsLib = false,
+                                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                                SheetName = "Type of support info",
+                                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                            };
+
+                                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                            _unitOfWork.SaveChanges();
+
+                                                            continue;
+                                                        }
+                                                    }
+
+                                                    _unitOfWork.DynamicAttInstValueRepository.Add(NewCivilWithLegsDynamicAttributeInstallationValue);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
+                                        }
+                                       
+                                        TowerTransaction.Complete();
+                                    }
+                                    catch (Exception err)
+                                    {
+                                        TowerTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = err.Message,
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                            SheetName = "Type of support info",
+                                            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                }
+                            }
+                        }
+                        return new Response<string>("Succeed");
+
+                    }
+                }
+                catch (Exception err)
+                {
+
+                    return new Response<string>(err.Message);
+                }
+                    
+            
+            }
+        }
+    
+                
         public Response<string> ImportInstallationFileData2(IFormFile File, string ConnectionString)
         {
             List<TLIdataType> DataTypes = _unitOfWork.DataTypeRepository.GetAllWithoutCount().ToList();

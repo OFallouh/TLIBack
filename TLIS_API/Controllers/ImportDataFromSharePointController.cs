@@ -134,6 +134,15 @@ namespace TLIS_API.Controllers
 
             return File(Bytes, ContentType, Path.GetFileName(FullPath));
         }
+        [HttpPost("ImportInstallationFileDataTower")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult ImportInstallationFileDataTower()
+        {
+            var File = Request.Form.Files[0];
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.ImportSiteDataService.ImportInstallationFileDataTower(File, ConnectionString);
+            return Ok(response);
+        }
     }
 }
 

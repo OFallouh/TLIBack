@@ -148,9 +148,6 @@ namespace TLIS_Service.Helpers
 
             [Description("String")]
             Path,
-
-            [Description("String")]
-            Bolt_Holes_NB
         }
         public enum CivilWithoutLegCategories
         {
