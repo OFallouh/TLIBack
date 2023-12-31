@@ -43,5 +43,6 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
         public List<LoadOnSideArms> CivilLoadWithSideArm { get; set; }
         public List<LoadOnCivils> LoadDirOnCivil { get; set; }
     }
+
 }
 
