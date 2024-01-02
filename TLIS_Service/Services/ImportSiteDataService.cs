@@ -10694,7 +10694,7 @@ namespace TLIS_Service.Services
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
-                                        ErrMsg = $"(Non-Steel Type) coulumn's value can't be null or empty",
+                                        ErrMsg = $"(Civil steel Name) coulumn's value can't be null or empty",
                                         IsDeleted = false,
                                         IsLib = true,
                                         RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
@@ -10708,7 +10708,7 @@ namespace TLIS_Service.Services
                                     continue;
                                 }
 
-                                string NonSteelModel = TypeOfSupportInfoDataTable.Rows[j]["Tower Type"].ToString();
+                                string NonSteelModel = TypeOfSupportInfoDataTable.Rows[j]["Non-Steel Type"].ToString();
                                 CheckTowerType = _unitOfWork.CivilNonSteelLibraryRepository
                                      .GetWhereFirst(x => x.Model.ToLower() == NonSteelModel.ToLower() && !x.Deleted);
 
@@ -10718,7 +10718,7 @@ namespace TLIS_Service.Services
                                     TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                     {
                                         CreatedAt = DateTime.Now,
-                                        ErrMsg = $"(NonSteel Model Name) coulumn's value: ({NonSteelModel}) doesn't exist in TLIS",
+                                        ErrMsg = $"(Non-Steel Type) coulumn's value: ({NonSteelModel}) doesn't exist in TLIS",
                                         IsDeleted = false,
                                         IsLib = true,
                                         RefTable = Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(),
