@@ -75,9 +75,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetSideArmsInstalledonCivil")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttForSideArm))]
-        public IActionResult GetSideArmsInstalledonCivil([Required] string SiteCode, int? CivilId, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase)
+        public IActionResult GetSideArmsInstalledonCivil([Required] string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase)
         {
-            var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilId, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase);
+            var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilType, CivilName, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase);
             return Ok(response);
         }
         [HttpPost("GetLibraryforSpecificType")]

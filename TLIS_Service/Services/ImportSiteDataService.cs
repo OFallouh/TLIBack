@@ -8805,15 +8805,23 @@ namespace TLIS_Service.Services
                                         //
                                         // Logistical Information
                                         //
+                                        try
+                                        {
+                                            string CivilWithLegsSupplier = TypeOfSupportInfoDataTable.Rows[j]["Supplier"].ToString();
+                                            if (!string.IsNullOrEmpty(CivilWithLegsSupplier))
+                                                AddLogistical(CivilWithLegsSupplier, "Supplier", "CivilSupport", "TLIcivilWithLegLibrary", NewCivilWithLegsEntity.CivilWithLegsLibId);
 
-                                        string CivilWithLegsSupplier = TypeOfSupportInfoDataTable.Rows[j]["Supplier"].ToString();
-                                        if (!string.IsNullOrEmpty(CivilWithLegsSupplier))
-                                            AddLogistical(CivilWithLegsSupplier, "Supplier", "CivilSupport", "TLIcivilWithLegLibrary", NewCivilWithLegsEntity.CivilWithLegsLibId);
+                                            string CivilWithLegsTowerContractor = TypeOfSupportInfoDataTable.Rows[j]["Tower Contractor"].ToString();
+                                            if (!string.IsNullOrEmpty(CivilWithLegsTowerContractor))
+                                                AddLogistical(CivilWithLegsTowerContractor, "Contractor", "CivilSupport", "TLIcivilWithLegLibrary", NewCivilWithLegsEntity.CivilWithLegsLibId);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                        catch (Exception err)
+                                        {
 
-                                        string CivilWithLegsTowerContractor = TypeOfSupportInfoDataTable.Rows[j]["Tower Contractor"].ToString();
-                                        if (!string.IsNullOrEmpty(CivilWithLegsTowerContractor))
-                                            AddLogistical(CivilWithLegsTowerContractor, "Contractor", "CivilSupport", "TLIcivilWithLegLibrary", NewCivilWithLegsEntity.CivilWithLegsLibId);
-                                        _unitOfWork.SaveChanges();
+                                            return new Response<string>(err.Message);
+                                        }
+                                       
 
                                         TowerTransaction.Complete();
                                     }
@@ -19415,7 +19423,6 @@ namespace TLIS_Service.Services
                                         sideArmId = PowerSideArmId,
                                         legId = PowerLegId
                                     };
-
                                     _unitOfWork.CivilLoadsRepository.Add(NewPowerCivilLoadsEntity);
                                     _unitOfWork.SaveChanges();
 

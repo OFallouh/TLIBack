@@ -25,7 +25,7 @@ namespace TLIS_Service.IService
     public interface IInternalApiService
     {
         Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
-        Response<List<ObjectInstAttForSideArm>> GetSideArmsBySiteCode(string SiteCode, int? CivilId, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase);
+        public Response<List<ObjectInstAttForSideArm>> GetSideArmsBySiteCode(string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase);
         Response<ReturnWithFilters<object>> GetLibraryforSpecificType(string TableNameLibrary, int CategoryId, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<LoadsDto> GetAllLoadonSitebyPartandType(String SiteCode, string PartName, string TypeName);
