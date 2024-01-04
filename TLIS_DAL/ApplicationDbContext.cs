@@ -17,7 +17,6 @@ namespace TLIS_DAL
         public ApplicationDbContext(DbContextOptions options) : base(options)
         { }
 
-
         public virtual DbSet<TLIarea> TLIarea { get; set; }
         public virtual DbSet<TLIasType> TLIasType { get; set; }
         public virtual DbSet<TLIattributeActivated> TLIattributeActivated { get; set; }
@@ -167,6 +166,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
             builder.Entity<TLIsite>()
                 .HasOne(e => e.Region)
                 .WithMany(z => z.sites)

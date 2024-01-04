@@ -69,6 +69,8 @@ using Microsoft.Extensions.Configuration;
 using System.Xml;
 using Microsoft.AspNetCore.Components.Forms;
 using LinqToExcel.Extensions;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace TLIS_Service.Services
 {
@@ -7614,5 +7616,45 @@ namespace TLIS_Service.Services
 
             return new Response<ItemsOnSite>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
+        private readonly string _connectionString;
+        public List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                connection.Open();
+                // Execute Stored Procedure
+                using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                {
+                    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    procedureCommand.ExecuteNonQuery();
+                }
+
+                // Query Dynamic View
+                string sqlQuery = $"SELECT * FROM {dynamicViewName}";
+                using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
+                {
+                    using (OracleDataReader reader = queryCommand.ExecuteReader())
+                    {
+                        List<dynamic> result = new List<dynamic>();
+
+                        while (reader.Read())
+                        {
+                            dynamic dynamicResult = new ExpandoObject();
+                            var properties = (IDictionary<string, object>)dynamicResult;
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                properties[reader.GetName(i)] = reader[i];
+                            }
+
+                            result.Add(dynamicResult);
+                        }
+
+                        return result;
+                    }
+                }
+            }
+        }
     }
 }
+

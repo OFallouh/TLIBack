@@ -186,6 +186,15 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<ListSiteStatusViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [HttpGet("ExecuteStoredProcedureAndQueryDynamicView")]
+        [ProducesResponseType(200, Type = typeof(List<dynamic>))]
+        public IActionResult ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.ExecuteStoredProcedureAndQueryDynamicView( storedProcedureName, dynamicViewName, ConnectionString);
+            return Ok(response);
+        }
+
         [HttpGet("GetSiteStatusById/{SiteStatusId}")]
         [ProducesResponseType(200, Type = typeof(SiteStatusViewModel))]
         public IActionResult GetSiteStatusById(int SiteStatusId)
