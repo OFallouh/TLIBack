@@ -112,5 +112,12 @@ namespace TLIS_API.Controllers
             return Ok(rawContent);
 
         }
+        //[HttpPost("GetAllExternalPermission")]
+        //public IActionResult GetAllExternalPermission(ClxFilter f)
+        //{
+
+        //    var response = _unitOfWorkService.ExternalSysService.GetAllExternalPermission(f);
+        //    return Ok(response);
+        //}
     }
 }

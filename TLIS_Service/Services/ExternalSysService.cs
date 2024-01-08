@@ -38,7 +38,7 @@ using System.IO;
 
 namespace TLIS_Service.Services
 {
-    internal class ExternalSysService: IexternalSysService
+    internal class ExternalSysService : IexternalSysService
     {
         private ApplicationDbContext db;
         IUnitOfWork _unitOfWork;
@@ -47,7 +47,7 @@ namespace TLIS_Service.Services
         //private  byte[] key = new byte[16]; // 128-bit key
         //private  byte[] iv = new byte[16]; // 128-bit IV
 
-        public ExternalSysService(IUnitOfWork unitOfWork, IServiceCollection services,ApplicationDbContext _ApplicationDbContext,IMapper mapper)
+        public ExternalSysService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext _ApplicationDbContext, IMapper mapper)
         {
             db = _ApplicationDbContext;
             _unitOfWork = unitOfWork;
@@ -57,9 +57,9 @@ namespace TLIS_Service.Services
 
         public Response<string> CreateExternalSys(AddExternalSysBinding mod)
         {
-            if(CheckUnique(0,mod.SysName)==true)
+            if (CheckUnique(0, mod.SysName) == true)
             {
-                return new Response<string>(false, null, null,"System name is dublicated", (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<string>(false, null, null, "System name is dublicated", (int)Helpers.Constants.ApiReturnCode.fail);
 
             }
             using (TransactionScope transaction = new TransactionScope())
@@ -67,7 +67,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
-                    if(mod.IsToken==true)
+                    if (mod.IsToken == true)
                     {
                         ext.Token = GenerateToken(mod.SysName, mod.UserName, mod.LifeTime);
 
@@ -78,16 +78,16 @@ namespace TLIS_Service.Services
                     }
                     db.TLIexternalSys.Add(ext);
                     db.SaveChanges();
-                    if(ext.Id!=0)
+                    if (ext.Id != 0)
                     {
-                        foreach(int s in mod.ApiPermissionIds)
+                        foreach (int s in mod.ApiPermissionIds)
                         {
-                            TLIexternalSysPermissions per = new TLIexternalSysPermissions(ext.Id,s);
+                            TLIexternalSysPermissions per = new TLIexternalSysPermissions(ext.Id, s);
                             db.TLIexternalSysPermissions.Add(per);
                             db.SaveChanges();
                         }
                         transaction.Complete();
-                        if(mod.IsToken==true)
+                        if (mod.IsToken == true)
                         {
                             return new Response<string>(true, ext.Token, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
@@ -107,7 +107,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-       
+
         public Response<string> EditExternalSys(EditExternalSysBinding mod)
         {
             if (CheckUnique(mod.Id, mod.SysName) == true)
@@ -119,8 +119,8 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    var sys = db.TLIexternalSys.AsNoTracking().FirstOrDefault(x=>x.Id==mod.Id);
-                    if(sys==null)
+                    var sys = db.TLIexternalSys.AsNoTracking().FirstOrDefault(x => x.Id == mod.Id);
+                    if (sys == null)
                     {
                         return new Response<string>(true, null, null, "External system not found", (int)Helpers.Constants.ApiReturnCode.success);
 
@@ -128,7 +128,7 @@ namespace TLIS_Service.Services
 
                     TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
                     ext.IsActive = sys.IsActive;
-                    if(mod.IsToken==true)
+                    if (mod.IsToken == true)
                     {
                         ext.Token = GenerateToken(mod.SysName, mod.UserName, mod.LifeTime);
 
@@ -140,11 +140,11 @@ namespace TLIS_Service.Services
                     db.Entry(ext).State = EntityState.Modified;
                     db.SaveChanges();
                     //-------------------------------------change permissions
-                    var pers=db.TLIexternalSysPermissions.Where(x=>x.ExtSysId==mod.Id).ToList();
+                    var pers = db.TLIexternalSysPermissions.Where(x => x.ExtSysId == mod.Id).ToList();
                     db.TLIexternalSysPermissions.RemoveRange(pers);
                     db.SaveChanges(true);
 
-                    foreach(int s in mod.ApiPermissionIds)
+                    foreach (int s in mod.ApiPermissionIds)
                     {
                         TLIexternalSysPermissions per = new TLIexternalSysPermissions(mod.Id, s);
                         db.TLIexternalSysPermissions.Add(per);
@@ -152,7 +152,7 @@ namespace TLIS_Service.Services
                     }
 
                     transaction.Complete();
-                    if(mod.IsToken==true)
+                    if (mod.IsToken == true)
                     {
                         return new Response<string>(true, ext.Token, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
@@ -173,10 +173,10 @@ namespace TLIS_Service.Services
 
         public Response<bool> DisableExternalSys(int id)
         {
-            var ext = db.TLIexternalSys.FirstOrDefault(x=>x.Id==id && x.IsDeleted==false);
-            if(ext!=null)
+            var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+            if (ext != null)
             {
-                ext.IsActive=!ext.IsActive;
+                ext.IsActive = !ext.IsActive;
                 db.Entry(ext).State = EntityState.Modified;
                 db.SaveChanges();
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -192,7 +192,7 @@ namespace TLIS_Service.Services
             if (ext != null)
             {
                 ext.IsDeleted = true;
-                ext.IsActive=false;
+                ext.IsActive = false;
                 db.Entry(ext).State = EntityState.Modified;
                 db.SaveChanges();
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -204,7 +204,7 @@ namespace TLIS_Service.Services
 
         public Response<GetAllExternalSysDto> GetByIdExternalSys(int id)
         {
-            var data = db.TLIexternalSys.Where(x=>x.Id==id && x.IsDeleted==false).Include(x => x.TLIexternalSysPermissions).ThenInclude(y => y.TLIinternalApi).AsQueryable();
+            var data = db.TLIexternalSys.Where(x => x.Id == id && x.IsDeleted == false).Include(x => x.TLIexternalSysPermissions).ThenInclude(y => y.TLIinternalApi).AsQueryable();
             var response = data.Select(x => new GetAllExternalSysDto()
             {
                 Id = x.Id,
@@ -219,13 +219,13 @@ namespace TLIS_Service.Services
                 LifeTime = x.LifeTime,
                 InternalApiPermissions = x.TLIexternalSysPermissions.Select(x => new InternalApiPermission()
                 {
-                    Id=x.InternalApiId,
-                    ApiLabel=x.TLIinternalApi.Label
+                    Id = x.InternalApiId,
+                    ApiLabel = x.TLIinternalApi.Label
                 }).ToList()
             }).FirstOrDefault();
-            if(response==null)
+            if (response == null)
             {
-                return new Response<GetAllExternalSysDto>(true, response, null,"Id invalid" , (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<GetAllExternalSysDto>(true, response, null, "Id invalid", (int)Helpers.Constants.ApiReturnCode.success);
 
             }
 
@@ -235,8 +235,8 @@ namespace TLIS_Service.Services
 
         public Response<List<GetAllExternalSysDto>> GetAllExternalSys(string systemName, ParameterPagination parameter)
         {
-     
-            var   data = db.TLIexternalSys.Where(x=>x.IsDeleted==false).Include(x => x.TLIexternalSysPermissions).ThenInclude(y => y.TLIinternalApi).AsQueryable();
+
+            var data = db.TLIexternalSys.Where(x => x.IsDeleted == false).Include(x => x.TLIexternalSysPermissions).ThenInclude(y => y.TLIinternalApi).AsQueryable();
 
             if (data != null)
             {
@@ -250,9 +250,9 @@ namespace TLIS_Service.Services
                     IP = x.IP,
                     IsActive = x.IsActive,
                     Token = x.Token,
-                    StartLife=x.StartLife,
-                    EndLife=x.EndLife,
-                    LifeTime=x.LifeTime,
+                    StartLife = x.StartLife,
+                    EndLife = x.EndLife,
+                    LifeTime = x.LifeTime,
                     InternalApiPermissions = x.TLIexternalSysPermissions != null ? x.TLIexternalSysPermissions.Select(x => new InternalApiPermission()
                     {
                         Id = x.InternalApiId,
@@ -286,7 +286,7 @@ namespace TLIS_Service.Services
         public Response<List<IntegrationViewModel>> GetAllIntegrationAPI()
         {
 
-            var Apis =db.TLIinternalApis.Where(x=>x.IsDeleted==false && x.IsActive==true).ToList();
+            var Apis = db.TLIinternalApis.Where(x => x.IsDeleted == false && x.IsActive == true).ToList();
             var response = _mapper.Map<List<IntegrationViewModel>>(Apis);
             return new Response<List<IntegrationViewModel>>(true, response, null, null, (int)Helpers.Constants.ApiReturnCode.success, Apis.Count());
 
@@ -294,14 +294,14 @@ namespace TLIS_Service.Services
 
         public Response<string> RegenerateToken(int id)
         {
-            var system = db.TLIexternalSys.FirstOrDefault(x=>x.Id==id && x.IsDeleted==false);
-            if(system==null)
+            var system = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+            if (system == null)
             {
                 return new Response<string>(false, null, null, "Invalid system", (int)Helpers.Constants.ApiReturnCode.fail);
 
             }
 
-            system.Token = GenerateToken(system.SysName,system.UserName,system.LifeTime);
+            system.Token = GenerateToken(system.SysName, system.UserName, system.LifeTime);
             system.StartLife = DateTime.Now;
             system.EndLife = system.StartLife.AddDays(system.LifeTime);
 
@@ -315,7 +315,7 @@ namespace TLIS_Service.Services
         {
             List<TLIintegrationAccessLog> result = new List<TLIintegrationAccessLog>();
             var logs = db.TLIintegrationAccessLog.AsQueryable();
-            int count= logs.Count();
+            int count = logs.Count();
             if (f.Filters.Count != 0)
             {
                 foreach (SimpleFilter c in f.Filters)
@@ -330,7 +330,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    else if(filterKeyProperty.PropertyType == typeof(DateTime))
+                    else if (filterKeyProperty.PropertyType == typeof(DateTime))
                     {
                         logs = logs.Where(x => c.Values.Contains(x.ActionDate.ToString("yyyy-MM-dd HH")));
 
@@ -341,7 +341,7 @@ namespace TLIS_Service.Services
 
                     }
                 }
-                result=logs.ToList();
+                result = logs.ToList();
                 result = result.Skip((f.PageIndex - 1) * f.PageSize).Take(f.PageSize).ToList();
                 return new Response<List<TLIintegrationAccessLog>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
 
@@ -371,7 +371,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        
+
         public static string Encrypt(string plainText)
         {
             using (Aes aesAlg = Aes.Create())
@@ -422,31 +422,33 @@ namespace TLIS_Service.Services
 
         }
 
-        private bool CheckUnique(int id,string systemname)
+        private bool CheckUnique(int id, string systemname)
         {
-            var sys = db.TLIexternalSys.Any(x => x.SysName == systemname && x.Id != id && x.IsDeleted==false);
+            var sys = db.TLIexternalSys.Any(x => x.SysName == systemname && x.Id != id && x.IsDeleted == false);
             return sys;
         }
 
-        private string GenerateToken(string systemname,string username,int lifetime)
-        {
-            string secretKey = "veryVerySecretKey";
-            List<Claim> claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.Sub, systemname),
-                new Claim(JwtRegisteredClaimNames.FamilyName, username),
-            };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        //private string GenerateToken(string systemname, string username, int lifetime)
+        //{
+        //    string secretKey = "veryVerySecretKey";
+        //    List<Claim> claims = new List<Claim> {
+        //        new Claim(JwtRegisteredClaimNames.Sub, systemname),
+        //        new Claim(JwtRegisteredClaimNames.FamilyName, username),
+        //    };
+        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken("https://localhost:44311/",
-              "https://localhost:44311/",
-              claims,
-              expires: DateTime.Now.AddDays(lifetime),
-              signingCredentials: creds);
+        //    var token = new JwtSecurityToken("https://localhost:44311/",
+        //      "https://localhost:44311/",
+        //      claims,
+        //      expires: DateTime.Now.AddDays(lifetime),
+        //      signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        //    return new JwtSecurityTokenHandler().WriteToken(token);
+        //}
+        //public Response<List<GetAllExternalSysDto>> GetAllExternalPermission(string systemName, ParameterPagination parameter)
+        //{
 
+        //}
     }
-
-}
+ }
