@@ -8,6 +8,9 @@ namespace TLIS_DAL.ViewModels.IntegrationDto
 {
     public class ExternalPermission
     {
+        public int  Id { get; set; }
         public string label { get; set; }
+        public string Type { get; set; }
+        public string EndPoint { get; set; }
     }
 }

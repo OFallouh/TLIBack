@@ -76,10 +76,13 @@ namespace TLIS_API.Middleware.ActionFilters
                             string actionName = context.RouteData.Values["action"].ToString();
                             if (item.TLIexternalSysPermissions != null)
                             {
+                                
                                 foreach (var s in item.TLIexternalSysPermissions)
                                 {
                                     var AccessApi = db.TLIinternalApis.FirstOrDefault(x => x.Id == s.InternalApiId && x.IsDeleted == false && x.IsActive == true);
-                                    if (AccessApi.ControllerName == controllerName && AccessApi.ActionName == actionName)
+                                    string[] part = AccessApi.ControllerName.Split('/');
+                                    string Controller = part.Length > 0 ? part[0] : null;
+                                    if (Controller == controllerName && AccessApi.ActionName == actionName)
                                     {
                                         context.Result = context.Result;
                                         return;

@@ -13,6 +13,7 @@ namespace TLIS_Service.IService
 {
     public interface IexternalSysService
     {
+        public Response<List<ExternalPermission>> GetAllExternalPermission();
         Response<string> CreateExternalSys(AddExternalSysBinding mod);
         Response<bool> DisableExternalSys(int id);
         Response<bool> DeleteExternalSys(int id);

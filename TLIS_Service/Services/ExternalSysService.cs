@@ -446,9 +446,36 @@ namespace TLIS_Service.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        //public Response<List<GetAllExternalSysDto>> GetAllExternalPermission(string systemName, ParameterPagination parameter)
-        //{
+        public Response<List<ExternalPermission>> GetAllExternalPermission()
+        {
+            try
+            {
+                List<ExternalPermission> ExternalPermissions = new List<ExternalPermission>();
 
-        //}
+                var AllExternalPermissions = db.TLIinternalApis.ToList();
+                foreach (var AllExternalPermission in AllExternalPermissions)
+                {
+                    string[] parts = AllExternalPermission.ControllerName.Split('/');
+                    ExternalPermission externalPermission = new ExternalPermission()
+                    {
+                        Id= AllExternalPermission.Id,
+                        label = AllExternalPermission.Label,
+                        Type = parts.Length > 1 ? parts[1] : null,
+                        EndPoint = "api/" + (parts.Length > 0 ? parts[0] : null) + "/" + AllExternalPermission.ActionName,
+                    };
+
+                    ExternalPermissions.Add(externalPermission);
+                }
+                return new Response<List<ExternalPermission>>(true, ExternalPermissions, null, null, (int)Helpers.Constants.ApiReturnCode.success, ExternalPermissions.Count);
+
+            }
+            catch (Exception err)
+            {
+
+                return new Response<List<ExternalPermission>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+
+            }
+
+        }
     }
  }
