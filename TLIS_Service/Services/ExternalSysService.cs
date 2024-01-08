@@ -428,24 +428,24 @@ namespace TLIS_Service.Services
             return sys;
         }
 
-        //private string GenerateToken(string systemname, string username, int lifetime)
-        //{
-        //    string secretKey = "veryVerySecretKey";
-        //    List<Claim> claims = new List<Claim> {
-        //        new Claim(JwtRegisteredClaimNames.Sub, systemname),
-        //        new Claim(JwtRegisteredClaimNames.FamilyName, username),
-        //    };
-        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        private string GenerateToken(string systemname, string username, int lifetime)
+        {
+            string secretKey = "veryVerySecretKey";
+            List<Claim> claims = new List<Claim> {
+                new Claim(JwtRegisteredClaimNames.Sub, systemname),
+                new Claim(JwtRegisteredClaimNames.FamilyName, username),
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        //    var token = new JwtSecurityToken("https://localhost:44311/",
-        //      "https://localhost:44311/",
-        //      claims,
-        //      expires: DateTime.Now.AddDays(lifetime),
-        //      signingCredentials: creds);
+            var token = new JwtSecurityToken("https://localhost:44311/",
+              "https://localhost:44311/",
+              claims,
+              expires: DateTime.Now.AddDays(lifetime),
+              signingCredentials: creds);
 
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
         //public Response<List<GetAllExternalSysDto>> GetAllExternalPermission(string systemName, ParameterPagination parameter)
         //{
 
