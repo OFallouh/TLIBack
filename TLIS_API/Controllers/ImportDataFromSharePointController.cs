@@ -97,12 +97,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult ImportInstallationFileData2()
         {
-            var files = Request.Form.Files;
-            if (files.Count == 0)
-            {
-                return BadRequest("No file uploaded");
-            }
-            var File = files[0];
+            var File = Request.Form.Files[0];
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.ImportSiteDataService.ImportInstallationFileData2(File, ConnectionString);
             return Ok(response);
