@@ -8504,107 +8504,107 @@ namespace TLIS_Service.Services
                                             //    //string ProjectRootPath = _hostingEnvironment.ContentRootPath;
                                             //    //System.IO.File.Copy("s", ProjectRootPath + "\\");
                                             //}
-                                        
-                                                if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString()))
+
+                                            if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString()))
+                                            {
+                                                if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "string".ToLower())
+                                                    NewCivilWithLegsDynamicAttributeInstallationValue.ValueString = TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString();
+                                                else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "int".ToLower() ||
+                                                    CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "double".ToLower())
                                                 {
-                                                    if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "string".ToLower())
-                                                        NewCivilWithLegsDynamicAttributeInstallationValue.ValueString = TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString();
-                                                    else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "int".ToLower() ||
-                                                        CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "double".ToLower())
+                                                    double DoubleParser = 0;
+
+                                                    CheckParser = double.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out DoubleParser);
+
+                                                    if (CheckParser)
+                                                        NewCivilWithLegsDynamicAttributeInstallationValue.ValueDouble = DoubleParser;
+
+                                                    else
                                                     {
-                                                        double DoubleParser = 0;
+                                                        TowerTransaction.Dispose();
 
-                                                        CheckParser = double.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out DoubleParser);
-
-                                                        if (CheckParser)
-                                                            NewCivilWithLegsDynamicAttributeInstallationValue.ValueDouble = DoubleParser;
-
-                                                        else
+                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                                         {
-                                                            TowerTransaction.Dispose();
+                                                            CreatedAt = DateTime.Now,
+                                                            ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be a number",
+                                                            IsDeleted = false,
+                                                            IsLib = false,
+                                                            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                            SheetName = "Type of support info",
+                                                            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                        };
 
-                                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                            {
-                                                                CreatedAt = DateTime.Now,
-                                                                ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be a number",
-                                                                IsDeleted = false,
-                                                                IsLib = false,
-                                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                                SheetName = "Type of support info",
-                                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                            };
+                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                        _unitOfWork.SaveChanges();
 
-                                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                            _unitOfWork.SaveChanges();
-
-                                                            continue;
-                                                        }
+                                                        continue;
                                                     }
-                                                    else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "boolean".ToLower())
-                                                    {
-                                                        bool BooleanParser = false;
-
-                                                        CheckParser = bool.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out BooleanParser);
-
-                                                        if (CheckParser)
-                                                            NewCivilWithLegsDynamicAttributeInstallationValue.ValueBoolean = BooleanParser;
-
-                                                        else
-                                                        {
-                                                            TowerTransaction.Dispose();
-
-                                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                            {
-                                                                CreatedAt = DateTime.Now,
-                                                                ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be a number",
-                                                                IsDeleted = false,
-                                                                IsLib = false,
-                                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                                SheetName = "Type of support info",
-                                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                            };
-
-                                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                            _unitOfWork.SaveChanges();
-
-                                                            continue;
-                                                        }
-                                                    }
-                                                    else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "datetime".ToLower())
-                                                    {
-                                                        DateTime DateTimeParser = DateTime.Now;
-
-                                                        CheckParser = DateTime.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out DateTimeParser);
-
-                                                        if (CheckParser)
-                                                            NewCivilWithLegsDynamicAttributeInstallationValue.ValueDateTime = DateTimeParser;
-
-                                                        else
-                                                        {
-                                                            TowerTransaction.Dispose();
-
-                                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                            {
-                                                                CreatedAt = DateTime.Now,
-                                                                ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be date",
-                                                                IsDeleted = false,
-                                                                IsLib = false,
-                                                                RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                                SheetName = "Type of support info",
-                                                                UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                            };
-
-                                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                            _unitOfWork.SaveChanges();
-
-                                                            continue;
-                                                        }
-                                                    }
-
-                                                    _unitOfWork.DynamicAttInstValueRepository.Add(NewCivilWithLegsDynamicAttributeInstallationValue);
-                                                    _unitOfWork.SaveChanges();
                                                 }
-                                            
+                                                else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "boolean".ToLower())
+                                                {
+                                                    bool BooleanParser = false;
+
+                                                    CheckParser = bool.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out BooleanParser);
+
+                                                    if (CheckParser)
+                                                        NewCivilWithLegsDynamicAttributeInstallationValue.ValueBoolean = BooleanParser;
+
+                                                    else
+                                                    {
+                                                        TowerTransaction.Dispose();
+
+                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                        {
+                                                            CreatedAt = DateTime.Now,
+                                                            ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be a number",
+                                                            IsDeleted = false,
+                                                            IsLib = false,
+                                                            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                            SheetName = "Type of support info",
+                                                            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                        };
+
+                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        continue;
+                                                    }
+                                                }
+                                                else if (CivilWithLegsDynamicAttEntity.DataType.Name.ToLower() == "datetime".ToLower())
+                                                {
+                                                    DateTime DateTimeParser = DateTime.Now;
+
+                                                    CheckParser = DateTime.TryParse(TypeOfSupportInfoDataTable.Rows[j][CivilWithLegsDynamicAttEntity.Key].ToString(), out DateTimeParser);
+
+                                                    if (CheckParser)
+                                                        NewCivilWithLegsDynamicAttributeInstallationValue.ValueDateTime = DateTimeParser;
+
+                                                    else
+                                                    {
+                                                        TowerTransaction.Dispose();
+
+                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                        {
+                                                            CreatedAt = DateTime.Now,
+                                                            ErrMsg = $"({CivilWithLegsDynamicAttEntity.Key}) coulumn's value must be date",
+                                                            IsDeleted = false,
+                                                            IsLib = false,
+                                                            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                            SheetName = "Type of support info",
+                                                            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                        };
+
+                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        continue;
+                                                    }
+                                                }
+
+                                                _unitOfWork.DynamicAttInstValueRepository.Add(NewCivilWithLegsDynamicAttributeInstallationValue);
+                                                _unitOfWork.SaveChanges();
+                                            }
+
                                         }
 
                                         //
@@ -8821,7 +8821,7 @@ namespace TLIS_Service.Services
 
                                             return new Response<string>(err.Message);
                                         }
-                                       
+
 
                                         TowerTransaction.Complete();
                                     }
@@ -18657,8 +18657,7 @@ namespace TLIS_Service.Services
                         }
                         catch (NullReferenceException)
                         {
-                            System.IO.File.Delete(FilePath);
-                            return new Response<string>("Succeed");
+                            goto Solar;
                         }
                         int PowerColumns = PowerSheet.Dimension.End.Column;
 
@@ -19425,7 +19424,6 @@ namespace TLIS_Service.Services
                                     };
                                     _unitOfWork.CivilLoadsRepository.Add(NewPowerCivilLoadsEntity);
                                     _unitOfWork.SaveChanges();
-
                                     PowerTransaction.Complete();
                                 }
                                 catch (Exception err)
@@ -19438,7 +19436,7 @@ namespace TLIS_Service.Services
                                         ErrMsg = err.Message,
                                         IsDeleted = false,
                                         IsLib = false,
-                                        RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
+                                        RefTable = Helpers.Constants.TablesNames.TLIradioRRU.ToString(),
                                         SheetName = "Wind info",
                                         UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
                                     };
@@ -19451,11 +19449,2075 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        System.IO.File.Delete(FilePath);
-                        return new Response<string>("Succeed");
+                        ////////////////////////////////////////////////////////////
+                        /////////////////// Solar //////////////////////////////////
+                        ////////////////////////////////////////////////////////////
+
+                        Solar:
+
+                            ExcelWorksheet SolarSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Solar".ToLower());
+                            int SolarRows = 0;
+                            try
+                            {
+                                SolarRows = SolarSheet.Dimension.End.Row;
+                            }
+                            catch (NullReferenceException)
+                            {
+                                goto Generator;
+                            }
+                            int SolarColumns = SolarSheet.Dimension.End.Column;
+
+                            DataTable SolarDataTable = new DataTable();
+                            List<string> SolarSheetColumn = new List<string>();
+
+                            for (int i = 1; i <= SolarColumns; i++)
+                            {
+                                string ColName = SolarSheet.Cells[1, i].Value.ToString().Trim();
+                                ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                SolarSheetColumn.Add(ColName);
+                                SolarDataTable.Columns.Add(ColName);
+                            }
+
+                            for (int i = 2; i <= SolarRows; i++)
+                            {
+                                DataRow SolarDataRow = SolarDataTable.NewRow();
+                                for (int j = 1; j <= SolarColumns; j++)
+                                {
+                                    string ColName = SolarSheet.Cells[1, j].Value.ToString().Trim();
+                                    ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                    object Value = SolarSheet.Cells[i, j].Value;
+                                    if (Value != null)
+                                    {
+                                        string ValueAsString = Value.ToString().Trim();
+                                        ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                                        Value = ValueAsString;
+                                        SolarDataRow[ColName] = Value;
+                                    }
+                                    else
+                                    {
+                                        SolarDataRow[ColName] = Value;
+                                    }
+                                }
+                                SolarDataTable.Rows.Add(SolarDataRow);
+                            }
+
+                            //
+                            // Dynamic Attributes For Power..
+                            //
+
+                            int SolarTableNameId = TablesName.FirstOrDefault(x =>
+                             x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsolar.ToString().ToLower()).Id;
+
+                            List<TLIdynamicAtt> SolarMissedAttributeCSV = new List<TLIdynamicAtt>()
+                            {
+                                new TLIdynamicAtt
+                                {
+                                    Key = "dd",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Visit Date",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "DateTime".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "SN",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Height from back_m",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "Double".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Height from front_m",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "Double".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Total panels Dimensions",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Structure design",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Base Plate Dimension",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv1",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv2",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv3",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                } ,
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv4",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv5",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Expr1026",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv7",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv8",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv9",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv10",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv11",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv12",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv13",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Expr1034",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv15",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv16",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv17",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv18",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv19",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv20",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv21",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv22",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv23",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv24",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv25",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv26",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv27",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Expr1048",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv29",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv30",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },  
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Attachments1",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv6",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv14",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Serial Number pv28",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Content Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "App Created By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "App Modified By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Attachments",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Workflow Instance ID",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "File Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Modified",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "datetime".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Created",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "datetime".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Created By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Modified By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "URL Path",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Path",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Item Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                                ,new TLIdynamicAtt
+                                {
+                                    Key = "Encoded Absolute URL",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = SolarTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                            };
+
+                            List<TLIdynamicAtt> SolarAllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                                .GetWhere(x => x.tablesNamesId == SolarTableNameId).ToList();
 
 
-                    }
+                        List<TLIdynamicAtt> SolarMissedAttributes = SolarMissedAttributeCSV
+                           .Except(SolarAllDynamicAttribute, new TLIdynamicAttComparer())
+                           .ToList();
+
+                        _unitOfWork.DynamicAttRepository.AddRange(SolarMissedAttributes);
+                            _unitOfWork.SaveChanges();
+
+                        for (int j = 0; j <= SolarDataTable.Rows.Count - 1; j++)
+                        {
+                            using (TransactionScope SolarTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                new System.TimeSpan(0, 15, 0)))
+                            {
+                                try
+                                {
+                                    //
+                                    // Library Information..
+                                    //
+
+                                    string SolarLibraryModel = SolarDataTable.Rows[j]["Solar design"].ToString();
+                                    int SolarLibraryId = 0;
+                                    if (!string.IsNullOrEmpty(SolarLibraryModel))
+                                    {
+                                        SolarTransaction.Dispose();
+
+                                        TLIsolarLibrary CheckSolarLibraryModel = _unitOfWork.SolarLibraryRepository
+                                             .GetWhereFirst(x => x.Model.ToLower() == SolarLibraryModel.ToLower() && !x.Deleted);
+
+                                        if (CheckSolarLibraryModel == null)
+                                        {
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Solar design) coulumn's value: ({SolarLibraryModel}) doesn't exist in TLIS",
+                                                IsDeleted = false,
+                                                IsLib = true,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
+                                                SheetName = "Solar",
+                                                UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        SolarLibraryId = CheckSolarLibraryModel.Id;
+                                    }
+                                    else
+                                    {
+                                        SolarTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(Solar design) coulumn's value can't be null or empty",
+                                            IsDeleted = false,
+                                            IsLib = true,
+                                            RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
+                                            SheetName = "Solar",
+                                            UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
+
+                                    //
+                                    // Installation Information..
+                                    //
+
+                                    string Solar_SiteCodeAfterCheck = string.Empty;
+                                    string Solar_SiteCode = SolarDataTable.Rows[j]["Site_Code"].ToString();
+                                    string Solar_SiteName = SolarDataTable.Rows[j]["Site_Name"].ToString();
+
+                                    if (!string.IsNullOrEmpty(Solar_SiteCode))
+                                    {
+                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                                            .GetWhereFirst(x => x.SiteCode.ToLower() == Solar_SiteCode.ToLower());
+
+                                        if (CheckSiteCode == null)
+                                        {
+                                            SolarTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Site Code) coulumn's value: ({Solar_SiteCode}) doesn't exist in TLIS",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                SheetName = "Solar",
+                                                UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        Solar_SiteCodeAfterCheck = Solar_SiteCode;
+                                    }
+                                    else if (!string.IsNullOrEmpty(Solar_SiteName))
+                                    {
+                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                                            .GetWhereFirst(x => x.SiteName.ToLower() == Solar_SiteName.ToLower());
+
+                                        if (CheckSiteCode == null)
+                                        {
+                                            SolarTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Site Name) coulumn's value: ({Solar_SiteName}) doesn't exist in TLIS",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                SheetName = "solar",
+                                                UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        Solar_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
+                                    }
+                                    else
+                                    {
+                                        SolarTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                            SheetName = "Solar",
+                                            UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
+                                    int IntParser = 0;
+                                    string SolarAzimuthString = SolarDataTable.Rows[j]["PV array Azimuth"].ToString();
+                                    string SolarAngelAngelString = SolarDataTable.Rows[j]["PV array Angel"].ToString();
+                                    string SolarPREFIXString = SolarDataTable.Rows[j]["PREFIX"].ToString();
+                                    string SolarExtenstionDimensionString = SolarDataTable.Rows[j]["Extension Dimension"].ToString();
+                                    string SolarPowerlossratioString = SolarDataTable.Rows[j]["Power loss ratio"].ToString();
+                                    string SolarExtensionString = SolarDataTable.Rows[j]["extension"].ToString();
+
+                                    string SolarNumberOfSSUtString = SolarDataTable.Rows[j]["NO# of SSU"].ToString();
+                                    int SolarNumberOfSSU = 0;
+                                    if (!string.IsNullOrEmpty(SolarNumberOfSSUtString))
+                                    {
+                                        CheckParser = int.TryParse(SolarNumberOfSSUtString, out IntParser);
+
+                                        if (CheckParser)
+                                            SolarNumberOfSSU = IntParser;
+
+                                        else
+                                        {
+                                            SolarTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(NumberOfSSU) coulumn's value: ({SolarNumberOfSSUtString}) must be a number",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
+                                                SheetName = "Wind info",
+                                                UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+                                    }
+
+
+                                    string SolarNumberOfInstallPVsString = SolarDataTable.Rows[j]["NO# of install pvs"].ToString();
+                                    int SolarNumberOfInstallPVs = 0;
+                                    if (!string.IsNullOrEmpty(SolarNumberOfInstallPVsString))
+                                    {
+                                        CheckParser = int.TryParse(SolarNumberOfInstallPVsString, out IntParser);
+
+                                        if (CheckParser)
+                                            SolarNumberOfInstallPVs = IntParser;
+
+                                        else
+                                        {
+                                            SolarTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(NumberOfInstallPVs) coulumn's value: ({SolarNumberOfInstallPVsString}) must be a number",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
+                                                SheetName = "Wind info",
+                                                UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+                                    }
+                                    string SolarLibraryModelI = SolarDataTable.Rows[j]["Solar design"].ToString();
+                                    int SolarLibraryModelId = 0;
+                                    if (!string.IsNullOrEmpty(SolarLibraryModel))
+                                    {
+                                        TLIsolarLibrary CheckSolarLibraryModel = _unitOfWork.SolarLibraryRepository
+                                            .GetWhereFirst(x => x.Model.ToLower() == SolarLibraryModelI.ToLower() && !x.Deleted);
+
+                                        if (CheckSolarLibraryModel == null)
+                                        {
+                                            SolarTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(SolarLibraryModel) coulumn's value: ({SolarLibraryModelI}) doesn't exist in TLIS",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
+                                                SheetName = "Solar",
+                                                UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        SolarLibraryModelId = CheckSolarLibraryModel.Id;
+                                    }
+
+                                    string SolarName = SolarDataTable.Rows[j]["Solar Name"].ToString();
+                                    if (string.IsNullOrEmpty(SolarName))
+                                    {
+                                        SolarName = SolarLibraryModel + " " + Solar_SiteName;   
+                                    }
+
+                                    // Check if Power Name is Already Exist on This Site..
+
+                                    TLIotherInSite CheckSolarName = _unitOfWork.OtherInSiteRepository
+                                        .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Solar_SiteCodeAfterCheck.ToLower() && x.allOtherInventoryInstId != null ?
+                                            (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.solarId != null ?
+                                                (x.allOtherInventoryInst.solar.Name.ToLower() == SolarName.ToLower()) : false) : false,
+                                                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar);
+
+                                    if (CheckSolarName != null)
+                                    {
+                                        SolarTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(Solar Name) column's value: ({SolarName}) is already exist on this site: ({Solar_SiteCodeAfterCheck})",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIotherInSite.ToString(),
+                                            SheetName = "Solar",
+                                            UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
+
+                                    TLIsolar NewSolarEntity = new TLIsolar()
+                                    {
+                                        Name = SolarName,
+                                        PVArrayAzimuth = SolarAzimuthString,
+                                        PVArrayAngel = SolarAngelAngelString,
+                                        Prefix = SolarPREFIXString,
+                                        PowerLossRatio = SolarPowerlossratioString,
+                                        NumberOfSSU = SolarNumberOfSSU,
+                                        SolarLibraryId= SolarLibraryModelId,
+                                        NumberOfInstallPVs = SolarNumberOfInstallPVs,
+                                        Extension = SolarExtensionString,
+                                        ExtenstionDimension = SolarExtenstionDimensionString
+
+                                    };
+
+                                    _unitOfWork.SolarRepository.Add(NewSolarEntity);
+                                    _unitOfWork.SaveChanges();
+
+
+                                    //
+                                    // Dynamic Attributes..
+                                    //
+
+                                    List<TLIdynamicAttInstValue> SolarDynamicValues = new List<TLIdynamicAttInstValue>();
+
+                                    foreach (TLIdynamicAtt MissedAttribute in SolarMissedAttributes)
+                                    {
+                                        if (!string.IsNullOrEmpty(SolarDataTable.Rows[j][MissedAttribute.Key].ToString()))
+                                        {
+                                            TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
+                                            {
+                                                tablesNamesId = SolarTableNameId,
+                                                disable = false,
+                                                DynamicAttId = MissedAttribute.Id,
+                                                InventoryId = NewSolarEntity.Id
+                                            };
+
+                                            if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
+                                                MissedAttributeValue.ValueString = SolarDataTable.Rows[j][MissedAttribute.Key].ToString();
+                                            else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
+                                                MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
+                                            {
+                                                double DoubleParser = 0;
+
+                                                CheckParser = double.TryParse(SolarDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
+
+                                                if (CheckParser)
+                                                    MissedAttributeValue.ValueDouble = DoubleParser;
+
+                                                else
+                                                {
+                                                    SolarTransaction.Dispose();
+
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({SolarDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
+                                                        SheetName = "Solar",
+                                                        UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                                    };
+
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+                                            }
+                                            else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
+                                            {
+                                                bool BooleanParser = false;
+
+                                                CheckParser = bool.TryParse(SolarDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
+
+                                                if (CheckParser)
+                                                    MissedAttributeValue.ValueBoolean = BooleanParser;
+
+                                                else
+                                                {
+                                                    SolarTransaction.Dispose();
+
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({SolarDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
+                                                        SheetName = "Solar",
+                                                        UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                                    };
+
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+                                            }
+                                            else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
+                                            {
+                                                DateTime DateTimeParser = DateTime.Now;
+
+                                                CheckParser = DateTime.TryParse(SolarDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
+
+                                                if (CheckParser)
+                                                    MissedAttributeValue.ValueDateTime = DateTimeParser;
+
+                                                else
+                                                {
+                                                    SolarTransaction.Dispose();
+
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({SolarDataTable.Rows[j][MissedAttribute.Key]}) must be date",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
+                                                        SheetName = "Solar",
+                                                        UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                                    };
+
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+                                            }
+
+                                            SolarDynamicValues.Add(MissedAttributeValue);
+                                        }
+                                    }
+                                    if (SolarDynamicValues.Count() > 0)
+                                    {
+                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(SolarDynamicValues);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                    //
+                                    // All Load Installation Information..
+                                    //
+
+                                    TLIallOtherInventoryInst NewSolarAllOtherInventoryEntity = new TLIallOtherInventoryInst()
+                                    {
+                                        solarId = NewSolarEntity.Id,
+                                        Draft = false
+                                    };
+
+                                    _unitOfWork.AllOtherInventoryInstRepository.Add(NewSolarAllOtherInventoryEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    //
+                                    // OtherInSite Information..
+                                    //
+                                    TLIotherInSite tLIotherInSite = new TLIotherInSite()
+                                    {
+                                        InstallationDate = DateTime.Now,
+                                        SiteCode = Solar_SiteCode,
+                                        allOtherInventoryInstId = NewSolarAllOtherInventoryEntity.Id,
+                                        ReservedSpace = true,
+                                        Dismantle = false
+
+                                    };
+                                    _unitOfWork.OtherInSiteRepository.Add(tLIotherInSite);
+                                    _unitOfWork.SaveChanges();
+
+                                    SolarTransaction.Complete();
+                                }
+                                catch (Exception err)
+                                {
+                                    SolarTransaction.Dispose();
+
+                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        ErrMsg = err.Message,
+                                        IsDeleted = false,
+                                        IsLib = false,
+                                        RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
+                                        SheetName = "Solar",
+                                        UniqueName = $"(Solar Name) : {SolarDataTable.Rows[j]["Solar Name"]}"
+                                    };
+
+                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    continue;
+                                }
+                            }
+                        }
+                        ////////////////////////////////////////////////////////////
+                        /////////////////// Generator //////////////////////////////////
+                        ////////////////////////////////////////////////////////////
+
+                        Generator:
+
+                            ExcelWorksheet GeneratorSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Generator".ToLower());
+                            int GeneratorRows = 0;
+                            try
+                            {
+                                GeneratorRows = GeneratorSheet.Dimension.End.Row;
+                            }
+                            catch (NullReferenceException)
+                            {
+                                System.IO.File.Delete(FilePath);
+                                return new Response<string>("Succeed");
+                            }
+                            int GeneratorColumns = GeneratorSheet.Dimension.End.Column;
+
+                            DataTable GeneratorDataTable = new DataTable();
+                            List<string> GeneratorSheetColumn = new List<string>();
+
+                            for (int i = 1; i <= GeneratorColumns; i++)
+                            {
+                                string ColName = GeneratorSheet.Cells[1, i].Value.ToString().Trim();
+                                ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                GeneratorSheetColumn.Add(ColName);
+                                GeneratorDataTable.Columns.Add(ColName);
+                            }
+
+                            for (int i = 2; i <= GeneratorRows; i++)
+                            {
+                                DataRow GeneratorDataRow = GeneratorDataTable.NewRow();
+                                for (int j = 1; j <= GeneratorColumns; j++)
+                                {
+                                    string ColName = GeneratorSheet.Cells[1, j].Value.ToString().Trim();
+                                    ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                    object Value = GeneratorSheet.Cells[i, j].Value;
+                                    if (Value != null)
+                                    {
+                                        string ValueAsString = Value.ToString().Trim();
+                                        ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                                        Value = ValueAsString;
+                                        GeneratorDataRow[ColName] = Value;
+                                    }
+                                    else
+                                    {
+                                        GeneratorDataRow[ColName] = Value;
+                                    }
+                                }
+                                GeneratorDataTable.Rows.Add(GeneratorDataRow);
+                            }
+
+                            //
+                            // Dynamic Attributes For Power..
+                            //
+
+                            int GeneratorTableNameId = TablesName.FirstOrDefault(x =>
+                             x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIgenerator.ToString().ToLower()).Id;
+
+                            List<TLIdynamicAtt> GeneratorMissedAttributeCSV = new List<TLIdynamicAtt>()
+                            {
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Site Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Region",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Site Location",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "SN",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Capacity",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Length (Cm)",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "double".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Width (Cm)",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "double".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Weight (KG)",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "double".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Quantity",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "On Air",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Engine Number",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Content Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                } ,
+                                new TLIdynamicAtt
+                                {
+                                    Key = "App Created By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "App Modified By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Attachments",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Workflow Instance ID",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "String".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "File Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Modified",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "DateTime".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Created",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "DateTime".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Created By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Modified By",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "URL Path",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Path",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Item Type",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
+                                new TLIdynamicAtt
+                                {
+                                    Key = "Encoded Absolute URL",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                }
+                            };
+
+                            List<TLIdynamicAtt> GeneratorAllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                                .GetWhere(x => x.tablesNamesId == GeneratorTableNameId).ToList();
+
+
+                            List<TLIdynamicAtt> GeneratorMissedAttributes = GeneratorMissedAttributeCSV
+                               .Except(GeneratorAllDynamicAttribute, new TLIdynamicAttComparer())
+                               .ToList();
+
+                            _unitOfWork.DynamicAttRepository.AddRange(GeneratorMissedAttributes);
+                            _unitOfWork.SaveChanges();
+
+                            for (int j = 0; j <= GeneratorDataTable.Rows.Count - 1; j++)
+                            {
+                                using (TransactionScope GeneratorTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                    new System.TimeSpan(0, 15, 0)))
+                                {
+                                    try
+                                    {
+                                        //
+                                        // Library Information..
+                                        //
+
+                                        string GeneratorLibraryModel = GeneratorDataTable.Rows[j]["Type1"].ToString();
+                                        int GeneratorLibraryId = 0;
+                                        if (!string.IsNullOrEmpty(GeneratorLibraryModel))
+                                        {
+                                            GeneratorTransaction.Dispose();
+
+                                            TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
+                                                 .GetWhereFirst(x => x.Model.ToLower() == GeneratorLibraryModel.ToLower() && !x.Deleted);
+
+                                            if (CheckGeneratorLibraryModel == null)
+                                            {
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Type1) coulumn's value: ({GeneratorLibraryModel}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = true,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
+                                                    SheetName = "Generator",
+                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+
+                                            GeneratorLibraryId = CheckGeneratorLibraryModel.Id;
+                                        }
+                                        else
+                                        {
+                                           GeneratorTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Type1) coulumn's value can't be null or empty",
+                                                IsDeleted = false,
+                                                IsLib = true,
+                                                RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                                SheetName = "Generator",
+                                                UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        //
+                                        // Installation Information..
+                                        //
+
+                                        string Generator_SiteCodeAfterCheck = string.Empty;
+                                        string Generator_SiteCode = GeneratorDataTable.Rows[j]["Site Code"].ToString();
+                                        string Generator_SiteName = GeneratorDataTable.Rows[j]["Site Name"].ToString();
+
+                                        if (!string.IsNullOrEmpty(Generator_SiteCode))
+                                        {
+                                            TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                                                .GetWhereFirst(x => x.SiteCode.ToLower() == Generator_SiteCode.ToLower());
+
+                                            if (CheckSiteCode == null)
+                                            {
+                                               GeneratorTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Site Code) coulumn's value: ({Generator_SiteCode}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                    SheetName = "Generator",
+                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+
+                                            Generator_SiteCodeAfterCheck = Generator_SiteCode;
+                                        }
+                                        else if (!string.IsNullOrEmpty(Generator_SiteName))
+                                        {
+                                            TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                                                .GetWhereFirst(x => x.SiteName.ToLower() == Generator_SiteName.ToLower());
+
+                                            if (CheckSiteCode == null)
+                                            {
+                                                GeneratorTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Site Name) coulumn's value: ({Generator_SiteName}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                    SheetName = "Generator",
+                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+
+                                            Generator_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
+                                        }
+                                        else
+                                        {
+                                            GeneratorTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                                                SheetName = "Generator",
+                                                UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+                                        int IntPareser = 0;
+                                        string GeneratorSerialnumberString = GeneratorDataTable.Rows[j]["Serial number"].ToString();
+                                        string GeneratorNumberoffeultankString = GeneratorDataTable.Rows[j]["Number of feul tank"].ToString();
+                                        int GeneratorNumberoffeultank = 0;
+                                        if (!string.IsNullOrEmpty(GeneratorNumberoffeultankString))
+                                        {
+                                            CheckParser = int.TryParse(GeneratorNumberoffeultankString, out IntPareser);
+
+                                            if (CheckParser)
+                                            GeneratorNumberoffeultank = IntPareser;
+
+                                            else
+                                            {
+                                                GeneratorTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Number of feul tank) coulumn's value: ({GeneratorNumberoffeultankString}) must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                    SheetName = "Generator",
+                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+
+                                        string GeneratorHeightString = GeneratorDataTable.Rows[j]["Height (Cm)"].ToString();
+                                        float GeneratorHeight = 0;
+                                        if (!string.IsNullOrEmpty(GeneratorHeightString))
+                                        {
+                                            CheckParser = float.TryParse(GeneratorHeightString, out FloatParser);
+
+                                            if (CheckParser)
+                                             GeneratorHeight = FloatParser;
+
+                                            else
+                                            {
+                                                GeneratorTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(Height (Cm)) coulumn's value: ({GeneratorHeightString}) must be a number",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                    SheetName = "Generator",
+                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+                                        }
+
+                                        string GeneratoribraryModelI = GeneratorDataTable.Rows[j]["Type1"].ToString();
+                                        int GeneratorLibraryModelId = 0;
+                                        if (!string.IsNullOrEmpty(GeneratoribraryModelI))
+                                        {
+                                            TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
+                                                .GetWhereFirst(x => x.Model.ToLower() == GeneratoribraryModelI.ToLower() && !x.Deleted);
+
+                                            if (CheckGeneratorLibraryModel == null)
+                                            {
+                                                GeneratorTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"(SolarLibraryModel) coulumn's value: ({GeneratoribraryModelI}) doesn't exist in TLIS",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                                    SheetName = "Generator",
+                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                            }
+
+                                            GeneratorLibraryModelId = CheckGeneratorLibraryModel.Id;
+                                        }
+
+                                        string GeneratorName = GeneratorDataTable.Rows[j]["Generator Name"].ToString();
+                                        if (string.IsNullOrEmpty(GeneratorName))
+                                        {
+                                            GeneratorName = GeneratorLibraryModel + " " + Generator_SiteName;
+                                        }
+
+                                    // Check if Power Name is Already Exist on This Site..
+
+                                    TLIotherInSite CheckSolarName = _unitOfWork.OtherInSiteRepository
+                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Generator_SiteCodeAfterCheck.ToLower() && x.allOtherInventoryInstId != null ?
+                                                (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.generatorId != null ?
+                                                    (x.allOtherInventoryInst.generator.Name.ToLower() == GeneratorName.ToLower()) : false) : false,
+                                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
+
+                                        if (CheckSolarName != null)
+                                        {
+                                            GeneratorTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Generator Name) column's value: ({GeneratorName}) is already exist on this site: ({Generator_SiteCodeAfterCheck})",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIotherInSite.ToString(),
+                                                SheetName = "Generator",
+                                                UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        TLIgenerator NewGeneratorEntity = new TLIgenerator()
+                                        {
+                                            Name = GeneratorName,
+                                            NumberOfFuelTanks = GeneratorNumberoffeultank,
+                                            GeneratorLibraryId= GeneratorLibraryModelId
+
+                                        };
+
+                                        _unitOfWork.GeneratorRepository.Add(NewGeneratorEntity);
+                                        _unitOfWork.SaveChanges();
+
+
+                                        //
+                                        // Dynamic Attributes..
+                                        //
+
+                                        List<TLIdynamicAttInstValue> GeneratorDynamicValues = new List<TLIdynamicAttInstValue>();
+
+                                        foreach (TLIdynamicAtt MissedAttribute in GeneratorMissedAttributes)
+                                        {
+                                            if (!string.IsNullOrEmpty(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString()))
+                                            {
+                                                TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    tablesNamesId = GeneratorTableNameId,
+                                                    disable = false,
+                                                    DynamicAttId = MissedAttribute.Id,
+                                                    InventoryId = NewGeneratorEntity.Id
+                                                };
+
+                                                if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
+                                                    MissedAttributeValue.ValueString = GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString();
+                                                else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
+                                                    MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
+                                                {
+                                                    double DoubleParser = 0;
+
+                                                    CheckParser = double.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
+
+                                                    if (CheckParser)
+                                                        MissedAttributeValue.ValueDouble = DoubleParser;
+
+                                                    else
+                                                    {
+                                                        GeneratorTransaction.Dispose();
+
+                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                        {
+                                                            CreatedAt = DateTime.Now,
+                                                            ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
+                                                            IsDeleted = false,
+                                                            IsLib = false,
+                                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                            SheetName = "Generator",
+                                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                        };
+
+                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        continue;
+                                                    }
+                                                }
+                                                else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
+                                                {
+                                                    bool BooleanParser = false;
+
+                                                    CheckParser = bool.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
+
+                                                    if (CheckParser)
+                                                        MissedAttributeValue.ValueBoolean = BooleanParser;
+
+                                                    else
+                                                    {
+                                                        GeneratorTransaction.Dispose();
+
+                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                        {
+                                                            CreatedAt = DateTime.Now,
+                                                            ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
+                                                            IsDeleted = false,
+                                                            IsLib = false,
+                                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                            SheetName = "Generator",
+                                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                        };
+
+                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        continue;
+                                                    }
+                                                }
+                                                else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
+                                                {
+                                                    DateTime DateTimeParser = DateTime.Now;
+
+                                                    CheckParser = DateTime.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
+
+                                                    if (CheckParser)
+                                                        MissedAttributeValue.ValueDateTime = DateTimeParser;
+
+                                                    else
+                                                    {
+                                                       GeneratorTransaction.Dispose();
+
+                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                        {
+                                                            CreatedAt = DateTime.Now,
+                                                            ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be date",
+                                                            IsDeleted = false,
+                                                            IsLib = false,
+                                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                            SheetName = "Generator",
+                                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                        };
+
+                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        continue;
+                                                    }
+                                                }
+
+                                              GeneratorDynamicValues.Add(MissedAttributeValue);
+                                            }
+                                        }
+                                        if (GeneratorDynamicValues.Count() > 0)
+                                        {
+                                            _unitOfWork.DynamicAttInstValueRepository.AddRange(GeneratorDynamicValues);
+                                            _unitOfWork.SaveChanges();
+                                        }
+
+                                        //
+                                        // All Load Installation Information..
+                                        //
+
+                                        TLIallOtherInventoryInst NewGeneratorllOtherInventoryEntity = new TLIallOtherInventoryInst()
+                                        {
+                                            generatorId = NewGeneratorEntity.Id,
+                                            Draft = false
+                                        };
+
+                                        _unitOfWork.AllOtherInventoryInstRepository.Add(NewGeneratorllOtherInventoryEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        //
+                                        // OtherInSite Information..
+                                        //
+                                        TLIotherInSite tLIotherInSite = new TLIotherInSite()
+                                        {
+                                            InstallationDate = DateTime.Now,
+                                            SiteCode = Generator_SiteCode,
+                                            allOtherInventoryInstId = NewGeneratorllOtherInventoryEntity.Id,
+                                            ReservedSpace = true,
+                                            Dismantle = false
+
+                                        };
+                                        _unitOfWork.OtherInSiteRepository.Add(tLIotherInSite);
+                                        _unitOfWork.SaveChanges();
+
+                                        GeneratorTransaction.Complete();
+                                    }
+                                    catch (Exception err)
+                                    {
+                                        GeneratorTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = err.Message,
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                            SheetName = "Generator",
+                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
+                                }
+                            }
+                               
+                            System.IO.File.Delete(FilePath);
+                            return new Response<string>("Succeed");
+
+                        
+                    }  
+
                 }
                 catch (Exception err)
                 {
