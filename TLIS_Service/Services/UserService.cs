@@ -899,6 +899,18 @@ namespace TLIS_Service.Services
                 return "This User Is Not Active";
             }
         }
+        public string GetNameByUserId(int UserId)
+        {
+            var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
+            if (UserName != null)
+            {
+                return UserName.UserName;
+            }
+            else
+            {
+                return "This User Is Not Active";
+            }
+        }
         public Response<string> EncryptAllUserPassword(string UserName)
         {
             using (TransactionScope scope = new TransactionScope())
