@@ -36,5 +36,7 @@ namespace TLIS_Service.IService
         Response<string> EncryptAllUserPassword(string UserName);
         Response<string> DeletePassword();
         string GetEmailByUserId(int UserId);
+        string GetNameByUserId(int UserId);
+        
     }
 }
