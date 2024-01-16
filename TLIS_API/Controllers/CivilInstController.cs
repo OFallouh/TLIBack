@@ -77,7 +77,8 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilNonSteelWithEnableAtt([FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination,ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetAllCivils")]

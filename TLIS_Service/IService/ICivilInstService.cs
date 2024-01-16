@@ -30,7 +30,7 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> GetById(int CivilInsId, string CivilType);
         Response<ReturnWithFilters<object>> GetCivilWithLegsWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
-        Response<ReturnWithFilters<object>> GetCivilNonSteelWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
+        Response<object> GetCivilNonSteelWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination,string ConnectionString);
         Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination);
         Response<List<ListOfCivilLoadDto>> GetAllCivilLoad(string SearchName, ParameterPagination parameters);
         List<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);

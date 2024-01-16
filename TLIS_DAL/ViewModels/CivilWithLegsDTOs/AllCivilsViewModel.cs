@@ -11,6 +11,6 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
     {
         public ReturnWithFilters<object> CivilWithLegs { get; set; }
         public ReturnWithFilters<object> CivilWithoutLeg { get; set; }
-        public ReturnWithFilters<object> CivilNonSteel { get; set; }
+        public object CivilNonSteel { get; set; }
     }
 }

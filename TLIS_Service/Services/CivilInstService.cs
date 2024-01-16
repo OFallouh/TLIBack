@@ -70,6 +70,13 @@ using Remotion.Utilities;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyModel;
 using LoadSubType = TLIS_Service.Helpers.Constants.LoadSubType;
+using System.Data.Linq;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Diagnostics.Eventing.Reader;
+using System.Data;
+using System.Net.WebSockets;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using Microsoft.Extensions.Configuration;
 
 namespace TLIS_Service.Services
 {
@@ -77,9 +84,10 @@ namespace TLIS_Service.Services
     {
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
+        private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _dbContext;
         private IMapper _mapper;
-        public CivilInstService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context,IMapper mapper)
+        public CivilInstService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper)
         {
             _dbContext = context;
             _unitOfWork = unitOfWork;
@@ -92,7 +100,7 @@ namespace TLIS_Service.Services
             {
                 LoadsOnSideArm OutPut = new LoadsOnSideArm();
 
-                List<TLIcivilLoads> CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>!x.Dismantle && x.sideArmId == SideArmId && x.allLoadInstId != null, x => x.allLoadInst,
+                List<TLIcivilLoads> CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle && x.sideArmId == SideArmId && x.allLoadInstId != null, x => x.allLoadInst,
                     x => x.allLoadInst.mwBU, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
                     x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU).ToList();
 
@@ -393,7 +401,7 @@ namespace TLIS_Service.Services
                         BaseInstAttView Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                       
+
                     }
                     if (CategoryId == 1)
                     {
@@ -474,8 +482,8 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                      objectInst.AttributesActivated = ListAttributesActivated;
-                    
+                    objectInst.AttributesActivated = ListAttributesActivated;
+
                     objectInst.CivilSiteDate = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(), null, "allCivilInstId", "Dismantle", "SiteCode");
                     objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
 
@@ -608,7 +616,7 @@ namespace TLIS_Service.Services
             {
                 return new Response<ObjectInst>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-        } 
+        }
         //Return all civil in this site
         private List<DropDownListFilters> GetRelatedToSite(string SiteCode, string TableName)
         {
@@ -622,7 +630,7 @@ namespace TLIS_Service.Services
                     Id = x.allCivilInstId,
                     Deleted = false,
                     Disable = false,
-                    Value = x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name : 
+                    Value = x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name :
                         (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name : x.allCivilInst.civilNonSteel.Name)
                 }).ToList();
 
@@ -671,7 +679,7 @@ namespace TLIS_Service.Services
         //TableName to specify any table i deal with 
         #region Helper Methods..
 
-        private List<DropDownListFilters> GetRelatedToSiteToEdit(string SiteCode, string TableName , int CivilInsId)
+        private List<DropDownListFilters> GetRelatedToSiteToEdit(string SiteCode, string TableName, int CivilInsId)
         {
             //List<DropDownListFilters> values = new List<DropDownListFilters>();
 
@@ -2308,7 +2316,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSupportDistanceRepository.Add(civilSupportDistance);
                             _unitOfWork.SaveChanges();
                         }
-                       
+
                         if (addCivilWithLegs.Legs != null)
                         {
                             List<TLIleg> addLegViewModels = new List<TLIleg>();
@@ -2333,9 +2341,9 @@ namespace TLIS_Service.Services
 
                                 };
 
-                               addLegViewModels.Add(tLIleg);
-                               _unitOfWork.LegRepository.Add(tLIleg);
-                               _unitOfWork.SaveChanges();
+                                addLegViewModels.Add(tLIleg);
+                                _unitOfWork.LegRepository.Add(tLIleg);
+                                _unitOfWork.SaveChanges();
                             }
                         }
                         //Update Reserved Space in TLIsite if ReservedSpace is true
@@ -2382,7 +2390,7 @@ namespace TLIS_Service.Services
                         if (test == true)
                         {
                             //Start Business Rules
-                            var CivilSteelSupportCategory = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x=>x.Id==CivilWithoutLegLibrary.CivilWithoutLegCategoryId).Name;
+                            var CivilSteelSupportCategory = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.CivilWithoutLegCategoryId).Name;
                             if (CivilSteelSupportCategory.ToLower() == "mast")
                             {
                                 var Site = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == SiteCode);
@@ -2619,7 +2627,7 @@ namespace TLIS_Service.Services
         {
             using (TransactionScope transaction = new TransactionScope())
             {
-             
+
                 try
                 {
                     int cid = 0;
@@ -2637,7 +2645,7 @@ namespace TLIS_Service.Services
                         //if yes return true
                         //else return false
                         var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == civilWithLegs.Id);
-                        
+
                         string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
                          ((x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == civilWithLegs.Id : false) &&
                              !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
@@ -2812,7 +2820,7 @@ namespace TLIS_Service.Services
                             (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilWithoutLegs.Name.ToLower() : false
                             &&
                             x.SiteCode.ToLower() == SiteCode.ToLower()),
-                            x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg,x=>x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).FirstOrDefault();
+                            x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).FirstOrDefault();
 
                         //if CheckName is true then return error message that the name is already exists 
                         if (CheckName != null)
@@ -2989,7 +2997,7 @@ namespace TLIS_Service.Services
                         TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.Id != civilNonSteelEntity.Id &&
                         !x.Dismantle && !x.allCivilInst.Draft &&
                             (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteel.Name.ToLower() : false
-                            && 
+                            &&
                             x.SiteCode.ToLower() == SiteCode.ToLower()),
                             x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).FirstOrDefault();
 
@@ -4377,7 +4385,7 @@ namespace TLIS_Service.Services
                         .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.Id == CivilInsId && !x.Dismantle && !x.allCivilInst.Draft,
                             x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).SiteCode;
 
-                    List<DropDownListFilters> RelatedToSite = GetRelatedToSiteToEdit(SiteCode, TableName , CivilInsId);
+                    List<DropDownListFilters> RelatedToSite = GetRelatedToSiteToEdit(SiteCode, TableName, CivilInsId);
 
                     DropDownListFilters EditRecordReferenceToDelete = RelatedToSite.FirstOrDefault(x => x.Id == CivilInsId);
 
@@ -4426,7 +4434,7 @@ namespace TLIS_Service.Services
                                     {
                                         TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
                                             .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
-                                        
+
                                         if (SupportReferenceAllCivilInst != null)
                                             CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
                                                 (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
@@ -4566,20 +4574,20 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    
+
                                     var support = _unitOfWork.CivilSupportDistanceRepository
                                         .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                                    if (support != null) 
+                                    if (support != null)
                                     {
                                         TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
                                             .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
-                                        
-                                        if (SupportReferenceAllCivilInst != null) 
+
+                                        if (SupportReferenceAllCivilInst != null)
                                             CivilsupportAttribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
                                                 (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
                                                  SupportReferenceAllCivilInst.civilNonSteel.Name);
-                                   
+
                                         ReferenceCivilInstId = support.ReferenceCivilId;
                                     }
                                 }
@@ -5305,233 +5313,191 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<ReturnWithFilters<object>> GetCivilNonSteelWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination)
+        public Response<object> GetCivilNonSteelWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
         {
-            try
+            using (var connection = new OracleConnection(ConnectionString))
             {
-                int Count = 0;
-                List<object> OutPutList = new List<object>();
-                ReturnWithFilters<object> CivilTableDisplay = new ReturnWithFilters<object>();
-
-                List<FilterObjectList> AttributeFilters = CombineFilters.filters;
-                List<DateFilterViewModel> DateFilter = CombineFilters.DateFilter;
-
-                //
-                // Get All CivilSiteDateRecords To This BaseFilter
-                //
-                List<TLIcivilSiteDate> AllCivilSiteDateRecords = GetCivilSiteDateBySiteBaseFilter(BaseFilter, "CivilNonSteel", CombineFilters, null);
-
-                List<TLIcivilSiteDate> CivilSiteDateRecords = GetMaxInstallationDate(out Count, AllCivilSiteDateRecords, "CivilNonSteel", parameterPagination);
-
-                List<CivilNonSteelViewModel> Civils = _mapper.Map<List<CivilNonSteelViewModel>>(CivilSiteDateRecords.Select(x =>
-                    x.allCivilInst.civilNonSteel).ToList());
-
-                List<TLIattributeViewManagment> AllAttributes = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                   (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.CivilNonSteelInstallation.ToString() &&
-                   (x.AttributeActivatedId != null ?
-                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() && x.AttributeActivated.enable) :
-                        (!x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString()))) ||
-                    (x.AttributeActivated != null ?
-                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString()) : false),
-                       x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1, x => x.EditableManagmentView.TLItablesNames2,
-                       x => x.AttributeActivated, x => x.DynamicAtt, x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType).ToList();
-
-                List<TLIattributeViewManagment> NotDateTimeInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
-
-                List<TLIattributeViewManagment> NotDateTimeDynamicInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.DynamicAttId != null ? x.DynamicAtt.DataType.Name.ToLower() != "datetime" : false).ToList();
-
-                List<TLIattributeViewManagment> DateTimeInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() == "datetime") : false).ToList();
-
-                List<TLIattributeViewManagment> DateTimeDynamicInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.DynamicAttId != null ? x.DynamicAtt.DataType.Name.ToLower() == "datetime" : false).ToList();
-
-                foreach (CivilNonSteelViewModel CivilNonSteelInstallationObject in Civils)
+                try
                 {
-                    dynamic DynamicCivilNonSteelInstallation = new ExpandoObject();
-
-                    //
-                    // Installation Object ViewModel...
-                    //
-                    if (NotDateTimeInstallationAttributesViewModel != null ? NotDateTimeInstallationAttributesViewModel.Count > 0 : false)
+                    dynamic returning = new ExpandoObject();
+                    returning.filters = new List<object>();
+                    List<string> fkList = new List<string>();
+                    List<object> result = new List<object>();
+                    connection.Open();
+                    using (OracleCommand procedureCommand = new OracleCommand("create_dynamic_pivot_nonSteel", connection))
                     {
-                        List<PropertyInfo> InstallationProps = typeof(CivilNonSteelViewModel).GetProperties().Where(x =>
-                            x.PropertyType.GenericTypeArguments != null ?
-                                (x.PropertyType.GenericTypeArguments.Count() > 0 ? x.PropertyType.GenericTypeArguments.FirstOrDefault().Name.ToLower() != "datetime" :
-                                (x.PropertyType.Name.ToLower() != "datetime")) :
-                            (x.PropertyType.Name.ToLower() != "datetime")).ToList();
-
-                        foreach (PropertyInfo prop in InstallationProps)
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    string sqlQuery = $"SELECT ";
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key } ).ToList();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
                         {
-                            if (prop.Name.ToLower().Contains("_name") &&
-                                NotDateTimeInstallationAttributesViewModel.Select(x =>
-                                    x.AttributeActivated.Label.ToLower()).Contains(prop.Name.ToLower()))
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
                             {
-                                object ForeignKeyNamePropObject = prop.GetValue(CivilNonSteelInstallationObject, null);
-                                ((IDictionary<String, Object>)DynamicCivilNonSteelInstallation).Add(new KeyValuePair<string, object>(prop.Name, ForeignKeyNamePropObject));
+                                string fk = name.Remove(name.Length - 2);
+                                sqlQuery += fk;
+                                fkList.Add(fk);
                             }
-                            else if (NotDateTimeInstallationAttributesViewModel.Select(x =>
-                                 x.AttributeActivated.Key.ToLower()).Contains(prop.Name.ToLower()) &&
-                                !prop.Name.ToLower().Contains("_name") &&
-                                (prop.Name.ToLower().Substring(Math.Max(0, prop.Name.Length - 2)) != "id" || prop.Name.ToLower() == "id"))
+                            else
                             {
-                                if (prop.Name.ToLower() != "id" && prop.Name.ToLower() != "active")
-                                {
-                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() &&
-                                        x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
+                                sqlQuery += @" """ + name + @""" ";
+                            }
 
-                                    if (LabelName != null)
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            sqlQuery += @" ""'" + name + @"'"" ";
+                        }
+                        if (attActivated.IndexOf(key) != attActivated.Count - 1)
+                        {
+                            sqlQuery += " , ";
+                        }
+                    }
+                    int count = 0;
+
+                    sqlQuery += "FROM civil_nonsteel_view_pivoit";
+                    sqlQuery += " Where sitecode='" + BaseFilter.SiteCode + "' ";
+                    if (CombineFilters.filters != null && CombineFilters.filters.Count > 0)
+                    {
+                        foreach (var filter in CombineFilters.filters)
+                        {
+                            sqlQuery += " And ";
+                            if (filter.key != "Id" && filter.key.EndsWith("Id"))
+                            {
+                                sqlQuery += filter.key.Remove(filter.key.Length - 2);
+                            }
+                            else
+                            {
+                                sqlQuery += @" """ + filter.key + @""" ";
+                            }
+                            if (filter.value.Count > 1)
+                            {
+                                sqlQuery += "IN (";
+                                foreach (var value in filter.value)
+                                {
+                                    sqlQuery += "'" + value.ToString() + "'";
+                                    if (filter.value.IndexOf(value) != filter.value.Count - 1)
                                     {
-                                        object PropObject = prop.GetValue(CivilNonSteelInstallationObject, null);
-                                        ((IDictionary<String, Object>)DynamicCivilNonSteelInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject));
+                                        sqlQuery += ",";
+                                    }
+                                    else
+                                    {
+                                        sqlQuery += ") ";
                                     }
                                 }
-                                else
+                            }
+                            else
+                            {
+                                sqlQuery += "like '" + filter.value[0].ToString() + "%'";
+                            }
+                        }
+                    }
+                    sqlQuery += @"Order By ""Name""";
+                    string countQuery = "select count(*) from (" + sqlQuery + ")";
+                    using (OracleCommand queryCommand = new OracleCommand(countQuery, connection))
+                    {
+                        using (OracleDataReader reader = queryCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                count = reader.GetInt32(0);
+                            }
+
+                        }
+                    }
+                    foreach (string fk in fkList)
+                    {
+                        string listQuery = "select distinct " + fk + " from (" + sqlQuery + ")";
+                        using (OracleCommand queryCommand = new OracleCommand(listQuery, connection))
+                        {
+                            using (OracleDataReader reader = queryCommand.ExecuteReader())
+                            {
+                                List<string> names = new List<string>();
+                                while (reader.Read())
                                 {
-                                    object PropObject = prop.GetValue(CivilNonSteelInstallationObject, null);
-                                    ((IDictionary<String, Object>)DynamicCivilNonSteelInstallation).Add(new KeyValuePair<string, object>(prop.Name, PropObject));
+                                    string name = reader[fk].ToString();
+                                    names.Add(name);
+                                    
                                 }
+                                var x = new Dictionary<string, object>();
+                                x.Add(fk, names);
+                                returning.filters.Add(x);
+
                             }
                         }
                     }
-
-                    //
-                    // Installation Dynamic Attributes... (Not DateTime DataType Attribute)
-                    //
-                    if (NotDateTimeDynamicInstallationAttributesViewModel != null ? NotDateTimeDynamicInstallationAttributesViewModel.Count > 0 : false)
+                    sqlQuery += "OFFSET " + ((parameterPagination.PageNumber - 1) * parameterPagination.PageSize) + " Rows Fetch Next " + (parameterPagination.PageSize) + " ROWS ONLY";
+                    
+                    using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
                     {
-                        var temp = NotDateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
-                        List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                            !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() &&
-                            !x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
-                            temp.Any(y => y == x.Id)
-                                , x => x.tablesNames, x => x.DataType).ToList();
-                        var tempno = NotDateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
-                        List<TLIdynamicAttInstValue> NotDateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
-                            !x.DynamicAtt.LibraryAtt && !x.disable &&
-                            x.InventoryId == CivilNonSteelInstallationObject.Id &&
-                            tempno.Any(y => y== x.DynamicAtt.Key.ToLower()) &&
-                            x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString()
-                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
-
-                        foreach (TLIdynamicAtt InstallationDynamicAtt in NotDateTimeInstallationDynamicAttributes)
+                        using (OracleDataReader reader = queryCommand.ExecuteReader())
                         {
-                            TLIdynamicAttInstValue DynamicAttInstValue = NotDateTimeDynamicAttInstValues.FirstOrDefault(x =>
-                                x.DynamicAtt.Key.ToLower() == InstallationDynamicAtt.Key.ToLower());
-
-                            if (DynamicAttInstValue != null)
+                            while (reader.Read())
                             {
-                                dynamic DynamicAttValue = new ExpandoObject();
-                                if (DynamicAttInstValue.ValueString != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueString;
+                                dynamic dynamicResult = new ExpandoObject();
+                                var properties = (IDictionary<string, object>)dynamicResult;
 
-                                else if (DynamicAttInstValue.ValueDouble != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueDouble;
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    properties[reader.GetName(i)] = reader[i];
+                                }
 
-                                else if (DynamicAttInstValue.ValueDateTime != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueDateTime;
-
-                                else if (DynamicAttInstValue.ValueBoolean != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueBoolean;
-
-                                ((IDictionary<String, Object>)DynamicCivilNonSteelInstallation).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, DynamicAttValue));
+                                result.Add(dynamicResult);
                             }
-                            else
-                            {
-                                ((IDictionary<String, Object>)DynamicCivilNonSteelInstallation).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, null));
-                            }
+
                         }
                     }
-
-                    //
-                    // Installation Object ViewModel... (DateTime DataType Attribute)
-                    //
-                    dynamic DateTimeAttributes = new ExpandoObject();
-                    if (DateTimeInstallationAttributesViewModel != null ? DateTimeInstallationAttributesViewModel.Count() > 0 : false)
-                    {
-                        List<PropertyInfo> DateTimeInstallationProps = typeof(CivilNonSteelViewModel).GetProperties().Where(x =>
-                            x.PropertyType.GenericTypeArguments != null ?
-                                (x.PropertyType.GenericTypeArguments.Count() > 0 ? x.PropertyType.GenericTypeArguments.FirstOrDefault().Name == "datetime" :
-                                (x.PropertyType.Name.ToLower() == "datetime")) :
-                            (x.PropertyType.Name.ToLower() == "datetime")).ToList();
-
-                        foreach (PropertyInfo prop in DateTimeInstallationProps)
-                        {
-                            TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() &&
-                                x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
-
-                            if (LabelName != null)
-                            {
-                                object PropObject = prop.GetValue(CivilNonSteelInstallationObject, null);
-                                ((IDictionary<String, Object>)DateTimeAttributes).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject));
-                            }
-                        }
-                    }
-
-                    //
-                    // Library Dynamic Attributes... (DateTime DataType Attribute)
-                    // 
-                    if (DateTimeDynamicInstallationAttributesViewModel != null ? DateTimeDynamicInstallationAttributesViewModel.Count() > 0 : false)
-                    {
-                        var temp = DateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
-                        List<TLIdynamicAtt> DateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                           !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString() &&
-                           !x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                            temp.Any(y => y == x.Id), x => x.tablesNames).ToList();
-                        var tempno = DateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
-                        List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
-                            x.InventoryId == CivilNonSteelInstallationObject.Id && !x.disable &&
-                           !x.DynamicAtt.LibraryAtt &&
-                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
-                            x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString()
-                               , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
-
-                        foreach (TLIdynamicAtt InstallationDynamicAtt in DateTimeInstallationDynamicAttributes)
-                        {
-                            TLIdynamicAttInstValue DynamicAttInstallationValue = DateTimeDynamicAttInstValues.FirstOrDefault(x =>
-                                x.DynamicAtt.Key.ToLower() == InstallationDynamicAtt.Key.ToLower());
-
-                            if (DynamicAttInstallationValue != null)
-                            {
-                                dynamic DynamicAttValue = new ExpandoObject();
-                                if (DynamicAttInstallationValue.ValueDateTime != null)
-                                    DynamicAttValue = DynamicAttInstallationValue.ValueDateTime;
-
-                                ((IDictionary<String, Object>)DateTimeAttributes).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, DynamicAttValue));
-                            }
-                            else
-                            {
-                                ((IDictionary<String, Object>)DateTimeAttributes).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, null));
-                            }
-                        }
-                    }
-
-                    ((IDictionary<String, Object>)DynamicCivilNonSteelInstallation).Add(new KeyValuePair<string, object>("DateTimeAttributes", DateTimeAttributes));
-
-                    OutPutList.Add(DynamicCivilNonSteelInstallation);
+                    returning.model = result;
+                    
+                    return new Response<object>(true, returning, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                 }
-
-                CivilTableDisplay.Model = OutPutList;
-
-                if (WithFilterData == true)
+                catch (Exception err)
                 {
-                    CivilTableDisplay.filters = _unitOfWork.CivilNonSteelRepository.GetRelatedTables();
+                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                else
-                {
-                    CivilTableDisplay.filters = null;
-                }
+            }
 
-                return new Response<ReturnWithFilters<object>>(true, CivilTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
-            }
-            catch (Exception err)
-            {
-                return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-            }
+        }
+        public bool IfCorrect(Dictionary<string,string> x,FilterObjectList filter)
+        {
+
+                    if (filter.value.Count > 1)
+                    {
+                        if (filter.value.Any(val => val.ToString() == x[filter.key]))
+                        {
+                             return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        var c = x[filter.key];
+                        var j = filter.value[0].ToString();
+                        if (filter.value[0].ToString().StartsWith(x[filter.key]))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                
+  
         }
         #endregion
         #region Get All Civils Installations And Libraries Enabled Attributes...
@@ -5541,10 +5507,11 @@ namespace TLIS_Service.Services
             {
                 AllCivilsViewModel MainOutPut = new AllCivilsViewModel();
                 int count = 0;
+                string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
 
                 MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination).Data;
                 MainOutPut.CivilWithoutLeg = GetCivilWithoutLegWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, 0).Data;
-                MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination).Data;
+                MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, ConnectionString).Data;
 
                 return new Response<AllCivilsViewModel>(true, MainOutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
             }
@@ -7597,8 +7564,8 @@ namespace TLIS_Service.Services
             {
                 float EquivalentSpace = 0;
                 float CenterHigh = 0;
-                var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId,x=>x.civilWithLegs
-                , x => x.civilLoads , x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId, x => x.civilWithLegs
+                , x => x.civilLoads, x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
                 if (AllCivilInfo != null)
                 {
                     var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
@@ -7672,7 +7639,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.mwOther.CenterHigh;
                                 }
-                                if ( LoadInfo.mwOther.Spaceinstallation == 0)
+                                if (LoadInfo.mwOther.Spaceinstallation == 0)
                                 {
                                     LoadInfo.mwOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
 
@@ -7696,7 +7663,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.radioAntenna.CenterHigh;
                                 }
-                                if ( LoadInfo.radioAntenna.SpaceInstallation == 0)
+                                if (LoadInfo.radioAntenna.SpaceInstallation == 0)
                                 {
                                     LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7720,7 +7687,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.radioRRU.CenterHigh;
                                 }
-                                if ( LoadInfo.radioRRU.SpaceInstallation == 0)
+                                if (LoadInfo.radioRRU.SpaceInstallation == 0)
                                 {
                                     LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7768,7 +7735,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.power.CenterHigh;
                                 }
-                                if ( LoadInfo.power.SpaceInstallation == 0)
+                                if (LoadInfo.power.SpaceInstallation == 0)
                                 {
                                     LoadInfo.power.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7792,7 +7759,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.loadOther.CenterHigh;
                                 }
-                                if ( LoadInfo.loadOther.SpaceInstallation == 0)
+                                if (LoadInfo.loadOther.SpaceInstallation == 0)
                                 {
                                     LoadInfo.loadOther.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7813,7 +7780,7 @@ namespace TLIS_Service.Services
                     }
                 }
             }
-            else if(CivilType== "TLIcivilWithoutLeg")
+            else if (CivilType == "TLIcivilWithoutLeg")
             {
                 float EquivalentSpace = 0;
                 float CenterHigh = 0;
@@ -7821,7 +7788,7 @@ namespace TLIS_Service.Services
                  x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
                 if (AllCivilInfo != null)
                 {
-                    var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle==false);
+                    var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true && x.Dismantle == false);
                     AllCivilInfo.civilWithoutLeg.CurrentLoads = null;
                     foreach (var item in AllLoadOnCivil)
                     {
@@ -7835,7 +7802,7 @@ namespace TLIS_Service.Services
                                 var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == LoadInfo.mwBU.MwBULibraryId);
                                 if (LibraryInfo != null)
                                 {
-                                    if (LoadInfo.mwBU.CenterHigh == 0 )
+                                    if (LoadInfo.mwBU.CenterHigh == 0)
                                     {
                                         CenterHigh = LoadInfo.mwBU.HBA + LibraryInfo.Length / 2;
                                     }
@@ -7844,7 +7811,7 @@ namespace TLIS_Service.Services
                                         CenterHigh = LoadInfo.mwBU.CenterHigh;
                                     }
                                 }
-                                if ( LoadInfo.mwBU.SpaceInstallation == 0)
+                                if (LoadInfo.mwBU.SpaceInstallation == 0)
                                 {
                                     LoadInfo.mwBU.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7852,7 +7819,7 @@ namespace TLIS_Service.Services
                                     {
                                         LoadInfo.mwBU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                     }
-                                }                    
+                                }
                                 EquivalentSpace = LoadInfo.mwBU.SpaceInstallation * (CenterHigh / (float)AllCivilInfo.civilWithoutLeg.HeightImplemented);
                                 AllCivilInfo.civilWithoutLeg.CurrentLoads = AllCivilInfo.civilWithoutLeg.CurrentLoads + EquivalentSpace;
                                 _dbContext.TLIcivilWithoutLeg.Update(AllCivilInfo.civilWithoutLeg);
@@ -7868,7 +7835,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.mwDish.CenterHigh;
                                 }
-                                if ( LoadInfo.mwDish.SpaceInstallation == 0)
+                                if (LoadInfo.mwDish.SpaceInstallation == 0)
                                 {
                                     LoadInfo.mwDish.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7884,7 +7851,7 @@ namespace TLIS_Service.Services
                             else if (LoadInfo.mwOtherId != null)
                             {
                                 var LibraryInfo = _dbContext.TLImwOtherLibrary.Where(x => x.Id == LoadInfo.mwOther.mwOtherLibraryId).FirstOrDefault();
-                                if (LoadInfo.mwOther.CenterHigh == 0 )
+                                if (LoadInfo.mwOther.CenterHigh == 0)
                                 {
                                     CenterHigh = LoadInfo.mwOther.HBA + LibraryInfo.Length / 2;
                                 }
@@ -7892,7 +7859,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.mwOther.CenterHigh;
                                 }
-                                if ( LoadInfo.mwOther.Spaceinstallation == 0)
+                                if (LoadInfo.mwOther.Spaceinstallation == 0)
                                 {
                                     LoadInfo.mwOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
 
@@ -7916,7 +7883,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.radioAntenna.CenterHigh;
                                 }
-                                if ( LoadInfo.radioAntenna.SpaceInstallation == 0)
+                                if (LoadInfo.radioAntenna.SpaceInstallation == 0)
                                 {
                                     LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7932,7 +7899,7 @@ namespace TLIS_Service.Services
                             else if (LoadInfo.radioRRUId != null)
                             {
                                 var LibraryInfo = _dbContext.TLIradioRRULibrary.Where(x => x.Id == LoadInfo.radioRRU.radioRRULibraryId).FirstOrDefault();
-                                if (LoadInfo.radioRRU.CenterHigh == 0 )
+                                if (LoadInfo.radioRRU.CenterHigh == 0)
                                 {
                                     CenterHigh = LoadInfo.radioRRU.HBA + LibraryInfo.Length / 2;
                                 }
@@ -7940,7 +7907,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.radioRRU.CenterHigh;
                                 }
-                                if ( LoadInfo.radioRRU.SpaceInstallation == 0)
+                                if (LoadInfo.radioRRU.SpaceInstallation == 0)
                                 {
                                     LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.SpaceLibrary;
 
@@ -7964,7 +7931,7 @@ namespace TLIS_Service.Services
                                 {
                                     CenterHigh = LoadInfo.radioOther.CenterHigh;
                                 }
-                                if ( LoadInfo.radioOther.Spaceinstallation == 0)
+                                if (LoadInfo.radioOther.Spaceinstallation == 0)
                                 {
                                     LoadInfo.radioOther.Spaceinstallation = LibraryInfo.SpaceLibrary;
 
@@ -8031,8 +7998,8 @@ namespace TLIS_Service.Services
 
                 }
             }
-               
-          
+
+
             double Availablespace = 0;
             if (CivilType == "TLIcivilWithLegs")
             {
@@ -8043,17 +8010,17 @@ namespace TLIS_Service.Services
 
                     if (TLIcivilWithLegsInstallation.IsEnforeced == true)
                     {
-                        if(TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement != null && TLIcivilWithLegsInstallation.CurrentLoads!=null)
+                        if (TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement != null && TLIcivilWithLegsInstallation.CurrentLoads != null)
                         {
                             Availablespace = TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement.Value - TLIcivilWithLegsInstallation.CurrentLoads.Value;
-                       
+
                         }
                         OutPutData.CivilMaxLoad = TLIcivilWithLegsInstallation.SupportMaxLoadAfterInforcement;
                     }
 
                     else if (TLIcivilWithLegsInstallation.Support_Limited_Load != 0)
                     {
-                        if (TLIcivilWithLegsInstallation.CurrentLoads != null )
+                        if (TLIcivilWithLegsInstallation.CurrentLoads != null)
                         {
                             Availablespace = TLIcivilWithLegsInstallation.Support_Limited_Load - TLIcivilWithLegsInstallation.CurrentLoads.Value;
                         }
@@ -8096,14 +8063,14 @@ namespace TLIS_Service.Services
 
                     }
                 }
-                OutPutData.CurrentLoads = Convert.ToDouble( TLIcivilWithoutLegInstallation.CurrentLoads);
+                OutPutData.CurrentLoads = Convert.ToDouble(TLIcivilWithoutLegInstallation.CurrentLoads);
                 OutPutData.Availablespace = Availablespace;
             }
-          
+
 
             return new Response<SideArmAndLoadsOnCivil>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
-        public Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType )
+        public Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType)
         {
             try
             {
@@ -8117,11 +8084,11 @@ namespace TLIS_Service.Services
                     if (AllCivilInfo != null)
                     {
                         List<TLIcivilLoads> AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true &&
-                        x.Dismantle == false && x.allLoadInstId!=null).ToList();
+                        x.Dismantle == false && x.allLoadInstId != null).ToList();
                         AllCivilInfo.civilWithLegs.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
-                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId && x.Draft==false,
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId && x.Draft == false,
                                 x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
                                 , x => x.loadOther).FirstOrDefault();
                             if (LoadInfo != null)
@@ -8150,7 +8117,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Length",
                                                     LoadType = "MWBU",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8173,7 +8140,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "MWBU",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8211,7 +8178,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "MWDish",
-                                                LoadModel= LoadInfo.mwDish.DishName,
+                                                LoadModel = LoadInfo.mwDish.DishName,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8222,7 +8189,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "Length",
                                                 LoadType = "MWDish",
-                                                LoadModel= LibraryInfo.Model,
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
 
                                             };
@@ -8255,7 +8222,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(LibraryInfo.diameter / 2, 2);
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8313,7 +8280,7 @@ namespace TLIS_Service.Services
                                             {
                                                 RecalculatSpace recalculat = new RecalculatSpace()
                                                 {
-                                                    AttributeName = "Width",                 
+                                                    AttributeName = "Width",
                                                     LoadType = "MWOther",
                                                     LoadModel = LoadInfo.mwOther.Name,
                                                     Type = "Library"
@@ -8323,7 +8290,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8360,7 +8327,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "Length",
                                                 LoadType = "RadioAntenna",
-                                                LoadModel= LibraryInfo.Model,
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8391,7 +8358,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioAntenna.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8451,7 +8418,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "RadioRRU",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8515,7 +8482,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "RadioOther",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8549,7 +8516,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "power",
-                                                LoadName= LoadInfo.power.Name,
+                                                LoadName = LoadInfo.power.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8583,7 +8550,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "width",
                                                     LoadType = "power",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8591,7 +8558,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithLegs.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8617,7 +8584,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "loadOther",
-                                                LoadName= LoadInfo.loadOther.Name,
+                                                LoadName = LoadInfo.loadOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8651,7 +8618,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "loadOther",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8687,16 +8654,16 @@ namespace TLIS_Service.Services
                 {
                     float EquivalentSpace = 0;
                     float CenterHigh = 0;
-                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithoutLegId == CivilId &&x.Draft==false, x => x.civilWithLegs,
+                    var AllCivilInfo = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithoutLegId == CivilId && x.Draft == false, x => x.civilWithLegs,
                      x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
                     if (AllCivilInfo != null)
                     {
-                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true 
+                        var AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInfo.Id && x.ReservedSpace == true
                         && x.Dismantle == false && x.allLoadInstId != null);
                         AllCivilInfo.civilWithoutLeg.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
-                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId &&x.Draft==false
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId && x.Draft == false
                             , x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
                                 , x => x.loadOther).FirstOrDefault();
                             if (LoadInfo != null)
@@ -8714,7 +8681,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "HBA",
                                                     LoadType = "MWBU",
-                                                    LoadName= LoadInfo.mwBU.Name,
+                                                    LoadName = LoadInfo.mwBU.Name,
                                                     Type = "Installation"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8749,7 +8716,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "MWBU",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8759,7 +8726,7 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8785,7 +8752,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "MWDish",
-                                                LoadName= LoadInfo.mwDish.DishName,
+                                                LoadName = LoadInfo.mwDish.DishName,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8820,7 +8787,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Diameter",
                                                     LoadType = "MWDish",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
 
                                                 };
@@ -8830,7 +8797,7 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8856,7 +8823,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "MWOther",
-                                                LoadName= LoadInfo.mwOther.Name,
+                                                LoadName = LoadInfo.mwOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8867,7 +8834,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "Length",
                                                 LoadType = "MWOther",
-                                                  LoadModel = LibraryInfo.Model,
+                                                LoadModel = LibraryInfo.Model,
                                                 Type = "Library"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8890,7 +8857,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "MWOther",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8898,7 +8865,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.mwOther.Spaceinstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -8924,7 +8891,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "RadioAntenna",
-                                                LoadModel= LoadInfo.radioAntenna.Name,
+                                                LoadModel = LoadInfo.radioAntenna.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -8958,7 +8925,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "RadioAntenna",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -8993,7 +8960,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "RadioRRU",
-                                                LoadName= LoadInfo.radioRRU.Name,
+                                                LoadName = LoadInfo.radioRRU.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9027,7 +8994,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "RadioRRU",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9035,7 +9002,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.radioRRU.SpaceInstallation = LibraryInfo.Length * LibraryInfo.Width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -9061,7 +9028,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "RadioOther",
-                                                LoadModel= LoadInfo.radioOther.Name,
+                                                LoadModel = LoadInfo.radioOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9095,7 +9062,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "Width",
                                                     LoadType = "RadioOther",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9130,7 +9097,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "Power",
-                                                LoadName= LoadInfo.power.Name,
+                                                LoadName = LoadInfo.power.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9164,7 +9131,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "width",
                                                     LoadType = "Power",
-                                                    LoadModel= LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9172,7 +9139,7 @@ namespace TLIS_Service.Services
                                             LoadInfo.power.SpaceInstallation = LibraryInfo.Length * LibraryInfo.width;
                                         }
                                     }
-                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0 )
+                                    if (AllCivilInfo.civilWithoutLeg.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -9198,7 +9165,7 @@ namespace TLIS_Service.Services
                                             {
                                                 AttributeName = "HBA",
                                                 LoadType = "loadOther",
-                                                LoadName= LoadInfo.loadOther.Name,
+                                                LoadName = LoadInfo.loadOther.Name,
                                                 Type = "Installation"
                                             };
                                             recalculatSpaces.Add(recalculat);
@@ -9232,7 +9199,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     AttributeName = "width",
                                                     LoadType = "loadOther",
-                                                    LoadModel=LibraryInfo.Model,
+                                                    LoadModel = LibraryInfo.Model,
                                                     Type = "Library"
                                                 };
                                                 recalculatSpaces.Add(recalculat);
@@ -9261,7 +9228,7 @@ namespace TLIS_Service.Services
                                     _dbContext.SaveChanges();
                                     return new Response<List<RecalculatSpace>>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                                 }
-                              
+
                             }
                         }
 
@@ -9269,7 +9236,7 @@ namespace TLIS_Service.Services
                 }
                 return new Response<List<RecalculatSpace>>(false, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
 
                 return new Response<List<RecalculatSpace>>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
