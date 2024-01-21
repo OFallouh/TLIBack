@@ -5319,6 +5319,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
+                    var xx = _dbContext.CIVIL_NONSTEEL_VIEW.ToList();
                     dynamic returning = new ExpandoObject();
                     returning.filters = new List<object>();
                     List<string> fkList = new List<string>();

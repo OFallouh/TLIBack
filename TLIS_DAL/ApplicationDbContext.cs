@@ -9,6 +9,7 @@ using TLIS_DAL.ViewModels.LogDTOs;
 using Toolbelt.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Xml;
+using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 
 namespace TLIS_DAL
 {
@@ -164,6 +165,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIintegrationAccessLog> TLIintegrationAccessLog { get; set; }
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
+        public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW{ get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -218,6 +220,7 @@ namespace TLIS_DAL
                 .WithMany(z => z.Tickets)
                 .HasForeignKey(c => c.SiteCode);
 
+            builder.Entity<CivilNonSteelView>().ToView("civil_nonsteel_view");
 
             builder.Entity<TLIuser_Permissions>(entity =>
             {

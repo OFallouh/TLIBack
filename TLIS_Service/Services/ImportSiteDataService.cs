@@ -8706,7 +8706,33 @@ namespace TLIS_Service.Services
 
                                             leg.CiviLegName = "Leg" + LegLetters[k];
 
-                                            leg.LegAzimuth = float.Parse(TypeOfSupportInfoDataTable.Rows[j][legname].ToString());
+                                            float legAzimuth;
+                                            if (float.TryParse(TypeOfSupportInfoDataTable.Rows[j][legname].ToString(), out legAzimuth))
+                                            {
+                                                leg.LegAzimuth = legAzimuth;
+                                            }
+                                            else
+                                            {
+                                                TowerTransaction.Dispose();
+
+                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                {
+                                                    CreatedAt = DateTime.Now,
+                                                    ErrMsg = $"Error parsing '{TypeOfSupportInfoDataTable.Rows[j][legname].ToString()}' as float for {legname}",
+                                                    IsDeleted = false,
+                                                    IsLib = false,
+                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                                    SheetName = "Type of support info",
+                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                                };
+
+                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                _unitOfWork.SaveChanges();
+
+                                                continue;
+                                              
+                                            }
+
                                             leg.CivilWithLegInstId = NewCivilWithLegsEntity.Id;
 
                                             _unitOfWork.LegRepository.Add(leg);
@@ -14585,7 +14611,9 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAtt> RadioAntennaAllDynamicAttribute = _unitOfWork.DynamicAttRepository
                             .GetWhere(x => x.tablesNamesId == RadioAntennaTableNameId).ToList();
 
-                        List<TLIdynamicAtt> RadioAntennaMissedAttributes = RadioAntennaMissedAttributeCSV.Except(RadioAntennaAllDynamicAttribute).ToList();
+                        List<TLIdynamicAtt> RadioAntennaMissedAttributes = RadioAntennaMissedAttributeCSV
+                           .Except(RadioAntennaAllDynamicAttribute, new TLIdynamicAttComparer())
+                           .ToList();
 
                         _unitOfWork.DynamicAttRepository.AddRange(RadioAntennaMissedAttributes);
                         _unitOfWork.SaveChanges();
@@ -14608,7 +14636,7 @@ namespace TLIS_Service.Services
                                         TLIradioAntennaLibrary RadioAntennaLibraryEntity = _unitOfWork.RadioAntennaLibraryRepository
                                             .GetWhereFirst(x => x.Model.ToLower() == RadioAntennaLibraryModel.ToLower() && !x.Deleted);
 
-                                        if (RadioAntennaLibraryModel == null)
+                                        if (RadioAntennaLibraryEntity == null)
                                         {
                                             RadioAntennaTransaction.Dispose();
 
