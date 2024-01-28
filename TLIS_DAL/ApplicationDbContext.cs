@@ -220,7 +220,11 @@ namespace TLIS_DAL
                 .WithMany(z => z.Tickets)
                 .HasForeignKey(c => c.SiteCode);
 
-            builder.Entity<CivilNonSteelView>().ToView("civil_nonsteel_view");
+            builder.Entity<CivilNonSteelView>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("CIVIL_NONSTEEL_VIEW");
+            });
 
             builder.Entity<TLIuser_Permissions>(entity =>
             {

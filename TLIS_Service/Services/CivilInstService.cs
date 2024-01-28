@@ -77,6 +77,7 @@ using System.Data;
 using System.Net.WebSockets;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using Microsoft.Extensions.Configuration;
+using LinqToExcel.Extensions;
 
 namespace TLIS_Service.Services
 {
@@ -5319,25 +5320,15 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    var xx = _dbContext.CIVIL_NONSTEEL_VIEW.ToList();
-                    dynamic returning = new ExpandoObject();
-                    returning.filters = new List<object>();
-                    List<string> fkList = new List<string>();
-                    List<object> result = new List<object>();
-                    connection.Open();
-                    using (OracleCommand procedureCommand = new OracleCommand("create_dynamic_pivot_nonSteel", connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
-                    string sqlQuery = $"SELECT ";
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key } ).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                    List<string> propertyNamesStatic = new List<string>();
+                    List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -5346,122 +5337,50 @@ namespace TLIS_Service.Services
                             if (name != "Id" && name.EndsWith("Id"))
                             {
                                 string fk = name.Remove(name.Length - 2);
-                                sqlQuery += fk;
-                                fkList.Add(fk);
+                                propertyNamesStatic.Add(fk);
                             }
                             else
                             {
-                                sqlQuery += @" """ + name + @""" ";
+                                propertyNamesStatic.Add(name);
                             }
 
                         }
                         else
                         {
                             string name = key.dynamic;
-                            sqlQuery += @" ""'" + name + @"'"" ";
+                            propertyNamesDynamic.Add(name);
                         }
-                        if (attActivated.IndexOf(key) != attActivated.Count - 1)
-                        {
-                            sqlQuery += " , ";
-                        }
+
                     }
-                    int count = 0;
+                    var query = _dbContext.CIVIL_NONSTEEL_VIEW.AsEnumerable()
+                    .GroupBy(x => new {
+                        SITECODE = x.SITECODE,
+                        Id = x.Id,
+                        Name = x.Name,
+                        CurrentLoads = x.CurrentLoads,
+                        SpaceInstallation = x.SpaceInstallation,
+                        CIVILNONSTEELLIBRARY = x.CIVILNONSTEELLIBRARY,
+                        OWNER = x.OWNER,
+                        SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                        LOCATIONTYPE = x.LOCATIONTYPE,
+                        locationHeight = x.locationHeight,
+                        BuildingMaxLoad = x.BuildingMaxLoad,
+                        CivilSupportCurrentLoad = x.CivilSupportCurrentLoad,
+                        H2Height = x.H2Height,
+                        CenterHigh = x.CenterHigh,
+                        HBA = x.HBA,
+                        HieghFromLand = x.HieghFromLand,
+                        EquivalentSpace = x.EquivalentSpace,
+                        Support_Limited_Load = x.Support_Limited_Load,
+                    })
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
+                    int count = query.Count();
+                    query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize)
+                    .ToList();
 
-                    sqlQuery += "FROM civil_nonsteel_view_pivoit";
-                    sqlQuery += " Where sitecode='" + BaseFilter.SiteCode + "' ";
-                    if (CombineFilters.filters != null && CombineFilters.filters.Count > 0)
-                    {
-                        foreach (var filter in CombineFilters.filters)
-                        {
-                            sqlQuery += " And ";
-                            if (filter.key != "Id" && filter.key.EndsWith("Id"))
-                            {
-                                sqlQuery += filter.key.Remove(filter.key.Length - 2);
-                            }
-                            else
-                            {
-                                sqlQuery += @" """ + filter.key + @""" ";
-                            }
-                            if (filter.value.Count > 1)
-                            {
-                                sqlQuery += "IN (";
-                                foreach (var value in filter.value)
-                                {
-                                    sqlQuery += "'" + value.ToString() + "'";
-                                    if (filter.value.IndexOf(value) != filter.value.Count - 1)
-                                    {
-                                        sqlQuery += ",";
-                                    }
-                                    else
-                                    {
-                                        sqlQuery += ") ";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                sqlQuery += "like '" + filter.value[0].ToString() + "%'";
-                            }
-                        }
-                    }
-                    sqlQuery += @"Order By ""Name""";
-                    string countQuery = "select count(*) from (" + sqlQuery + ")";
-                    using (OracleCommand queryCommand = new OracleCommand(countQuery, connection))
-                    {
-                        using (OracleDataReader reader = queryCommand.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                count = reader.GetInt32(0);
-                            }
-
-                        }
-                    }
-                    foreach (string fk in fkList)
-                    {
-                        string listQuery = "select distinct " + fk + " from (" + sqlQuery + ")";
-                        using (OracleCommand queryCommand = new OracleCommand(listQuery, connection))
-                        {
-                            using (OracleDataReader reader = queryCommand.ExecuteReader())
-                            {
-                                List<string> names = new List<string>();
-                                while (reader.Read())
-                                {
-                                    string name = reader[fk].ToString();
-                                    names.Add(name);
-                                    
-                                }
-                                var x = new Dictionary<string, object>();
-                                x.Add(fk, names);
-                                returning.filters.Add(x);
-
-                            }
-                        }
-                    }
-                    sqlQuery += "OFFSET " + ((parameterPagination.PageNumber - 1) * parameterPagination.PageSize) + " Rows Fetch Next " + (parameterPagination.PageSize) + " ROWS ONLY";
-                    
-                    using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
-                    {
-                        using (OracleDataReader reader = queryCommand.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                dynamic dynamicResult = new ExpandoObject();
-                                var properties = (IDictionary<string, object>)dynamicResult;
-
-                                for (int i = 0; i < reader.FieldCount; i++)
-                                {
-                                    properties[reader.GetName(i)] = reader[i];
-                                }
-
-                                result.Add(dynamicResult);
-                            }
-
-                        }
-                    }
-                    returning.model = result;
-                    
-                    return new Response<object>(true, returning, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                 }
                 catch (Exception err)
                 {
@@ -5470,35 +5389,84 @@ namespace TLIS_Service.Services
             }
 
         }
-        public bool IfCorrect(Dictionary<string,string> x,FilterObjectList filter)
+        static bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item)
         {
+            bool x = true;
+            if (filters != null && filters.Count > 0)
+            {
+                foreach (var filter in filters)
+                {
+                    object value;
+                    if (item.TryGetValue(filter.key, out value))
+                    {
+                        if (value != null)
+                        {
+                            if (filter.value.Count > 1)
+                            {
+                                if (!filter.value.Any(x => x.ToString().ToLower() == value.ToString().ToLower()))
+                                {
+                                    x = false;
+                                    break;
+                                }
+                            }
+                            else if (filter.value.Count == 1)
+                            {
+                                if (int.TryParse(value.ToString(), out int Intres) && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
+                                {
+                                    x = false;
+                                    break;
+                                }
+                                if (DateTime.TryParse(value.ToString(), out DateTime Dateres) && DateTime.TryParse(filter.value[0].ToString(), out DateTime FDateres) && Dateres != FDateres)
+                                {
+                                    x = false;
+                                    break;
+                                }
+                                else if (!value.ToString().ToLower().StartsWith(filter.value[0].ToString().ToLower()))
+                                {
+                                    x = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return x;
+        }
+        static IDictionary<string, object> BuildDynamicSelect(object obj,Dictionary<string,string> dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
+        {
+            Dictionary<string, object> item = new Dictionary<string, object>();
+            Type type = obj.GetType();
+            foreach (var propertyName in propertyNamesStatic)
+            {
+                string name = propertyName;
+                var property =type.GetProperty(name);
 
-                    if (filter.value.Count > 1)
+                // Check if the property exists
+                if (property == null)
+                {
+                    name = name.ToUpper();
+                    property = type.GetProperty(name);
+                    if (property == null)
                     {
-                        if (filter.value.Any(val => val.ToString() == x[filter.key]))
-                        {
-                             return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        throw new ArgumentException($"Property {name} not found in {nameof(obj)}");
                     }
-                    else
+                }
+                PropertyInfo propertyInfo = type.GetProperty(propertyName);
+                if (propertyInfo != null)
+                {
+                    var value = propertyInfo.GetValue(obj);
+                    if (value != null)
                     {
-                        var c = x[filter.key];
-                        var j = filter.value[0].ToString();
-                        if (filter.value[0].ToString().StartsWith(x[filter.key]))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        item.Add(name, propertyInfo.GetValue(obj));
                     }
-                
-  
+                }
+            }
+            foreach (var propertyName in propertyNamesDynamic)
+            {
+                item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
+            }
+            return item;
         }
         #endregion
         #region Get All Civils Installations And Libraries Enabled Attributes...
