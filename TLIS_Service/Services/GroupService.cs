@@ -1181,7 +1181,7 @@ namespace TLIS_Service.Services
                 {
                     var Group2Id = Groups.AllLevel2.Id;
                     var Userofgroup2 = _unitOfWork.GroupUserRepository.GetWhere(x => Group2Id == x.groupId).Select(x => x.userId).ToList();
-                    var MailUserofGroup2 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup2.Any(y => y == x.Id)).Select(x => x.Email).ToList();
+                    var MailUserofGroup2 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup2.Any(y => y == x.Id)).ToList();
                     var Mailinfoofgroup2 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup2);
                     Groups.Level2 = _mapper.Map<List<EscalationViewModel>>(Mailinfoofgroup2);
                 }
@@ -1189,7 +1189,7 @@ namespace TLIS_Service.Services
                 {
                     var Group3Id = Groups.AllLevel2.Id;
                     var Userofgroup3 = _unitOfWork.GroupUserRepository.GetWhere(x => Group3Id == x.groupId).Select(x => x.userId).ToList();
-                    var MailUserofGroup3 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup3.Any(y => y == x.Id)).Select(x => x.Email).ToList();
+                    var MailUserofGroup3 = _unitOfWork.UserRepository.GetWhere(x => Userofgroup3.Any(y => y == x.Id)).ToList();
                     var Mailinfoofgroup3 = _mapper.Map<List<EscalationViewModel>>(MailUserofGroup3);
                     Groups.Level3 = _mapper.Map<List<EscalationViewModel>>(Mailinfoofgroup3);
                 }
