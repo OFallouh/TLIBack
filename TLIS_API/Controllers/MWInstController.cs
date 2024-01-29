@@ -75,14 +75,14 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddMW_BU")]
         [ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
-        public IActionResult AddMW_BU([FromBody]AddMW_BUViewModel AddMW_BUViewModel, string SiteCode)
+        public IActionResult AddMW_BU([FromBody]AddMW_BUViewModel AddMW_BUViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_BUViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_BUViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
             {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -95,14 +95,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMW_ODU")]
         [ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
-        public IActionResult AddMW_ODU([FromBody]AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode)
+        public IActionResult AddMW_ODU([FromBody]AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_ODUViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_ODUViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
             {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -115,14 +115,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMW_Dish")]
         [ProducesResponseType(200, Type = typeof(AddMW_DishViewModel))]
-        public IActionResult AddMW_Dish([FromBody]AddMW_DishViewModel AddMW_DishViewModel, string SiteCode)
+        public IActionResult AddMW_Dish([FromBody]AddMW_DishViewModel AddMW_DishViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_DishViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_DishViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_DishViewModel, nameof(AddMW_DishViewModel)))
             {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -135,7 +135,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMW_RFU")]
         [ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
-        public IActionResult AddMW_RFU([FromBody]AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode)
+        public IActionResult AddMW_RFU([FromBody]AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_RFUViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_RFUViewModel.TLIcivilLoads.sideArmId = null;
@@ -144,7 +144,7 @@ namespace TLIS_API.Controllers
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
             {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -158,14 +158,14 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddMW_Other")]
         [ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
-        public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode)
+        public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int TaskId)
         {
             if (AddMw_OtherViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMw_OtherViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
             {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -181,11 +181,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditMW_BU")]
         [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
-        public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU)
+        public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU,int TaskId)
         {
             if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
             {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -198,11 +198,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_Dish")]
         [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
-        public async Task<IActionResult> EditMW_Dish([FromBody]EditMW_DishViewModel MW_Dish)
+        public async Task<IActionResult> EditMW_Dish([FromBody]EditMW_DishViewModel MW_Dish,int TaskId)
         {
             if (TryValidateModel(MW_Dish, nameof(EditMW_DishViewModel)))
             {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -215,11 +215,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_ODU")]
         [ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
-        public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU)
+        public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int TaskId)
         {
             if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
             {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -232,11 +232,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_RFU")]
         [ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
-        public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU)
+        public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int TaskId)
         {
             if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
             {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString());
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -249,11 +249,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMw_Other")]
         [ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
-        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other)
+        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int TaskId)
         {
             if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
             {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString());
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -266,37 +266,37 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMW_BU")]
 
-        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_ODU")]
 
-        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_RFU")]
 
-        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_Dish")]
 
-        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_Other")]
 
-        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpGet("GetMW_BUById")]

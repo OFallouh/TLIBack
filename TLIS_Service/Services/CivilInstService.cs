@@ -2211,7 +2211,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString)
+        public Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString,int TaskId)
         {
             //using (TransactionScope transaction = new TransactionScope())
             //{
@@ -2624,7 +2624,7 @@ namespace TLIS_Service.Services
         //Function accept two Parameters 
         //First CivilInstallationViewModel object ViewModel of civil type
         //Second CivilType to specify any civil type deal with
-        public async Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType)
+        public async Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType, int TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -7354,7 +7354,7 @@ namespace TLIS_Service.Services
                 return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName)
+        public Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName, int TaskId)
         {
             try
             {

@@ -104,7 +104,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
-        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode)
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == true)
@@ -114,7 +114,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
                     {
-                        var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString,TaskId);
                         return Ok(response);
                     }
                     else
@@ -130,7 +130,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
                 {
-                    var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -147,7 +147,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode)
+        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId )
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == true)
@@ -157,7 +157,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
                     {
-                        var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -173,7 +173,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
                 {
-                    var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -190,7 +190,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilNonSteel/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelViewModel))]
-        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode)
+        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == true)
@@ -200,7 +200,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
                     {
-                        var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -216,7 +216,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
                 {
-                    var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -260,11 +260,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(CivilWithLegsViewModel))]
-        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModel CivilWithLeg)
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModel CivilWithLeg, int TaskId)
         {
             if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsViewModel)))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
+                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -278,11 +278,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithoutLegs")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg)
+        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg, int TaskId)
         {
             if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -296,11 +296,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilNonSteel")]
         [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel, int TaskId)
         {
             if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -333,9 +333,9 @@ namespace TLIS_API.Controllers
 
         [HttpPost("DismantleCivil")]
 
-        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName)
+        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName, int TaskId)
         {
-            var response = _unitOfWorkService.CivilInstService.DismantleCivil(SiteCode, CivilId, CivilName);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivil(SiteCode, CivilId, CivilName, TaskId);
             return Ok(response);
 
         }

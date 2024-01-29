@@ -768,7 +768,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddPower(AddPowerViewModel PowerViewModel, string SiteCode, string ConnectionString)
+        public Response<ObjectInstAtts> AddPower(AddPowerViewModel PowerViewModel, string SiteCode, string ConnectionString, int TaskId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -979,7 +979,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
@@ -1827,7 +1827,7 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //Update power
         //Update dynamic installation attribute values 
-        public async Task<Response<ObjectInstAtts>> EditPower(EditPowerViewModel PowerViewModel)
+        public async Task<Response<ObjectInstAtts>> EditPower(EditPowerViewModel PowerViewModel, int TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {

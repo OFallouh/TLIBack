@@ -145,7 +145,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId)
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId,int TaskId)
         {
             try
             {
@@ -2117,7 +2117,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<AllItemAttributes> AddSideArm(AddSideArmViewModel SideArmViewModel, string SiteCode, string ConnectionString)
+        public Response<AllItemAttributes> AddSideArm(AddSideArmViewModel SideArmViewModel, string SiteCode, string ConnectionString, int TaskI)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -2251,7 +2251,7 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //map ViewModel to Entity
         //update Entity
-        public async Task<Response<AllItemAttributes>> UpdateSideArm(EditSideArmViewModel SideArmViewModel)
+        public async Task<Response<AllItemAttributes>> UpdateSideArm(EditSideArmViewModel SideArmViewModel, int TaskI)
         {
             try
             {

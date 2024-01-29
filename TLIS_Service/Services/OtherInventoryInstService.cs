@@ -1843,7 +1843,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString)
+        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int TaskId)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -2204,7 +2204,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update Entity
         #endregion
-        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName)
+        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName ,int TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3611,7 +3611,7 @@ namespace TLIS_Service.Services
             }
             return string.Empty;
         }
-        public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName)
+        public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int TaskId)
         {
             try
             {

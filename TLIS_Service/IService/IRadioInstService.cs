@@ -19,10 +19,10 @@ namespace TLIS_Service.IService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibId, string SiteCode);
 
-        Response<ObjectInstAtts> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString);
-        Task<Response<ObjectInstAtts>> EditRadioInstallation(object RadioInstallationViewModel, string TableName);
+        Response<ObjectInstAtts> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int TaskId);
+        Task<Response<ObjectInstAtts>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int TaskId);
         Response<ObjectInstAttsForSideArm> GetById(int RadioInsId, string TableName);
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName);
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId);
             Response<ReturnWithFilters<RadioRRUViewModel>> GetRadioRRUsList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<RadioAntennaViewModel>> GetRadioAntennasList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<RadioOtherViewModel>> GetRadioOtherList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
