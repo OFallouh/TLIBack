@@ -39,16 +39,18 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSite")]
         [ProducesResponseType(200, Type = typeof(AddSiteViewModel))]
+        public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel, int TaskId)
         public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel, [FromQueryAttribute] int? TaskId)
         {
             var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel,TaskId);
+            var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel, TaskId);
             return Ok(response);
         }
         [HttpPost("EditSite")]
         [ProducesResponseType(200, Type = typeof(EditSiteViewModel))]
-        public IActionResult EditSite([FromBody] EditSiteViewModel EditSiteViewModel)
+        public IActionResult EditSite([FromBody] EditSiteViewModel EditSiteViewModel, int TaskId)
         {
-            var response = _unitOfWorkService.SiteService.EditSite(EditSiteViewModel);
+            var response = _unitOfWorkService.SiteService.EditSite(EditSiteViewModel, TaskId);
             return Ok(response);
         }
         [HttpGet("GetAllAreasForSiteOperation")]

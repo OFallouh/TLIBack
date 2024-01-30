@@ -67,17 +67,17 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSideArm")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode)
+        public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var Response = _UnitOfWorkService.SideArmService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString);
+            var Response = _UnitOfWorkService.SideArmService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId);
             return Ok(Response);
         }
         [HttpPost("UpdateSideArm")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel)
+        public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel, int TaskId)
         {
-            var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel);
+            var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId);
             return Ok(response);
         }
         [HttpPost("AddSideArmInstallationPlace")]
@@ -109,9 +109,9 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [HttpPost("DismantlesideArm")]
-        public IActionResult DismantlesideArm(string SiteCode, int sideArmId)
+        public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int TaskId)
         {
-            var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId);
+            var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId);
             return Ok(response);
         }
 

@@ -57,7 +57,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCabinet")]
         [ProducesResponseType(200, Type = typeof(AddCabinetViewModel))]
-        public IActionResult AddCabinet([FromBody] AddCabinetViewModel addCabinetViewModel, string SiteCode)
+        public IActionResult AddCabinet([FromBody] AddCabinetViewModel addCabinetViewModel, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
@@ -67,7 +67,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetViewModel)))
                     {
-                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -83,7 +83,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetViewModel)))
                 {
-                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -99,7 +99,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSolar")]
         [ProducesResponseType(200, Type = typeof(AddSolarViewModel))]
-        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode)
+        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
@@ -109,7 +109,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
                     {
-                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -125,7 +125,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
                 {
-                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -141,7 +141,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddGenerator")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
-        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode)
+        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
@@ -151,7 +151,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
                     {
-                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -167,7 +167,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
                 {
-                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -204,11 +204,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCabinet")]
         [ProducesResponseType(200, Type = typeof(EditCabinetViewModel))]
-        public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel)
+        public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel,int TaskId)
         {
             if (TryValidateModel(editCabinetViewModel, nameof(EditCabinetViewModel)))
             {
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -222,11 +222,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditSolar")]
         [ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
-        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel)
+        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int TaskId)
         {
             if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
             {
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -240,11 +240,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditGenerator")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int TaskId)
         {
             if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
             {
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -257,9 +257,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("DismantleOtherInventory")]
 
-        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName)
+        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(SiteCode, OtherInventoryId , OtherInventoryName);
+            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(SiteCode, OtherInventoryId , OtherInventoryName, TaskId);
             return Ok(response);
 
         }

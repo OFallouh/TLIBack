@@ -2602,7 +2602,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString)
+        public Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString,int TaskId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -3120,7 +3120,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update entity
         //Update dynamic attributes
-        public async Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName)
+        public async Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int TaskId)
         {
             try
             {
@@ -5481,7 +5481,7 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<MW_ODUViewModel>>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {

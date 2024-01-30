@@ -20,9 +20,9 @@ namespace TLIS_Service.IService
     public interface IMWInstService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode);
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName);
-        Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString);
-        Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName);
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId);
+        Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int TaskId);
+        Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int TaskId);
         Response<ReturnWithFilters<MW_ODUViewModel>> getMW_ODU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_BUViewModel>> getMW_BU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_DishViewModel>> getMW_Dish(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);

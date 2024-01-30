@@ -40,14 +40,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddLoadOther")]
         [ProducesResponseType(200, Type = typeof(AddLoadOtherViewModel))]
-        public IActionResult AddLoadOther([FromBody] AddLoadOtherViewModel addLoadOther, string SiteCode)
+        public IActionResult AddLoadOther([FromBody] AddLoadOtherViewModel addLoadOther, string SiteCode, int TaskId)
         {
             if (addLoadOther.TLIcivilLoads.sideArmId == 0)
                 addLoadOther.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(addLoadOther, nameof(AddLoadOtherViewModel)))
             {
-                var response = _unitOfWorkService.LoadOtherService.AddLoadOther(addLoadOther, SiteCode, ConnectionString);
+                var response = _unitOfWorkService.LoadOtherService.AddLoadOther(addLoadOther, SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -60,11 +60,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditLoadOther")]
         [ProducesResponseType(200, Type = typeof(EditLoadOtherViewModel))]
-        public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherViewModel LoadOtherViewModel)
+        public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherViewModel LoadOtherViewModel, int TaskId)
         {
             if (TryValidateModel(LoadOtherViewModel, nameof(EditLoadOtherViewModel)))
             {
-                var response = await _unitOfWorkService.LoadOtherService.EditLoadOther(LoadOtherViewModel);
+                var response = await _unitOfWorkService.LoadOtherService.EditLoadOther(LoadOtherViewModel, TaskId);
                 return Ok(response);
             }
             else
@@ -77,9 +77,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("DismantleLoadOther")]
 
-        public IActionResult DismantleLoadOther(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleLoadOther(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.LoadOtherService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.LoadOtherService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
 
         }

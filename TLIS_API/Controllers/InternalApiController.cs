@@ -246,7 +246,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddRadioAntennaInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioAntennaIntegration))]
-        public IActionResult AddRadioAntennaInstallation([FromBody] AddRadioAntennaIntegration addRadioAntenna, string SiteCode)
+        public IActionResult AddRadioAntennaInstallation([FromBody] AddRadioAntennaIntegration addRadioAntenna, string SiteCode, int TaskId)
         {
 
             try
@@ -257,7 +257,7 @@ namespace TLIS_API.Controllers
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaIntegration)))
                 {
-                    var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, ConnectionString, TaskId);
 
                     return Ok(response);
                 }
@@ -276,14 +276,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddRadioRRUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioRRUIntegration))]
-        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUIntegration addRadioRRU, string SiteCode)
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUIntegration addRadioRRU, string SiteCode,int TaskId)
         {
             if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
                 addRadioRRU.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUIntegration)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -296,14 +296,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddRadioOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioOtherIntegration))]
-        public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherIntegration addRadioOther, string SiteCode)
+        public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherIntegration addRadioOther, string SiteCode, int TaskId)
         {
             if (addRadioOther.TLIcivilLoads.sideArmId == 0)
                 addRadioOther.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(addRadioOther, nameof(AddRadioOtherIntegration)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -353,14 +353,14 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddMW_BU")]
         [ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
-        public IActionResult AddMW_BU([FromBody] AddMW_BUViewModel AddMW_BUViewModel, string SiteCode)
+        public IActionResult AddMW_BU([FromBody] AddMW_BUViewModel AddMW_BUViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_BUViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_BUViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -373,14 +373,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMW_ODU")]
         [ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
-        public IActionResult AddMW_ODU([FromBody] AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode)
+        public IActionResult AddMW_ODU([FromBody] AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_ODUViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_ODUViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -393,14 +393,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMW_Dish")]
         [ProducesResponseType(200, Type = typeof(AddMW_DishViewModel))]
-        public IActionResult AddMW_Dish([FromBody] AddMW_DishViewModel AddMW_DishViewModel, string SiteCode)
+        public IActionResult AddMW_Dish([FromBody] AddMW_DishViewModel AddMW_DishViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_DishViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_DishViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_DishViewModel, nameof(AddMW_DishViewModel)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -413,7 +413,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMW_RFU")]
         [ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
-        public IActionResult AddMW_RFU([FromBody] AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode)
+        public IActionResult AddMW_RFU([FromBody] AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int TaskId)
         {
             if (AddMW_RFUViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMW_RFUViewModel.TLIcivilLoads.sideArmId = null;
@@ -422,7 +422,7 @@ namespace TLIS_API.Controllers
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -436,14 +436,14 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddMW_Other")]
         [ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
-        public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode)
+        public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int TaskId)
         {
             if (AddMw_OtherViewModel.TLIcivilLoads.sideArmId == 0)
                 AddMw_OtherViewModel.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString);
+                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -456,11 +456,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_BU")]
         [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
-        public async Task<IActionResult> EditMW_BU([FromBody] EditMW_BUViewModel MW_BU)
+        public async Task<IActionResult> EditMW_BU([FromBody] EditMW_BUViewModel MW_BU,int TaskId)
         {
             if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -473,11 +473,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_Dish")]
         [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
-        public async Task<IActionResult> EditMW_Dish([FromBody] EditMW_DishViewModel MW_Dish)
+        public async Task<IActionResult> EditMW_Dish([FromBody] EditMW_DishViewModel MW_Dish, int TaskId)
         {
             if (TryValidateModel(MW_Dish, nameof(EditMW_DishViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -490,11 +490,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_ODU")]
         [ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
-        public async Task<IActionResult> EditMW_ODU([FromBody] EditMW_ODUViewModel MW_ODU)
+        public async Task<IActionResult> EditMW_ODU([FromBody] EditMW_ODUViewModel MW_ODU,int TaskId)
         {
             if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -507,11 +507,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMW_RFU")]
         [ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
-        public async Task<IActionResult> EditMW_RFU([FromBody] EditMW_RFUViewModel MW_RFU)
+        public async Task<IActionResult> EditMW_RFU([FromBody] EditMW_RFUViewModel MW_RFU,int TaskId)
         {
             if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -524,11 +524,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMw_Other")]
         [ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
-        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other)
+        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other,int TaskId)
         {
             if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -541,43 +541,43 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMW_BU")]
 
-        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_ODU")]
 
-        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_RFU")]
 
-        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_Dish")]
 
-        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantleMW_Other")]
 
-        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [HttpPost("DismantlesideArm")]
-        public IActionResult DismantlesideArm(string SiteCode, int sideArmId)
+        public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int  TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleSideArm(SiteCode, sideArmId);
+            var response = _unitOfWorkService.InternalApiService.DismantleSideArm(SiteCode, sideArmId, TaskId);
             return Ok(response);
         }
         [HttpGet("GetMW_BUById")]
@@ -631,7 +631,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSolar")]
         [ProducesResponseType(200, Type = typeof(AddSolarViewModel))]
-        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode)
+        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
@@ -641,7 +641,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
                     {
-                        var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -657,7 +657,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
                 {
-                    var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -673,7 +673,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddGenerator")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
-        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode)
+        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
@@ -683,7 +683,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
                     {
-                        var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -699,7 +699,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
                 {
-                    var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -728,11 +728,11 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditSolar")]
         [ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
-        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel)
+        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int TaskId)
         {
             if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -746,11 +746,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditGenerator")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int TaskId)
         {
             if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -762,9 +762,9 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("DismantleOtherInventory")]
-        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName)
+        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleOtherInventory(SiteCode, OtherInventoryId, OtherInventoryName);
+            var response = _unitOfWorkService.InternalApiService.DismantleOtherInventory(SiteCode, OtherInventoryId, OtherInventoryName, TaskId);
             return Ok(response);
 
         } 
@@ -826,17 +826,17 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSideArm")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode)
+        public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var Response = _unitOfWorkService.InternalApiService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString);
+            var Response = _unitOfWorkService.InternalApiService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId);
             return Ok(Response);
         }
         [HttpPost("UpdateSideArm")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel)
+        public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel,int TaskId)
         {
-            var response = await _unitOfWorkService.InternalApiService.UpdateSideArm(SideArmViewModel);
+            var response = await _unitOfWorkService.InternalApiService.UpdateSideArm(SideArmViewModel, TaskId);
             return Ok(response);
         }
         [HttpGet("GetAttForAddSideArm")]
@@ -1158,7 +1158,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModelInternal))]
-        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModelInternal addCivilWithLeg, string SiteCode)
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModelInternal addCivilWithLeg, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == true)
@@ -1168,7 +1168,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModelInternal)))
                     {
-                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -1184,7 +1184,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModelInternal)))
                 {
-                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -1201,7 +1201,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModelIntegration))]
-        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModelIntegration addCivilWithoutLeg, string SiteCode)
+        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModelIntegration addCivilWithoutLeg, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == true)
@@ -1211,7 +1211,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModelIntegration)))
                     {
-                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -1227,7 +1227,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModelIntegration)))
                 {
-                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -1244,7 +1244,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilNonSteel/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelViewModelIntegration))]
-        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModelIntegration addCivilNonSteel, string SiteCode)
+        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModelIntegration addCivilNonSteel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == true)
@@ -1254,7 +1254,7 @@ namespace TLIS_API.Controllers
                 {
                     if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModelIntegration)))
                     {
-                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
                         return Ok(response);
                     }
                     else
@@ -1270,7 +1270,7 @@ namespace TLIS_API.Controllers
             {
                 if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModelIntegration)))
                 {
-                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString);
+                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
                     return Ok(response);
                 }
                 else
@@ -1307,11 +1307,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithLegsViewModelIntegration))]
-        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModelIntegration CivilWithLeg)
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModelIntegration CivilWithLeg,int TaskId)
         {
             if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -1325,11 +1325,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithoutLegs")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg)
+        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg,int TaskId)
         {
             if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -1343,11 +1343,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilNonSteel")]
         [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel,int TaskId)
         {
             if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
             {
-                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -1360,9 +1360,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleCivil")]
 
-        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName)
+        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleCivil(SiteCode, CivilId, CivilName);
+            var response = _unitOfWorkService.InternalApiService.DismantleCivil(SiteCode, CivilId, CivilName, TaskId);
             return Ok(response);
 
         }

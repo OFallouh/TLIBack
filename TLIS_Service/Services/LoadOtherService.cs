@@ -764,7 +764,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddLoadOther(AddLoadOtherViewModel LoadOtherViewModel, string SiteCode, string ConnectionString)
+        public Response<ObjectInstAtts> AddLoadOther(AddLoadOtherViewModel LoadOtherViewModel, string SiteCode, string ConnectionString, int TaskId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -843,7 +843,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel)
+        public async Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel, int TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -1453,7 +1453,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {

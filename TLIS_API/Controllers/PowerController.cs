@@ -39,14 +39,14 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddPower")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult AddPower([FromBody] AddPowerViewModel Power, string SiteCode)
+        public IActionResult AddPower([FromBody] AddPowerViewModel Power, string SiteCode, int TaskId)
         {
             if (Power.TLIcivilLoads.sideArmId == 0)
                 Power.TLIcivilLoads.sideArmId = null;
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (TryValidateModel(Power, nameof(AddPowerViewModel)))
             {
-                var response = _unitOfWorkService.PowerService.AddPower(Power, SiteCode, ConnectionString);
+                var response = _unitOfWorkService.PowerService.AddPower(Power, SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -59,19 +59,19 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("DismantlePower")]
 
-        public IActionResult DismantlePower(string sitecode, int LoadId, string LoadName)
+        public IActionResult DismantlePower(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.PowerService.DismantleLoads(sitecode, LoadId, LoadName);
+            var response = _unitOfWorkService.PowerService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
 
         }
         [HttpPost("EditPower")]
         [ProducesResponseType(200, Type = typeof(EditPowerViewModel))]
-        public async Task<IActionResult> EditPower([FromBody] EditPowerViewModel Power)
+        public async Task<IActionResult> EditPower([FromBody] EditPowerViewModel Power,int TaskId)
         {
             if (TryValidateModel(Power, nameof(EditPowerViewModel)))
             {
-                var response = await _unitOfWorkService.PowerService.EditPower(Power);
+                var response = await _unitOfWorkService.PowerService.EditPower(Power, TaskId);
                 return Ok(response);
             }
             else

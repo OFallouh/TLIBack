@@ -1533,7 +1533,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString)
+        public Response<ObjectInstAtts> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString,int TaskId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -1855,7 +1855,7 @@ namespace TLIS_Service.Services
         //map ViewModel to Entity
         //update Entity
         //update dynamic attributes
-        public async Task<Response<ObjectInstAtts>> EditRadioInstallation(object RadioInstallationViewModel, string TableName)
+        public async Task<Response<ObjectInstAtts>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3444,7 +3444,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
