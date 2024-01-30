@@ -29,11 +29,8 @@ namespace TLIS_Service.IService
     public interface ISiteService
     {
         List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
-        Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int TaskId);
-        Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int TaskId);
-        List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
-        Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId);
-        Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel);
+        Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId);
+        Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId);
         Response<List<AreaViewModel>> GetAllAreasForSiteOperation();
         Response<List<SiteStatusViewModel>> GetAllSiteStatusForSiteOperation();
         Response<List<RegionViewModel>> GetAllRegionsForSiteOperation();

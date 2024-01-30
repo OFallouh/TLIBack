@@ -96,7 +96,6 @@ namespace TLIS_Service.Services
         }
         IServiceProvider Services;
        
-        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int TaskId)
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
         {
             try
