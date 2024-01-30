@@ -132,7 +132,7 @@ namespace TLIS_Service.Services
                 return new Response<AddSiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int TaskId)
+        public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId)
         {
             try
             {
