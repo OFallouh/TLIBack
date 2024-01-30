@@ -89,7 +89,7 @@ namespace TLIS_Service.Services
             _services = services;
             _mapper = mapper;
         }
-        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel)
+        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
         {
             try
             {
@@ -111,6 +111,10 @@ namespace TLIS_Service.Services
                 _unitOfWork.SiteRepository.Add(NewSiteEntity);
 
                 _MySites.Add(NewSiteEntity);
+                if(TaskId != null)
+                {
+                    //TODO
+                }
 
                 _unitOfWork.SaveChanges();
 

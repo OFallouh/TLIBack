@@ -39,9 +39,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSite")]
         [ProducesResponseType(200, Type = typeof(AddSiteViewModel))]
-        public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel)
+        public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel, [FromQueryAttribute] int? TaskId)
         {
-            var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel);
+            var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel,TaskId);
             return Ok(response);
         }
         [HttpPost("EditSite")]

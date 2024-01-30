@@ -5377,8 +5377,7 @@ namespace TLIS_Service.Services
                     .Select(item => BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
                     int count = query.Count();
-                    query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize)
-                    .ToList();
+                    query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
                     return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                 }
