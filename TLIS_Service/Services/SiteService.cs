@@ -7664,12 +7664,12 @@ namespace TLIS_Service.Services
         }
 
         private static readonly HttpClient _httpClient = new HttpClient();
-        private async Task<SumbitTaskByTLI> SubmitTaskByTLI(int userId)
+        private async Task<SumbitTaskByTLI> SubmitTaskByTLI(int TaskId)
         {
             using (var scope = Services.CreateScope())
             {
                 IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-                string apiUrl = $"http://192.168.1.50:9085/api/TicketManagement/SubmitTaskByTLI?taskId=2";
+                string apiUrl = $"http://192.168.1.50:9085/api/TicketManagement/SubmitTaskByTLI?taskId={TaskId}";
 
                 try
                 {
