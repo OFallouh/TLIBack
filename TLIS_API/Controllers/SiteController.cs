@@ -416,11 +416,5 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetItemsOnSite(SiteCode);
             return Ok(response);
         }
-        [HttpGet("SumbitTaskByTLI")]
-        public IActionResult SumbitTaskByTLI(int TaskId)
-        {
-            var response = _unitOfWorkService.SiteService.SumbitTaskByTLI(TaskId);
-            return Ok(response);
-        }
     }
 }

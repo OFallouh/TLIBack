@@ -78,8 +78,9 @@ namespace TLIS_Service.ServiceBase
         ApplicationDbContext db;
         IHostingEnvironment _hostingEnvironment;
         IMapper _mapper;
+        IServiceProvider Services;
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config, IServiceCollection services, ApplicationDbContext _context,
-            IHostingEnvironment hostingEnvironment, IMapper mapper)
+            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider)
         {
             db = _context;
             _config = config;
@@ -87,6 +88,7 @@ namespace TLIS_Service.ServiceBase
             _services = services;
             _hostingEnvironment = hostingEnvironment;
             _mapper = mapper;
+            Services=serviceProvider;
         }
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config)
         {
@@ -131,7 +133,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_siteService == null)
-                    _siteService = new SiteService(_unitOfWork, _services, db,_mapper);
+                    _siteService = new SiteService(_unitOfWork, _services, db,_mapper, Services);
 
                 return _siteService;
             }

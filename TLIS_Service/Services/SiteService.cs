@@ -71,7 +71,10 @@ using LinqToExcel.Extensions;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text.Json;
-using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerUI;
+
+
+
 
 namespace TLIS_Service.Services
 {
@@ -83,13 +86,16 @@ namespace TLIS_Service.Services
         private IMapper _mapper;
         ServiceProvider _serviceProvider;
         public static List<TLIsite> _MySites;
-        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper)
+        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper,IServiceProvider service)
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
+            Services = service;
         }
+        IServiceProvider Services;
+       
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int TaskId)
         {
             try
@@ -7658,56 +7664,49 @@ namespace TLIS_Service.Services
         }
 
         private static readonly HttpClient _httpClient = new HttpClient();
-
-        public async Task<SumbitTaskByTLI> SumbitTaskByTLI(int TaskId)
+        private async Task<SumbitTaskByTLI> SubmitTaskByTLI(int userId)
         {
-            string apiUrl = "http://192.168.1.50:9085/api/TicketManagement/SumbitTaskByTLI";
-
-            int maxRetries = 10; // Number of retries
-            int retryDelayMilliseconds = 600000; // 10 minutes in milliseconds
-
-            for (int retryCount = 0; retryCount < maxRetries; retryCount++)
+            using (var scope = Services.CreateScope())
             {
+                IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+                string apiUrl = $"http://192.168.1.50:9085/api/TicketManagement/SubmitTaskByTLI?taskId=2";
+
                 try
                 {
-                    var jsonPayload = new { Id = TaskId };
-                    var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(jsonPayload), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
 
-                    using (HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, content))
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (response.IsSuccessStatusCode)
-                        {
-                            string responseBody = await response.Content.ReadAsStringAsync();
+                        string responseBody = await response.Content.ReadAsStringAsync();
 
-                            if (!string.IsNullOrEmpty(responseBody))
-                            {
-                                var rootObject = System.Text.Json.JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                                var res = _mapper.Map<SumbitTaskByTLI>(rootObject);
-                                return res;
-                            }
-                        }
-                        else
+                        if (responseBody != null)
                         {
-                            Console.WriteLine($"API request failed with status code: {response.StatusCode}");
+                            var rootObject = JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            var res = _Mapper.Map<SumbitTaskByTLI>(rootObject);
+                            return res;
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"API request failed with status code: {response.StatusCode}");
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"An error occurred: {ex.Message}");
-                    // Log the exception details if necessary
                 }
 
-                // Wait for the specified delay before retrying
-                await Task.Delay(retryDelayMilliseconds);
-            }
 
-            return null;
+                return null;
+
+            }
         }
 
+
+
     }
-  
-    
+
+
 }
 
 

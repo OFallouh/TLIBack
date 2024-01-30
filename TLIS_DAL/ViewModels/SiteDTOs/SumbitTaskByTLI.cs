@@ -9,7 +9,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 {
     public class SumbitTaskByTLI
     {
-        public EscalationWFViewModel Result { get; set; }
+        public bool Result { get; set; }
         public int Id { get; set; }
         public object Exception { get; set; }
         public int Status { get; set; }
