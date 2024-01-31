@@ -17900,7 +17900,9 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAtt> RadioRRUAllDynamicAttribute = _unitOfWork.DynamicAttRepository
                             .GetWhere(x => x.tablesNamesId == RadioRRUTableNameId).ToList();
 
-                        List<TLIdynamicAtt> RadioRRUMissedAttributes = RadioRRUMissedAttributeCSV.Except(RadioRRUAllDynamicAttribute).ToList();
+                        List<TLIdynamicAtt> RadioRRUMissedAttributes = RadioRRUMissedAttributeCSV
+                          .Except(RadioRRUAllDynamicAttribute, new TLIdynamicAttComparer())
+                          .ToList();
 
                         _unitOfWork.DynamicAttRepository.AddRange(RadioRRUMissedAttributes);
                         _unitOfWork.SaveChanges();
