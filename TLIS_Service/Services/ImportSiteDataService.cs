@@ -12414,7 +12414,9 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAtt> MW_DishAllDynamicAttribute = _unitOfWork.DynamicAttRepository
                             .GetWhere(x => x.tablesNamesId == MW_DishTableNameId).ToList();
 
-                        List<TLIdynamicAtt> MW_DishMissedAttributes = MW_DishMissedAttributeCSV.Except(MW_DishAllDynamicAttribute).ToList();
+                        List<TLIdynamicAtt> MW_DishMissedAttributes = MW_DishMissedAttributeCSV
+                         .Except(MW_DishAllDynamicAttribute, new TLIdynamicAttComparer())
+                         .ToList();
 
                         _unitOfWork.DynamicAttRepository.AddRange(MW_DishMissedAttributes);
                         _unitOfWork.SaveChanges();
@@ -16779,7 +16781,11 @@ namespace TLIS_Service.Services
                         List<TLIdynamicAtt> MW_ODUAllDynamicAttribute = _unitOfWork.DynamicAttRepository
                             .GetWhere(x => x.tablesNamesId == MW_ODUTableNameId).ToList();
 
-                        List<TLIdynamicAtt> MW_ODUMissedAttributes = MW_ODUMissedAttributeCSV.Except(MW_ODUAllDynamicAttribute).ToList();
+
+                        List<TLIdynamicAtt> MW_ODUMissedAttributes = MW_ODUMissedAttributeCSV
+                       .Except(MW_ODUAllDynamicAttribute, new TLIdynamicAttComparer())
+                       .ToList();
+
 
                         _unitOfWork.DynamicAttRepository.AddRange(MW_ODUMissedAttributes);
                         _unitOfWork.SaveChanges();
