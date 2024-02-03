@@ -138,7 +138,7 @@ namespace TLIS_Service.Services
                     {
                         return response = new Response<string>(false, null, null, $"This Account Is Blocked In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
-                    else if (IsPasswordValid(login.Wedcto.ToUpper(), login.beresd) == true)
+                    else if (IsPasswordValid(login.Wedcto.ToLower(), login.beresd) == true)
                     {
                         principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto);
                         if (principal != null && principal.SamAccountName.Equals(login.Wedcto, StringComparison.OrdinalIgnoreCase))
