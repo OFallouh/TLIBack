@@ -130,34 +130,37 @@ namespace TLIS_Service.Services
                 {
                     UserPrincipal principal = new UserPrincipal(context);
                     var usernotfound = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == login.Wedcto.ToLower());
-                    if(usernotfound == null)
+                    if (usernotfound == null)
                     {
                         return response = new Response<string>(false, null, null, $"This User Is Not Found In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
-                    else if(usernotfound!=null && usernotfound.Active==false)
+                    else if (usernotfound != null && usernotfound.Active == false)
                     {
                         return response = new Response<string>(false, null, null, $"This Account Is Blocked In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
-                    else if (IsPasswordValid(login.Wedcto.ToLower(), login.beresd) == true)
+                    else if (IsPasswordValid(login.Wedcto.ToUpper(), login.beresd) == true)
                     {
-
-                        principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto.ToLower());
-                        GroupPrincipal group = GroupPrincipal.FindByIdentity(context, domainGroup);
-
-                        //add check with TLI group 
-
-                        if (User.UserType.Equals(1) && principal.IsMemberOf(group))
+                        principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto);
+                        if (principal != null && principal.SamAccountName.Equals(login.Wedcto, StringComparison.OrdinalIgnoreCase))
                         {
-                            user = _mapper.Map<UserViewModel>(User);
 
-                            if (user != null)
+                            GroupPrincipal group = GroupPrincipal.FindByIdentity(context, domainGroup);
+
+                            //add check with TLI group 
+
+                            if (User.UserType.Equals(1) && principal.IsMemberOf(group))
                             {
-                                var tokenString = BuildToken(user, secretKey);
-                                return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                            }
+                                user = _mapper.Map<UserViewModel>(User);
+
+                                if (user != null)
+                                {
+                                    var tokenString = BuildToken(user, secretKey);
+                                    return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                                } }
                         }
 
-                    }
+                    } 
                     else if (Trycount == 3)
                     {
                         User.Active = false;

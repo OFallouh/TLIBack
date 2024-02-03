@@ -5352,7 +5352,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    var query = _dbContext.CIVIL_NONSTEEL_VIEW.AsEnumerable()
+                    var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x=>x.SITECODE.ToLower()==BaseFilter.SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new {
                         SITECODE = x.SITECODE,
                         Id = x.Id,
