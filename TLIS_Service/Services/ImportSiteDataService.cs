@@ -12926,57 +12926,6 @@ namespace TLIS_Service.Services
                                     NewMW_DishEntity.Notes = MW_DishDataTable.Rows[j]["Notes"].ToString();
 
                                     string MW_DishSerialNumber = MW_DishDataTable.Rows[j]["Serial Number"].ToString();
-                                    if (!string.IsNullOrEmpty(MW_DishSerialNumber))
-                                    {
-                                        TLIcivilLoads CheckMW_DishSerialNumberIfExist = _unitOfWork.CivilLoadsRepository
-                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInstId != null ?
-                                                (!x.allLoadInst.Draft && x.allLoadInst.mwDishId != null ?
-                                                    x.allLoadInst.mwDish.Serial_Number.ToLower() == MW_DishSerialNumber.ToLower() : false) : false,
-                                                        x => x.allLoadInst, x => x.allLoadInst.mwDish);
-
-                                        if (CheckMW_DishSerialNumberIfExist != null)
-                                        {
-                                            MW_DishTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Serial Number) column's value: ({MW_DishSerialNumber}) is already exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLImwDish.ToString(),
-                                                SheetName = "MW Dish Info",
-                                                UniqueName = $"(MW Dish Name) : {MW_DishDataTable.Rows[j]["MW Dish Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        NewMW_DishEntity.Serial_Number = MW_DishSerialNumber;
-                                    }
-                                    else
-                                    {
-                                        MW_DishTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(Serial Number) column's value can't be null or empty",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLImwDish.ToString(),
-                                            SheetName = "MW Dish Info",
-                                            UniqueName = $"(MW Dish Name) : {MW_DishDataTable.Rows[j]["MW Dish Name"]}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
 
                                     string MW_DishOwner = MW_DishDataTable.Rows[j]["MW Dish Owner"].ToString();
                                     if (!string.IsNullOrEmpty(MW_DishOwner))
@@ -16800,17 +16749,6 @@ namespace TLIS_Service.Services
                                     // Unique Constraint (Serial Number)..
 
                                     string MW_ODUSerialNumber = MW_ODUDataTable.Rows[j]["Serial Number"].ToString();
-                                    if (!string.IsNullOrEmpty(MW_ODUSerialNumber))
-                                    {
-                                        TLIcivilLoads CheckMW_ODUSerialNumber = _unitOfWork.CivilLoadsRepository
-                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInstId != null ?
-                                                (!x.allLoadInst.Draft && x.allLoadInst.mwODUId != null ?
-                                                    (x.allLoadInst.mwODU.Serial_Number.ToLower() == MW_ODUSerialNumber.ToLower()) : false) : false,
-                                                        x => x.allLoadInst, x => x.allLoadInst.mwODU);
-
-                                        if (CheckMW_ODUSerialNumber != null)
-                                            continue;
-                                    }
 
                                     //
                                     // Library Information..
