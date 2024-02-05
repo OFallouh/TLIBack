@@ -43,6 +43,5 @@ namespace TLIS_Service.IService
         Response<GroupViewModel> UnAssignParentRleation(int GroupId);
         Response<string> DeleteGroupChildren(int GroupId);
         Response<IEnumerable<GroupViewModel>> GetGroupByName_WFVersion();
-        Task<EscalationWFViewModel> GetUpperToEscalationWF(int UserId);
     }
 }

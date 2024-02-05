@@ -7579,51 +7579,60 @@ namespace TLIS_Service.Services
         {
             ItemsOnSite OutPut = new ItemsOnSite();
 
-            List<TLIcivilLoads> UsedSitesInLoads = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle
-            && x.allLoadInstId != null, x => x.allLoadInst, x => x.sideArm).ToList();
+            List<TLIcivilLoads> UsedSitesInLoads = _unitOfWork.CivilLoadsRepository
+            .GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle
+                && x.allLoadInstId != null, x => x.allLoadInst, x => x.sideArm)
+            .AsQueryable()
+            .ToList();
+            OutPut.PowerCount = UsedSitesInLoads.Count(x => !x.allLoadInst.Draft && x.allLoadInst.powerId != null);
+            OutPut.PowerCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.powerId != null);
+            OutPut.MW_RFUCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.mwRFUId != null);
+            OutPut.MW_BUCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.mwBUId != null);
+            OutPut.MW_DishCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.mwDishId != null);
+            OutPut.MW_ODUCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.mwODUId != null);
+            OutPut.MW_OtherCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.mwOtherId != null);
+            OutPut.RadioAntennaCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.radioAntennaId != null);
+            OutPut.RadioRRUCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.radioRRUId != null);
+            OutPut.RadioOtherCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.radioOtherId != null);
+            OutPut.LoadOtherCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.loadOtherId != null);
+            OutPut.SideArmCount = UsedSitesInLoads.Count(x => x.sideArmId != null && x.sideArm.Draft == false);
 
-            OutPut.PowerCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.powerId != null).Count();
-            OutPut.MW_RFUCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.mwRFUId != null).Count();
-            OutPut.MW_BUCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.mwBUId != null).Count();
-            OutPut.MW_DishCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.mwDishId != null).Count();
-            OutPut.MW_ODUCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.mwODUId != null).Count();
-            OutPut.MW_OtherCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.mwOtherId != null).Count();
-            OutPut.RadioAntennaCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.radioAntennaId != null).Count();
-            OutPut.RadioRRUCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.radioRRUId != null).Count();
-            OutPut.RadioOtherCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.radioOtherId != null).Count();
-            OutPut.LoadOtherCount = UsedSitesInLoads.Where(x => x.allLoadInst.Draft == false && x.allLoadInst.loadOtherId != null).Count();
-            OutPut.SideArmCount = UsedSitesInLoads.Where(x => x.sideArmId != null && x.sideArm.Draft == false).Count();
-
-            List<TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
-            && !x.Dismantle && x.allCivilInst.Draft == false, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-            x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory).Select(x => x.allCivilInst).ToList();
+            
+            IQueryable<TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository
+            .GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
+                && !x.Dismantle && x.allCivilInst.Draft == false, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel,
+                x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
+                x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory)
+            .Select(x => x.allCivilInst)
+            .AsQueryable();
 
             int xxx = UsedSitesInCivils.Count();
-
-            OutPut.SteelWithLegsCount = UsedSitesInCivils.Where(x => x.civilWithLegsId != null).Count();
-            OutPut.SteelWithoutLegs_MastCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ?
+            OutPut.SteelWithLegsCount = UsedSitesInCivils.Count(x => x.civilWithLegsId != null);
+            OutPut.SteelWithoutLegs_MastCount = UsedSitesInCivils.Count(x => x.civilWithoutLegId != null ?
                (x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId != null ?
-                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Mast.ToString().ToLower() : false) : false).Count();
-            OutPut.SteelWithoutLegs_MonopoleCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ?
+                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Mast.ToString().ToLower() : false) : false);
+            OutPut.SteelWithoutLegs_MonopoleCount = UsedSitesInCivils.Count(x => x.civilWithoutLegId != null ?
                (x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId != null ?
-                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Monopole.ToString().ToLower() : false) : false).Count();
-            OutPut.SteelWithoutLegs_CapsuleCount = UsedSitesInCivils.Where(x => x.civilWithoutLegId != null ?
+                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Monopole.ToString().ToLower() : false) : false);
+            OutPut.SteelWithoutLegs_CapsuleCount = UsedSitesInCivils.Count(x => x.civilWithoutLegId != null ?
                (x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId != null ?
-                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Capsule.ToString().ToLower() : false) : false).Count();
-            OutPut.NonSteelCount = UsedSitesInCivils.Where(x => x.civilNonSteelId != null).Count();
+                x.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == Helpers.Constants.CivilWithoutLegCategories.Capsule.ToString().ToLower() : false) : false);
+            OutPut.NonSteelCount = UsedSitesInCivils.Count(x => x.civilNonSteelId != null);
 
-            List<TLIallOtherInventoryInst> UsedSitesInOtherInventories = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
-            && !x.Dismantle && x.allOtherInventoryInst.Draft == false, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet
-            , x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator).Select(x => x.allOtherInventoryInst).ToList();
+            IQueryable<TLIallOtherInventoryInst> UsedSitesInOtherInventories = _unitOfWork.OtherInSiteRepository
+              .GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
+                  && !x.Dismantle && x.allOtherInventoryInst.Draft == false, x => x.allOtherInventoryInst,
+                  x => x.allOtherInventoryInst.cabinet, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator)
+              .Select(x => x.allOtherInventoryInst)
+              .AsQueryable();
 
-
-
-            OutPut.CabinetPowerCount = UsedSitesInOtherInventories.Where(x => x.cabinetId != null ?
-                x.cabinet.CabinetPowerLibraryId != null : false).Count();
-            OutPut.CabinetTelecomCount = UsedSitesInOtherInventories.Where(x => x.cabinetId != null ?
-                x.cabinet.CabinetTelecomLibraryId != null : false).Count();
-            OutPut.SolarCount = UsedSitesInOtherInventories.Where(x => x.solarId != null).Count();
-            OutPut.GeneratorCount = UsedSitesInOtherInventories.Where(x => x.generatorId != null).Count();
+            OutPut.CabinetPowerCount = UsedSitesInOtherInventories.Count(x => x.cabinetId != null ?
+                x.cabinet.CabinetPowerLibraryId != null : false);
+            OutPut.CabinetTelecomCount = UsedSitesInOtherInventories.Count(x => x.cabinetId != null ?
+                x.cabinet.CabinetTelecomLibraryId != null : false);
+            OutPut.SolarCount = UsedSitesInOtherInventories.Count(x => x.solarId != null);
+            OutPut.GeneratorCount = UsedSitesInOtherInventories.Count(x => x.generatorId != null);
 
             return new Response<ItemsOnSite>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
