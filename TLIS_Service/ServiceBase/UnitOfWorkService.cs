@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -79,8 +80,9 @@ namespace TLIS_Service.ServiceBase
         IHostingEnvironment _hostingEnvironment;
         IMapper _mapper;
         IServiceProvider Services;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config, IServiceCollection services, ApplicationDbContext _context,
-            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider)
+            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
         {
             db = _context;
             _config = config;
@@ -89,6 +91,7 @@ namespace TLIS_Service.ServiceBase
             _hostingEnvironment = hostingEnvironment;
             _mapper = mapper;
             Services=serviceProvider;
+            _httpContextAccessor = httpContextAccessor;
         }
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config)
         {
@@ -326,7 +329,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_TokenService == null)
-                    _TokenService = new TokenService(_unitOfWork, _config, _mapper, db);
+                    _TokenService = new TokenService(_unitOfWork, _config, _mapper, db, _httpContextAccessor);
                 return _TokenService;
             }
         }
