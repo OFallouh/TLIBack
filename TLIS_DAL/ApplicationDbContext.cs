@@ -10,6 +10,7 @@ using Toolbelt.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Xml;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
+using WF_API.Model;
 
 namespace TLIS_DAL
 {
@@ -17,7 +18,7 @@ namespace TLIS_DAL
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         { }
-
+        public virtual DbSet<TLIsession> TLIsession { get; set; }
         public virtual DbSet<TLIarea> TLIarea { get; set; }
         public virtual DbSet<TLIasType> TLIasType { get; set; }
         public virtual DbSet<TLIattributeActivated> TLIattributeActivated { get; set; }
@@ -166,8 +167,32 @@ namespace TLIS_DAL
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
         public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW{ get; set; }
+        public virtual DbSet<T_WF_PHASE_ACTION> T_WF_PHASE_ACTIONS { get; set; }
+        public virtual DbSet<T_WF_META_LINK> T_WF_META_LINKS { get; set; }
+        public virtual DbSet<T_WF_TASK> T_WF_TASKS { get; set; }
+        public virtual DbSet<T_WF_DELEGATION> T_WF_DELEGATIONS { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<T_WF_TEMPLATE>()
+                    .HasOne(m => m.EscalationMailTemplate)
+                    .WithMany(t => t.ESCALATION_TEMPLATES)
+                    .HasForeignKey(m => m.EscalationMailTemplateId);
+
+            builder.Entity<T_WF_TEMPLATE>()
+                    .HasOne(m => m.ReminderMailTemplate)
+                    .WithMany(t => t.REMINDER_TEMPLATES)
+                    .HasForeignKey(m => m.ReminderMailTemplateId);
+
+
+            builder.Entity<T_WF_LINK>()
+               .HasOne(l => l.CurrentPhase)
+               .WithMany(p => p.WF_LINKCURRENTS)
+               .HasForeignKey(l => l.CurrentPhaseId);
+
+            builder.Entity<T_WF_LINK>()
+                        .HasOne(l => l.NextPhase)
+                        .WithMany(p => p.WF_LINKNEXTS)
+                        .HasForeignKey(l => l.NextPhaseId);
 
             builder.Entity<TLIsite>()
                 .HasOne(e => e.Region)
@@ -225,6 +250,8 @@ namespace TLIS_DAL
                 cn.HasNoKey();
                 cn.ToView("CIVIL_NONSTEEL_VIEW");
             });
+
+            builder.Entity<TLIsession>();
 
             builder.Entity<TLIuser_Permissions>(entity =>
             {

@@ -326,7 +326,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_TokenService == null)
-                    _TokenService = new TokenService(_unitOfWork, _config, _mapper);
+                    _TokenService = new TokenService(_unitOfWork, _config, _mapper, db);
                 return _TokenService;
             }
         }

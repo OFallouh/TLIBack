@@ -21,9 +21,11 @@ using TLIS_Service.ServiceBase;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_PortDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
+using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
@@ -20,8 +21,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Transactions;
+using TLIS_DAL;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
+using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.LegDTOs;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
@@ -37,12 +40,16 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IConfiguration _config;
         private IMapper _mapper;
+        ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TokenService(IUnitOfWork unitOfWork, IConfiguration config, IMapper mapper)
+        public TokenService(IUnitOfWork unitOfWork, IConfiguration config, IMapper mapper, ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _context = context;
             _unitOfWork = unitOfWork;
             _config = config;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor; 
         }
         //Function to authenticate login
         public UserViewModel Authenticate(LoginViewModel login, out string ErrorMessage, string domain, string domainGroup)
@@ -68,7 +75,7 @@ namespace TLIS_Service.Services
             var token = new JwtSecurityToken("https://localhost:44311/",
               "https://localhost:44311/",
               claims,
-              expires: DateTime.Now.AddMinutes(30),
+              expires: DateTime.Now.AddMinutes(Convert.ToInt32(_config["expireToken"])),
               signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -155,9 +162,35 @@ namespace TLIS_Service.Services
                                 if (user != null)
                                 {
                                     var tokenString = BuildToken(user, secretKey);
+                                    var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
+                                    var session=_context.TLIsession.FirstOrDefault(x=>x.UserId==user.Id);
+                                    if (session == null)
+                                    {
+                                        TLIsession tLIsession = new TLIsession()
+                                        {
+                                            UserId = user.Id,
+                                            Token = tokenString,
+                                            IP= clientIpAddress,
+                                            LoginDate = DateTime.Now 
+                                        };
+                                        _context.TLIsession.Add(tLIsession);
+                                        _context.SaveChanges();
+                                       
+                                    }
+                                    else
+                                    {
+                                        TLIsession tLIsession = new TLIsession()
+                                        {
+                                            UserId = user.Id,
+                                            Token = tokenString,
+                                            IP = clientIpAddress,
+                                            LoginDate = DateTime.Now
+                                        };
+                                        _context.TLIsession.Update(tLIsession);
+                                        _context.SaveChanges();
+                                    }
                                     return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
-                                } }
+                            }   }
                         }
 
                     } 
@@ -224,35 +257,43 @@ namespace TLIS_Service.Services
             }
             return response;
         }
-        //string key = "9443a09ae2e433750868beaeec0fd681";
-        //public static string Encrypt(string plainText, string key)
-        //{
-        //    using (Aes aesAlg = Aes.Create())
-        //    {
-        //        string iv = "abcdefghijklmnopq";
-        //        aesAlg.Key = Encoding.UTF8.GetBytes(key);
-        //        aesAlg.IV = Encoding.UTF8.GetBytes(iv);
-        //        aesAlg.Mode = CipherMode.ECB;
-        //        aesAlg.Padding = PaddingMode.PKCS7;
+        public Response<string> Logout(int UserId)
+        {
+            var session = _context.TLIsession.FirstOrDefault(x => x.UserId == UserId);
+            _context.TLIsession.Remove(session);
+            _context.SaveChanges();
+            return new Response<string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-        //        ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+        }
+            //string key = "9443a09ae2e433750868beaeec0fd681";
+            //public static string Encrypt(string plainText, string key)
+            //{
+            //    using (Aes aesAlg = Aes.Create())
+            //    {
+            //        string iv = "abcdefghijklmnopq";
+            //        aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            //        aesAlg.IV = Encoding.UTF8.GetBytes(iv);
+            //        aesAlg.Mode = CipherMode.ECB;
+            //        aesAlg.Padding = PaddingMode.PKCS7;
 
-        //        using (MemoryStream msEncrypt = new MemoryStream())
-        //        {
-        //            using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-        //            {
-        //                using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-        //                {
-        //                    swEncrypt.Write(plainText);
-        //                }
-        //            }
+            //        ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-        //            return Convert.ToBase64String(msEncrypt.ToArray());
-        //        }
-        //    }
-        //}
-      
-        public static string Decrypt(string encryptedText)
+            //        using (MemoryStream msEncrypt = new MemoryStream())
+            //        {
+            //            using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+            //            {
+            //                using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+            //                {
+            //                    swEncrypt.Write(plainText);
+            //                }
+            //            }
+
+            //            return Convert.ToBase64String(msEncrypt.ToArray());
+            //        }
+            //    }
+            //}
+
+            public static string Decrypt(string encryptedText)
             {
             using (Aes aesAlg = Aes.Create())
             {

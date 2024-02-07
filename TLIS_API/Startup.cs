@@ -42,6 +42,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using TLIS_API.Middleware.ActionFilters;
 using Microsoft.Extensions.Hosting;
+using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API
 {
@@ -117,6 +118,7 @@ namespace TLIS_API
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<LogFilterAttribute>();
             services.AddScoped<ExternalSystemFilter>();
+            services.AddScoped<WorkFlowMiddleware>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
