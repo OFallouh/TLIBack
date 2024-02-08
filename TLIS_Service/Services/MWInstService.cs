@@ -45,6 +45,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using AutoMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TLIS_Service.Services
 {
@@ -2722,6 +2723,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
                             else if (LoadSubType.TLImwBU.ToString() == TableName)
                             {
@@ -2840,11 +2842,13 @@ namespace TLIS_Service.Services
 
                                     }
                                     //AddHistory(addMW_BU.ticketAtt, Id, "Insert");
+                                   
                                 }
                                 else
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
                             else if (LoadSubType.TLImwDish.ToString() == TableName)
                             {
@@ -2971,6 +2975,7 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwDish.Id);
                                     }
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
                             else if (LoadSubType.TLImwRFU.ToString() == TableName)
                             {
@@ -3027,6 +3032,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                             }
                             else if (LoadSubType.TLImwOther.ToString() == TableName)
@@ -3097,6 +3103,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
 
                             transaction.Complete();
@@ -3122,375 +3129,384 @@ namespace TLIS_Service.Services
         //Update dynamic attributes
         public async Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int TaskId)
         {
-            try
+            using (TransactionScope transactionScope = new TransactionScope())
             {
-                int TableNameId = 0;
-                if (LoadSubType.TLImwODU.ToString() == TableName)
+                try
                 {
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwODU.ToString().ToLower()).Id;
-                    EditMW_ODUViewModel MW_ODUViewModel = _mapper.Map<EditMW_ODUViewModel>(MWInstallationViewModel);
+                    int TableNameId = 0;
+                    if (LoadSubType.TLImwODU.ToString() == TableName)
+                    {
+                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwODU.ToString().ToLower()).Id;
+                        EditMW_ODUViewModel MW_ODUViewModel = _mapper.Map<EditMW_ODUViewModel>(MWInstallationViewModel);
 
-                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                        x.allLoadInst.mwODUId == MW_ODUViewModel.Id : false), x => x.allLoadInst);
+                        TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+                            x.allLoadInst.mwODUId == MW_ODUViewModel.Id : false), x => x.allLoadInst);
 
-                    string SiteCode = "";
+                        string SiteCode = "";
 
-                    if (CivilLoads != null)
-                        SiteCode = CivilLoads.SiteCode;
+                        if (CivilLoads != null)
+                            SiteCode = CivilLoads.SiteCode;
 
-                    else
-                        SiteCode = null;
+                        else
+                            SiteCode = null;
 
-                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwODUId != MW_ODUViewModel.Id && (x.allLoadInstId != null ?
-                        !x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ? x.allLoadInst.mwODU.Name.ToLower() == MW_ODUViewModel.Name.ToLower() : false) : false) &&
-                        x.SiteCode.ToLower() == SiteCode.ToLower(),
-                            x => x.allLoadInst, x => x.allLoadInst.mwODU);
+                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwODUId != MW_ODUViewModel.Id && (x.allLoadInstId != null ?
+                            !x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ? x.allLoadInst.mwODU.Name.ToLower() == MW_ODUViewModel.Name.ToLower() : false) : false) &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwODU);
 
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_ODUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_ODUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
 
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_ODUViewModel.DynamicInstAttsValue, TableName);
+                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_ODUViewModel.DynamicInstAttsValue, TableName);
 
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
 
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                    TLImwODU mwODU = _mapper.Map<TLImwODU>(MW_ODUViewModel);
-                    TLImwODU OldMW_ODUViewModel = _unitOfWork.MW_ODURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_ODUViewModel.Id);
+                        TLImwODU mwODU = _mapper.Map<TLImwODU>(MW_ODUViewModel);
+                        TLImwODU OldMW_ODUViewModel = _unitOfWork.MW_ODURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_ODUViewModel.Id);
 
-                    _unitOfWork.MW_ODURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_ODUViewModel, mwODU);
-                    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwODUId == MW_ODUViewModel.Id).Id;
-                    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    CivilLoads.InstallationDate = MW_ODUViewModel.TLIcivilLoads.InstallationDate;
-                    CivilLoads.ItemOnCivilStatus = MW_ODUViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                    CivilLoads.ItemStatus = MW_ODUViewModel.TLIcivilLoads.ItemStatus;
-                    CivilLoads.ReservedSpace = MW_ODUViewModel.TLIcivilLoads.ReservedSpace;
-                    CivilLoads.sideArmId = MW_ODUViewModel.TLIcivilLoads.sideArmId;
-                    CivilLoads.allCivilInstId = MW_ODUViewModel.TLIcivilLoads.allCivilInstId;
-                    CivilLoads.legId = MW_ODUViewModel.TLIcivilLoads.legId;
-                    CivilLoads.Leg2Id = MW_ODUViewModel.TLIcivilLoads.Leg2Id;
+                        _unitOfWork.MW_ODURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_ODUViewModel, mwODU);
+                        var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwODUId == MW_ODUViewModel.Id).Id;
+                        var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+                        CivilLoads.InstallationDate = MW_ODUViewModel.TLIcivilLoads.InstallationDate;
+                        CivilLoads.ItemOnCivilStatus = MW_ODUViewModel.TLIcivilLoads.ItemOnCivilStatus;
+                        CivilLoads.ItemStatus = MW_ODUViewModel.TLIcivilLoads.ItemStatus;
+                        CivilLoads.ReservedSpace = MW_ODUViewModel.TLIcivilLoads.ReservedSpace;
+                        CivilLoads.sideArmId = MW_ODUViewModel.TLIcivilLoads.sideArmId;
+                        CivilLoads.allCivilInstId = MW_ODUViewModel.TLIcivilLoads.allCivilInstId;
+                        CivilLoads.legId = MW_ODUViewModel.TLIcivilLoads.legId;
+                        CivilLoads.Leg2Id = MW_ODUViewModel.TLIcivilLoads.Leg2Id;
 
-                    _unitOfWork.SaveChanges();
-                    if (MW_ODUViewModel.DynamicInstAttsValue != null ? MW_ODUViewModel.DynamicInstAttsValue.Count() > 0 : false)
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_ODUViewModel.DynamicInstAttsValue, TableNameId, mwODU.Id);
+                        _unitOfWork.SaveChanges();
+                        if (MW_ODUViewModel.DynamicInstAttsValue != null ? MW_ODUViewModel.DynamicInstAttsValue.Count() > 0 : false)
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_ODUViewModel.DynamicInstAttsValue, TableNameId, mwODU.Id);
 
-                    await _unitOfWork.SaveChangesAsync();
+                        await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
+                    else if (LoadSubType.TLImwBU.ToString() == TableName)
+                    {
+                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwBU.ToString().ToLower()).Id;
+                        EditMW_BUViewModel MW_BUViewModel = _mapper.Map<EditMW_BUViewModel>(MWInstallationViewModel);
+
+                        TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+                            x.allLoadInst.mwBUId == MW_BUViewModel.Id : false), x => x.allLoadInst);
+
+                        string SiteCode = "";
+
+                        if (CivilLoads != null)
+                            SiteCode = CivilLoads.SiteCode;
+
+                        else
+                            SiteCode = null;
+
+                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwBUId != MW_BUViewModel.Id && (x.allLoadInstId != null ?
+                            !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.Name.ToLower() == MW_BUViewModel.Name.ToLower() : false) : false) &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwBU);
+
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_BUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_BUViewModel.DynamicInstAttsValue, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                        TLImwBU mwBU = _mapper.Map<TLImwBU>(MW_BUViewModel);
+                        var mw_BUInst = _unitOfWork.MW_BURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_BUViewModel.Id);
+                        if (mwBU.HBA == mw_BUInst.HBA && mwBU.CenterHigh == mw_BUInst.CenterHigh && mwBU.SpaceInstallation == mw_BUInst.SpaceInstallation && mwBU.Azimuth != mw_BUInst.Azimuth && MW_BUViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_BUViewModel.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
+                            if (message != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+                            }
+                        }
+                        if (mwBU.HBA != mw_BUInst.HBA || mwBU.CenterHigh != mw_BUInst.CenterHigh || mwBU.SpaceInstallation != mw_BUInst.SpaceInstallation && MW_BUViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var mwBULibrary = _dbContext.TLImwBULibrary.Where(x => x.Id == mwBU.MwBULibraryId).FirstOrDefault();
+                            if (mwBU.CenterHigh == 0 || mwBU.CenterHigh == null)
+                            {
+                                mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                            }
+                            var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_BUViewModel.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
+                            if (message != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+                            }
+                            if (MW_BUViewModel.TLIcivilLoads.ReservedSpace == true && (MW_BUViewModel.TLIcivilLoads.sideArmId == null || MW_BUViewModel.TLIcivilLoads.sideArmId == 0))
+                            {
+                                mwBU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_BUViewModel.TLIcivilLoads.allCivilInstId, TableName, mwBU.SpaceInstallation, mwBU.CenterHigh, mwBU.MwBULibraryId, mwBU.HBA).Data;
+                            }
+                        }
+                        _unitOfWork.MW_BURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, mw_BUInst, mwBU);
+                        var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwBUId == MW_BUViewModel.Id).Id;
+                        var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+                        CivilLoads.InstallationDate = MW_BUViewModel.TLIcivilLoads.InstallationDate;
+                        CivilLoads.ItemOnCivilStatus = MW_BUViewModel.TLIcivilLoads.ItemOnCivilStatus;
+                        CivilLoads.ItemStatus = MW_BUViewModel.TLIcivilLoads.ItemStatus;
+                        CivilLoads.ReservedSpace = MW_BUViewModel.TLIcivilLoads.ReservedSpace;
+                        CivilLoads.sideArmId = MW_BUViewModel.TLIcivilLoads.sideArmId;
+                        CivilLoads.allCivilInstId = MW_BUViewModel.TLIcivilLoads.allCivilInstId;
+                        CivilLoads.legId = MW_BUViewModel.TLIcivilLoads.legId;
+                        CivilLoads.Leg2Id = MW_BUViewModel.TLIcivilLoads.Leg2Id;
+
+                        _unitOfWork.SaveChanges();
+                        if (MW_BUViewModel.DynamicInstAttsValue != null ? MW_BUViewModel.DynamicInstAttsValue.Count > 0 : false)
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_BUViewModel.DynamicInstAttsValue, TableNameId, mwBU.Id);
+
+                        await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
+                    else if (LoadSubType.TLImwDish.ToString() == TableName)
+                    {
+                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
+                        EditMW_DishViewModel MW_DishViewModel = _mapper.Map<EditMW_DishViewModel>(MWInstallationViewModel);
+
+                        TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+                            x.allLoadInst.mwDishId == MW_DishViewModel.Id : false), x => x.allLoadInst);
+
+                        string SiteCode = "";
+
+                        if (CivilLoads != null)
+                            SiteCode = CivilLoads.SiteCode;
+
+                        else
+                            SiteCode = null;
+
+                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwDishId != MW_DishViewModel.Id && (x.allLoadInstId != null ?
+                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == MW_DishViewModel.DishName.ToLower() : false) : false) &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_DishViewModel.DishName}] is already exists", (int)ApiReturnCode.fail);
+
+                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_DishViewModel.DynamicInstAttsValue, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                        TLImwDish mwDish = _mapper.Map<TLImwDish>(MW_DishViewModel);
+                        TLImwDish OldMW_DishViewModel = _unitOfWork.MW_DishRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_DishViewModel.Id);
+                        if (mwDish.HBA == OldMW_DishViewModel.HBA && mwDish.CenterHigh == OldMW_DishViewModel.CenterHigh && mwDish.SpaceInstallation == OldMW_DishViewModel.SpaceInstallation && mwDish.Azimuth != OldMW_DishViewModel.Azimuth && MW_DishViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_DishViewModel.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
+                            if (message != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+                            }
+                        }
+                        if (mwDish.HBA != OldMW_DishViewModel.HBA || mwDish.CenterHigh != OldMW_DishViewModel.CenterHigh || mwDish.SpaceInstallation != OldMW_DishViewModel.SpaceInstallation && MW_DishViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var mwDishLibrary = _dbContext.TLImwDishLibrary.Where(x => x.Id == mwDish.MwDishLibraryId).FirstOrDefault();
+                            if (mwDish.CenterHigh == 0 || mwDish.CenterHigh == null)
+                            {
+                                mwDish.CenterHigh = mwDish.HBA + mwDishLibrary.Length / 2;
+                            }
+                            var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_DishViewModel.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
+                            if (message != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+                            }
+                            if (MW_DishViewModel.TLIcivilLoads.ReservedSpace == true && (MW_DishViewModel.TLIcivilLoads.sideArmId == null || MW_DishViewModel.TLIcivilLoads.sideArmId == 0))
+                            {
+                                mwDish.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_DishViewModel.TLIcivilLoads.allCivilInstId, TableName, mwDish.SpaceInstallation, mwDish.CenterHigh, mwDish.MwDishLibraryId, mwDish.HBA).Data;
+                            }
+                        }
+                        _unitOfWork.MW_DishRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_DishViewModel, mwDish);
+                        var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwDishId == MW_DishViewModel.Id).Id;
+                        var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+                        CivilLoads.InstallationDate = MW_DishViewModel.TLIcivilLoads.InstallationDate;
+                        CivilLoads.ItemOnCivilStatus = MW_DishViewModel.TLIcivilLoads.ItemOnCivilStatus;
+                        CivilLoads.ItemStatus = MW_DishViewModel.TLIcivilLoads.ItemStatus;
+                        CivilLoads.ReservedSpace = MW_DishViewModel.TLIcivilLoads.ReservedSpace;
+                        CivilLoads.sideArmId = MW_DishViewModel.TLIcivilLoads.sideArmId;
+                        CivilLoads.allCivilInstId = MW_DishViewModel.TLIcivilLoads.allCivilInstId;
+                        CivilLoads.legId = MW_DishViewModel.TLIcivilLoads.legId;
+                        CivilLoads.Leg2Id = MW_DishViewModel.TLIcivilLoads.Leg2Id;
+
+                        _unitOfWork.SaveChanges();
+                        if (MW_DishViewModel.DynamicInstAttsValue != null ? MW_DishViewModel.DynamicInstAttsValue.Count > 0 : false)
+                        {
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_DishViewModel.DynamicInstAttsValue, TableNameId, mwDish.Id);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
+                    else if (LoadSubType.TLImwRFU.ToString() == TableName)
+                    {
+                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower()).Id;
+                        EditMW_RFUViewModel MW_RFUViewModel = _mapper.Map<EditMW_RFUViewModel>(MWInstallationViewModel);
+
+                        TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+                            x.allLoadInst.mwRFUId == MW_RFUViewModel.Id : false), x => x.allLoadInst);
+
+                        string SiteCode = "";
+
+                        if (CivilLoads != null)
+                            SiteCode = CivilLoads.SiteCode;
+
+                        else
+                            SiteCode = null;
+
+                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwRFUId != MW_RFUViewModel.Id && (x.allLoadInstId != null ?
+                            !x.allLoadInst.Draft && (x.allLoadInst.mwRFUId != null ? x.allLoadInst.mwRFU.Name.ToLower() == MW_RFUViewModel.Name.ToLower() : false) : false) &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwRFU);
+
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_RFUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_RFUViewModel.DynamicInstAttsValue, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                        TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(MW_RFUViewModel);
+                        TLImwRFU OldMW_RFUViewModel = _unitOfWork.MW_RFURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_RFUViewModel.Id);
+                        if (mwRFU.HBA == OldMW_RFUViewModel.HBA && mwRFU.CenterHigh == OldMW_RFUViewModel.CenterHigh && mwRFU.SpaceInstallation == OldMW_RFUViewModel.SpaceInstallation && mwRFU.Azimuth != OldMW_RFUViewModel.Azimuth && MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, 0, mwRFU.Azimuth, mwRFU.CenterHigh).Message;
+                            if (message != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+                            }
+                        }
+                        if (mwRFU.HBA != OldMW_RFUViewModel.HBA || mwRFU.CenterHigh != OldMW_RFUViewModel.CenterHigh || mwRFU.SpaceInstallation != OldMW_RFUViewModel.SpaceInstallation && MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var mwRFULibrary = _dbContext.TLImwRFULibrary.Where(x => x.Id == mwRFU.MwRFULibraryId).FirstOrDefault();
+                            if (mwRFU.CenterHigh == 0 || mwRFU.CenterHigh == null)
+                            {
+                                mwRFU.CenterHigh = mwRFU.HBA + mwRFULibrary.Length / 2;
+                            }
+                            var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, 0, mwRFU.Azimuth, mwRFU.CenterHigh).Message;
+                            if (message != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
+                            }
+                            if (MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true && (MW_RFUViewModel.TLIcivilLoads.sideArmId == null || MW_RFUViewModel.TLIcivilLoads.sideArmId == 0))
+                            {
+                                mwRFU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, TableName, mwRFU.SpaceInstallation, mwRFU.CenterHigh, mwRFU.MwRFULibraryId, mwRFU.HBA).Data;
+                            }
+                        }
+                        _unitOfWork.MW_RFURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_RFUViewModel, mwRFU);
+                        var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwRFUId == MW_RFUViewModel.Id).Id;
+                        var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+                        CivilLoads.InstallationDate = MW_RFUViewModel.TLIcivilLoads.InstallationDate;
+                        CivilLoads.ItemOnCivilStatus = MW_RFUViewModel.TLIcivilLoads.ItemOnCivilStatus;
+                        CivilLoads.ItemStatus = MW_RFUViewModel.TLIcivilLoads.ItemStatus;
+                        CivilLoads.ReservedSpace = MW_RFUViewModel.TLIcivilLoads.ReservedSpace;
+                        CivilLoads.sideArmId = MW_RFUViewModel.TLIcivilLoads.sideArmId;
+                        CivilLoads.allCivilInstId = MW_RFUViewModel.TLIcivilLoads.allCivilInstId;
+                        CivilLoads.legId = MW_RFUViewModel.TLIcivilLoads.legId;
+                        CivilLoads.Leg2Id = MW_RFUViewModel.TLIcivilLoads.Leg2Id;
+
+                        _unitOfWork.SaveChanges();
+                        if (MW_RFUViewModel.DynamicInstAttsValue.Count > 0)
+                        {
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_RFUViewModel.DynamicInstAttsValue, TableNameId, mwRFU.Id);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
+                    else if (LoadSubType.TLImwOther.ToString() == TableName)
+                    {
+                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwOther.ToString().ToLower()).Id;
+                        EditMw_OtherViewModel Mw_OtherViewModel = _mapper.Map<EditMw_OtherViewModel>(MWInstallationViewModel);
+
+                        TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
+                            x.allLoadInst.mwOtherId == Mw_OtherViewModel.Id : false), x => x.allLoadInst);
+
+                        string SiteCode = "";
+
+                        if (CivilLoads != null)
+                            SiteCode = CivilLoads.SiteCode;
+
+                        else
+                            SiteCode = null;
+
+                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwOtherId != Mw_OtherViewModel.Id && (x.allLoadInstId != null ?
+                            !x.allLoadInst.Draft && (x.allLoadInst.mwOtherId != null ? x.allLoadInst.mwOther.Name.ToLower() == Mw_OtherViewModel.Name.ToLower() : false) : false) &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwOther);
+
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(true, null, null, $"This name [{Mw_OtherViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
+
+                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(Mw_OtherViewModel.DynamicInstAttsValue, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
+
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                        TLImwOther mwOther = _mapper.Map<TLImwOther>(Mw_OtherViewModel);
+                        TLImwOther OldMw_OtherViewModel = _unitOfWork.Mw_OtherRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Mw_OtherViewModel.Id);
+                        if (mwOther.HBA != OldMw_OtherViewModel.HBA || mwOther.CenterHigh != OldMw_OtherViewModel.CenterHigh || mwOther.Spaceinstallation != OldMw_OtherViewModel.Spaceinstallation && Mw_OtherViewModel.TLIcivilLoads.ReservedSpace == true)
+                        {
+                            var mwOtherLibrary = _dbContext.TLImwOtherLibrary.Where(x => x.Id == mwOther.mwOtherLibraryId).FirstOrDefault();
+                            if (mwOther.CenterHigh == 0 || mwOther.CenterHigh == null)
+                            {
+                                mwOther.CenterHigh = mwOther.HBA + mwOtherLibrary.Length / 2;
+                            }
+                            if (Mw_OtherViewModel.TLIcivilLoads.ReservedSpace == true && (Mw_OtherViewModel.TLIcivilLoads.sideArmId == null || Mw_OtherViewModel.TLIcivilLoads.sideArmId == 0))
+                            {
+                                mwOther.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(Mw_OtherViewModel.TLIcivilLoads.allCivilInstId, TableName, mwOther.Spaceinstallation, mwOther.CenterHigh, mwOther.mwOtherLibraryId, mwOther.HBA).Data;
+                            }
+                        }
+                        _unitOfWork.Mw_OtherRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMw_OtherViewModel, mwOther);
+                        var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwOtherId == Mw_OtherViewModel.Id).Id;
+                        var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
+                        CivilLoads.InstallationDate = Mw_OtherViewModel.TLIcivilLoads.InstallationDate;
+                        CivilLoads.ItemOnCivilStatus = Mw_OtherViewModel.TLIcivilLoads.ItemOnCivilStatus;
+                        CivilLoads.ItemStatus = Mw_OtherViewModel.TLIcivilLoads.ItemStatus;
+                        CivilLoads.ReservedSpace = Mw_OtherViewModel.TLIcivilLoads.ReservedSpace;
+                        CivilLoads.sideArmId = Mw_OtherViewModel.TLIcivilLoads.sideArmId;
+                        CivilLoads.allCivilInstId = Mw_OtherViewModel.TLIcivilLoads.allCivilInstId;
+                        CivilLoads.legId = Mw_OtherViewModel.TLIcivilLoads.legId;
+                        CivilLoads.Leg2Id = Mw_OtherViewModel.TLIcivilLoads.Leg2Id;
+
+                        _unitOfWork.SaveChanges();
+                        if (Mw_OtherViewModel.DynamicInstAttsValue.Count > 0)
+                        {
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(Mw_OtherViewModel.DynamicInstAttsValue, TableNameId, mwOther.Id);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
+                    transactionScope.Complete();
+                    return new Response<ObjectInstAtts>();
                 }
-                else if (LoadSubType.TLImwBU.ToString() == TableName)
+                catch (Exception err)
                 {
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwBU.ToString().ToLower()).Id;
-                    EditMW_BUViewModel MW_BUViewModel = _mapper.Map<EditMW_BUViewModel>(MWInstallationViewModel);
-
-                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                        x.allLoadInst.mwBUId == MW_BUViewModel.Id : false), x => x.allLoadInst);
-
-                    string SiteCode = "";
-
-                    if (CivilLoads != null)
-                        SiteCode = CivilLoads.SiteCode;
-
-                    else
-                        SiteCode = null;
-
-                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwBUId != MW_BUViewModel.Id && (x.allLoadInstId != null ?
-                        !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.Name.ToLower() == MW_BUViewModel.Name.ToLower() : false) : false) &&
-                        x.SiteCode.ToLower() == SiteCode.ToLower(),
-                            x => x.allLoadInst, x => x.allLoadInst.mwBU);
-
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_BUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
-
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_BUViewModel.DynamicInstAttsValue, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                    TLImwBU mwBU = _mapper.Map<TLImwBU>(MW_BUViewModel);
-                    var mw_BUInst = _unitOfWork.MW_BURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_BUViewModel.Id);
-                    if (mwBU.HBA == mw_BUInst.HBA && mwBU.CenterHigh == mw_BUInst.CenterHigh && mwBU.SpaceInstallation == mw_BUInst.SpaceInstallation && mwBU.Azimuth != mw_BUInst.Azimuth && MW_BUViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_BUViewModel.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
-                        if (message != "Success")
-                        {
-                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                        }
-                    }
-                    if (mwBU.HBA != mw_BUInst.HBA || mwBU.CenterHigh != mw_BUInst.CenterHigh || mwBU.SpaceInstallation != mw_BUInst.SpaceInstallation && MW_BUViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var mwBULibrary = _dbContext.TLImwBULibrary.Where(x => x.Id == mwBU.MwBULibraryId).FirstOrDefault();
-                        if (mwBU.CenterHigh == 0 || mwBU.CenterHigh == null)
-                        {
-                            mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
-                        }
-                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_BUViewModel.TLIcivilLoads.allCivilInstId, 0, mwBU.Azimuth, mwBU.CenterHigh).Message;
-                        if (message != "Success")
-                        {
-                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                        }
-                        if (MW_BUViewModel.TLIcivilLoads.ReservedSpace == true && (MW_BUViewModel.TLIcivilLoads.sideArmId == null || MW_BUViewModel.TLIcivilLoads.sideArmId == 0))
-                        {
-                            mwBU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_BUViewModel.TLIcivilLoads.allCivilInstId, TableName, mwBU.SpaceInstallation, mwBU.CenterHigh, mwBU.MwBULibraryId, mwBU.HBA).Data;
-                        }
-                    }
-                    _unitOfWork.MW_BURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, mw_BUInst, mwBU);
-                    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwBUId == MW_BUViewModel.Id).Id;
-                    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    CivilLoads.InstallationDate = MW_BUViewModel.TLIcivilLoads.InstallationDate;
-                    CivilLoads.ItemOnCivilStatus = MW_BUViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                    CivilLoads.ItemStatus = MW_BUViewModel.TLIcivilLoads.ItemStatus;
-                    CivilLoads.ReservedSpace = MW_BUViewModel.TLIcivilLoads.ReservedSpace;
-                    CivilLoads.sideArmId = MW_BUViewModel.TLIcivilLoads.sideArmId;
-                    CivilLoads.allCivilInstId = MW_BUViewModel.TLIcivilLoads.allCivilInstId;
-                    CivilLoads.legId = MW_BUViewModel.TLIcivilLoads.legId;
-                    CivilLoads.Leg2Id = MW_BUViewModel.TLIcivilLoads.Leg2Id;
-
-                    _unitOfWork.SaveChanges();
-                    if (MW_BUViewModel.DynamicInstAttsValue != null ? MW_BUViewModel.DynamicInstAttsValue.Count > 0 : false)
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_BUViewModel.DynamicInstAttsValue, TableNameId, mwBU.Id);
-
-                    await _unitOfWork.SaveChangesAsync();
+                    return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                 }
-                else if (LoadSubType.TLImwDish.ToString() == TableName)
-                {
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
-                    EditMW_DishViewModel MW_DishViewModel = _mapper.Map<EditMW_DishViewModel>(MWInstallationViewModel);
-
-                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                        x.allLoadInst.mwDishId == MW_DishViewModel.Id : false), x => x.allLoadInst);
-
-                    string SiteCode = "";
-
-                    if (CivilLoads != null)
-                        SiteCode = CivilLoads.SiteCode;
-
-                    else
-                        SiteCode = null;
-
-                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwDishId != MW_DishViewModel.Id && (x.allLoadInstId != null ?
-                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == MW_DishViewModel.DishName.ToLower() : false) : false) &&
-                        x.SiteCode.ToLower() == SiteCode.ToLower(),
-                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
-
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_DishViewModel.DishName}] is already exists", (int)ApiReturnCode.fail);
-
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_DishViewModel.DynamicInstAttsValue, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                    TLImwDish mwDish = _mapper.Map<TLImwDish>(MW_DishViewModel);
-                    TLImwDish OldMW_DishViewModel = _unitOfWork.MW_DishRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_DishViewModel.Id);
-                    if (mwDish.HBA == OldMW_DishViewModel.HBA && mwDish.CenterHigh == OldMW_DishViewModel.CenterHigh && mwDish.SpaceInstallation == OldMW_DishViewModel.SpaceInstallation && mwDish.Azimuth != OldMW_DishViewModel.Azimuth && MW_DishViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_DishViewModel.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
-                        if (message != "Success")
-                        {
-                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                        }
-                    }
-                    if (mwDish.HBA != OldMW_DishViewModel.HBA || mwDish.CenterHigh != OldMW_DishViewModel.CenterHigh || mwDish.SpaceInstallation != OldMW_DishViewModel.SpaceInstallation && MW_DishViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var mwDishLibrary = _dbContext.TLImwDishLibrary.Where(x => x.Id == mwDish.MwDishLibraryId).FirstOrDefault();
-                        if (mwDish.CenterHigh == 0 || mwDish.CenterHigh == null)
-                        {
-                            mwDish.CenterHigh = mwDish.HBA + mwDishLibrary.Length / 2;
-                        }
-                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_DishViewModel.TLIcivilLoads.allCivilInstId, 0, mwDish.Azimuth, mwDish.CenterHigh).Message;
-                        if (message != "Success")
-                        {
-                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                        }
-                        if (MW_DishViewModel.TLIcivilLoads.ReservedSpace == true && (MW_DishViewModel.TLIcivilLoads.sideArmId == null || MW_DishViewModel.TLIcivilLoads.sideArmId == 0))
-                        {
-                            mwDish.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_DishViewModel.TLIcivilLoads.allCivilInstId, TableName, mwDish.SpaceInstallation, mwDish.CenterHigh, mwDish.MwDishLibraryId, mwDish.HBA).Data;
-                        }
-                    }
-                    _unitOfWork.MW_DishRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_DishViewModel, mwDish);
-                    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwDishId == MW_DishViewModel.Id).Id;
-                    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    CivilLoads.InstallationDate = MW_DishViewModel.TLIcivilLoads.InstallationDate;
-                    CivilLoads.ItemOnCivilStatus = MW_DishViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                    CivilLoads.ItemStatus = MW_DishViewModel.TLIcivilLoads.ItemStatus;
-                    CivilLoads.ReservedSpace = MW_DishViewModel.TLIcivilLoads.ReservedSpace;
-                    CivilLoads.sideArmId = MW_DishViewModel.TLIcivilLoads.sideArmId;
-                    CivilLoads.allCivilInstId = MW_DishViewModel.TLIcivilLoads.allCivilInstId;
-                    CivilLoads.legId = MW_DishViewModel.TLIcivilLoads.legId;
-                    CivilLoads.Leg2Id = MW_DishViewModel.TLIcivilLoads.Leg2Id;
-
-                    _unitOfWork.SaveChanges();
-                    if (MW_DishViewModel.DynamicInstAttsValue != null ? MW_DishViewModel.DynamicInstAttsValue.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_DishViewModel.DynamicInstAttsValue, TableNameId, mwDish.Id);
-                    }
-                    await _unitOfWork.SaveChangesAsync();
-                }
-                else if (LoadSubType.TLImwRFU.ToString() == TableName)
-                {
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower()).Id;
-                    EditMW_RFUViewModel MW_RFUViewModel = _mapper.Map<EditMW_RFUViewModel>(MWInstallationViewModel);
-
-                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                        x.allLoadInst.mwRFUId == MW_RFUViewModel.Id : false), x => x.allLoadInst);
-
-                    string SiteCode = "";
-
-                    if (CivilLoads != null)
-                        SiteCode = CivilLoads.SiteCode;
-
-                    else
-                        SiteCode = null;
-
-                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwRFUId != MW_RFUViewModel.Id && (x.allLoadInstId != null ?
-                        !x.allLoadInst.Draft && (x.allLoadInst.mwRFUId != null ? x.allLoadInst.mwRFU.Name.ToLower() == MW_RFUViewModel.Name.ToLower() : false) : false) &&
-                        x.SiteCode.ToLower() == SiteCode.ToLower(),
-                            x => x.allLoadInst, x => x.allLoadInst.mwRFU);
-
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(true, null, null, $"This name [{MW_RFUViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
-
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(MW_RFUViewModel.DynamicInstAttsValue, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                    TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(MW_RFUViewModel);
-                    TLImwRFU OldMW_RFUViewModel = _unitOfWork.MW_RFURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MW_RFUViewModel.Id);
-                    if (mwRFU.HBA == OldMW_RFUViewModel.HBA && mwRFU.CenterHigh == OldMW_RFUViewModel.CenterHigh && mwRFU.SpaceInstallation == OldMW_RFUViewModel.SpaceInstallation && mwRFU.Azimuth != OldMW_RFUViewModel.Azimuth && MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, 0, mwRFU.Azimuth, mwRFU.CenterHigh).Message;
-                        if (message != "Success")
-                        {
-                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                        }
-                    }
-                    if (mwRFU.HBA != OldMW_RFUViewModel.HBA || mwRFU.CenterHigh != OldMW_RFUViewModel.CenterHigh || mwRFU.SpaceInstallation != OldMW_RFUViewModel.SpaceInstallation && MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var mwRFULibrary = _dbContext.TLImwRFULibrary.Where(x => x.Id == mwRFU.MwRFULibraryId).FirstOrDefault();
-                        if (mwRFU.CenterHigh == 0 || mwRFU.CenterHigh == null)
-                        {
-                            mwRFU.CenterHigh = mwRFU.HBA + mwRFULibrary.Length / 2;
-                        }
-                        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, 0, mwRFU.Azimuth, mwRFU.CenterHigh).Message;
-                        if (message != "Success")
-                        {
-                            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                        }
-                        if (MW_RFUViewModel.TLIcivilLoads.ReservedSpace == true && (MW_RFUViewModel.TLIcivilLoads.sideArmId == null || MW_RFUViewModel.TLIcivilLoads.sideArmId == 0))
-                        {
-                            mwRFU.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(MW_RFUViewModel.TLIcivilLoads.allCivilInstId, TableName, mwRFU.SpaceInstallation, mwRFU.CenterHigh, mwRFU.MwRFULibraryId, mwRFU.HBA).Data;
-                        }
-                    }
-                    _unitOfWork.MW_RFURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_RFUViewModel, mwRFU);
-                    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwRFUId == MW_RFUViewModel.Id).Id;
-                    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    CivilLoads.InstallationDate = MW_RFUViewModel.TLIcivilLoads.InstallationDate;
-                    CivilLoads.ItemOnCivilStatus = MW_RFUViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                    CivilLoads.ItemStatus = MW_RFUViewModel.TLIcivilLoads.ItemStatus;
-                    CivilLoads.ReservedSpace = MW_RFUViewModel.TLIcivilLoads.ReservedSpace;
-                    CivilLoads.sideArmId = MW_RFUViewModel.TLIcivilLoads.sideArmId;
-                    CivilLoads.allCivilInstId = MW_RFUViewModel.TLIcivilLoads.allCivilInstId;
-                    CivilLoads.legId = MW_RFUViewModel.TLIcivilLoads.legId;
-                    CivilLoads.Leg2Id = MW_RFUViewModel.TLIcivilLoads.Leg2Id;
-
-                    _unitOfWork.SaveChanges();
-                    if (MW_RFUViewModel.DynamicInstAttsValue.Count > 0)
-                    {
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_RFUViewModel.DynamicInstAttsValue, TableNameId, mwRFU.Id);
-                    }
-                    await _unitOfWork.SaveChangesAsync();
-                }
-                else if (LoadSubType.TLImwOther.ToString() == TableName)
-                {
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwOther.ToString().ToLower()).Id;
-                    EditMw_OtherViewModel Mw_OtherViewModel = _mapper.Map<EditMw_OtherViewModel>(MWInstallationViewModel);
-
-                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                        x.allLoadInst.mwOtherId == Mw_OtherViewModel.Id : false), x => x.allLoadInst);
-
-                    string SiteCode = "";
-
-                    if (CivilLoads != null)
-                        SiteCode = CivilLoads.SiteCode;
-
-                    else
-                        SiteCode = null;
-
-                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInst.mwOtherId != Mw_OtherViewModel.Id && (x.allLoadInstId != null ?
-                        !x.allLoadInst.Draft && (x.allLoadInst.mwOtherId != null ? x.allLoadInst.mwOther.Name.ToLower() == Mw_OtherViewModel.Name.ToLower() : false) : false) &&
-                        x.SiteCode.ToLower() == SiteCode.ToLower(),
-                            x => x.allLoadInst, x => x.allLoadInst.mwOther);
-
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(true, null, null, $"This name [{Mw_OtherViewModel.Name}] is already exists", (int)ApiReturnCode.fail);
-
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(Mw_OtherViewModel.DynamicInstAttsValue, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(MWInstallationViewModel, SiteCode, TableName);
-
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                    TLImwOther mwOther = _mapper.Map<TLImwOther>(Mw_OtherViewModel);
-                    TLImwOther OldMw_OtherViewModel = _unitOfWork.Mw_OtherRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Mw_OtherViewModel.Id);
-                    if (mwOther.HBA != OldMw_OtherViewModel.HBA || mwOther.CenterHigh != OldMw_OtherViewModel.CenterHigh || mwOther.Spaceinstallation != OldMw_OtherViewModel.Spaceinstallation && Mw_OtherViewModel.TLIcivilLoads.ReservedSpace == true)
-                    {
-                        var mwOtherLibrary = _dbContext.TLImwOtherLibrary.Where(x => x.Id == mwOther.mwOtherLibraryId).FirstOrDefault();
-                        if (mwOther.CenterHigh == 0 || mwOther.CenterHigh == null)
-                        {
-                            mwOther.CenterHigh = mwOther.HBA + mwOtherLibrary.Length / 2;
-                        }
-                        if (Mw_OtherViewModel.TLIcivilLoads.ReservedSpace == true && (Mw_OtherViewModel.TLIcivilLoads.sideArmId == null || Mw_OtherViewModel.TLIcivilLoads.sideArmId == 0))
-                        {
-                            mwOther.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(Mw_OtherViewModel.TLIcivilLoads.allCivilInstId, TableName, mwOther.Spaceinstallation, mwOther.CenterHigh, mwOther.mwOtherLibraryId, mwOther.HBA).Data;
-                        }
-                    }
-                    _unitOfWork.Mw_OtherRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMw_OtherViewModel, mwOther);
-                    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.mwOtherId == Mw_OtherViewModel.Id).Id;
-                    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    CivilLoads.InstallationDate = Mw_OtherViewModel.TLIcivilLoads.InstallationDate;
-                    CivilLoads.ItemOnCivilStatus = Mw_OtherViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                    CivilLoads.ItemStatus = Mw_OtherViewModel.TLIcivilLoads.ItemStatus;
-                    CivilLoads.ReservedSpace = Mw_OtherViewModel.TLIcivilLoads.ReservedSpace;
-                    CivilLoads.sideArmId = Mw_OtherViewModel.TLIcivilLoads.sideArmId;
-                    CivilLoads.allCivilInstId = Mw_OtherViewModel.TLIcivilLoads.allCivilInstId;
-                    CivilLoads.legId = Mw_OtherViewModel.TLIcivilLoads.legId;
-                    CivilLoads.Leg2Id = Mw_OtherViewModel.TLIcivilLoads.Leg2Id;
-
-                    _unitOfWork.SaveChanges();
-                    if (Mw_OtherViewModel.DynamicInstAttsValue.Count > 0)
-                    {
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(Mw_OtherViewModel.DynamicInstAttsValue, TableNameId, mwOther.Id);
-                    }
-                    await _unitOfWork.SaveChangesAsync();
-                }
-                return new Response<ObjectInstAtts>();
-            }
-            catch (Exception err)
-            {
-                return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
         #region Helper Methods For UpdateSideArm Function..
@@ -5483,848 +5499,882 @@ namespace TLIS_Service.Services
         }
         public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            try
+            using (TransactionScope transactionScope = new TransactionScope())
             {
-                double? Freespace = 0;
-                double? EquivalentSpace = 0;
-                var allLoadInst = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == LoadId || x.mwDishId == LoadId || x.mwODUId == LoadId || x.mwRFUId == LoadId || x.mwOtherId == LoadId || x.radioAntennaId == LoadId || x.radioRRUId == LoadId || x.radioOtherId == LoadId || x.powerId == LoadId || x.loadOtherId == LoadId)
+                try
+                {
+
+                    double? Freespace = 0;
+                    double? EquivalentSpace = 0;
+                    var allLoadInst = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == LoadId || x.mwDishId == LoadId || x.mwODUId == LoadId || x.mwRFUId == LoadId || x.mwOtherId == LoadId || x.radioAntennaId == LoadId || x.radioRRUId == LoadId || x.radioOtherId == LoadId || x.powerId == LoadId || x.loadOtherId == LoadId)
                     .Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU)
                     .Include(x => x.mwRFU).Include(x => x.mwOther).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).
                     Include(x => x.power).Include(x => x.loadOther).ToList();
 
-                foreach (var item in allLoadInst)
-                {
-                    var civilload = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id).Select(x => x.allCivilInstId).ToList();
-                    foreach (var civilloadinst in civilload)
+                    foreach (var item in allLoadInst)
                     {
-                        var allcivil = _dbContext.TLIallCivilInst.Where(x => x.Id == civilloadinst).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel).ToList();
-
-
-                        foreach (var t in allcivil)
+                        var civilload = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id).Select(x => x.allCivilInstId).ToList();
+                        foreach (var civilloadinst in civilload)
                         {
-                            if (t.civilWithLegsId != null)
+                            var allcivil = _dbContext.TLIallCivilInst.Where(x => x.Id == civilloadinst).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel).ToList();
+
+
+                            foreach (var t in allcivil)
                             {
-                                if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
+                                if (t.civilWithLegsId != null)
                                 {
-
-                                    TLImwBU TLImwBU = item.mwBU;
-                                    var PortCascadeId = _dbContext.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
-                                    var PortCascade = _dbContext.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
-                                    foreach (var Port in PortCascade)
+                                    if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
                                     {
-                                        var allload = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
-                                        var Civilloads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
-                                        if (Civilloads != null)
-                                        {
-                                            Civilloads.Dismantle = true;
-                                            EquivalentSpace += 0;
-                                            Port.MwBUId = 0;
-                                            Port.MwBULibraryId = 0;
-                                        }
-                                    }
-                                    var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
-                                    foreach (var port in mwport)
-                                    {
-                                        var mwrfu = _dbContext.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
 
-                                        foreach (var rfu in mwrfu)
+                                        TLImwBU TLImwBU = item.mwBU;
+                                        var PortCascadeId = _dbContext.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
+                                        var PortCascade = _dbContext.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
+                                        foreach (var Port in PortCascade)
                                         {
-                                            var allLoadRFU = _dbContext.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
-                                            foreach (var allLoad in allLoadRFU)
+                                            var allload = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
+                                            var Civilloads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
+                                            if (Civilloads != null)
                                             {
-                                                var MwRfu = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                                foreach (var MWRfU in MwRfu)
-                                                {
-                                                    MWRfU.Dismantle = true;
-                                                    EquivalentSpace += 0;
-                                                }
-
+                                                Civilloads.Dismantle = true;
+                                                EquivalentSpace += 0;
+                                                Port.MwBUId = 0;
+                                                Port.MwBULibraryId = 0;
                                             }
                                         }
-
-                                    }
-                                    var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var civilLoad in civilLoads)
-                                    {
-                                        civilLoad.Dismantle = true;
-                                        if (civilLoad.sideArmId == null)
+                                        var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
+                                        foreach (var port in mwport)
                                         {
+                                            var mwrfu = _dbContext.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
 
-                                            EquivalentSpace += 0;
-
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
-                                {
-                                    TLImwDish TLImwDish = item.mwDish;
-                                    var mwODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
-                                    foreach (var ODU in mwODU)
-                                    {
-                                        var allLoadinst = _dbContext.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
-                                        foreach (var Load in allLoadinst)
-                                        {
-                                            var civil = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-
-
-                                            foreach (var civillload in civil)
+                                            foreach (var rfu in mwrfu)
                                             {
-                                                civillload.Dismantle = true;
-                                                if (civillload.sideArmId == null)
+                                                var allLoadRFU = _dbContext.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
+                                                foreach (var allLoad in allLoadRFU)
                                                 {
-                                                    EquivalentSpace += 0;
-                                                }
-                                                else
-                                                {
-                                                    EquivalentSpace += 0;
+                                                    var MwRfu = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                                    foreach (var MWRfU in MwRfu)
+                                                    {
+                                                        MWRfU.Dismantle = true;
+                                                        EquivalentSpace += 0;
+                                                    }
+
                                                 }
                                             }
-                                        }
-                                    }
-                                    var mwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                                    foreach (var TlImwdish in mwdish)
-                                    {
-                                        TlImwdish.Dismantle = true;
-                                        var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
-                                        foreach (var TLIBu in Bu)
-                                        {
-                                            TLIBu.MainDishId = null;
-                                        }
-                                        if (TlImwdish.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLImwDish.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
 
-                                    }
-                                    var TLImwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                                    foreach (var TLmwdish in TLImwdish)
-                                    {
-                                        TLmwdish.Dismantle = true;
-                                        var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
-                                        foreach (var TLIBu in Bu)
-                                        {
-                                            TLIBu.MainDishId = null;
                                         }
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-
-                                }
-                                else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
-                                {
-                                    TLImwODU TLImwODU = item.mwODU;
-                                    var MWODU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwodu in MWODU)
-                                    {
-                                        mwodu.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-
-                                }
-                                else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
-                                {
-                                    TLImwRFU TLImwRFU = item.mwRFU;
-                                    var MWRFU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwrfu in MWRFU)
-                                    {
-                                        mwrfu.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
-                                {
-                                    TLImwOther TLImwOther = item.mwOther;
-                                    var MWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwother in MWOTHER)
-                                    {
-                                        mwother.Dismantle = true;
-                                        if (mwother.sideArmId == null)
+                                        var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var civilLoad in civilLoads)
                                         {
-                                            EquivalentSpace += TLImwOther.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    var TLIMWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwother in TLIMWOTHER)
-                                    {
-                                        mwother.Dismantle = true;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
-                                {
-                                    TLIradioAntenna TLIradioAntenna = item.radioAntenna;
-                                    var RADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioantenna in RADIOANTENNA)
-                                    {
-                                        radioantenna.Dismantle = true;
-                                        var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
-                                        foreach (var radioRru in RadioRRu)
-                                        {
-                                            radioRru.radioAntennaId = null;
-                                        }
-                                        if (radioantenna.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIradioAntenna.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    var TLIRADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioantenna in TLIRADIOANTENNA)
-                                    {
-                                        radioantenna.Dismantle = true;
-                                        var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
-                                        foreach (var radioRru in RadioRRu)
-                                        {
-                                            radioRru.radioAntennaId = null;
-                                        }
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
-                                {
-
-                                    TLIRadioRRU TLIRadioRRU = item.radioRRU;
-                                    var RADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radiorru in RADIORRU)
-                                    {
-                                        radiorru.Dismantle = true;
-                                        if (radiorru.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIRadioRRU.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLIRADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radio in TLIRADIORRU)
-                                    {
-                                        radio.Dismantle = true;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
-                                {
-                                    TLIradioOther TLIradioOther = item.radioOther;
-                                    var RADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioother in RADIOOTHER)
-                                    {
-                                        radioother.Dismantle = true;
-                                        if (radioother.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIradioOther.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLIRADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioother in TLIRADIOOTHER)
-                                    {
-                                        radioother.Dismantle = true;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
-                                {
-                                    TLIpower TLIpower = item.power;
-                                    var POWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var power in POWER)
-                                    {
-                                        power.Dismantle = true;
-                                        if (power.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIpower.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLIPOWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var power in TLIPOWER)
-                                    {
-                                        power.Dismantle = true;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
-                                {
-                                    TLIloadOther tLIloadOther = item.loadOther;
-                                    var LOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var loadother in LOADOTHER)
-                                    {
-                                        loadother.Dismantle = true;
-                                        if (loadother.sideArmId == null)
-                                        {
-                                            EquivalentSpace += tLIloadOther.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLILOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var loadother in TLILOADOTHER)
-                                    {
-                                        loadother.Dismantle = true;
-                                    }
-                                    TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
-                                    tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                }
-                                _dbContext.SaveChanges();
-                            }
-                            else if (t.civilWithoutLegId != null)
-                            {
-
-                                if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
-                                {
-
-                                    TLImwBU TLImwBU = item.mwBU;
-                                    var PortCascadeId = _dbContext.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
-                                    var PortCascade = _dbContext.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
-                                    foreach (var Port in PortCascade)
-                                    {
-                                        var allload = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
-                                        var Civilloads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
-                                        if (Civilloads != null)
-                                        {
-                                            Civilloads.Dismantle = true;
-                                            EquivalentSpace += 0;
-                                            Port.MwBUId = 0;
-                                            Port.MwBULibraryId = 0;
-                                        }
-                                    }
-                                    var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
-                                    foreach (var port in mwport)
-                                    {
-                                        var mwrfu = _dbContext.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
-
-                                        foreach (var rfu in mwrfu)
-                                        {
-                                            var allLoadRFU = _dbContext.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
-                                            foreach (var allLoad in allLoadRFU)
+                                            civilLoad.Dismantle = true;
+                                            if (civilLoad.sideArmId == null)
                                             {
-                                                var MwRfu = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                                foreach (var MWRfU in MwRfu)
-                                                {
-                                                    MWRfU.Dismantle = true;
-                                                    EquivalentSpace += 0;
-                                                }
+
+                                                EquivalentSpace += 0;
 
                                             }
-                                        }
-
-                                    }
-                                    var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var civilLoad in civilLoads)
-                                    {
-                                        civilLoad.Dismantle = true;
-                                        if (civilLoad.sideArmId == null)
-                                        {
-
-                                            EquivalentSpace += 0;
-
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
-                                {
-                                    TLImwDish TLImwDish = item.mwDish;
-                                    var mwODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
-                                    foreach (var ODU in mwODU)
-                                    {
-                                        var allLoadinst = _dbContext.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
-                                        foreach (var Load in allLoadinst)
-                                        {
-                                            var civil = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-
-
-                                            foreach (var civillload in civil)
+                                            else
                                             {
-                                                civillload.Dismantle = true;
-                                                if (civillload.sideArmId == null)
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
+                                    {
+                                        TLImwDish TLImwDish = item.mwDish;
+                                        var mwODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
+                                        foreach (var ODU in mwODU)
+                                        {
+                                            var allLoadinst = _dbContext.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
+                                            foreach (var Load in allLoadinst)
+                                            {
+                                                var civil = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+
+
+                                                foreach (var civillload in civil)
                                                 {
-                                                    EquivalentSpace += 0;
-                                                }
-                                                else
-                                                {
-                                                    EquivalentSpace += 0;
+                                                    civillload.Dismantle = true;
+                                                    if (civillload.sideArmId == null)
+                                                    {
+                                                        EquivalentSpace += 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        EquivalentSpace += 0;
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                    var mwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                                    foreach (var TLImwdish in mwdish)
-                                    {
-                                        TLImwdish.Dismantle = true;
-                                        var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
-                                        foreach (var TLIBu in Bu)
+                                        var mwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                                        foreach (var TlImwdish in mwdish)
                                         {
-                                            TLIBu.MainDishId = null;
-                                        }
-                                        if (TLImwdish.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLImwDish.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    var tlimwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                                    foreach (var MwDish in tlimwdish)
-                                    {
-                                        MwDish.Dismantle = true;
-                                        var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
-                                        foreach (var TLIBu in Bu)
-                                        {
-                                            TLIBu.MainDishId = null;
-                                        }
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-
-                                }
-                                else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
-                                {
-                                    TLImwODU TLImwODU = item.mwODU;
-                                    var MWODU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwodu in MWODU)
-                                    {
-                                        mwodu.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-
-                                }
-                                else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
-                                {
-                                    TLImwRFU TLImwRFU = item.mwRFU;
-                                    var MWRFU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwrfu in MWRFU)
-                                    {
-                                        mwrfu.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
-                                {
-                                    TLImwOther TLImwOther = item.mwOther;
-                                    var MWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwother in MWOTHER)
-                                    {
-                                        mwother.Dismantle = true;
-                                        if (mwother.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLImwOther.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    var TLIMWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwother in TLIMWOTHER)
-                                    {
-                                        mwother.Dismantle = true;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
-                                {
-                                    TLIradioAntenna TLIradioAntenna = item.radioAntenna;
-                                    var RADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioantenna in RADIOANTENNA)
-                                    {
-                                        radioantenna.Dismantle = true;
-                                        var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
-                                        foreach (var TLIRadioRRu in RadioRRu)
-                                        {
-                                            TLIRadioRRu.radioAntennaId = null;
-                                        }
-                                        if (radioantenna.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIradioAntenna.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-
-                                    }
-                                    var TLIRADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioantenna in TLIRADIOANTENNA)
-                                    {
-                                        radioantenna.Dismantle = true;
-                                        var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
-                                        foreach (var TLIRadioRRu in RadioRRu)
-                                        {
-                                            TLIRadioRRu.radioAntennaId = null;
-                                        }
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
-                                {
-
-                                    TLIRadioRRU TLIRadioRRU = item.radioRRU;
-                                    var RADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radiorru in RADIORRU)
-                                    {
-                                        radiorru.Dismantle = true;
-                                        if (radiorru.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIRadioRRU.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLIRADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radiorru in TLIRADIORRU)
-                                    {
-                                        radiorru.Dismantle = true;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
-                                {
-                                    TLIradioOther TLIradioOther = item.radioOther;
-                                    var RADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioother in RADIOOTHER)
-                                    {
-                                        radioother.Dismantle = true;
-                                        if (radioother.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIradioOther.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLIRADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioother in TLIRADIOOTHER)
-                                    {
-                                        radioother.Dismantle = true;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
-                                {
-                                    TLIpower TLIpower = item.power;
-                                    var POWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var power in POWER)
-                                    {
-                                        power.Dismantle = true;
-                                        if (power.sideArmId == null)
-                                        {
-                                            EquivalentSpace += TLIpower.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLIPOWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var power in TLIPOWER)
-                                    {
-                                        power.Dismantle = true;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
-                                {
-                                    TLIloadOther tLIloadOther = item.loadOther;
-                                    var LOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var loadother in LOADOTHER)
-                                    {
-                                        loadother.Dismantle = true;
-                                        if (loadother.sideArmId == null)
-                                        {
-                                            EquivalentSpace += tLIloadOther.EquivalentSpace;
-                                        }
-                                        else
-                                        {
-                                            EquivalentSpace += 0;
-                                        }
-                                    }
-                                    var TLILOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var loadother in TLILOADOTHER)
-                                    {
-                                        loadother.Dismantle = true;
-                                    }
-                                    TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                    tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                }
-                                _dbContext.SaveChanges();
-                            }
-                            else if (t.civilNonSteelId != null)
-                            {
-                                if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
-                                {
-
-                                    TLImwBU TLImwBU = item.mwBU;
-                                    var PortCascadeId = _dbContext.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
-                                    var PortCascade = _dbContext.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
-                                    foreach (var Port in PortCascade)
-                                    {
-                                        var allload = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
-                                        var Civilloads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
-                                        if (Civilloads != null)
-                                        {
-                                            Civilloads.Dismantle = true;
-                                            EquivalentSpace += 0;
-                                            Port.MwBUId = 0;
-                                            Port.MwBULibraryId = 0;
-                                        }
-                                    }
-                                    var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
-                                    foreach (var port in mwport)
-                                    {
-                                        var mwrfu = _dbContext.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
-
-                                        foreach (var rfu in mwrfu)
-                                        {
-                                            var allLoadRFU = _dbContext.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
-                                            foreach (var allLoad in allLoadRFU)
+                                            TlImwdish.Dismantle = true;
+                                            var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+                                            foreach (var TLIBu in Bu)
                                             {
-                                                var MwRfu = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                                foreach (var MWRfU in MwRfu)
-                                                {
-                                                    MWRfU.Dismantle = true;
-                                                    EquivalentSpace += 0;
-                                                }
+                                                TLIBu.MainDishId = null;
+                                            }
+                                            if (TlImwdish.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLImwDish.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
 
+                                        }
+                                        var TLImwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                                        foreach (var TLmwdish in TLImwdish)
+                                        {
+                                            TLmwdish.Dismantle = true;
+                                            var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+                                            foreach (var TLIBu in Bu)
+                                            {
+                                                TLIBu.MainDishId = null;
                                             }
                                         }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                                     }
-                                    var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var civilLoad in civilLoads)
+                                    else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
                                     {
-                                        civilLoad.Dismantle = true;
-                                        EquivalentSpace += 0;
-
-                                    }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                }
-                                else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
-                                {
-                                    TLImwDish TLImwDish = item.mwDish;
-                                    var mwODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
-                                    foreach (var ODU in mwODU)
-                                    {
-                                        var allLoadinst = _dbContext.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
-                                        foreach (var Load in allLoadinst)
+                                        TLImwODU TLImwODU = item.mwODU;
+                                        var MWODU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwodu in MWODU)
                                         {
-                                            var civil = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                            mwodu.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
 
-
-                                            foreach (var civillload in civil)
+                                    }
+                                    else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
+                                    {
+                                        TLImwRFU TLImwRFU = item.mwRFU;
+                                        var MWRFU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwrfu in MWRFU)
+                                        {
+                                            mwrfu.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                    }
+                                    else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
+                                    {
+                                        TLImwOther TLImwOther = item.mwOther;
+                                        var MWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwother in MWOTHER)
+                                        {
+                                            mwother.Dismantle = true;
+                                            if (mwother.sideArmId == null)
                                             {
-                                                civillload.Dismantle = true;
+                                                EquivalentSpace += TLImwOther.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        var TLIMWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwother in TLIMWOTHER)
+                                        {
+                                            mwother.Dismantle = true;
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
+                                    {
+                                        TLIradioAntenna TLIradioAntenna = item.radioAntenna;
+                                        var RADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioantenna in RADIOANTENNA)
+                                        {
+                                            radioantenna.Dismantle = true;
+                                            var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+                                            foreach (var radioRru in RadioRRu)
+                                            {
+                                                radioRru.radioAntennaId = null;
+                                            }
+                                            if (radioantenna.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIradioAntenna.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        var TLIRADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioantenna in TLIRADIOANTENNA)
+                                        {
+                                            radioantenna.Dismantle = true;
+                                            var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+                                            foreach (var radioRru in RadioRRu)
+                                            {
+                                                radioRru.radioAntennaId = null;
+                                            }
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+                                    {
+
+                                        TLIRadioRRU TLIRadioRRU = item.radioRRU;
+                                        var RADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radiorru in RADIORRU)
+                                        {
+                                            radiorru.Dismantle = true;
+                                            if (radiorru.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIRadioRRU.EquivalentSpace;
+                                            }
+                                            else
+                                            {
                                                 EquivalentSpace += 0;
                                             }
                                         }
-                                    }
-                                    var mwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false).ToList();
-                                    foreach (var TLImwdish in mwdish)
-                                    {
-                                        TLImwdish.Dismantle = true;
-                                        var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
-                                        foreach (var TLIBu in Bu)
+                                        var TLIRADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radio in TLIRADIORRU)
                                         {
-                                            TLIBu.MainDishId = null;
+                                            radio.Dismantle = true;
                                         }
-                                        EquivalentSpace += 0;
-
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                                     }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
-                                }
-                                else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
-                                {
-                                    TLImwODU TLImwODU = item.mwODU;
-                                    var MWODU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwodu in MWODU)
+                                    else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
                                     {
-                                        mwodu.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
-
-                                }
-                                else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
-                                {
-                                    TLImwRFU TLImwRFU = item.mwRFU;
-                                    var MWRFU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwrfu in MWRFU)
-                                    {
-                                        mwrfu.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
-                                }
-                                else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
-                                {
-                                    TLImwOther TLImwOther = item.mwOther;
-                                    var MWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var mwother in MWOTHER)
-                                    {
-                                        mwother.Dismantle = true;
-                                        EquivalentSpace += 0;
-                                    }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
-                                }
-                                else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
-                                {
-                                    TLIradioAntenna TLIradioAntenna = item.radioAntenna;
-                                    var RADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioantenna in RADIOANTENNA)
-                                    {
-                                        radioantenna.Dismantle = true;
-                                        var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
-                                        foreach (var radioRru in RadioRRu)
+                                        TLIradioOther TLIradioOther = item.radioOther;
+                                        var RADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioother in RADIOOTHER)
                                         {
-                                            radioRru.radioAntennaId = null;
+                                            radioother.Dismantle = true;
+                                            if (radioother.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIradioOther.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
                                         }
-                                        EquivalentSpace += 0;
-
+                                        var TLIRADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioother in TLIRADIOOTHER)
+                                        {
+                                            radioother.Dismantle = true;
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                                     }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
+                                    else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
+                                    {
+                                        TLIpower TLIpower = item.power;
+                                        var POWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var power in POWER)
+                                        {
+                                            power.Dismantle = true;
+                                            if (power.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIpower.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+                                        }
+                                        var TLIPOWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var power in TLIPOWER)
+                                        {
+                                            power.Dismantle = true;
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
+                                    {
+                                        TLIloadOther tLIloadOther = item.loadOther;
+                                        var LOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var loadother in LOADOTHER)
+                                        {
+                                            loadother.Dismantle = true;
+                                            if (loadother.sideArmId == null)
+                                            {
+                                                EquivalentSpace += tLIloadOther.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+                                        }
+                                        var TLILOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var loadother in TLILOADOTHER)
+                                        {
+                                            loadother.Dismantle = true;
+                                        }
+                                        TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
+                                        tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    _dbContext.SaveChanges();
                                 }
-                                else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+                                else if (t.civilWithoutLegId != null)
                                 {
 
-                                    TLIRadioRRU TLIRadioRRU = item.radioRRU;
-                                    var RADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radiorru in RADIORRU)
+                                    if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
                                     {
-                                        radiorru.Dismantle = true;
-                                        EquivalentSpace += 0;
+
+                                        TLImwBU TLImwBU = item.mwBU;
+                                        var PortCascadeId = _dbContext.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
+                                        var PortCascade = _dbContext.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
+                                        foreach (var Port in PortCascade)
+                                        {
+                                            var allload = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
+                                            var Civilloads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
+                                            if (Civilloads != null)
+                                            {
+                                                Civilloads.Dismantle = true;
+                                                EquivalentSpace += 0;
+                                                Port.MwBUId = 0;
+                                                Port.MwBULibraryId = 0;
+                                            }
+                                        }
+                                        var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
+                                        foreach (var port in mwport)
+                                        {
+                                            var mwrfu = _dbContext.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
+
+                                            foreach (var rfu in mwrfu)
+                                            {
+                                                var allLoadRFU = _dbContext.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
+                                                foreach (var allLoad in allLoadRFU)
+                                                {
+                                                    var MwRfu = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                                    foreach (var MWRfU in MwRfu)
+                                                    {
+                                                        MWRfU.Dismantle = true;
+                                                        EquivalentSpace += 0;
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+                                        var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var civilLoad in civilLoads)
+                                        {
+                                            civilLoad.Dismantle = true;
+                                            if (civilLoad.sideArmId == null)
+                                            {
+
+                                                EquivalentSpace += 0;
+
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
+                                    {
+                                        TLImwDish TLImwDish = item.mwDish;
+                                        var mwODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
+                                        foreach (var ODU in mwODU)
+                                        {
+                                            var allLoadinst = _dbContext.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
+                                            foreach (var Load in allLoadinst)
+                                            {
+                                                var civil = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+
+
+                                                foreach (var civillload in civil)
+                                                {
+                                                    civillload.Dismantle = true;
+                                                    if (civillload.sideArmId == null)
+                                                    {
+                                                        EquivalentSpace += 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        EquivalentSpace += 0;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        var mwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                                        foreach (var TLImwdish in mwdish)
+                                        {
+                                            TLImwdish.Dismantle = true;
+                                            var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+                                            foreach (var TLIBu in Bu)
+                                            {
+                                                TLIBu.MainDishId = null;
+                                            }
+                                            if (TLImwdish.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLImwDish.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        var tlimwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                                        foreach (var MwDish in tlimwdish)
+                                        {
+                                            MwDish.Dismantle = true;
+                                            var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+                                            foreach (var TLIBu in Bu)
+                                            {
+                                                TLIBu.MainDishId = null;
+                                            }
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                                     }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                    else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
+                                    {
+                                        TLImwODU TLImwODU = item.mwODU;
+                                        var MWODU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwodu in MWODU)
+                                        {
+                                            mwodu.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
+                                    }
+                                    else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
+                                    {
+                                        TLImwRFU TLImwRFU = item.mwRFU;
+                                        var MWRFU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwrfu in MWRFU)
+                                        {
+                                            mwrfu.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
+                                    {
+                                        TLImwOther TLImwOther = item.mwOther;
+                                        var MWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwother in MWOTHER)
+                                        {
+                                            mwother.Dismantle = true;
+                                            if (mwother.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLImwOther.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        var TLIMWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwother in TLIMWOTHER)
+                                        {
+                                            mwother.Dismantle = true;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
+                                    {
+                                        TLIradioAntenna TLIradioAntenna = item.radioAntenna;
+                                        var RADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioantenna in RADIOANTENNA)
+                                        {
+                                            radioantenna.Dismantle = true;
+                                            var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+                                            foreach (var TLIRadioRRu in RadioRRu)
+                                            {
+                                                TLIRadioRRu.radioAntennaId = null;
+                                            }
+                                            if (radioantenna.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIradioAntenna.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+
+                                        }
+                                        var TLIRADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioantenna in TLIRADIOANTENNA)
+                                        {
+                                            radioantenna.Dismantle = true;
+                                            var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+                                            foreach (var TLIRadioRRu in RadioRRu)
+                                            {
+                                                TLIRadioRRu.radioAntennaId = null;
+                                            }
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                    }
+                                    else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+                                    {
+
+                                        TLIRadioRRU TLIRadioRRU = item.radioRRU;
+                                        var RADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radiorru in RADIORRU)
+                                        {
+                                            radiorru.Dismantle = true;
+                                            if (radiorru.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIRadioRRU.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+                                        }
+                                        var TLIRADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radiorru in TLIRADIORRU)
+                                        {
+                                            radiorru.Dismantle = true;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
+                                    {
+                                        TLIradioOther TLIradioOther = item.radioOther;
+                                        var RADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioother in RADIOOTHER)
+                                        {
+                                            radioother.Dismantle = true;
+                                            if (radioother.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIradioOther.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+                                        }
+                                        var TLIRADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioother in TLIRADIOOTHER)
+                                        {
+                                            radioother.Dismantle = true;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
+                                    {
+                                        TLIpower TLIpower = item.power;
+                                        var POWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var power in POWER)
+                                        {
+                                            power.Dismantle = true;
+                                            if (power.sideArmId == null)
+                                            {
+                                                EquivalentSpace += TLIpower.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+                                        }
+                                        var TLIPOWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var power in TLIPOWER)
+                                        {
+                                            power.Dismantle = true;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
+                                    {
+                                        TLIloadOther tLIloadOther = item.loadOther;
+                                        var LOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == true && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var loadother in LOADOTHER)
+                                        {
+                                            loadother.Dismantle = true;
+                                            if (loadother.sideArmId == null)
+                                            {
+                                                EquivalentSpace += tLIloadOther.EquivalentSpace;
+                                            }
+                                            else
+                                            {
+                                                EquivalentSpace += 0;
+                                            }
+                                        }
+                                        var TLILOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.ReservedSpace == false && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var loadother in TLILOADOTHER)
+                                        {
+                                            loadother.Dismantle = true;
+                                        }
+                                        TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    _dbContext.SaveChanges();
                                 }
-                                else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
+                                else if (t.civilNonSteelId != null)
                                 {
-                                    TLIradioOther TLIradioOther = item.radioOther;
-                                    var RADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var radioother in RADIOOTHER)
+                                    if (item.mwBUId != null && LoadName == TablesNames.TLImwBU.ToString())
                                     {
-                                        radioother.Dismantle = true;
-                                        EquivalentSpace += 0;
+
+                                        TLImwBU TLImwBU = item.mwBU;
+                                        var PortCascadeId = _dbContext.TLImwBU.Where(x => x.Id == item.mwBUId).Select(x => x.PortCascadeId).FirstOrDefault();
+                                        var PortCascade = _dbContext.TLImwPort.Where(x => x.Id == PortCascadeId).ToList();
+                                        foreach (var Port in PortCascade)
+                                        {
+                                            var allload = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == Port.MwBUId).Select(x => x.Id).FirstOrDefault();
+                                            var Civilloads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allload && x.allCivilInstId == t.Id && x.Dismantle == false).FirstOrDefault();
+                                            if (Civilloads != null)
+                                            {
+                                                Civilloads.Dismantle = true;
+                                                EquivalentSpace += 0;
+                                                Port.MwBUId = 0;
+                                                Port.MwBULibraryId = 0;
+                                            }
+                                        }
+                                        var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == item.mwBUId).Select(x => x.Id).ToList();
+                                        foreach (var port in mwport)
+                                        {
+                                            var mwrfu = _dbContext.TLImwRFU.Where(x => x.MwPortId == port).Select(x => x.Id).ToList();
+
+                                            foreach (var rfu in mwrfu)
+                                            {
+                                                var allLoadRFU = _dbContext.TLIallLoadInst.Where(x => x.mwRFUId == rfu).Select(x => x.Id).ToList();
+                                                foreach (var allLoad in allLoadRFU)
+                                                {
+                                                    var MwRfu = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == allLoad && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                                    foreach (var MWRfU in MwRfu)
+                                                    {
+                                                        MWRfU.Dismantle = true;
+                                                        EquivalentSpace += 0;
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+                                        var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.SiteCode == sitecode && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var civilLoad in civilLoads)
+                                        {
+                                            civilLoad.Dismantle = true;
+                                            EquivalentSpace += 0;
+
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    }
+                                    else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
+                                    {
+                                        TLImwDish TLImwDish = item.mwDish;
+                                        var mwODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == item.mwDishId).Select(x => x.Id).ToList();
+                                        foreach (var ODU in mwODU)
+                                        {
+                                            var allLoadinst = _dbContext.TLIallLoadInst.Where(x => x.mwODUId == ODU).Select(x => x.Id).ToList();
+                                            foreach (var Load in allLoadinst)
+                                            {
+                                                var civil = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == Load && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+
+
+                                                foreach (var civillload in civil)
+                                                {
+                                                    civillload.Dismantle = true;
+                                                    EquivalentSpace += 0;
+                                                }
+                                            }
+                                        }
+                                        var mwdish = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false).ToList();
+                                        foreach (var TLImwdish in mwdish)
+                                        {
+                                            TLImwdish.Dismantle = true;
+                                            var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == item.mwDishId).ToList();
+                                            foreach (var TLIBu in Bu)
+                                            {
+                                                TLIBu.MainDishId = null;
+                                            }
+                                            EquivalentSpace += 0;
+
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                                     }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
-                                }
-                                else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
-                                {
-                                    TLIpower TLIpower = item.power;
-                                    var POWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var power in POWER)
+                                    else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
                                     {
-                                        power.Dismantle = true;
-                                        EquivalentSpace += 0;
+                                        TLImwODU TLImwODU = item.mwODU;
+                                        var MWODU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwodu in MWODU)
+                                        {
+                                            mwodu.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
 
                                     }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-
-                                }
-                                else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
-                                {
-                                    TLIloadOther tLIloadOther = item.loadOther;
-                                    var LOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
-                                    foreach (var loadother in LOADOTHER)
+                                    else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
                                     {
-                                        loadother.Dismantle = true;
-                                        EquivalentSpace += 0;
+                                        TLImwRFU TLImwRFU = item.mwRFU;
+                                        var MWRFU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwrfu in MWRFU)
+                                        {
+                                            mwrfu.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
                                     }
-                                    TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
-                                    tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                    else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
+                                    {
+                                        TLImwOther TLImwOther = item.mwOther;
+                                        var MWOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var mwother in MWOTHER)
+                                        {
+                                            mwother.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
+                                    }
+                                    else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
+                                    {
+                                        TLIradioAntenna TLIradioAntenna = item.radioAntenna;
+                                        var RADIOANTENNA = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioantenna in RADIOANTENNA)
+                                        {
+                                            radioantenna.Dismantle = true;
+                                            var RadioRRu = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == item.radioAntennaId).ToList();
+                                            foreach (var radioRru in RadioRRu)
+                                            {
+                                                radioRru.radioAntennaId = null;
+                                            }
+                                            EquivalentSpace += 0;
+
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
+                                    }
+                                    else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
+                                    {
+
+                                        TLIRadioRRU TLIRadioRRU = item.radioRRU;
+                                        var RADIORRU = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radiorru in RADIORRU)
+                                        {
+                                            radiorru.Dismantle = true;
+                                            EquivalentSpace += 0;
+
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
+                                    }
+                                    else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
+                                    {
+                                        TLIradioOther TLIradioOther = item.radioOther;
+                                        var RADIOOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var radioother in RADIOOTHER)
+                                        {
+                                            radioother.Dismantle = true;
+                                            EquivalentSpace += 0;
+
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
+                                    }
+                                    else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
+                                    {
+                                        TLIpower TLIpower = item.power;
+                                        var POWER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var power in POWER)
+                                        {
+                                            power.Dismantle = true;
+                                            EquivalentSpace += 0;
+
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
+                                    }
+                                    else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
+                                    {
+                                        TLIloadOther tLIloadOther = item.loadOther;
+                                        var LOADOTHER = _dbContext.TLIcivilLoads.Where(x => x.allLoadInstId == item.Id && x.Dismantle == false && x.allCivilInstId == t.Id).ToList();
+                                        foreach (var loadother in LOADOTHER)
+                                        {
+                                            loadother.Dismantle = true;
+                                            EquivalentSpace += 0;
+                                        }
+                                        TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
+                                        tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
+                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
+                                    }
+                                    _dbContext.SaveChanges();
 
                                 }
-                                _dbContext.SaveChanges();
-
                             }
                         }
+                      
                     }
-
-
                     _dbContext.SaveChanges();
+                    transactionScope.Complete();
+                    return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-                return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception er)
-            {
+                
+            
+                catch (Exception er)
+                {
 
-                return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         //Function take 3 parameters filters, WithFilterData, parameters

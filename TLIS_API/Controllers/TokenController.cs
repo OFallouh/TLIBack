@@ -152,6 +152,22 @@ namespace TLIS_API.Controllers
 
         }
 
-      
+        [Route("Logout")]
+        [HttpPost]
+        public IActionResult Logout(int UserId)
+        {
+            try
+            {
+                var response = _unitOfWork.TokenService.Logout(UserId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+
     }
 }

@@ -41,6 +41,7 @@ using TLIS_DAL.ViewModels.PowerDTOs;
 using TLIS_DAL.ViewModels.LoadOtherDTOs;
 using TLIS_DAL.ViewModels.GeneratorDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TLIS_Service.Services
 {
@@ -145,23 +146,27 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId,int TaskId)
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int TaskId)
         {
-            try
+            using (TransactionScope transactionScope = new TransactionScope())
             {
-                var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.sideArmId == sideArmId && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                foreach (var sidearm in civilLoads)
+                try
                 {
-                    sidearm.Dismantle = true;
+                    var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.sideArmId == sideArmId && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                    foreach (var sidearm in civilLoads)
+                    {
+                        sidearm.Dismantle = true;
+                    }
+                    _dbContext.SaveChanges();
+                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    transactionScope.Complete();
+                    return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-                _dbContext.SaveChanges();
+                catch (Exception er)
+                {
 
-                return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception er)
-            {
-
-                return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         //Function take 3 parameters
@@ -2234,7 +2239,7 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
                                 }
                             }
-
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             transaction.Complete();
                             tran.Commit();
                             return new Response<AllItemAttributes>();
@@ -2253,66 +2258,70 @@ namespace TLIS_Service.Services
         //update Entity
         public async Task<Response<AllItemAttributes>> UpdateSideArm(EditSideArmViewModel SideArmViewModel, int TaskI)
         {
-            try
+            using (TransactionScope transactionScope = new TransactionScope())
             {
-                TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.sideArmId == SideArmViewModel.Id && !x.Dismantle);
+                try
+                {
+                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.sideArmId == SideArmViewModel.Id && !x.Dismantle);
 
-                string SiteCode = "";
-                if (CivilLoads != null)
-                    SiteCode = CivilLoads.SiteCode;
-                else
-                    SiteCode = null;
+                    string SiteCode = "";
+                    if (CivilLoads != null)
+                        SiteCode = CivilLoads.SiteCode;
+                    else
+                        SiteCode = null;
 
-                TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle
-                && x.sideArmId != SideArmViewModel.Id && (x.sideArmId != null ?
-                    !x.sideArm.Draft && (x.allLoadInst.power.Name.ToLower() == SideArmViewModel.Name.ToLower()) : false) &&
-                    x.SiteCode.ToLower() == SiteCode.ToLower(),
-                        x => x.sideArm);
-
-
-                if (CheckName != null)
-                    return new Response<AllItemAttributes>(true, null, null, $"This name {SideArmViewModel.Name} is already exists", (int)ApiReturnCode.fail);
+                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle
+                    && x.sideArmId != SideArmViewModel.Id && (x.sideArmId != null ?
+                        !x.sideArm.Draft && (x.allLoadInst.power.Name.ToLower() == SideArmViewModel.Name.ToLower()) : false) &&
+                        x.SiteCode.ToLower() == SiteCode.ToLower(),
+                            x => x.sideArm);
 
 
-
-                string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SideArmViewModel.DynamicInstAttsValue, TablesNames.TLIsideArm.ToString());
-
-                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                string CheckDependencyValidation = CheckDependencyValidationEditVersion(SideArmViewModel, SiteCode);
-
-                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel);
-                TLIsideArm SideArmInst = _unitOfWork.SideArmRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SideArm.Id);
-                _unitOfWork.SideArmRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, SideArmInst, SideArm);
-
-                int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
+                    if (CheckName != null)
+                        return new Response<AllItemAttributes>(true, null, null, $"This name {SideArmViewModel.Name} is already exists", (int)ApiReturnCode.fail);
 
 
-                CivilLoads.InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate;
-                CivilLoads.ItemOnCivilStatus = SideArmViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                CivilLoads.ItemStatus = SideArmViewModel.TLIcivilLoads.ItemStatus;
-                CivilLoads.ReservedSpace = SideArmViewModel.TLIcivilLoads.ReservedSpace;
-                CivilLoads.sideArmId = SideArmViewModel.TLIcivilLoads.sideArmId;
-                CivilLoads.allCivilInstId = SideArmViewModel.TLIcivilLoads.allCivilInstId;
-                CivilLoads.legId = SideArmViewModel.TLIcivilLoads.legId;
-                CivilLoads.Leg2Id = SideArmViewModel.TLIcivilLoads.Leg2Id;
 
-                _unitOfWork.SaveChanges();
+                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SideArmViewModel.DynamicInstAttsValue, TablesNames.TLIsideArm.ToString());
+
+                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                        return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(SideArmViewModel, SiteCode);
+
+                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                        return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                    TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel);
+                    TLIsideArm SideArmInst = _unitOfWork.SideArmRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SideArm.Id);
+                    _unitOfWork.SideArmRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, SideArmInst, SideArm);
+
+                    int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
 
 
-                if (SideArmViewModel.DynamicInstAttsValue != null ? SideArmViewModel.DynamicInstAttsValue.Count() > 0 : false)
-                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SideArmViewModel.DynamicInstAttsValue, TableNameId, SideArm.Id);
+                    CivilLoads.InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate;
+                    CivilLoads.ItemOnCivilStatus = SideArmViewModel.TLIcivilLoads.ItemOnCivilStatus;
+                    CivilLoads.ItemStatus = SideArmViewModel.TLIcivilLoads.ItemStatus;
+                    CivilLoads.ReservedSpace = SideArmViewModel.TLIcivilLoads.ReservedSpace;
+                    CivilLoads.sideArmId = SideArmViewModel.TLIcivilLoads.sideArmId;
+                    CivilLoads.allCivilInstId = SideArmViewModel.TLIcivilLoads.allCivilInstId;
+                    CivilLoads.legId = SideArmViewModel.TLIcivilLoads.legId;
+                    CivilLoads.Leg2Id = SideArmViewModel.TLIcivilLoads.Leg2Id;
 
-                await _unitOfWork.SaveChangesAsync();
-                return new Response<AllItemAttributes>();
-            }
-            catch (Exception err)
-            {
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                    _unitOfWork.SaveChanges();
+
+
+                    if (SideArmViewModel.DynamicInstAttsValue != null ? SideArmViewModel.DynamicInstAttsValue.Count() > 0 : false)
+                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SideArmViewModel.DynamicInstAttsValue, TableNameId, SideArm.Id);
+
+                    await _unitOfWork.SaveChangesAsync();
+                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    return new Response<AllItemAttributes>();
+                }
+                catch (Exception err)
+                {
+                    return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                }
             }
         }
         #region Helper Methods For UpdateSideArm Function..

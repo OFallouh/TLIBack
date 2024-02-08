@@ -78,6 +78,7 @@ using System.Net.WebSockets;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using Microsoft.Extensions.Configuration;
 using LinqToExcel.Extensions;
+using TLIS_DAL.ViewModels.SiteDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2357,6 +2358,7 @@ namespace TLIS_Service.Services
                         {
                             _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, civilWithLegs.Id);
                         }
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
                     {
@@ -2498,6 +2500,7 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilWithoutLeg.Id);
                                 }
                             }
+                           var Submit=_unitOfWork.SiteRepository.SubmitTaskByTLI;
                             //AddCivilHistory(AddCivilWithoutLeg.ticketAtt, allCivilInstId, "Insert");
                         }
                         else
@@ -2604,6 +2607,7 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilNonSteel.Id);
                                 }
                             }
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             //AddCivilHistory(AddCivilNonSteel.ticketAtt, allCivilInstId, "Insert");
                         }
                         else
@@ -2791,8 +2795,9 @@ namespace TLIS_Service.Services
                         //List<TLIleg> Legs = _mapper.Map<List<TLIleg>>(civilWithLegs.Legs);
                         //_unitOfWork.LegRepository.UpdateRange(Legs);
                         //_unitOfWork.SaveChanges();
-
                         await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == CivilType)
                     {
@@ -2975,7 +2980,9 @@ namespace TLIS_Service.Services
                         {
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilWithoutLegs.DynamicInstAttsValue, TableNameId, civilWithoutLegsEntity.Id);
                         }
+
                         await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == CivilType)
                     {
@@ -3037,6 +3044,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilNonSteel.DynamicInstAttsValue, TableNameId, civilNonSteelEntity.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
                     transaction.Complete();
                     return new Response<ObjectInstAtts>();
@@ -7355,94 +7363,101 @@ namespace TLIS_Service.Services
         }
         public Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName, int TaskId)
         {
-            try
+            using (TransactionScope transaction = new TransactionScope())
             {
-                var allcivil = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == CivilId || x.civilWithoutLegId == CivilId || x.civilNonSteelId == CivilId).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel).ToList();
-                double? Freespace = 0;
-                foreach (var item in allcivil)
+                try
                 {
-                    if (item.civilWithLegsId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString())
+                    var allcivil = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == CivilId || x.civilWithoutLegId == CivilId || x.civilNonSteelId == CivilId).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel).ToList();
+                    double? Freespace = 0;
+                    foreach (var item in allcivil)
                     {
-
-                        TLIcivilWithLegs TLIcivilWithLegs = item.civilWithLegs;
-                        var civilSiteDate = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                        foreach (var civil in civilSiteDate)
+                        if (item.civilWithLegsId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString())
                         {
-                            civil.Dismantle = true;
-                            Freespace += TLIcivilWithLegs.SpaceInstallation;
+
+                            TLIcivilWithLegs TLIcivilWithLegs = item.civilWithLegs;
+                            var civilSiteDate = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                            foreach (var civil in civilSiteDate)
+                            {
+                                civil.Dismantle = true;
+                                Freespace += TLIcivilWithLegs.SpaceInstallation;
+
+                            }
+                            var civilSiteDate1 = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                            foreach (var civil in civilSiteDate1)
+                            {
+                                civil.Dismantle = true;
+
+                            }
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                tLIcivilLoads.Dismantle = true;
+
+                            }
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                         }
-                        var civilSiteDate1 = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                        foreach (var civil in civilSiteDate1)
+                        else if (item.civilWithoutLegId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
                         {
-                            civil.Dismantle = true;
+
+                            TLIcivilWithoutLeg TLIcivilWithoutLeg = item.civilWithoutLeg;
+                            var civilSiteDate = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                            foreach (var civil in civilSiteDate)
+                            {
+                                civil.Dismantle = true;
+                                Freespace += TLIcivilWithoutLeg.SpaceInstallation;
+                            }
+                            var civilSiteDate1 = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                            foreach (var civil in civilSiteDate1)
+                            {
+                                civil.Dismantle = true;
+                            }
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                tLIcivilLoads.Dismantle = true;
+
+                            }
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                         }
-                        var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var tLIcivilLoads in allcivilload)
+                        else if (item.civilNonSteelId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
                         {
-                            tLIcivilLoads.Dismantle = true;
+
+                            TLIcivilNonSteel TLIcivilNonSteel = item.civilNonSteel;
+                            var civilSiteDate = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var civil in civilSiteDate)
+                            {
+                                civil.Dismantle = true;
+                                Freespace += TLIcivilNonSteel.SpaceInstallation;
+                            }
+                            var civilSiteDate1 = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var civil in civilSiteDate1)
+                            {
+                                civil.Dismantle = true;
+                            }
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                tLIcivilLoads.Dismantle = true;
+                            }
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                         }
 
                     }
-                    else if (item.civilWithoutLegId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
-                    {
-
-                        TLIcivilWithoutLeg TLIcivilWithoutLeg = item.civilWithoutLeg;
-                        var civilSiteDate = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                        foreach (var civil in civilSiteDate)
-                        {
-                            civil.Dismantle = true;
-                            Freespace += TLIcivilWithoutLeg.SpaceInstallation;
-                        }
-                        var civilSiteDate1 = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                        foreach (var civil in civilSiteDate1)
-                        {
-                            civil.Dismantle = true;
-                        }
-                        var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var tLIcivilLoads in allcivilload)
-                        {
-                            tLIcivilLoads.Dismantle = true;
-
-                        }
-
-                    }
-                    else if (item.civilNonSteelId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
-                    {
-
-                        TLIcivilNonSteel TLIcivilNonSteel = item.civilNonSteel;
-                        var civilSiteDate = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var civil in civilSiteDate)
-                        {
-                            civil.Dismantle = true;
-                            Freespace += TLIcivilNonSteel.SpaceInstallation;
-                        }
-                        var civilSiteDate1 = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var civil in civilSiteDate1)
-                        {
-                            civil.Dismantle = true;
-                        }
-                        var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == item.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var tLIcivilLoads in allcivilload)
-                        {
-                            tLIcivilLoads.Dismantle = true;
-                        }
-
-                    }
-
+                    var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                    Site.ReservedSpace -= (float)Freespace;
+                    _dbContext.Entry(Site).State = EntityState.Modified;
+                    _dbContext.SaveChanges();
+                    transaction.Complete();
+                    return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-                var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
-                Site.ReservedSpace -= (float)Freespace;
-                _dbContext.Entry(Site).State = EntityState.Modified;
-                _dbContext.SaveChanges();
-                return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception er)
-            {
+                catch (Exception er)
+                {
 
-                return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<List<LogicalOperationViewModel>> GetlogicalOperation()

@@ -1656,6 +1656,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
                             else if (LoadSubType.TLIradioRRU.ToString() == TableName)
                             {
@@ -1754,6 +1755,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
                             else if (LoadSubType.TLIradioOther.ToString() == TableName)
                             {
@@ -1834,6 +1836,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             }
                             transaction.Complete();
                             tran.Commit();
@@ -1939,7 +1942,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         if (RadioAntennaModel.DynamicInstAttsValue != null ? RadioAntennaModel.DynamicInstAttsValue.Count > 0 : false)
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(RadioAntennaModel.DynamicInstAttsValue, TableNameId, RadioAntennaEntity.Id);
-
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
                     else if (LoadSubType.TLIradioRRU.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2020,6 +2023,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         if (RadioRRUModel.DynamicInstAttsValue != null ? RadioRRUModel.DynamicInstAttsValue.Count > 0 : false)
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(RadioRRUModel.DynamicInstAttsValue, TableNameId, RadioRRUEntity.Id);
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
                     else if (LoadSubType.TLIradioOther.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2087,6 +2091,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         if (RadioOtherModel.DynamicInstAttsValue != null ? RadioOtherModel.DynamicInstAttsValue.Count > 0 : false)
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(RadioOtherModel.DynamicInstAttsValue, TableNameId, RadioOtherEntity.Id);
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
                     transaction.Complete();
                     return new Response<ObjectInstAtts>();

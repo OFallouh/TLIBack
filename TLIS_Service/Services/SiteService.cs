@@ -98,63 +98,70 @@ namespace TLIS_Service.Services
        
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
         {
-            try
+            using (TransactionScope transaction = new TransactionScope())
             {
-                // Check Site Code If It's Already Exist in DB or Not..
-                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                    .GetWhereFirst(x => x.SiteCode.ToLower() == AddSiteViewModel.SiteCode.ToLower());
-
-                if (CheckSiteCode != null)
-                    return new Response<AddSiteViewModel>(true, null, null, $"This site code {AddSiteViewModel.SiteCode} is already exist",
-                        (int)Helpers.Constants.ApiReturnCode.fail);
-
-                var CheckSiteName = _context.TLIsite.Where(x => x.SiteName.ToLower() == AddSiteViewModel.SiteName.ToLower()).FirstOrDefault();
-
-                if (CheckSiteName != null)
-                    return new Response<AddSiteViewModel>(true, null, null, $"This site name {AddSiteViewModel.SiteName} is already exist",
-                        (int)Helpers.Constants.ApiReturnCode.fail);
-
-                TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
-                _unitOfWork.SiteRepository.Add(NewSiteEntity);
-
-                _MySites.Add(NewSiteEntity);
-                if(TaskId != null)
+                try
                 {
-                    //TODO
+                    // Check Site Code If It's Already Exist in DB or Not..
+                    TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        .GetWhereFirst(x => x.SiteCode.ToLower() == AddSiteViewModel.SiteCode.ToLower());
+
+                    if (CheckSiteCode != null)
+                        return new Response<AddSiteViewModel>(true, null, null, $"This site code {AddSiteViewModel.SiteCode} is already exist",
+                            (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    var CheckSiteName = _context.TLIsite.Where(x => x.SiteName.ToLower() == AddSiteViewModel.SiteName.ToLower()).FirstOrDefault();
+
+                    if (CheckSiteName != null)
+                        return new Response<AddSiteViewModel>(true, null, null, $"This site name {AddSiteViewModel.SiteName} is already exist",
+                            (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
+                    _unitOfWork.SiteRepository.Add(NewSiteEntity);
+
+                    _MySites.Add(NewSiteEntity);
+                    if (TaskId != null)
+                    {
+                        //TODO
+                    }
+                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    _unitOfWork.SaveChanges();
+                    transaction.Complete();
+
+                    return new Response<AddSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-
-                _unitOfWork.SaveChanges();
-
-                return new Response<AddSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception err)
-            {
-                return new Response<AddSiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                catch (Exception err)
+                {
+                    return new Response<AddSiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId)
         {
-            try
+            using (TransactionScope transaction = new TransactionScope())
             {
-                var CheckSiteName = _context.TLIsite.Where(x => x.SiteName == EditSiteViewModel.SiteName && x.SiteCode != EditSiteViewModel.SiteCode).FirstOrDefault();
-                if (CheckSiteName != null)
+                try
                 {
-                    return new Response<EditSiteViewModel>(true, null, null, $"This site name {EditSiteViewModel.SiteName} is already exist",
-                        (int)Helpers.Constants.ApiReturnCode.fail);
+                    var CheckSiteName = _context.TLIsite.Where(x => x.SiteName == EditSiteViewModel.SiteName && x.SiteCode != EditSiteViewModel.SiteCode).FirstOrDefault();
+                    if (CheckSiteName != null)
+                    {
+                        return new Response<EditSiteViewModel>(true, null, null, $"This site name {EditSiteViewModel.SiteName} is already exist",
+                            (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
+                    _unitOfWork.SiteRepository.Update(Site);
+
+                    _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
+                    _MySites.Add(Site);
+                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    _unitOfWork.SaveChanges();
+                    transaction.Complete();
+                    return new Response<EditSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-                TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
-                _unitOfWork.SiteRepository.Update(Site);
-
-                _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
-                _MySites.Add(Site);
-
-                _unitOfWork.SaveChanges();
-
-                return new Response<EditSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception err)
-            {
-                return new Response<EditSiteViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                catch (Exception err)
+                {
+                    return new Response<EditSiteViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         public Response<List<AreaViewModel>> GetAllAreasForSiteOperation()

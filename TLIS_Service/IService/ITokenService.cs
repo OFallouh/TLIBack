@@ -14,5 +14,6 @@ namespace TLIS_Service.IService
         Response<string> CreateToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
         Response<string> CreateInternalToken(LoginViewModel login, string secretKey, string domain, string domainGroup);
         Response<string> Login(LoginViewModel login, string secretKey, string domain, string domainGroup);
+        Response<string> Logout(int UserId);
     }
 }

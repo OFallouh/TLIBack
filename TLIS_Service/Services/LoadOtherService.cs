@@ -829,6 +829,7 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                             }
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                             transaction.Complete();
                             tran.Commit();
                             return new Response<ObjectInstAtts>();
@@ -912,7 +913,7 @@ namespace TLIS_Service.Services
                     _unitOfWork.SaveChanges();
                     if (LoadOtherViewModel.DynamicInstAttsValue.Count > 0)
                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(LoadOtherViewModel.DynamicInstAttsValue, TableNameId, LoadOtherEntity.Id);
-
+                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     transaction.Complete();
                     return new Response<ObjectInstAtts>();
                 }
