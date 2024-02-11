@@ -1000,57 +1000,81 @@ namespace TLIS_Service.Services
 
                 return new Response<string>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-            
-        }
-        
-            //private string CryptPassword(string password)
-            //{
-            //    byte[] plaintext = Encoding.UTF8.GetBytes(password);
-            //    byte[] ciphertext;
-
-            //    using (Aes aes = Aes.Create())
-            //    {
-            //        aes.Key = key;
-            //        aes.IV = iv;
-
-            //        using (ICryptoTransform encryptor = aes.CreateEncryptor())
-            //        {
-            //            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
-            //        }
-            //    }
-
-            //    return Convert.ToBase64String(ciphertext);
-
-
-            //}
-
-            //private string DecryptPassword(string CryptPassword)
-            //{
-            //    try
-            //    {
-
-            //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
-            //        byte[] plaintext;
-
-            //        using (Aes aes = Aes.Create())
-            //        {
-            //            aes.Key = key;
-            //            aes.IV = iv;
-
-            //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
-            //            {
-            //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-            //            }
-            //        }
-
-            //        return Encoding.UTF8.GetString(plaintext);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        return ex.Message;
-            //    }
-            //}
-
 
         }
+        public string GetEmailByUserId(int UserId)
+        {
+            var Email = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
+            if (Email != null)
+            {
+                return Email.Email;
+            }
+            else
+            {
+                return "This User Is Not Active";
+            }
+        }
+        public string GetNameByUserId(int UserId)
+        {
+            var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
+            if (UserName != null)
+            {
+                return UserName.UserName;
+            }
+            else
+            {
+                return "This User Is Not Active";
+            }
+        }
+
+        //private string CryptPassword(string password)
+        //{
+        //    byte[] plaintext = Encoding.UTF8.GetBytes(password);
+        //    byte[] ciphertext;
+
+        //    using (Aes aes = Aes.Create())
+        //    {
+        //        aes.Key = key;
+        //        aes.IV = iv;
+
+        //        using (ICryptoTransform encryptor = aes.CreateEncryptor())
+        //        {
+        //            ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        //        }
+        //    }
+
+        //    return Convert.ToBase64String(ciphertext);
+
+
+        //}
+
+        //private string DecryptPassword(string CryptPassword)
+        //{
+        //    try
+        //    {
+
+        //        byte[] ciphertext = Convert.FromBase64String(CryptPassword);
+        //        byte[] plaintext;
+
+        //        using (Aes aes = Aes.Create())
+        //        {
+        //            aes.Key = key;
+        //            aes.IV = iv;
+
+        //            using (ICryptoTransform decryptor = aes.CreateDecryptor())
+        //            {
+        //                plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+        //            }
+        //        }
+
+        //        return Encoding.UTF8.GetString(plaintext);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
+
+
+    }
 }

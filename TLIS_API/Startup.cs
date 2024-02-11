@@ -99,7 +99,7 @@ namespace TLIS_API
             //_unitOfWorkService = serviceProvider.GetRequiredService<IUnitOfWorkService>();
             _DbContext = serviceProvider.GetService<ApplicationDbContext>();
 
-            _unitOfWork = new UnitOfWork(_DbContext, _Mapper);
+            _unitOfWork = new UnitOfWork(_DbContext, _Mapper, Configuration);
             _unitOfWorkService = new UnitOfWorkService(_unitOfWork, Configuration);
             /*------------------------------------------------------------------------------------*/
 

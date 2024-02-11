@@ -228,5 +228,20 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.DeletePassword();
             return Ok(response);
         }
+        [HttpPost("GetEmailByUserId")]
+        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        public IActionResult GetEmailByUserId(int UserId)
+        {
+            var response = _unitOfWorkService.UserService.GetEmailByUserId(UserId);
+            return Ok(response);
+        }
+        [HttpPost("GetNameByUserId")]
+        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        public IActionResult GetNameByUserId(int UserId)
+        {
+            var response = _unitOfWorkService.UserService.GetNameByUserId(UserId);
+            return Ok(response);
+        }
+
     }
 }

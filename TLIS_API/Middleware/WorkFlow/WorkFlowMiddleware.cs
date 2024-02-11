@@ -12,12 +12,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.DirectoryServices.Protocols;
-using WF_API.Model;
 using AutoMapper;
 using TLIS_DAL.ViewModels.wf;
 using Azure;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using TLIS_DAL.ViewModels.SiteStatusDTOs;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using TLIS_DAL.ViewModels.SiteDTOs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TLIS_API.Middleware.WorkFlow
 {
@@ -26,11 +30,13 @@ namespace TLIS_API.Middleware.WorkFlow
         private readonly IConfiguration _configuration;
         private readonly TLIS_DAL.ApplicationDbContext db;
         private IMapper _mapper;
-        public WorkFlowMiddleware(ApplicationDbContext _ApplicationDbContext, IConfiguration configuration, IMapper mapper)
+        IServiceProvider Services;
+        public WorkFlowMiddleware(ApplicationDbContext _ApplicationDbContext, IConfiguration configuration, IMapper mapper, IServiceProvider service)
         {
             db = _ApplicationDbContext;
             _configuration = configuration;
             _mapper = mapper;
+            Services = service;
         }
         void IActionFilter.OnActionExecuted(ActionExecutedContext context)
         {
@@ -72,7 +78,7 @@ namespace TLIS_API.Middleware.WorkFlow
                         {
                             var userIdInt64 = Convert.ToInt32(userId);
                             var userPermission = GetPermissionByTask(userIdInt64);
-                            if (userPermission!=null) 
+                            if (userPermission.Result!=null) 
                             {
                                 context.Result = context.Result;
                                 return;
@@ -93,31 +99,60 @@ namespace TLIS_API.Middleware.WorkFlow
         }
         public class PermissionResult
         {
-            public List<MetaLinkViewDto> MetaLinkInfo { get; set; }
-            public string ErrorMessage { get; set; }
+            public List<MetaLinkViewDto> Result { get; set; }
+            public int Id { get; set; }
+            public object Exception { get; set; }
+            public int Status { get; set; }
+            public bool IsCanceled { get; set; }
+            public bool IsCompleted { get; set; }
+            public bool IsCompletedSuccessfully { get; set; }
+            public int CreationOptions { get; set; }
+            public object AsyncState { get; set; }
+            public bool IsFaulted { get; set; }
         }
 
-        public PermissionResult GetPermissionByTask(int UserId)
+        private static readonly HttpClient _httpClient = new HttpClient();
+        private async Task<PermissionResult> GetPermissionByTask(int TaskId)
         {
-            try
+            var ExternalApi = _configuration["ExternalApi"];
+            using (var scope = Services.CreateScope())
             {
-                List<int> ints=new List<int>();
-                var DelegationTasks=db.T_WF_DELEGATIONS.Include(x=>x.Task).ThenInclude(x=>x.PhaseAction).Where(x=>x.AssignToId== UserId && x.Task.Status== Task_Status_Enum .Open&& x.EndDate<DateTime.Now).Select(x=>x.Task.PhaseAction.Id).ToList();
-                List<int> PhaseAction = db.T_WF_PHASE_ACTIONS.Where(x => x.UserAssignToId == UserId).Select(x => x.Id).ToList();
-                List<int> Tasks = db.T_WF_TASKS.Where(x => PhaseAction.Any(y => y == x.PhaseActionId) && x.Status == Task_Status_Enum.Open).Select(x => x.PhaseActionId).ToList();
-                ints.AddRange(Tasks);
-                ints.AddRange(DelegationTasks);
-                List<int> Actions = db.T_WF_PHASE_ACTIONS.Where(x => ints.Any(y => y == x.Id)).Select(x => x.ActionId).ToList();
-                List<T_WF_META_LINK> MetaLink = db.T_WF_META_LINKS.Where(x => Actions.Any(y => y == x.ActionId)).ToList();
-                List<MetaLinkViewDto> MetaLinkInfo = _mapper.Map<List<MetaLinkViewDto>>(MetaLink);
-                return new PermissionResult { MetaLinkInfo = MetaLinkInfo };
-            }
-            catch (Exception ex)
-            {
-                return new PermissionResult { ErrorMessage = ex.Message };
-            }
+                IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+                string apiUrl = $"{ExternalApi}/api/TicketManagement/SubmitTaskByTLI?taskId={TaskId}";
+                int maxRetries = 1; // Number of retries
+                int retryDelayMilliseconds = 180000; // 3 minutes in milliseconds
+                for (int retryCount = 0; retryCount < maxRetries; retryCount++)
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
 
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string responseBody = await response.Content.ReadAsStringAsync();
 
+                            if (responseBody != null)
+                            {
+                                var rootObject = JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                                var res = _Mapper.Map<PermissionResult>(rootObject);
+                                return res;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"API request failed with status code: {response.StatusCode}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                    }
+                    await Task.Delay(retryDelayMilliseconds);
+                }
+
+                    return null;
+
+            }
         }
 
         void IActionFilter.OnActionExecuting(ActionExecutingContext context)

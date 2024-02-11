@@ -201,10 +201,15 @@ namespace TLIS_Repository.Base
         IRegionRepository _RegionRepository;
         IUserPermissionssRepository _UserPermissionssRepository;
         IRolePermissionsRepository _RolePermissionsRepository;
-        public UnitOfWork(ApplicationDbContext context, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        IServiceProvider Services;
+        public UnitOfWork(ApplicationDbContext context, IMapper mapper, IConfiguration configuration, IServiceProvider service)
         {
             _context = context;
             _mapper = mapper;
+            _configuration = configuration;
+            Services = service;
+
         }
         public IAttributeViewManagmentRepository AttributeViewManagmentRepository
         {
@@ -303,7 +308,7 @@ namespace TLIS_Repository.Base
             get
             {
                 if (_siteRepository == null)
-                    _siteRepository = new SiteRepository(_context, _mapper);
+                    _siteRepository = new SiteRepository(_context, Services, _configuration, _mapper);
 
                 return _siteRepository;
             }

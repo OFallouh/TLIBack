@@ -10,7 +10,7 @@ using Toolbelt.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Xml;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
-using WF_API.Model;
+
 
 namespace TLIS_DAL
 {
@@ -167,51 +167,9 @@ namespace TLIS_DAL
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
         public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW{ get; set; }
-        public virtual DbSet<T_WF_TEMPLATE> T_WF_TEMPLATES { get; set; }
-        public virtual DbSet<T_WF_ESCALATION_LEVEL> T_WF_ESCALATION_LEVELS { get; set; }
-        public virtual DbSet<T_WF_ACTION> T_WF_ACTIONS { get; set; }
-        public virtual DbSet<T_WF_PHASE> T_WF_PHASES { get; set; }
-        public virtual DbSet<T_WF_ACTION_OPTION> T_WF_ACTION_OPTIONS { get; set; }
-        public virtual DbSet<T_WF_PHASE_ACTION> T_WF_PHASE_ACTIONS { get; set; }
-        public virtual DbSet<T_WF_EMPLOYEE> T_WF_EMPLOYEES { get; set; }
-        public virtual DbSet<T_WF_DEPARTEMENT> T_WF_DEPARTEMENTS { get; set; }
-        public virtual DbSet<T_WF_HOLIDAY> T_WF_HOLIDAYS { get; set; }
-        public virtual DbSet<T_WF_WORKING_DAY> T_WF_WORKING_DAYS { get; set; }
-        public virtual DbSet<T_WF_FORM_ELEMENT> T_WF_FORM_ELEMENTS { get; set; }
-        public virtual DbSet<T_WF_FORM_ELEMENT_VALIDATOR> T_WF_FORM_ELEMENT_VALIDATORS { get; set; }
-        public virtual DbSet<T_WF_FORM_ELEMENT_CHOICE> T_WF_FORM_ELEMENT_CHOICES { get; set; }
-        public virtual DbSet<T_WF_LINK> T_WF_LINKS { get; set; }
-        public virtual DbSet<T_WF_NODE> T_WF_NODES { get; set; }
-        public virtual DbSet<T_WF_TASK_VALUE> T_WF_TASK_VALUES { get; set; }
-        public virtual DbSet<T_WF_TASK> T_WF_TASKS { get; set; }
-        public virtual DbSet<T_WF_TICKET> T_WF_TICKETS { get; set; }
-        public virtual DbSet<T_WF_META_LINK> T_WF_META_LINKS { get; set; }
-        public virtual DbSet<T_WF_DELEGATION> T_WF_DELEGATIONS { get; set; }
-        public virtual DbSet<T_WF_MAIL_TEMPLATE> T_WF_MAIL_TEMPLATES { get; set; }
-        public virtual DbSet<T_WF_CONDITION> T_WF_CONDITIONS { get; set; }
-        public virtual DbSet<T_WF_MAIL_TEMPLATE_FILE> T_WF_MAIL_TEMPLATE_FILES { get; set; }
+      
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<T_WF_TEMPLATE>()
-                    .HasOne(m => m.EscalationMailTemplate)
-                    .WithMany(t => t.ESCALATION_TEMPLATES)
-                    .HasForeignKey(m => m.EscalationMailTemplateId);
-
-            builder.Entity<T_WF_TEMPLATE>()
-                    .HasOne(m => m.ReminderMailTemplate)
-                    .WithMany(t => t.REMINDER_TEMPLATES)
-                    .HasForeignKey(m => m.ReminderMailTemplateId);
-
-
-            builder.Entity<T_WF_LINK>()
-               .HasOne(l => l.CurrentPhase)
-               .WithMany(p => p.WF_LINKCURRENTS)
-               .HasForeignKey(l => l.CurrentPhaseId);
-
-            builder.Entity<T_WF_LINK>()
-                        .HasOne(l => l.NextPhase)
-                        .WithMany(p => p.WF_LINKNEXTS)
-                        .HasForeignKey(l => l.NextPhaseId);
 
             builder.Entity<TLIsite>()
                 .HasOne(e => e.Region)

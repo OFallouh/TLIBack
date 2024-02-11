@@ -86,6 +86,7 @@ namespace TLIS_Service.Services
         private IMapper _mapper;
         ServiceProvider _serviceProvider;
         public static List<TLIsite> _MySites;
+        IServiceProvider Services;
         public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper,IServiceProvider service)
         {
             _context = context;
@@ -94,7 +95,7 @@ namespace TLIS_Service.Services
             _mapper = mapper;
             Services = service;
         }
-        IServiceProvider Services;
+   
        
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
         {
@@ -7680,45 +7681,6 @@ namespace TLIS_Service.Services
                         return result;
                     }
                 }
-            }
-        }
-
-        private static readonly HttpClient _httpClient = new HttpClient();
-        private async Task<SumbitTaskByTLI> SubmitTaskByTLI(int TaskId)
-        {
-            using (var scope = Services.CreateScope())
-            {
-                IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-                string apiUrl = $"http://192.168.1.50:9085/api/TicketManagement/SubmitTaskByTLI?taskId={TaskId}";
-
-                try
-                {
-                    HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-
-                        if (responseBody != null)
-                        {
-                            var rootObject = JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                            var res = _Mapper.Map<SumbitTaskByTLI>(rootObject);
-                            return res;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"API request failed with status code: {response.StatusCode}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                }
-
-
-                return null;
-
             }
         }
 
