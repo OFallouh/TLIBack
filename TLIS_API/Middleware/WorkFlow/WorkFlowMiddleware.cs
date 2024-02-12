@@ -118,7 +118,7 @@ namespace TLIS_API.Middleware.WorkFlow
             using (var scope = Services.CreateScope())
             {
                 IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-                string apiUrl = $"{ExternalApi}/api/TicketManagement/SubmitTaskByTLI?taskId={TaskId}";
+                string apiUrl = $"{ExternalApi}/api/ActionManagement/GetPermissionByTask?UserId={TaskId}";
                 int maxRetries = 1; // Number of retries
                 int retryDelayMilliseconds = 180000; // 3 minutes in milliseconds
                 for (int retryCount = 0; retryCount < maxRetries; retryCount++)

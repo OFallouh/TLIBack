@@ -54,10 +54,12 @@ namespace TLIS_API
         public ApplicationDbContext _DbContext { get; set; }
         public IMapper _Mapper { get; set; }
         public IHostEnvironment HostingEnvironment { get; private set; }
-        public Startup(IConfiguration configuration, IHostEnvironment env)
+        public IServiceProvider service { get; set; }
+        public Startup(IConfiguration configuration, IHostEnvironment env, IServiceProvider service)
         {
             this.HostingEnvironment = env;
             this.Configuration = configuration;
+            this.service = service;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -99,7 +101,7 @@ namespace TLIS_API
             //_unitOfWorkService = serviceProvider.GetRequiredService<IUnitOfWorkService>();
             _DbContext = serviceProvider.GetService<ApplicationDbContext>();
 
-            _unitOfWork = new UnitOfWork(_DbContext, _Mapper, Configuration);
+            _unitOfWork = new UnitOfWork(_DbContext, _Mapper, Configuration, service);
             _unitOfWorkService = new UnitOfWorkService(_unitOfWork, Configuration);
             /*------------------------------------------------------------------------------------*/
 
