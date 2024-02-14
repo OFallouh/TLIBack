@@ -1995,6 +1995,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                if (TaskId != 0)
+                                {
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                }
                             }
                             else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
                             {
@@ -2091,6 +2095,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                if (TaskId != 0)
+                                {
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                }
                             }
                             else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
                             {
@@ -2182,7 +2190,13 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
+                                if (TaskId != 0)
+                                {
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                }
+
                             }
+                        
                             transaction.Complete();
                             tran.Commit();
                             return new Response<ObjectInstAtts>();
@@ -2279,6 +2293,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(CabinetModel.DynamicInstAttsValue, TableEntity.Id, Cabinet.Id);
 
                         await _unitOfWork.SaveChangesAsync();
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
                     }
                     else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2343,6 +2361,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(GeneratorModel.DynamicInstAttsValue, TableEntity.Id, Generator.Id);
 
                         await _unitOfWork.SaveChangesAsync();
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
                     }
                     else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2409,6 +2431,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SolarModel.DynamicInstAttsValue, TableEntity.Id, Solar.Id);
 
                         await _unitOfWork.SaveChangesAsync();
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
                     }
                     transaction.Complete();
                     return new Response<ObjectInstAtts>();
@@ -3613,76 +3639,83 @@ namespace TLIS_Service.Services
         }
         public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int TaskId)
         {
-            try
+            using (TransactionScope scope = new TransactionScope())
             {
-                float FreeSpace = 0;
-                var allOtherInventory = _dbContext.TLIallOtherInventoryInst.Where(x => x.solarId == OtherInventoryId || x.generatorId == OtherInventoryId || x.cabinetId == OtherInventoryId)
-                       .Include(x => x.cabinet).Include(x => x.generator).Include(x => x.solar).ToList();
-
-                foreach (var item in allOtherInventory)
+                try
                 {
-                    if (item.cabinetId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                    float FreeSpace = 0;
+                    var allOtherInventory = _dbContext.TLIallOtherInventoryInst.Where(x => x.solarId == OtherInventoryId || x.generatorId == OtherInventoryId || x.cabinetId == OtherInventoryId)
+                           .Include(x => x.cabinet).Include(x => x.generator).Include(x => x.solar).ToList();
+
+                    foreach (var item in allOtherInventory)
                     {
-
-                        TLIcabinet tLIcabinet = item.cabinet;
-                        var Cabinet = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                        foreach (var TLICabinet in Cabinet)
+                        if (item.cabinetId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIcabinet.ToString())
                         {
-                            TLICabinet.Dismantle = true;
-                            FreeSpace += tLIcabinet.SpaceInstallation;
 
+                            TLIcabinet tLIcabinet = item.cabinet;
+                            var Cabinet = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                            foreach (var TLICabinet in Cabinet)
+                            {
+                                TLICabinet.Dismantle = true;
+                                FreeSpace += tLIcabinet.SpaceInstallation;
+
+                            }
+                            var Cabinet1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                            foreach (var TLICabinet in Cabinet1)
+                            {
+                                TLICabinet.Dismantle = true;
+                            }
                         }
-                        var Cabinet1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                        foreach (var TLICabinet in Cabinet1)
+                        else if (item.generatorId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIgenerator.ToString())
                         {
-                            TLICabinet.Dismantle = true;
+                            TLIgenerator tLIgenerator = item.generator;
+                            var Generator = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                            foreach (var TLIGenerator in Generator)
+                            {
+                                TLIGenerator.Dismantle = true;
+                                FreeSpace += tLIgenerator.SpaceInstallation;
+
+                            }
+                            var Generator1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                            foreach (var TLIGenerator in Generator1)
+                            {
+                                TLIGenerator.Dismantle = true;
+                            }
                         }
+                        else if (item.solarId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                        {
+                            TLIsolar tLIsolar = item.solar;
+                            var Solar = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
+                            foreach (var TLISolar in Solar)
+                            {
+                                TLISolar.Dismantle = true;
+                                FreeSpace += tLIsolar.SpaceInstallation;
+
+                            }
+                            var Solar1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
+                            foreach (var TLISolar in Solar1)
+                            {
+                                TLISolar.Dismantle = true;
+                            }
+                        }
+
                     }
-                    else if (item.generatorId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                    var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                    Site.ReservedSpace -= FreeSpace;
+                    _dbContext.Entry(Site).State = EntityState.Modified;
+                    _dbContext.SaveChanges();
+                    if (TaskId != 0)
                     {
-                        TLIgenerator tLIgenerator = item.generator;
-                        var Generator = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                        foreach (var TLIGenerator in Generator)
-                        {
-                            TLIGenerator.Dismantle = true;
-                            FreeSpace += tLIgenerator.SpaceInstallation;
-
-                        }
-                        var Generator1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                        foreach (var TLIGenerator in Generator1)
-                        {
-                            TLIGenerator.Dismantle = true;
-                        }
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
-                    else if (item.solarId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIsolar.ToString())
-                    {
-                        TLIsolar tLIsolar = item.solar;
-                        var Solar = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                        foreach (var TLISolar in Solar)
-                        {
-                            TLISolar.Dismantle = true;
-                            FreeSpace += tLIsolar.SpaceInstallation;
-
-                        }
-                        var Solar1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                        foreach (var TLISolar in Solar1)
-                        {
-                            TLISolar.Dismantle = true;
-                        }
-                    }
-
+                    scope.Complete();
+                    return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-                var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
-                Site.ReservedSpace -= FreeSpace;
-                _dbContext.Entry(Site).State = EntityState.Modified;
-                _dbContext.SaveChanges();
+                catch (Exception er)
+                {
 
-                return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-            }
-            catch (Exception er)
-            {
-
-                return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
 
         }

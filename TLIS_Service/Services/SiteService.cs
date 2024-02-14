@@ -123,9 +123,8 @@ namespace TLIS_Service.Services
                     _MySites.Add(NewSiteEntity);
                     if (TaskId != null)
                     {
-                        //TODO
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     }
-                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                     _unitOfWork.SaveChanges();
                     transaction.Complete();
 
@@ -154,7 +153,10 @@ namespace TLIS_Service.Services
 
                     _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
                     _MySites.Add(Site);
-                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
                     _unitOfWork.SaveChanges();
                     transaction.Complete();
                     return new Response<EditSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);

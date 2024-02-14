@@ -2358,7 +2358,10 @@ namespace TLIS_Service.Services
                         {
                             _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, civilWithLegs.Id);
                         }
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
                     {
@@ -2500,7 +2503,10 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilWithoutLeg.Id);
                                 }
                             }
-                           var Submit=_unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            if (TaskId != 0)
+                            {
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            }
                             //AddCivilHistory(AddCivilWithoutLeg.ticketAtt, allCivilInstId, "Insert");
                         }
                         else
@@ -2607,7 +2613,10 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilNonSteel.Id);
                                 }
                             }
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            if (TaskId != 0)
+                            {
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            }
                             //AddCivilHistory(AddCivilNonSteel.ticketAtt, allCivilInstId, "Insert");
                         }
                         else
@@ -2796,7 +2805,10 @@ namespace TLIS_Service.Services
                         //_unitOfWork.LegRepository.UpdateRange(Legs);
                         //_unitOfWork.SaveChanges();
                         await _unitOfWork.SaveChangesAsync();
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
 
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == CivilType)
@@ -2982,7 +2994,10 @@ namespace TLIS_Service.Services
                         }
 
                         await _unitOfWork.SaveChangesAsync();
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == CivilType)
                     {
@@ -3044,7 +3059,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilNonSteel.DynamicInstAttsValue, TableNameId, civilNonSteelEntity.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        if (TaskId != 0)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        }
                     }
                     transaction.Complete();
                     return new Response<ObjectInstAtts>();
@@ -7394,7 +7412,7 @@ namespace TLIS_Service.Services
                                 tLIcivilLoads.Dismantle = true;
 
                             }
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+
 
                         }
                         else if (item.civilWithoutLegId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
@@ -7418,7 +7436,6 @@ namespace TLIS_Service.Services
                                 tLIcivilLoads.Dismantle = true;
 
                             }
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                         }
                         else if (item.civilNonSteelId != null && CivilName == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
@@ -7441,7 +7458,6 @@ namespace TLIS_Service.Services
                             {
                                 tLIcivilLoads.Dismantle = true;
                             }
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
 
                         }
 
@@ -7450,6 +7466,10 @@ namespace TLIS_Service.Services
                     Site.ReservedSpace -= (float)Freespace;
                     _dbContext.Entry(Site).State = EntityState.Modified;
                     _dbContext.SaveChanges();
+                    if (TaskId != 0)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
                     transaction.Complete();
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }

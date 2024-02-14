@@ -8730,7 +8730,7 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                                 continue;
-                                              
+
                                             }
 
                                             leg.CivilWithLegInstId = NewCivilWithLegsEntity.Id;
@@ -19423,69 +19423,69 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        ////////////////////////////////////////////////////////////
-                        /////////////////// Solar //////////////////////////////////
-                        ////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////
+                    /////////////////// Solar //////////////////////////////////
+                    ////////////////////////////////////////////////////////////
 
-                        Solar:
+                    Solar:
 
-                            ExcelWorksheet SolarSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Solar".ToLower());
-                            int SolarRows = 0;
-                            try
+                        ExcelWorksheet SolarSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Solar".ToLower());
+                        int SolarRows = 0;
+                        try
+                        {
+                            SolarRows = SolarSheet.Dimension.End.Row;
+                        }
+                        catch (NullReferenceException)
+                        {
+                            goto Generator;
+                        }
+                        int SolarColumns = SolarSheet.Dimension.End.Column;
+
+                        DataTable SolarDataTable = new DataTable();
+                        List<string> SolarSheetColumn = new List<string>();
+
+                        for (int i = 1; i <= SolarColumns; i++)
+                        {
+                            string ColName = SolarSheet.Cells[1, i].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                            SolarSheetColumn.Add(ColName);
+                            SolarDataTable.Columns.Add(ColName);
+                        }
+
+                        for (int i = 2; i <= SolarRows; i++)
+                        {
+                            DataRow SolarDataRow = SolarDataTable.NewRow();
+                            for (int j = 1; j <= SolarColumns; j++)
                             {
-                                SolarRows = SolarSheet.Dimension.End.Row;
-                            }
-                            catch (NullReferenceException)
-                            {
-                                goto Generator;
-                            }
-                            int SolarColumns = SolarSheet.Dimension.End.Column;
-
-                            DataTable SolarDataTable = new DataTable();
-                            List<string> SolarSheetColumn = new List<string>();
-
-                            for (int i = 1; i <= SolarColumns; i++)
-                            {
-                                string ColName = SolarSheet.Cells[1, i].Value.ToString().Trim();
+                                string ColName = SolarSheet.Cells[1, j].Value.ToString().Trim();
                                 ColName = Regex.Replace(ColName, @"\s+", " ");
 
-                                SolarSheetColumn.Add(ColName);
-                                SolarDataTable.Columns.Add(ColName);
-                            }
-
-                            for (int i = 2; i <= SolarRows; i++)
-                            {
-                                DataRow SolarDataRow = SolarDataTable.NewRow();
-                                for (int j = 1; j <= SolarColumns; j++)
+                                object Value = SolarSheet.Cells[i, j].Value;
+                                if (Value != null)
                                 {
-                                    string ColName = SolarSheet.Cells[1, j].Value.ToString().Trim();
-                                    ColName = Regex.Replace(ColName, @"\s+", " ");
+                                    string ValueAsString = Value.ToString().Trim();
+                                    ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
 
-                                    object Value = SolarSheet.Cells[i, j].Value;
-                                    if (Value != null)
-                                    {
-                                        string ValueAsString = Value.ToString().Trim();
-                                        ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                                        Value = ValueAsString;
-                                        SolarDataRow[ColName] = Value;
-                                    }
-                                    else
-                                    {
-                                        SolarDataRow[ColName] = Value;
-                                    }
+                                    Value = ValueAsString;
+                                    SolarDataRow[ColName] = Value;
                                 }
-                                SolarDataTable.Rows.Add(SolarDataRow);
+                                else
+                                {
+                                    SolarDataRow[ColName] = Value;
+                                }
                             }
+                            SolarDataTable.Rows.Add(SolarDataRow);
+                        }
 
-                            //
-                            // Dynamic Attributes For Power..
-                            //
+                        //
+                        // Dynamic Attributes For Power..
+                        //
 
-                            int SolarTableNameId = TablesName.FirstOrDefault(x =>
-                             x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsolar.ToString().ToLower()).Id;
+                        int SolarTableNameId = TablesName.FirstOrDefault(x =>
+                         x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIsolar.ToString().ToLower()).Id;
 
-                            List<TLIdynamicAtt> SolarMissedAttributeCSV = new List<TLIdynamicAtt>()
+                        List<TLIdynamicAtt> SolarMissedAttributeCSV = new List<TLIdynamicAtt>()
                             {
                                 new TLIdynamicAtt
                                 {
@@ -19942,7 +19942,7 @@ namespace TLIS_Service.Services
                                     Required = false,
                                     disable = false,
                                     DefaultValue = null
-                                },  
+                                },
                                 new TLIdynamicAtt
                                 {
                                     Key = "Attachments1",
@@ -20161,8 +20161,8 @@ namespace TLIS_Service.Services
                                 },
                             };
 
-                            List<TLIdynamicAtt> SolarAllDynamicAttribute = _unitOfWork.DynamicAttRepository
-                                .GetWhere(x => x.tablesNamesId == SolarTableNameId).ToList();
+                        List<TLIdynamicAtt> SolarAllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                            .GetWhere(x => x.tablesNamesId == SolarTableNameId).ToList();
 
 
                         List<TLIdynamicAtt> SolarMissedAttributes = SolarMissedAttributeCSV
@@ -20170,7 +20170,7 @@ namespace TLIS_Service.Services
                            .ToList();
 
                         _unitOfWork.DynamicAttRepository.AddRange(SolarMissedAttributes);
-                            _unitOfWork.SaveChanges();
+                        _unitOfWork.SaveChanges();
 
                         for (int j = 0; j <= SolarDataTable.Rows.Count - 1; j++)
                         {
@@ -20422,7 +20422,7 @@ namespace TLIS_Service.Services
                                     string SolarName = SolarDataTable.Rows[j]["Solar Name"].ToString();
                                     if (string.IsNullOrEmpty(SolarName))
                                     {
-                                        SolarName = SolarLibraryModel + " " + Solar_SiteName;   
+                                        SolarName = SolarLibraryModel + " " + Solar_SiteName;
                                     }
 
                                     // Check if Power Name is Already Exist on This Site..
@@ -20462,7 +20462,7 @@ namespace TLIS_Service.Services
                                         Prefix = SolarPREFIXString,
                                         PowerLossRatio = SolarPowerlossratioString,
                                         NumberOfSSU = SolarNumberOfSSU,
-                                        SolarLibraryId= SolarLibraryModelId,
+                                        SolarLibraryId = SolarLibraryModelId,
                                         NumberOfInstallPVs = SolarNumberOfInstallPVs,
                                         Extension = SolarExtensionString,
                                         ExtenstionDimension = SolarExtenstionDimensionString
@@ -20646,11 +20646,12 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
+                   
                         ////////////////////////////////////////////////////////////
                         /////////////////// Generator //////////////////////////////////
                         ////////////////////////////////////////////////////////////
 
-                        Generator:
+                             Generator:
 
                             ExcelWorksheet GeneratorSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Generator".ToLower());
                             int GeneratorRows = 0;
@@ -20660,8 +20661,7 @@ namespace TLIS_Service.Services
                             }
                             catch (NullReferenceException)
                             {
-                                System.IO.File.Delete(FilePath);
-                                return new Response<string>("Succeed");
+                            goto CivilWithLegAttachFile;
                             }
                             int GeneratorColumns = GeneratorSheet.Dimension.End.Column;
 
@@ -21485,8 +21485,447 @@ namespace TLIS_Service.Services
                                     }
                                 }
                             }
-                               
-                            System.IO.File.Delete(FilePath);
+                    ////////////////////////////////////////////////////////////
+                    /////////////////// CivilWithLegAttachFile //////////////////////////////////
+                    ////////////////////////////////////////////////////////////
+                    CivilWithLegAttachFile:
+
+                        ExcelWorksheet AttachSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilWithLegAttachFile".ToLower());
+                        int AttachRows = 0;
+                        try
+                        {
+                            AttachRows = AttachSheet.Dimension.End.Row;
+                        }
+                        catch (NullReferenceException)
+                        {
+                            goto CivilWithoutLegAttachFile;
+                        }
+                        int AttachColumns = AttachSheet.Dimension.End.Column;
+
+                        DataTable AttachDataTable = new DataTable();
+                        List<string> AttachSheetColumn = new List<string>();
+
+                        for (int i = 1; i <= AttachColumns; i++)
+                        {
+                            string ColName = AttachSheet.Cells[1, i].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                            AttachSheetColumn.Add(ColName);
+                            AttachDataTable.Columns.Add(ColName);
+                        }
+
+                        for (int i = 2; i <= AttachRows; i++)
+                        {
+                            DataRow AttachDataRow = AttachDataTable.NewRow();
+                            for (int j = 1; j <= AttachColumns; j++)
+                            {
+                                string ColName = AttachSheet.Cells[1, j].Value.ToString().Trim();
+                                ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                object Value = AttachSheet.Cells[i, j].Value;
+                                if (Value != null)
+                                {
+                                    string ValueAsString = Value.ToString().Trim();
+                                    ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                                    Value = ValueAsString;
+                                    AttachDataRow[ColName] = Value;
+                                }
+                                else
+                                {
+                                    AttachDataRow[ColName] = Value;
+                                }
+                            }
+                            AttachDataTable.Rows.Add(AttachDataRow);
+                        }
+                        for (int j = 0; j <= AttachDataTable.Rows.Count - 1; j++)
+                        {
+                            using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                new System.TimeSpan(0, 15, 0)))
+                            {
+                                try
+                                {
+                                    int RecordId = 0;
+                                    int TabelNameId = 0;
+                                    string SiteCode = AttachDataTable.Rows[j]["SITECODE"].ToString();
+                                    string RecordName = AttachDataTable.Rows[j]["Name"].ToString();
+
+                                    var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                                    if (Record != null)
+                                    {
+                                        RecordId = Record.Id;
+                                    }
+                                    string URLPath = AttachDataTable.Rows[j]["URL Path"].ToString();
+                                    var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithLegs");
+                                    if (TabelNames != null)
+                                    {
+                                        TabelNameId = TabelNames.Id;
+                                    }
+                                    List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+                                    string urlFileExtension = System.IO.Path.GetExtension(URLPath).TrimStart('.').ToUpper(); // Extract the file extension and convert to uppercase
+                                    bool isImage = imgTypes.Contains(urlFileExtension); // Check if the file extension is in the list of image types
+
+                                    var filePath = System.IO.Path.Combine(_Config["StoreFiles"], URLPath);
+                                    var fileInfo = new System.IO.FileInfo(filePath);
+                                    if (fileInfo.Exists)
+                                    {
+                                        // Access file properties
+                                        string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(fileInfo.Name); // Extract file name without extension
+                                        string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                                        float fileSizePerMega = (float)fileInfo.Length / (1024 * 1024);
+
+                                        TLIattachedFiles tLIattachedFiles = new TLIattachedFiles()
+                                        {
+                                            Name = fileNameWithoutExtension,
+                                            SiteCode = SiteCode,
+                                            fileSize = fileSizePerMega,
+                                            Path = URLPath,
+                                            RecordId = RecordId,
+                                            tablesNamesId = RecordId,
+                                            IsImg = isImage
+                                        };
+                                        db.TLIattachedFiles.Add(tLIattachedFiles);
+                                        db.SaveChanges();
+                                    }
+                                    else
+                                    {
+                                        AttachTransaction.Dispose();
+                                        string errMsg = $"This {AttachDataTable.Rows[j]["URL Path"]} not found in {_Config["StoreFiles"]}";
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = errMsg,
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                            SheetName = "CivilWithLegAttachFile",
+                                            UniqueName = $"(Civil Name) : {AttachDataTable.Rows[j]["Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+                                        continue;
+
+                                    }
+
+
+                                }
+                                catch (Exception err)
+                                {
+                                    AttachTransaction.Dispose();
+
+                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        ErrMsg = err.Message,
+                                        IsDeleted = false,
+                                        IsLib = false,
+                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                        SheetName = "CivilWithLegAttachFile",
+                                        UniqueName = $"(Civil Name) : {AttachDataTable.Rows[j]["Name"]}"
+                                    };
+
+                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    continue;
+                                }
+                            }
+                        }
+                    ////////////////////////////////////////////////////////////
+                    /////////////////// CivilWithLegAttachFile //////////////////////////////////
+                    ////////////////////////////////////////////////////////////
+                   CivilWithoutLegAttachFile:
+
+                        ExcelWorksheet AttachCivilWithoutLegAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilWithoutLegAttachFile".ToLower());
+                        int AttacCivilWithoutLegAttachFilehRows = 0;
+                        try
+                        {
+                            AttachRows = AttachCivilWithoutLegAttachFileSheet.Dimension.End.Row;
+                        }
+                        catch (NullReferenceException)
+                        {
+                            goto CivilNonSteelAttachFile;
+                        }
+                        int AttachCivilWithoutLegAttachFileColumns = AttachSheet.Dimension.End.Column;
+
+                        DataTable AttachCivilWithoutLegAttachFileDataTable = new DataTable();
+                        List<string> AttachCivilWithoutLegAttachFileSheetColumn = new List<string>();
+
+                        for (int i = 1; i <= AttachCivilWithoutLegAttachFileColumns; i++)
+                        {
+                            string ColName = AttachCivilWithoutLegAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                            AttachCivilWithoutLegAttachFileSheetColumn.Add(ColName);
+                            AttachCivilWithoutLegAttachFileDataTable.Columns.Add(ColName);
+                        }
+
+                        for (int i = 2; i <= AttachRows; i++)
+                        {
+                            DataRow AttachCivilWithoutLegAttachFileDataRow = AttachCivilWithoutLegAttachFileDataTable.NewRow();
+                            for (int j = 1; j <= AttachCivilWithoutLegAttachFileColumns; j++)
+                            {
+                                string ColName = AttachCivilWithoutLegAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                                ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                object Value = AttachCivilWithoutLegAttachFileSheet.Cells[i, j].Value;
+                                if (Value != null)
+                                {
+                                    string ValueAsString = Value.ToString().Trim();
+                                    ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                                    Value = ValueAsString;
+                                    AttachCivilWithoutLegAttachFileDataRow[ColName] = Value;
+                                }
+                                else
+                                {
+                                    AttachCivilWithoutLegAttachFileDataRow[ColName] = Value;
+                                }
+                            }
+                            AttachCivilWithoutLegAttachFileDataTable.Rows.Add(AttachCivilWithoutLegAttachFileDataRow);
+                        }
+                        for (int j = 0; j <= AttachCivilWithoutLegAttachFileDataTable.Rows.Count - 1; j++)
+                        {
+                            using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                new System.TimeSpan(0, 15, 0)))
+                            {
+                                try
+                                {
+                                    int RecordId = 0;
+                                    int TabelNameId = 0;
+                                    string SiteCode = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                                    string RecordName = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                                    var Record = db.TLIcivilWithoutLeg.FirstOrDefault(x => x.Name == RecordName);
+                                    if (Record != null)
+                                    {
+                                        RecordId = Record.Id;
+                                    }
+                                    string URLPath = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["'URL Path'"].ToString();
+                                    var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithLegs");
+                                    if (TabelNames != null)
+                                    {
+                                        TabelNameId = TabelNames.Id;
+                                    }
+                                    List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+                                    string urlFileExtension = System.IO.Path.GetExtension(URLPath).TrimStart('.').ToUpper(); // Extract the file extension and convert to uppercase
+                                    bool isImage = imgTypes.Contains(urlFileExtension); // Check if the file extension is in the list of image types
+
+                                    var filePath = System.IO.Path.Combine(_Config["StoreFiles"], URLPath);
+                                    var fileInfo = new System.IO.FileInfo(filePath);
+                                    if (fileInfo.Exists)
+                                    {
+                                        // Access file properties
+                                        string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(fileInfo.Name); // Extract file name without extension
+                                        string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                                        float fileSizePerMega = (float)fileInfo.Length / (1024 * 1024);
+
+                                        TLIattachedFiles tLIattachedFiles = new TLIattachedFiles()
+                                        {
+                                            Name = fileNameWithoutExtension,
+                                            SiteCode = SiteCode,
+                                            fileSize = fileSizePerMega,
+                                            Path = URLPath,
+                                            RecordId = RecordId,
+                                            tablesNamesId = RecordId,
+                                            IsImg = isImage
+                                        };
+                                        db.TLIattachedFiles.Add(tLIattachedFiles);
+                                        db.SaveChanges();
+                                    }
+                                    else
+                                    {
+                                        AttachTransaction.Dispose();
+                                        string errMsg = $"This {AttachCivilWithoutLegAttachFileDataTable.Rows[j]["URL Path"]} not found in {_Config["StoreFiles"]}";
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = errMsg,
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                            SheetName = "CivilWithoutLegAttachFile",
+                                            UniqueName = $"(Civil Name) : {AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+                                        continue;
+
+                                    };
+
+                                }
+                                catch (Exception err)
+                                {
+                                    AttachTransaction.Dispose();
+
+                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        ErrMsg = err.Message,
+                                        IsDeleted = false,
+                                        IsLib = false,
+                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                        SheetName = "CivilWithoutLegAttachFile",
+                                        UniqueName = $"(Civil Name) : {AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"]}"
+                                    };
+
+                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    continue;
+                                }
+                            }
+                        }
+                    ////////////////////////////////////////////////////////////
+                    /////////////////// CivilWithLegAttachFile //////////////////////////////////
+                    ////////////////////////////////////////////////////////////
+                    CivilNonSteelAttachFile:
+
+                        ExcelWorksheet AttachCivilNonSteelAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilNonSteelAttachFile".ToLower());
+                        int AttachCivilNonSteelAttachFileRows = 0;
+                        try
+                        {
+                            AttachCivilNonSteelAttachFileRows = AttachCivilNonSteelAttachFileSheet.Dimension.End.Row;
+                        }
+                        catch (NullReferenceException)
+                        {
+                            goto Generator;
+                        }
+                        int AttachCivilNonSteelAttachFileColumns = AttachCivilNonSteelAttachFileSheet.Dimension.End.Column;
+
+                        DataTable AttachCivilNonSteelAttachFileDataTable = new DataTable();
+                        List<string> AttachCivilNonSteelAttachFileSheetColumn = new List<string>();
+
+                        for (int i = 1; i <= AttachCivilNonSteelAttachFileColumns; i++)
+                        {
+                            string ColName = AttachCivilNonSteelAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                            AttachCivilNonSteelAttachFileSheetColumn.Add(ColName);
+                            AttachCivilNonSteelAttachFileDataTable.Columns.Add(ColName);
+                        }
+
+                        for (int i = 2; i <= AttachRows; i++)
+                        {
+                            DataRow AttachCivilNonSteelAttachFileDataRow = AttachCivilNonSteelAttachFileDataTable.NewRow();
+                            for (int j = 1; j <= AttachCivilNonSteelAttachFileColumns; j++)
+                            {
+                                string ColName = AttachCivilNonSteelAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                                ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                                object Value = AttachCivilNonSteelAttachFileSheet.Cells[i, j].Value;
+                                if (Value != null)
+                                {
+                                    string ValueAsString = Value.ToString().Trim();
+                                    ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                                    Value = ValueAsString;
+                                    AttachCivilNonSteelAttachFileDataRow[ColName] = Value;
+                                }
+                                else
+                                {
+                                    AttachCivilNonSteelAttachFileDataRow[ColName] = Value;
+                                }
+                            }
+                            AttachCivilNonSteelAttachFileDataTable.Rows.Add(AttachCivilNonSteelAttachFileDataRow);
+                        }
+                        for (int j = 0; j <= AttachCivilNonSteelAttachFileDataTable.Rows.Count - 1; j++)
+                        {
+                            using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                new System.TimeSpan(0, 15, 0)))
+                            {
+                                try
+                                {
+                                    int RecordId = 0;
+                                    int TabelNameId = 0;
+                                    string SiteCode = AttachCivilNonSteelAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                                    string RecordName = AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                                    var Record = db.TLIcivilNonSteel.FirstOrDefault(x => x.Name == RecordName);
+                                    if (Record != null)
+                                    {
+                                        RecordId = Record.Id;
+                                    }
+                                    string URLPath = AttachCivilNonSteelAttachFileDataTable.Rows[j]["'URL Path'"].ToString();
+                                    var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithLegs");
+                                    if (TabelNames != null)
+                                    {
+                                        TabelNameId = TabelNames.Id;
+                                    }
+                                    List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+                                    string urlFileExtension = System.IO.Path.GetExtension(URLPath).TrimStart('.').ToUpper(); // Extract the file extension and convert to uppercase
+                                    bool isImage = imgTypes.Contains(urlFileExtension); // Check if the file extension is in the list of image types
+
+                                    var filePath = System.IO.Path.Combine(_Config["StoreFiles"], URLPath);
+                                    var fileInfo = new System.IO.FileInfo(filePath);
+                                    if (fileInfo.Exists)
+                                    {
+                                        // Access file properties
+                                        string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(fileInfo.Name); // Extract file name without extension
+                                        string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                                        float fileSizePerMega = (float)fileInfo.Length / (1024 * 1024);
+
+                                        TLIattachedFiles tLIattachedFiles = new TLIattachedFiles()
+                                        {
+                                            Name = fileNameWithoutExtension,
+                                            SiteCode = SiteCode,
+                                            fileSize = fileSizePerMega,
+                                            Path = URLPath,
+                                            RecordId = RecordId,
+                                            tablesNamesId = RecordId,
+                                            IsImg = isImage
+                                        };
+                                        db.TLIattachedFiles.Add(tLIattachedFiles);
+                                        db.SaveChanges();
+                                    }
+                                    else
+                                    {
+                                        AttachTransaction.Dispose();
+                                        string errMsg = $"This {AttachCivilNonSteelAttachFileDataTable.Rows[j]["URL Path"]} not found in {_Config["StoreFiles"]}";
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = errMsg,
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                            SheetName = "CivilNonSteelAttachFile",
+                                            UniqueName = $"(Civil Name) : {AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+                                        continue;
+
+                                    };
+
+                                }
+                                catch (Exception err)
+                                {
+                                    AttachTransaction.Dispose();
+
+                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        ErrMsg = err.Message,
+                                        IsDeleted = false,
+                                        IsLib = false,
+                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                        SheetName = "CivilNonSteelAttachFile",
+                                        UniqueName = $"(Civil Name) : {AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"]}"
+                                    };
+
+                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    continue;
+                                }
+                            }
+                        }
+
+                        System.IO.File.Delete(FilePath);
                             return new Response<string>("Succeed");
 
                         

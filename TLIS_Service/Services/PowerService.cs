@@ -870,7 +870,10 @@ namespace TLIS_Service.Services
                                 }
                             }
                             //AddHistory(PowerViewModel.ticketAtt, Id, "Insert");
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            if (TaskId != 0)
+                            {
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            }
                             transaction.Complete();
                             tran.Commit();
                             return new Response<ObjectInstAtts>();
@@ -1909,7 +1912,10 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(PowerViewModel.DynamicInstAttsValue, TableName, PowerEntity.Id);
 
                     await _unitOfWork.SaveChangesAsync();
-                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    if (TaskId != 0)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                    }
                     transaction.Complete();
                     return new Response<ObjectInstAtts>();
                 }
