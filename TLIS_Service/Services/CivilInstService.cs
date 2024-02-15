@@ -9290,7 +9290,7 @@ namespace TLIS_Service.Services
 
                     }
                 }
-                return new Response<List<RecalculatSpace>>(false, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<List<RecalculatSpace>>(true, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception ex)
             {
