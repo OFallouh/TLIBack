@@ -403,7 +403,7 @@ namespace TLIS_Repository.Repositories
         }
    
         private static readonly HttpClient _httpClient = new HttpClient();
-        private async Task<SumbitTaskByTLI> SubmitTaskByTLI(int TaskId)
+        public async Task<SumbitTaskByTLI> SubmitTaskByTLI(int? TaskId)
         {
             var ExternalApi = _configuration["ExternalApi"];
             using (var scope = Services.CreateScope())
@@ -449,9 +449,5 @@ namespace TLIS_Repository.Repositories
             }
         }
 
-        ApiResponse ISiteRepository.SubmitTaskByTLI(int taskId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

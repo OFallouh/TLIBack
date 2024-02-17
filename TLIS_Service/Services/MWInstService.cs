@@ -2603,7 +2603,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString,int TaskId)
+        public Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString,int? TaskId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -2723,9 +2723,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
                             }
                             else if (LoadSubType.TLImwBU.ToString() == TableName)
@@ -2851,9 +2852,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
                             }
                             else if (LoadSubType.TLImwDish.ToString() == TableName)
@@ -2981,9 +2983,10 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwDish.Id);
                                     }
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
                             }
                             else if (LoadSubType.TLImwRFU.ToString() == TableName)
@@ -3041,9 +3044,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
 
                             }
@@ -3115,9 +3119,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
                             }
 
@@ -3142,7 +3147,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update entity
         //Update dynamic attributes
-        public async Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int TaskId)
+        public async Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int? TaskId)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -3203,9 +3208,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_ODUViewModel.DynamicInstAttsValue, TableNameId, mwODU.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (LoadSubType.TLImwBU.ToString() == TableName)
@@ -3286,9 +3292,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_BUViewModel.DynamicInstAttsValue, TableNameId, mwBU.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (LoadSubType.TLImwDish.ToString() == TableName)
@@ -3370,9 +3377,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_DishViewModel.DynamicInstAttsValue, TableNameId, mwDish.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (LoadSubType.TLImwRFU.ToString() == TableName)
@@ -3454,9 +3462,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_RFUViewModel.DynamicInstAttsValue, TableNameId, mwRFU.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (LoadSubType.TLImwOther.ToString() == TableName)
@@ -3525,9 +3534,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(Mw_OtherViewModel.DynamicInstAttsValue, TableNameId, mwOther.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     transactionScope.Complete();
@@ -5527,7 +5537,7 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<MW_ODUViewModel>>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -5610,7 +5620,6 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                                     }
                                     else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
                                     {
@@ -5669,7 +5678,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
 
                                     }
                                     else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
@@ -5721,7 +5730,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                       
                                     }
                                     else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
                                     {
@@ -5757,7 +5766,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                  
                                     }
                                     else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
                                     {
@@ -5783,7 +5792,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                        
                                     }
                                     else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
                                     {
@@ -5808,7 +5817,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
                                     }
                                     else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
                                     {
@@ -5833,7 +5842,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                 
                                     }
                                     else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
                                     {
@@ -5858,7 +5867,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithLegs tLIcivilWithLegs = t.civilWithLegs;
                                         tLIcivilWithLegs.CurrentLoads = tLIcivilWithLegs.CurrentLoads - EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    
                                     }
                                     _dbContext.SaveChanges();
                                 }
@@ -5922,7 +5931,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                               
                                     }
                                     else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
                                     {
@@ -5981,7 +5990,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                     
 
                                     }
                                     else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
@@ -5995,7 +6004,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    
 
                                     }
                                     else if (item.mwRFUId != null && LoadName == TablesNames.TLImwRFU.ToString())
@@ -6009,7 +6018,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                   
                                     }
                                     else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
                                     {
@@ -6035,7 +6044,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
                                     }
                                     else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
                                     {
@@ -6070,7 +6079,6 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
                                     }
                                     else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
@@ -6097,7 +6105,6 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                                     }
                                     else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
                                     {
@@ -6122,7 +6129,6 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
                                     }
                                     else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
                                     {
@@ -6147,7 +6153,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
                                     }
                                     else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
                                     {
@@ -6172,7 +6178,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
                                         tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                       
                                     }
                                     _dbContext.SaveChanges();
                                 }
@@ -6226,7 +6232,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                       
                                     }
                                     else if (item.mwDishId != null && LoadName == TablesNames.TLImwDish.ToString())
                                     {
@@ -6261,7 +6267,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                        
 
                                     }
                                     else if (item.mwODUId != null && LoadName == TablesNames.TLImwODU.ToString())
@@ -6275,7 +6281,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                       
 
 
                                     }
@@ -6290,7 +6296,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                 
 
                                     }
                                     else if (item.mwOtherId != null && LoadName == TablesNames.TLImwOther.ToString())
@@ -6304,7 +6310,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
 
                                     }
                                     else if (item.radioAntennaId != null && LoadName == TablesNames.TLIradioAntenna.ToString())
@@ -6324,7 +6330,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
 
                                     }
                                     else if (item.radioRRUId != null && LoadName == TablesNames.TLIradioRRU.ToString())
@@ -6340,7 +6346,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                          
 
                                     }
                                     else if (item.radioOtherId != null && LoadName == TablesNames.TLIradioOther.ToString())
@@ -6355,7 +6361,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                      
 
                                     }
                                     else if (item.powerId != null && LoadName == TablesNames.TLIpower.ToString())
@@ -6370,7 +6376,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                       
 
                                     }
                                     else if (item.loadOtherId != null && LoadName == TablesNames.TLIloadOther.ToString())
@@ -6384,7 +6390,7 @@ namespace TLIS_Service.Services
                                         }
                                         TLIcivilNonSteel tLIcivilNonSteel = t.civilNonSteel;
                                         tLIcivilNonSteel.CurrentLoads = tLIcivilNonSteel.CurrentLoads - (double)EquivalentSpace;
-                                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                       
 
                                     }
                                     _dbContext.SaveChanges();
@@ -6395,6 +6401,11 @@ namespace TLIS_Service.Services
                       
                     }
                     _dbContext.SaveChanges();
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
+                    }
                     transactionScope.Complete();
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }

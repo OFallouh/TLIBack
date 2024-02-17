@@ -2212,7 +2212,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString,int TaskId)
+        public Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString,int? TaskId)
         {
             //using (TransactionScope transaction = new TransactionScope())
             //{
@@ -2358,9 +2358,10 @@ namespace TLIS_Service.Services
                         {
                             _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, civilWithLegs.Id);
                         }
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
@@ -2503,9 +2504,10 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilWithoutLeg.Id);
                                 }
                             }
-                            if (TaskId != 0)
+                            if (TaskId != null)
                             {
-                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                             }
                             //AddCivilHistory(AddCivilWithoutLeg.ticketAtt, allCivilInstId, "Insert");
                         }
@@ -2613,9 +2615,10 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilNonSteel.Id);
                                 }
                             }
-                            if (TaskId != 0)
+                            if (TaskId != null)
                             {
-                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                             }
                             //AddCivilHistory(AddCivilNonSteel.ticketAtt, allCivilInstId, "Insert");
                         }
@@ -2805,9 +2808,10 @@ namespace TLIS_Service.Services
                         //_unitOfWork.LegRepository.UpdateRange(Legs);
                         //_unitOfWork.SaveChanges();
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
 
                     }
@@ -2994,9 +2998,10 @@ namespace TLIS_Service.Services
                         }
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == CivilType)
@@ -3059,9 +3064,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilNonSteel.DynamicInstAttsValue, TableNameId, civilNonSteelEntity.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     transaction.Complete();
@@ -7466,9 +7472,10 @@ namespace TLIS_Service.Services
                     Site.ReservedSpace -= (float)Freespace;
                     _dbContext.Entry(Site).State = EntityState.Modified;
                     _dbContext.SaveChanges();
-                    if (TaskId != 0)
+                    if (TaskId != null)
                     {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                     }
                     transaction.Complete();
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -8084,12 +8091,12 @@ namespace TLIS_Service.Services
                     , x => x.civilLoads, x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
                     if (AllCivilInst != null)
                     {
-                        List<TLIcivilLoads> AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId == AllCivilInst.Id &&
+                        List<TLIcivilLoads> AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id &&x.ReservedSpace==true&&
                         x.Dismantle == false && x.allLoadInstId != null).ToList();
                         AllCivilInst.civilWithLegs.CurrentLoads = 0;
                         foreach (var item in AllLoadOnCivil)
                         {
-                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId&& item.ReservedSpace==true && x.Draft == false,
+                            var LoadInfo = _unitOfWork.AllLoadInstRepository.GetIncludeWhere(x => x.Id == item.allLoadInstId&& x.Draft == false,
                                 x => x.radioAntenna, x => x.radioOther, x => x.radioRRU, x => x.mwBU, x => x.mwDish, x => x.mwODU, x => x.mwODU, x => x.mwOther
                                 , x => x.loadOther).FirstOrDefault();
                             if (LoadInfo != null)

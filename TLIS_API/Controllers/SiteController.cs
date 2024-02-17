@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -19,11 +20,13 @@ using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using TLIS_DAL.ViewModels.SiteStatusDTOs;
+using TLIS_DAL.ViewModels.UserDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -414,6 +417,13 @@ namespace TLIS_API.Controllers
         public IActionResult GetItemsOnSite(string SiteCode)
         {
             var response = _unitOfWorkService.SiteService.GetItemsOnSite(SiteCode);
+            return Ok(response);
+        }
+        [HttpPost("GetSiteInfo")]
+        [ProducesResponseType(200, Type = typeof(List<SiteInfo>))]
+        public IActionResult GetSiteInfo(string SiteCode)
+        {
+            var response = _unitOfWorkService.SiteService.GetSiteInfo(SiteCode);
             return Ok(response);
         }
     }

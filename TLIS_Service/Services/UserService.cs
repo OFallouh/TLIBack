@@ -1026,6 +1026,18 @@ namespace TLIS_Service.Services
                 return "This User Is Not Active";
             }
         }
+        public bool GetSession(int UserId,string Ip)
+        {
+            var SessionInfo = _dbContext.TLIsession.FirstOrDefault(x => x.UserId == UserId && x.IP == Ip && x.LoginDate < DateTime.Now);
+            if (SessionInfo != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         //private string CryptPassword(string password)
         //{

@@ -123,7 +123,8 @@ namespace TLIS_Service.Services
                     _MySites.Add(NewSiteEntity);
                     if (TaskId != null)
                     {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        
                     }
                     _unitOfWork.SaveChanges();
                     transaction.Complete();
@@ -155,7 +156,8 @@ namespace TLIS_Service.Services
                     _MySites.Add(Site);
                     if (TaskId != null)
                     {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                     }
                     _unitOfWork.SaveChanges();
                     transaction.Complete();
@@ -7685,7 +7687,24 @@ namespace TLIS_Service.Services
                 }
             }
         }
-
+        public Response<SiteInfo> GetSiteInfo(string SiteCode)
+        {
+            var SiteInfo = _context.TLIsite.Include(x=>x.Area).Include(x=>x.Zone).Include(x=>x.Region).FirstOrDefault(x => x.SiteCode == SiteCode);
+            if (SiteInfo != null)
+            {
+                SiteInfo site = new SiteInfo
+                {
+                    CityName = SiteInfo.Zone,
+                    RegionCode = SiteInfo.RegionCode,
+                    SubArea = SiteInfo.SubArea
+                };
+                return new Response<SiteInfo>(true, site, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            else
+            {
+                return new Response<SiteInfo>(false, null, null, "This SiteCode Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
 
 
     }

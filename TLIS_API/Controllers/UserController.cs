@@ -241,6 +241,14 @@ namespace TLIS_API.Controllers
         {
             var response = _unitOfWorkService.UserService.GetNameByUserId(UserId);
             return Ok(response);
+
+        }
+        [HttpPost("GetSession")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        public IActionResult GetSession(int UserId,string Ip)
+        {
+            var response = _unitOfWorkService.UserService.GetSession(UserId, Ip);
+            return Ok(response);
         }
 
     }

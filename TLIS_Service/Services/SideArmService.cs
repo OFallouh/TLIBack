@@ -146,7 +146,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int TaskId)
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -158,9 +158,10 @@ namespace TLIS_Service.Services
                         sidearm.Dismantle = true;
                     }
                     _dbContext.SaveChanges();
-                    if (TaskId != 0)
+                    if (TaskId != null)
                     {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                     }
                     transactionScope.Complete();
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -2125,7 +2126,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<AllItemAttributes> AddSideArm(AddSideArmViewModel SideArmViewModel, string SiteCode, string ConnectionString, int TaskId)
+        public Response<AllItemAttributes> AddSideArm(AddSideArmViewModel SideArmViewModel, string SiteCode, string ConnectionString, int? TaskId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -2242,9 +2243,10 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
                                 }
                             }
-                            if (TaskId != 0)
+                            if (TaskId != null)
                             {
-                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                             }
                             transaction.Complete();
                             tran.Commit();
@@ -2262,7 +2264,7 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //map ViewModel to Entity
         //update Entity
-        public async Task<Response<AllItemAttributes>> UpdateSideArm(EditSideArmViewModel SideArmViewModel, int TaskId)
+        public async Task<Response<AllItemAttributes>> UpdateSideArm(EditSideArmViewModel SideArmViewModel, int? TaskId)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -2321,9 +2323,10 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SideArmViewModel.DynamicInstAttsValue, TableNameId, SideArm.Id);
 
                     await _unitOfWork.SaveChangesAsync();
-                    if (TaskId != 0)
+                    if (TaskId != null)
                     {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                     }
                     return new Response<AllItemAttributes>();
                 }

@@ -28,6 +28,7 @@ namespace TLIS_Service.IService
 {
     public interface ISiteService
     {
+        Response<SiteInfo> GetSiteInfo(string SiteCode);
         List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
         Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId);
         Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId);

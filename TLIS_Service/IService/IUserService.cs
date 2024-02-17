@@ -14,6 +14,7 @@ namespace TLIS_Service.IService
 {
     public interface IUserService
     {
+        bool GetSession(int UserId, string Ip);
         Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain);
         Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain);
         Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain);

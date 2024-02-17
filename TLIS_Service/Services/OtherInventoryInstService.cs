@@ -1843,7 +1843,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int TaskId)
+        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -1995,9 +1995,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
                             }
                             else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
@@ -2095,9 +2096,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
                             }
                             else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
@@ -2190,9 +2192,10 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != 0)
+                                if (TaskId != null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                                 }
 
                             }
@@ -2218,7 +2221,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update Entity
         #endregion
-        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName ,int TaskId)
+        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName ,int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -2293,9 +2296,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(CabinetModel.DynamicInstAttsValue, TableEntity.Id, Cabinet.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
@@ -2361,9 +2365,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(GeneratorModel.DynamicInstAttsValue, TableEntity.Id, Generator.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
@@ -2431,9 +2436,10 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SolarModel.DynamicInstAttsValue, TableEntity.Id, Solar.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != 0)
+                        if (TaskId != null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                         }
                     }
                     transaction.Complete();
@@ -3637,7 +3643,7 @@ namespace TLIS_Service.Services
             }
             return string.Empty;
         }
-        public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int TaskId)
+        public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -3704,9 +3710,10 @@ namespace TLIS_Service.Services
                     Site.ReservedSpace -= FreeSpace;
                     _dbContext.Entry(Site).State = EntityState.Modified;
                     _dbContext.SaveChanges();
-                    if (TaskId != 0)
+                    if (TaskId != null)
                     {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI;
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+
                     }
                     scope.Complete();
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
