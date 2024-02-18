@@ -42,7 +42,7 @@ namespace TLIS_API.Middleware.WorkFlow
        
         void IActionFilter.OnActionExecuting(ActionExecutingContext context)
         {
-
+            string? userId = null;
             var clientIPAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
 
             if (context.HttpContext.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
@@ -58,22 +58,33 @@ namespace TLIS_API.Middleware.WorkFlow
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_configuration["JWT:Key"]);
 
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                try
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+                    tokenHandler.ValidateToken(token, new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero
+                    }, out SecurityToken validatedToken);
+
+                    var jwtToken = (JwtSecurityToken)validatedToken;
+                     userId = jwtToken.Claims.FirstOrDefault(x => x.Type == "sub").Value;
+                }
+                catch (SecurityTokenExpiredException)
+                {
+                    context.Result = new UnauthorizedObjectResult("401 Unauthorized");
+                    return;
+                }
                 string apiPath = context.HttpContext.Request.Path;
                 string[] segments = apiPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                 int lastSegmentIndex = segments.Length - 1; 
                 string desiredPath = string.Join("/", segments.Take(lastSegmentIndex));
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == "sub").Value;
+            
+            
                 string actionName = context.RouteData.Values["action"].ToString();
-                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) && x.IP== clientIPAddress && x.LoginDate<DateTime.Now);
+                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) && x.IP == clientIPAddress && x.LoginDate<DateTime.Now);
                 var userIdInt64 = Convert.ToInt32(userId);
                 if (session != null)
                 {
