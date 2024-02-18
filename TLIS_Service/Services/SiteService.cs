@@ -7689,14 +7689,14 @@ namespace TLIS_Service.Services
         }
         public Response<SiteInfo> GetSiteInfo(string SiteCode)
         {
-            var SiteInfo = _context.TLIsite.Include(x=>x.Area).Include(x=>x.Zone).Include(x=>x.Region).FirstOrDefault(x => x.SiteCode == SiteCode);
+            var SiteInfo = _context.TLIsite.Include(x=>x.Area).Include(x=>x.Region).FirstOrDefault(x => x.SiteCode == SiteCode);
             if (SiteInfo != null)
             {
                 SiteInfo site = new SiteInfo
                 {
                     CityName = SiteInfo.Zone,
                     RegionCode = SiteInfo.RegionCode,
-                    SubArea = SiteInfo.SubArea
+                    SubArea = SiteInfo.Area.AreaName
                 };
                 return new Response<SiteInfo>(true, site, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
