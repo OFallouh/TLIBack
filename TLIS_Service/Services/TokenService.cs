@@ -247,6 +247,33 @@ namespace TLIS_Service.Services
                     if (user != null)
                     {
                         var tokenString = BuildToken(user, secretKey);
+                        var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
+                        var session = _context.TLIsession.FirstOrDefault(x => x.UserId == user.Id);
+                        if (session == null)
+                        {
+                            TLIsession tLIsession = new TLIsession()
+                            {
+                                UserId = user.Id,
+                                Token = tokenString,
+                                IP = clientIpAddress,
+                                LoginDate = DateTime.Now
+                            };
+                            _context.TLIsession.Add(tLIsession);
+                            _context.SaveChanges();
+
+                        }
+                        else
+                        {
+                            TLIsession tLIsession = new TLIsession()
+                            {
+                                UserId = user.Id,
+                                Token = tokenString,
+                                IP = clientIpAddress,
+                                LoginDate = DateTime.Now
+                            };
+                            _context.TLIsession.Update(tLIsession);
+                            _context.SaveChanges();
+                        }
                         return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                 }

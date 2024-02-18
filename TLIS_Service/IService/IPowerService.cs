@@ -15,9 +15,9 @@ namespace TLIS_Service.IService
     public interface IPowerService
     {
         Response<ObjectInstAtts> GetAttForAdd(int Id, string SiteCode);
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId);
-        Response<ObjectInstAtts> AddPower(AddPowerViewModel PowerViewModel, string SiteCode, string ConnectionString, int TaskId);
-        Task<Response<ObjectInstAtts>> EditPower(EditPowerViewModel PowerViewModel, int TaskId);
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
+        Response<ObjectInstAtts> AddPower(AddPowerViewModel PowerViewModel, string SiteCode, string ConnectionString, int? TaskId);
+        Task<Response<ObjectInstAtts>> EditPower(EditPowerViewModel PowerViewModel, int? TaskId);
         Response<ObjectInstAttsForSideArm> GetById(int Id);
         Response<ReturnWithFilters<PowerViewModel>> GetList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<List<PowerTypeViewModel>> GetPowerTypes();

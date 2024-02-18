@@ -1870,7 +1870,7 @@ namespace TLIS_Service.Services
         //map ViewModel to Entity
         //update Entity
         //update dynamic attributes
-        public async Task<Response<ObjectInstAtts>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int TaskId)
+        public async Task<Response<ObjectInstAtts>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {

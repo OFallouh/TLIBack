@@ -15,9 +15,9 @@ namespace TLIS_Service.IService
     public interface ILoadOtherService
     {
         Response<ObjectInstAtts> GetAttForAdd(int LibId, string SiteCode);
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int TaskId);
-        Response<ObjectInstAtts> AddLoadOther(AddLoadOtherViewModel LoadOtherViewModel, string SiteCode, string ConnectionString, int TaskId);
-        Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel, int TaskId);
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
+        Response<ObjectInstAtts> AddLoadOther(AddLoadOtherViewModel LoadOtherViewModel, string SiteCode, string ConnectionString, int? TaskId);
+        Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel, int? TaskId);
         Response<ObjectInstAttsForSideArm> GetById(int Id);
         Response<ReturnWithFilters<LoadOtherViewModel>> GetLoadOtherList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<LoadsOtherDisplayedOnTableViewModel>> GetLoadsOtherBySite(LoadsOnSiteFilter BaseFilter, bool WithFilterData, List<FilterObjectList> ObjectAttributeFilters, ParameterPagination parameterPagination);

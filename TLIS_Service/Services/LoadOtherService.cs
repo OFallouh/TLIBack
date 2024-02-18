@@ -848,7 +848,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel, int TaskId)
+        public async Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {

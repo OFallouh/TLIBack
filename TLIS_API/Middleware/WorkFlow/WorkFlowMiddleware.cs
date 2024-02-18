@@ -38,9 +38,11 @@ namespace TLIS_API.Middleware.WorkFlow
             _mapper = mapper;
             Services = service;
         }
-        void IActionFilter.OnActionExecuted(ActionExecutedContext context)
+
+       
+        void IActionFilter.OnActionExecuting(ActionExecutingContext context)
         {
-            
+
             var clientIPAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
 
             if (context.HttpContext.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
@@ -62,63 +64,92 @@ namespace TLIS_API.Middleware.WorkFlow
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero 
+                    ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
-
+                string apiPath = context.HttpContext.Request.Path;
+                string[] segments = apiPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                int lastSegmentIndex = segments.Length - 1; 
+                string desiredPath = string.Join("/", segments.Take(lastSegmentIndex));
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == "sub").Value;
+                string actionName = context.RouteData.Values["action"].ToString();
                 var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) && x.IP== clientIPAddress && x.LoginDate<DateTime.Now);
+                var userIdInt64 = Convert.ToInt32(userId);
                 if (session != null)
                 {
                     var WorkFlowMode = _configuration["WorkFlowMode"];
                     if (WorkFlowMode.ToLower() == "true")
                     {
-                        var taskId = context.HttpContext.Request.Query["TaskId"];
-                        if (!string.IsNullOrEmpty(taskId))
-                        {
-                            var userIdInt64 = Convert.ToInt32(userId);
-                            var userPermission = GetPermissionByTask(userIdInt64);
-                            if (userPermission.Result!=null) 
+                        if (!actionName.ToLower().StartsWith("get")) 
+                        { 
+                            var taskId = context.HttpContext.Request.Query["TaskId"];
+                            if (!string.IsNullOrEmpty(taskId))
                             {
-                                context.Result = context.Result;
+                                if (int.TryParse(taskId, out int taskIdInt))
+                                {
+                                    var TaskInfo = GetTaskById(taskIdInt);
+                                    if (TaskInfo.Result.Result.MetaLink.Api.ToLower() == desiredPath.ToLower() && TaskInfo.Result.Result.AssignToUserId == userIdInt64 && TaskInfo.Result.Result.Status == Task_Status_Enum.Open)
+                                    {
+                                        context.Result = context.Result;
+                                        return;
+
+                                    }
+                                    else
+                                    {
+                                        context.Result = new UnauthorizedObjectResult("401 Unauthorized");
+                                        return;
+                                    }
+
+
+                                }
+                            }
+                            else
+                            {
+                                context.Result = new UnauthorizedObjectResult("401 Unauthorized");
                                 return;
                             }
                         }
+                        else
+                        {
+                            context.Result = context.Result;
+                            return;
+                        }
 
                     }
-                        
+                    else
+                    {
+                        context.Result = context.Result;
+                        return;
+                    }
+
                 }
                 else
                 {
                     context.Result = new UnauthorizedObjectResult("401 Unauthorized");
                     return;
                 }
-                
-                
+
+
+            }
+            else
+            {
+                context.Result = new UnauthorizedObjectResult("401 Unauthorized");
+                return;
+
             }
         }
-        public class PermissionResult
-        {
-            public List<MetaLinkViewDto> Result { get; set; }
-            public int Id { get; set; }
-            public object Exception { get; set; }
-            public int Status { get; set; }
-            public bool IsCanceled { get; set; }
-            public bool IsCompleted { get; set; }
-            public bool IsCompletedSuccessfully { get; set; }
-            public int CreationOptions { get; set; }
-            public object AsyncState { get; set; }
-            public bool IsFaulted { get; set; }
-        }
 
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+        }
         private static readonly HttpClient _httpClient = new HttpClient();
-        private async Task<PermissionResult> GetPermissionByTask(int TaskId)
+        private async Task<SumbitTaskByTLI> GetTaskById(int TaskId)
         {
             var ExternalApi = _configuration["ExternalApi"];
             using (var scope = Services.CreateScope())
             {
                 IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-                string apiUrl = $"{ExternalApi}/api/ActionManagement/GetPermissionByTask?UserId={TaskId}";
+                string apiUrl = $"{ExternalApi}/api/TicketManagement/TaskInfo?TaskId={TaskId}";
                 int maxRetries = 1; // Number of retries
                 int retryDelayMilliseconds = 180000; // 3 minutes in milliseconds
                 for (int retryCount = 0; retryCount < maxRetries; retryCount++)
@@ -134,7 +165,7 @@ namespace TLIS_API.Middleware.WorkFlow
                             if (responseBody != null)
                             {
                                 var rootObject = JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                                var res = _Mapper.Map<PermissionResult>(rootObject);
+                                var res = _Mapper.Map<SumbitTaskByTLI>(rootObject);
                                 return res;
                             }
                         }
@@ -150,14 +181,9 @@ namespace TLIS_API.Middleware.WorkFlow
                     await Task.Delay(retryDelayMilliseconds);
                 }
 
-                    return null;
+                return null;
 
             }
-        }
-
-        void IActionFilter.OnActionExecuting(ActionExecutingContext context)
-        {
-           
         }
     }
 }

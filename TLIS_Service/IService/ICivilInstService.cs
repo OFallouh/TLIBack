@@ -25,8 +25,8 @@ namespace TLIS_Service.IService
 
         Response<CivilLoads> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType);
         Response<ObjectInst> GetAttForAdd(string CivilType, int CivilLibraryId, int? CategoryId, string SiteCode);
-        Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string CivilType, string SiteCode, string connectionString, int TaskId);
-        Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType, int TaskId);
+        Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string CivilType, string SiteCode, string connectionString, int? TaskId);
+        Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType, int? TaskId);
         Response<ObjectInstAtts> GetById(int CivilInsId, string CivilType);
         Response<ReturnWithFilters<object>> GetCivilWithLegsWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
@@ -41,7 +41,7 @@ namespace TLIS_Service.IService
         public Response<bool> CheckLoadsBeforDismantle(string TableName, int loadId);
         bool CheckRelatedLoad(string sitecode, int civilid, int sidearm, int loadid);
         public Response<CivilLoads> GetRelationshipBetweenloads(int loadid, string Loadname);
-        public Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName, int TaskId);
+        public Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName, int? TaskId);
         //Response<bool> OtherLoadDismantale(string sidecode, int loadid);
         string GetOtherLoadKey(int loadid);
         Response<List<LibraryDataDto>> GetLibraryAttForInstallations(string InstTableName, int? CatId);
