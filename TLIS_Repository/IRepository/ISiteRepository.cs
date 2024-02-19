@@ -8,6 +8,7 @@ using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using TLIS_DAL.ViewModels.wf;
 using TLIS_Repository.Base;
+using static TLIS_Repository.Repositories.SiteRepository;
 
 namespace TLIS_Repository.IRepository
 {
@@ -16,6 +17,6 @@ namespace TLIS_Repository.IRepository
         void UpdateReservedSpace(string SiteCode, float SpaceInstallation);
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
         Response<string> CheckSpace(string SiteCode, string TableName, int LibraryId, float SpaceInstallation, string Cabinet);
-        Task<SumbitTaskByTLI> SubmitTaskByTLI(int? TaskId);
+        Task<string> SubmitTaskByTLI(int? TaskId);
     }
 }

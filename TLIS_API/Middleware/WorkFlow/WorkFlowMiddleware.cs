@@ -84,7 +84,7 @@ namespace TLIS_API.Middleware.WorkFlow
             
             
                 string actionName = context.RouteData.Values["action"].ToString();
-                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) && x.IP == clientIPAddress && x.LoginDate<DateTime.Now);
+                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId)/* && x.IP == clientIPAddress*/ && x.LoginDate<DateTime.Now);
                 var userIdInt64 = Convert.ToInt32(userId);
                 if (session != null)
                 {
@@ -99,7 +99,7 @@ namespace TLIS_API.Middleware.WorkFlow
                                 if (int.TryParse(taskId, out int taskIdInt))
                                 {
                                     var TaskInfo = GetTaskById(taskIdInt);
-                                    if (TaskInfo.Result.Result.MetaLink.Api.ToLower() == desiredPath.ToLower() && TaskInfo.Result.Result.AssignToUserId == userIdInt64 && TaskInfo.Result.Result.Status == Task_Status_Enum.Open)
+                                    if (TaskInfo.Result.Result.MetaLink.Api.ToLower() == apiPath.ToLower() && TaskInfo.Result.Result.AssignToUserId == userIdInt64 && TaskInfo.Result.Result.Status == Task_Status_Enum.Open)
                                     {
                                         context.Result = context.Result;
                                         return;

@@ -26,7 +26,8 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-  
+
+    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -40,7 +41,6 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddSite")]
         [ProducesResponseType(200, Type = typeof(AddSiteViewModel))]
         public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel, int TaskId)
@@ -48,7 +48,6 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel,TaskId);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditSite")]
         [ProducesResponseType(200, Type = typeof(EditSiteViewModel))]
         public IActionResult EditSite([FromBody] EditSiteViewModel EditSiteViewModel, int TaskId)

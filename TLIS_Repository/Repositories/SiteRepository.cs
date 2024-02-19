@@ -401,9 +401,17 @@ namespace TLIS_Repository.Repositories
                 return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-   
-        private static readonly HttpClient _httpClient = new HttpClient();
-        public async Task<SumbitTaskByTLI> SubmitTaskByTLI(int? TaskId)
+        public class SumbitsTaskByTLI
+        {
+
+            public bool result { get; set; }
+            public object count { get; set; }
+            public object errorMessage { get; set; }
+
+
+        }
+            private static readonly HttpClient _httpClient = new HttpClient();
+        public async Task<string> SubmitTaskByTLI(int? TaskId)
         {
             var ExternalApi = _configuration["ExternalApi"];
             using (var scope = Services.CreateScope())
@@ -427,9 +435,8 @@ namespace TLIS_Repository.Repositories
 
                             if (responseBody != null)
                             {
-                                var rootObject = JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                                var res = _Mapper.Map<SumbitTaskByTLI>(rootObject);
-                                return res;
+                                
+                                return responseBody;
                             }
                         }
                         else
