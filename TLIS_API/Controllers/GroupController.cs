@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -18,7 +17,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -234,6 +232,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.GroupService.GetGroupByName_WFVersion();
             return Ok(response.Data);
         }
-        
+        [HttpPost("GetUpperToEscalationWF")]
+        [ProducesResponseType(200, Type = typeof(Task<EscalationWFViewModel>))]
+        public IActionResult GetUpperToEscalationWF(int UserId)
+        {
+            var response = _unitOfWorkService.GroupService.GetUpperToEscalationWF(UserId);
+            return Ok(response);
+        }
     }
 }

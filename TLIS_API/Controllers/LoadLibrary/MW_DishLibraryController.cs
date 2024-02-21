@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -18,7 +17,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.LoadLibrary
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class MW_DishLibraryController : ControllerBase

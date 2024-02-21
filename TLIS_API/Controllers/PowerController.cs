@@ -14,11 +14,9 @@ using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 using TLIS_DAL.ViewModels.PowerTypeDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
-using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

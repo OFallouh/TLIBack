@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using TLIS_API.Middleware.ActionFilters;
-using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.ViewModels.ComplixFilter;
 using TLIS_DAL.ViewModels.IntegrationBinding;
@@ -13,7 +12,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [Route("api/[controller]")]
     [ApiController]
     public class IntegrationController : ControllerBase
