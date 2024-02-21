@@ -3702,7 +3702,7 @@ namespace TLIS_Service.Services
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(MW_RFULibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, MW_RFULibraryEntity.Id);
                                     }
-                                    //  _unitOfWork.TablesHistoryRepository.AddHistory(MW_RFULibraryEntity.Id, "Add", "TLImwRFULibrary");
+                                    _unitOfWork.TablesHistoryRepository.AddHistory(MW_RFULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLImwRFULibrary");
 
                                     var ObjectForAddInCashList = _unitOfWork.MW_RFULibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_RFULibraryEntity.Id, x => x.boardType, x => x.diversityType);
@@ -3766,7 +3766,7 @@ namespace TLIS_Service.Services
                                     {
                                         _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(MW_OtherLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, MW_OtherLibraryEntity.Id);
                                     }
-                                    //  _unitOfWork.TablesHistoryRepository.AddHistory(MW_OtherLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwOtherLibrary.ToString().ToLower());
+                                     _unitOfWork.TablesHistoryRepository.AddHistory(MW_OtherLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwOtherLibrary.ToString().ToLower());
 
                                     var ObjectForAddInCashList = _unitOfWork.MW_OtherLibraryRepository
                                         .GetIncludeWhereFirst(x => x.Id == MW_OtherLibraryEntity.Id);

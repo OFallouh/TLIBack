@@ -18,6 +18,7 @@ namespace TLIS_DAL
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         { }
+        public virtual DbSet<AUDIT_TABLE> AUDIT_TABLE { get; set; }
         public virtual DbSet<TLIsession> TLIsession { get; set; }
         public virtual DbSet<TLIarea> TLIarea { get; set; }
         public virtual DbSet<TLIasType> TLIasType { get; set; }

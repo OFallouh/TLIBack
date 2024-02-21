@@ -9,6 +9,7 @@ using TLIS_Service.Helpers;
 
 namespace TLIS_API.Controllers
 {
+
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -19,6 +20,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -228,28 +230,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.DeletePassword();
             return Ok(response);
         }
-        [HttpPost("GetEmailByUserId")]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
-        public IActionResult GetEmailByUserId(int UserId)
-        {
-            var response = _unitOfWorkService.UserService.GetEmailByUserId(UserId);
-            return Ok(response);
-        }
-        [HttpPost("GetNameByUserId")]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
-        public IActionResult GetNameByUserId(int UserId)
-        {
-            var response = _unitOfWorkService.UserService.GetNameByUserId(UserId);
-            return Ok(response);
 
-        }
-        [HttpPost("GetSession")]
-        [ProducesResponseType(200, Type = typeof(bool))]
-        public IActionResult GetSession(int UserId,string Ip)
-        {
-            var response = _unitOfWorkService.UserService.GetSession(UserId, Ip);
-            return Ok(response);
-        }
 
     }
 }

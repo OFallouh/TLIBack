@@ -163,7 +163,7 @@ namespace TLIS_Service.Services
                                 {
                                     var tokenString = BuildToken(user, secretKey);
                                     var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
-                                    var session=_context.TLIsession.FirstOrDefault(x=>x.UserId==user.Id);
+                                    var session=_context.TLIsession.FirstOrDefault(x=>x.UserId==user.Id &&x.IP== clientIpAddress);
                                     if (session == null)
                                     {
                                         TLIsession tLIsession = new TLIsession()
@@ -249,6 +249,7 @@ namespace TLIS_Service.Services
                         var tokenString = BuildToken(user, secretKey);
                         var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
                         var session = _context.TLIsession.FirstOrDefault(x => x.UserId == user.Id);
+                    
                         if (session == null)
                         {
                             TLIsession tLIsession = new TLIsession()
@@ -273,6 +274,8 @@ namespace TLIS_Service.Services
                             };
                             _context.TLIsession.Update(tLIsession);
                             _context.SaveChanges();
+                            
+                           
                         }
                         return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }

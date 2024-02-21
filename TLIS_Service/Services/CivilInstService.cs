@@ -79,6 +79,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using Microsoft.Extensions.Configuration;
 using LinqToExcel.Extensions;
 using TLIS_DAL.ViewModels.SiteDTOs;
+using static TLIS_Repository.Repositories.SiteRepository;
 
 namespace TLIS_Service.Services
 {
@@ -2358,11 +2359,7 @@ namespace TLIS_Service.Services
                         {
                             _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, civilWithLegs.Id);
                         }
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
+                        
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
                     {
@@ -2504,11 +2501,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilWithoutLeg.Id);
                                 }
                             }
-                            if (TaskId != null)
-                            {
-                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                            }
                             //AddCivilHistory(AddCivilWithoutLeg.ticketAtt, allCivilInstId, "Insert");
                         }
                         else
@@ -2530,7 +2522,7 @@ namespace TLIS_Service.Services
                             var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, AddCivilNonSteel.CivilNonSteelLibraryId, AddCivilNonSteel.SpaceInstallation, null).Message;
                             if (CheckSpace != "Success")
                             {
-                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ObjectInstAtts>(false, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
                         //Check Validations
@@ -2556,7 +2548,7 @@ namespace TLIS_Service.Services
                             //if CheckName is true then return error message that the name is already exists
                             if (CheckName != null)
                             {
-                                return new Response<ObjectInstAtts>(true, null, null, $"The name {CivilNonSteel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ObjectInstAtts>(false, null, null, $"The name {CivilNonSteel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                             //add Entity to database
                             _unitOfWork.CivilNonSteelRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilNonSteel);
@@ -2615,24 +2607,38 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(addDynamicAttsInstValue, TableNameEntity.Id, CivilNonSteel.Id);
                                 }
                             }
-                            if (TaskId != null)
-                            {
-                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                            }
+                            
                             //AddCivilHistory(AddCivilNonSteel.ticketAtt, allCivilInstId, "Insert");
                         }
                         else
                         {
-                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ObjectInstAtts>(false, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
-                    transaction.Complete();
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var Mapper = _mapper.Map<SumbitsTaskByTLI>(Submit);
+                        if (Mapper.errorMessage == null)
+                        {
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, Mapper.errorMessage.ToString(), (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+
+                    }
+                    else
+                    {
+                        transaction.Complete();
+                        return new Response<ObjectInstAtts>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    }
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
                 {
-                    return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<ObjectInstAtts>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
             //}

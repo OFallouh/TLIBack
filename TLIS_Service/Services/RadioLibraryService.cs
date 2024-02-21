@@ -3708,9 +3708,10 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                     if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                     {
-                        var RadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
+                        var RadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        TLIradioAntennaLibrary NewRadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         RadioAntennaEntity.Active = !(RadioAntennaEntity.Active);
-                        _unitOfWork.RadioAntennaLibraryRepository.Update(RadioAntennaEntity);
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, RadioAntennaEntity, NewRadioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
 
                         transaction.Complete();
@@ -3809,10 +3810,11 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                     if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                     {
-                        var RadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
+                        var RadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        TLIradioAntennaLibrary NewAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         RadioAntennaEntity.Deleted = true;
                         RadioAntennaEntity.Model = RadioAntennaEntity.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioAntennaLibraryRepository.Update(RadioAntennaEntity);
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, RadioAntennaEntity, NewAntennaLibrary);
                         _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(RadioAntennaEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString());
