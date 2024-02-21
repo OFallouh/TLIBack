@@ -11,7 +11,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [Route("api/[controller]")]
     [ApiController]
     public class ExternalApiController : ControllerBase
