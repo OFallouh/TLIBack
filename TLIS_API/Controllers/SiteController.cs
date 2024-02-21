@@ -420,12 +420,6 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetItemsOnSite(SiteCode);
             return Ok(response);
         }
-        [HttpPost("GetSiteInfo")]
-        [ProducesResponseType(200, Type = typeof(List<SiteInfo>))]
-        public IActionResult GetSiteInfo(string SiteCode)
-        {
-            var response = _unitOfWorkService.SiteService.GetSiteInfo(SiteCode);
-            return Ok(response);
-        }
+       
     }
 }
