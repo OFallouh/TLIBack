@@ -72,6 +72,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text.Json;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using static TLIS_Repository.Repositories.SiteRepository;
 
 
 
@@ -95,8 +96,15 @@ namespace TLIS_Service.Services
             _mapper = mapper;
             Services = service;
         }
-   
-       
+        public class SiteInfoResponse
+        {
+            public bool data { get; set; }
+            public bool succeeded { get; set; }
+            public object errors { get; set; }
+            public object message { get; set; }
+            public int code { get; set; }
+            public int count { get; set; }
+        }
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
@@ -124,10 +132,19 @@ namespace TLIS_Service.Services
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                        
+                        var result = Submit.Result;
+                        var siteInfoObject = JsonSerializer.Deserialize<SiteInfoResponse>(result);
+                        if (siteInfoObject.data == false && siteInfoObject.errors != null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
                     }
-                    _unitOfWork.SaveChanges();
-                    transaction.Complete();
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
 
                     return new Response<AddSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
