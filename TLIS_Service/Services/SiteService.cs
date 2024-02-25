@@ -127,17 +127,22 @@ namespace TLIS_Service.Services
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
                     _unitOfWork.SiteRepository.Add(NewSiteEntity);
+                    _unitOfWork.SaveChanges();
 
                     _MySites.Add(NewSiteEntity);
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
                         var result = Submit.Result;
-                        var siteInfoObject = JsonSerializer.Deserialize<SiteInfoResponse>(result);
-                        if (siteInfoObject.data == false && siteInfoObject.errors != null)
+                        if (result.result == true && result.errorMessage == null)
                         {
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
+                            return new Response<AddSiteViewModel>(false, null, null, result.errorMessage.ToString(), (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -174,10 +179,23 @@ namespace TLIS_Service.Services
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
+                            return new Response<EditSiteViewModel>(true, null, null, result.errorMessage.ToString(), (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                     }
-                    _unitOfWork.SaveChanges();
-                    transaction.Complete();
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
                     return new Response<EditSiteViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)

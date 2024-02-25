@@ -10,17 +10,14 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 {
     public class SumbitTaskByTLI
     {
-        public ActionViewDto Result { get; set; }
-        public int Id { get; set; }
-        public object Exception { get; set; }
-        public int Status { get; set; }
-        public bool IsCanceled { get; set; }
-        public bool IsCompleted { get; set; }
-        public bool IsCompletedSuccessfully { get; set; }
-        public int CreationOptions { get; set; }
-        public object AsyncState { get; set; }
-        public bool IsFaulted { get; set; }
+
+        public ActionViewDto result { get; set; }
+        public object count { get; set; }
+        public object errorMessage { get; set; }
+
+
     }
+   
     public class ActionViewDto
     {
         public int Id { get; set; }

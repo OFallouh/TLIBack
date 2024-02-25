@@ -18,10 +18,15 @@ using Azure;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using TLIS_DAL.ViewModels.SiteStatusDTOs;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using Microsoft.Extensions.DependencyInjection;
+using static TLIS_Repository.Repositories.SiteRepository;
+using static TLIS_Service.Services.SiteService;
+using System.Text.Json;
+using Newtonsoft.Json;
+
+
 
 namespace TLIS_API.Middleware.WorkFlow
 {
@@ -99,15 +104,36 @@ namespace TLIS_API.Middleware.WorkFlow
                                 if (int.TryParse(taskId, out int taskIdInt))
                                 {
                                     var TaskInfo = GetTaskById(taskIdInt);
-                                    if (TaskInfo.Result.Result.MetaLink.Api.ToLower() == apiPath.ToLower() && TaskInfo.Result.Result.AssignToUserId == userIdInt64 && TaskInfo.Result.Result.Status == Task_Status_Enum.Open)
+                                    if (TaskInfo.Result!= null)
                                     {
-                                        context.Result = context.Result;
-                                        return;
+                                        if (TaskInfo.Result.result != null)
+                                        {
+                                            if (TaskInfo.Result.result.MetaLink.Api != null && TaskInfo.Result.result.AssignToUserId != 0 && TaskInfo.Result.result.Status != null)
+                                            {
+                                                if (TaskInfo.Result.result.MetaLink.Api.ToLower() == apiPath.ToLower() && TaskInfo.Result.result.AssignToUserId == userIdInt64 && TaskInfo.Result.result.Status == Task_Status_Enum.Open)
+                                                {
+                                                    context.Result = context.Result;
+                                                    return;
+
+                                                }
+
+                                                else
+                                                {
+                                                    context.Result = new UnauthorizedObjectResult("401 Unauthorized");
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            context.Result = new UnauthorizedObjectResult(TaskInfo.Result.errorMessage);
+                                            return;
+                                        }
 
                                     }
                                     else
                                     {
-                                        context.Result = new UnauthorizedObjectResult("401 Unauthorized");
+                                        context.Result = new UnauthorizedObjectResult(TaskInfo.Exception);
                                         return;
                                     }
 
@@ -149,6 +175,14 @@ namespace TLIS_API.Middleware.WorkFlow
 
             }
         }
+        public class TaskInfo
+        {
+            public int Id { get; set; }
+            public string Status { get; set; }
+            public string Method { get; set; }
+            public string Result { get; set; }
+            // Add other properties as needed
+        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
@@ -159,6 +193,7 @@ namespace TLIS_API.Middleware.WorkFlow
             var ExternalApi = _configuration["ExternalApi"];
             using (var scope = Services.CreateScope())
             {
+                SumbitTaskByTLI sumbitTaskByTLI = new SumbitTaskByTLI();
                 IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
                 string apiUrl = $"{ExternalApi}/api/TicketManagement/TaskInfo?TaskId={TaskId}";
                 int maxRetries = 1; // Number of retries
@@ -175,9 +210,9 @@ namespace TLIS_API.Middleware.WorkFlow
 
                             if (responseBody != null)
                             {
-                                var rootObject = JsonSerializer.Deserialize<SumbitTaskByTLI>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                                var res = _Mapper.Map<SumbitTaskByTLI>(rootObject);
-                                return res;
+                                var sumbitTaskByT= JsonConvert.DeserializeObject<SumbitTaskByTLI>(responseBody);
+
+                                return sumbitTaskByT;
                             }
                         }
                         else

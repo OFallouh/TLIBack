@@ -46,6 +46,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using AutoMapper;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 
 namespace TLIS_Service.Services
 {
@@ -2723,11 +2724,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != null)
-                                {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                                }
+                             
                             }
                             else if (LoadSubType.TLImwBU.ToString() == TableName)
                             {
@@ -2852,11 +2849,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != null)
-                                {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                                }
+                               
                             }
                             else if (LoadSubType.TLImwDish.ToString() == TableName)
                             {
@@ -2983,11 +2976,7 @@ namespace TLIS_Service.Services
                                         _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, mwDish.Id);
                                     }
                                 }
-                                if (TaskId != null)
-                                {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                                }
+                             
                             }
                             else if (LoadSubType.TLImwRFU.ToString() == TableName)
                             {
@@ -3044,12 +3033,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != null)
-                                {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                                }
-
+                            
                             }
                             else if (LoadSubType.TLImwOther.ToString() == TableName)
                             {
@@ -3119,15 +3103,28 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                                if (TaskId != null)
+                              
+                            }
+                            if (TaskId != null)
+                            {
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                                var result = Submit.Result;
+                                if (result.result == true && result.errorMessage == null)
                                 {
-                                    var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                                    _unitOfWork.SaveChanges();
+                                    transaction.Complete();
+                                }
+                                else
+                                {
+                                    transaction.Dispose();
+                                    return new Response<ObjectInstAtts>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
                                 }
                             }
-
-                            transaction.Complete();
-                            tran.Commit();
+                            else
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
                             return new Response<ObjectInstAtts>();
                         }
                         catch (Exception err)
@@ -3208,11 +3205,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_ODUViewModel.DynamicInstAttsValue, TableNameId, mwODU.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
+                        
                     }
                     else if (LoadSubType.TLImwBU.ToString() == TableName)
                     {
@@ -3292,11 +3285,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_BUViewModel.DynamicInstAttsValue, TableNameId, mwBU.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
+                       
                     }
                     else if (LoadSubType.TLImwDish.ToString() == TableName)
                     {
@@ -3377,11 +3366,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_DishViewModel.DynamicInstAttsValue, TableNameId, mwDish.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
+                      
                     }
                     else if (LoadSubType.TLImwRFU.ToString() == TableName)
                     {
@@ -3462,11 +3447,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(MW_RFUViewModel.DynamicInstAttsValue, TableNameId, mwRFU.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
+                        
                     }
                     else if (LoadSubType.TLImwOther.ToString() == TableName)
                     {
@@ -3534,13 +3515,28 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(Mw_OtherViewModel.DynamicInstAttsValue, TableNameId, mwOther.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
+                       
+                    }
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                            _unitOfWork.SaveChanges();
+                            transactionScope.Complete();
+                        }
+                        else
+                        {
+                            transactionScope.Dispose();
+                            return new Response<ObjectInstAtts>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
                         }
                     }
-                    transactionScope.Complete();
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transactionScope.Complete();
+                    }
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)

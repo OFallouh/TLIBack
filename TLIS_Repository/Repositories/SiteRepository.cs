@@ -411,7 +411,7 @@ namespace TLIS_Repository.Repositories
 
         }
             private static readonly HttpClient _httpClient = new HttpClient();
-        public async Task<string> SubmitTaskByTLI(int? TaskId)
+        public async Task<SumbitsTaskByTLI> SubmitTaskByTLI(int? TaskId)
         {
             var ExternalApi = _configuration["ExternalApi"];
             using (var scope = Services.CreateScope())
@@ -421,7 +421,6 @@ namespace TLIS_Repository.Repositories
 
                 int maxRetries = 1; // Number of retries
                 int retryDelayMilliseconds = 180000; // 3 minutes in milliseconds
-
 
                 for (int retryCount = 0; retryCount < maxRetries; retryCount++)
                 {
@@ -435,24 +434,27 @@ namespace TLIS_Repository.Repositories
 
                             if (responseBody != null)
                             {
-                                
-                                return responseBody;
+                                var siteInfoObject = JsonSerializer.Deserialize<SumbitsTaskByTLI>(responseBody);
+                                return siteInfoObject;
                             }
                         }
                         else
                         {
                             Console.WriteLine($"API request failed with status code: {response.StatusCode}");
+                            throw new Exception($"API request failed with status code: {response.StatusCode}");
                         }
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw; // Rethrow the exception
                     }
 
                     await Task.Delay(retryDelayMilliseconds);
                 }
-                    return null;
 
+                // If the loop completes without returning, it means all retries failed
+                throw new Exception("All retries failed for SubmitTaskByTLI");
             }
         }
 

@@ -2618,21 +2618,21 @@ namespace TLIS_Service.Services
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                        var Mapper = _mapper.Map<SumbitsTaskByTLI>(Submit);
-                        if (Mapper.errorMessage == null)
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
                         {
+                            _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
                         else
                         {
-                            return new Response<ObjectInstAtts>(false, null, null, Mapper.errorMessage.ToString(), (int)Helpers.Constants.ApiReturnCode.fail);
+                            transaction.Dispose();
                         }
-
                     }
                     else
                     {
+                        _unitOfWork.SaveChanges();
                         transaction.Complete();
-                        return new Response<ObjectInstAtts>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     return new Response<ObjectInstAtts>();
                 }
@@ -2814,11 +2814,6 @@ namespace TLIS_Service.Services
                         //_unitOfWork.LegRepository.UpdateRange(Legs);
                         //_unitOfWork.SaveChanges();
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
 
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == CivilType)
@@ -3004,11 +2999,6 @@ namespace TLIS_Service.Services
                         }
 
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
-                        {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
-                        }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == CivilType)
                     {
@@ -3070,13 +3060,26 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilNonSteel.DynamicInstAttsValue, TableNameId, civilNonSteelEntity.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
-                        if (TaskId != null)
+                    }
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
                         {
-                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
                         }
                     }
-                    transaction.Complete();
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -7481,9 +7484,23 @@ namespace TLIS_Service.Services
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
+                            return new Response<bool>(false, false, null, result.errorMessage.ToString(), (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                     }
-                    transaction.Complete();
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception er)
