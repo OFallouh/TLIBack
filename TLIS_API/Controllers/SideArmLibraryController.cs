@@ -45,9 +45,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetSideArmLibrariesWithEnabledAttributes")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetSideArmLibrariesWithEnabledAttributes([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetSideArmLibrariesWithEnabledAttributes([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.SideArmLibraryService.GetSideArmLibrariesWithEnabledAttributes(CombineFilters, parameters, isRefresh);
+            var response = _unitOfWorkService.SideArmLibraryService.GetSideArmLibrariesWithEnabledAttributes(CombineFilters, parameters);
             return Ok(response);
         }
         [HttpGet("GetSideArmLibraryById/{id}")]

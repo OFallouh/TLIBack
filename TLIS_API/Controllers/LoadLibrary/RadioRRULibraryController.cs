@@ -38,9 +38,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetRadioRRULibrariesWithEnabledAttribute")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetRadioRRULibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination, bool? isRefresh)
+        public IActionResult GetRadioRRULibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination )
         {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioRRULibrariesWithEnabledAttribute(CombineFilters, parameterPagination, isRefresh);
+            var response = _unitOfWorkService.RadioLibraryService.GetRadioRRULibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
             return Ok(response);
         }
         [HttpGet("GetRadioRRULibraryById/{Id}")]

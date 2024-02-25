@@ -39,9 +39,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetMW_DishLibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_DishLibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetMW_DishLibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_DishLibraries(CombineFilters, WithFilterData, parameters, isRefresh);
+            var response = _unitOfWorkService.MWLibraryService.GetMW_DishLibraries(CombineFilters, WithFilterData, parameters);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

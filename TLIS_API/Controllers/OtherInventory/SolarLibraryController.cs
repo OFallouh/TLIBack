@@ -38,9 +38,9 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("GetSolarLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetSolarLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetSolarLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetSolarLibraryEnabledAtt(CombineFilters, WithFilterData, parameters, isRefresh);
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetSolarLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
             return Ok(response);
         }
         [HttpGet("GetSolarLibraryById/{id}")]

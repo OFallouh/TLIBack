@@ -42,9 +42,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetCivilNonSteelLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilNonSteelLibrariesEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameterPagination, bool? isRefresh)
+        public IActionResult GetCivilNonSteelLibrariesEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilNonSteelLibrariesEnabledAtt(CombineFilters, WithFilterData, parameterPagination, isRefresh);
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilNonSteelLibrariesEnabledAtt(CombineFilters, WithFilterData, parameterPagination);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

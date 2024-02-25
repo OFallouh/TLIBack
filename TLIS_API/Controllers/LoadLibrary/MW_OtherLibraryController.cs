@@ -105,9 +105,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetMW_OtherLibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_OtherLibraries([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetMW_OtherLibraries([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_OtherLibraries(CombineFilters, parameters, isRefresh);
+            var response = _unitOfWorkService.MWLibraryService.GetMW_OtherLibraries(CombineFilters, parameters);
             return Ok(response);
         }
     }

@@ -56,9 +56,9 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("GetCabinetPowerLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCabinetPowerLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetCabinetPowerLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters )
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetPowerLibraryEnabledAtt(CombineFilters, WithFilterData, parameters, isRefresh);
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetPowerLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
             return Ok(response);
         }
         [HttpGet("GetCabinetPowerLibraryById/{id}")]

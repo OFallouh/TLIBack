@@ -94,9 +94,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetRadioOtherLibrariesWithEnabledAttribute")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetRadioRRULibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, bool? isRefresh)
+        public IActionResult GetRadioRRULibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioOtherLibrariesWithEnabledAttribute(CombineFilters, parameterPagination, isRefresh);
+            var response = _unitOfWorkService.RadioLibraryService.GetRadioOtherLibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
             return Ok(response);
         }
     }

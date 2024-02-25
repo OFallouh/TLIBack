@@ -30,7 +30,6 @@ using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
-using TLIS_DAL;
 
 namespace TLIS_Service.Services
 {
@@ -39,16 +38,11 @@ namespace TLIS_Service.Services
         private readonly IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        private ApplicationDbContext _DbContext;
-
-        public static List<TLIsideArmLibrary> _SideArmLibraryEntities;
-
-        public SideArmLibraryService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper, ApplicationDbContext DbContext)
+        public SideArmLibraryService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
-            _DbContext = DbContext;
         }
         //Function take 1 parameter
         //map ViewModel to Entity
@@ -200,15 +194,8 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<SideArmLibraryViewModel>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            
-                            var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
-                                .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
-
                             transaction.Complete();
                             tran.Commit();
-
-                            _SideArmLibraryEntities.Add(ObjectForAddInCashList);
-
                             return new Response<SideArmLibraryViewModel>();
                         }
                         catch (Exception err)
@@ -537,9 +524,6 @@ namespace TLIS_Service.Services
 
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
                 await _unitOfWork.SaveChangesAsync();
-
-                _SideArmLibraryEntities.Remove(_SideArmLibraryEntities.FirstOrDefault(x => x.Id == id));
-
                 return new Response<SideArmLibraryViewModel>();
             }
             catch (Exception err)
@@ -562,9 +546,6 @@ namespace TLIS_Service.Services
 
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
                 await _unitOfWork.SaveChangesAsync();
-
-                _SideArmLibraryEntities.FirstOrDefault(x => x.Id == id).Active = NewSideWithArm.Active;
-
                 return new Response<SideArmLibraryViewModel>();
             }
             catch (Exception err)
@@ -685,13 +666,6 @@ namespace TLIS_Service.Services
                     _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(editSideArmLibraryViewModel.DynamicAtts, TableNames.Id, tLIsideArmLibrary.Id, Helpers.LogFilterAttribute.UserId, resultId, SidArm.Id);
                 }
                 await _unitOfWork.SaveChangesAsync();
-
-                var ObjectForAddInCashList = _unitOfWork.SideArmLibraryRepository
-                    .GetIncludeWhereFirst(x => x.Id == tLIsideArmLibrary.Id);
-
-                _SideArmLibraryEntities.Remove(_SideArmLibraryEntities.FirstOrDefault(x => x.Id == tLIsideArmLibrary.Id));
-                _SideArmLibraryEntities.Add(ObjectForAddInCashList);
-
                 return new Response<SideArmLibraryViewModel>();
             }
             catch (Exception err)
@@ -1171,7 +1145,7 @@ namespace TLIS_Service.Services
 
                 DynamicLibValueListIds = new List<int>();
 
-                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _DbContext.TLIdynamicAttLibValue.AsNoTracking().Where(x =>
+                List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
                     LibDynamicAttListIds.Select(y => y.Id).Contains(x.DynamicAttId) && !x.disable).ToList();
 
                 List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -1204,43 +1178,10 @@ namespace TLIS_Service.Services
             }
         }
         #endregion
-        public Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh)
+        public Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination)
         {
-            string[] ErrorMessagesWhenReturning = null;
-
-            StartAgainWithRefresh:
             try
             {
-                if (UnitOfWork.AllAttributeViewManagment == null || UnitOfWork.AllDynamicAttribute == null ||
-                    (isRefresh != null ? isRefresh.Value : false))
-                {
-                    if (UnitOfWork.AllAttributeViewManagment == null || (isRefresh != null ? isRefresh.Value : false))
-                    {
-                        UnitOfWork.AllAttributeViewManagment = _DbContext.TLIattributeViewManagment
-                            .AsNoTracking()
-                            .Include(x => x.AttributeActivated)
-                            .Include(x => x.DynamicAtt)
-                            .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
-                            .Include(x => x.DynamicAtt.DataType)
-                            .Include(x => x.DynamicAtt.tablesNames)
-                            .Include(x => x.EditableManagmentView)
-                            .Include(x => x.EditableManagmentView.TLItablesNames1)
-                            .ToList();
-                    }
-
-                    if (UnitOfWork.AllDynamicAttribute == null || (isRefresh != null ? isRefresh.Value : false))
-                    {
-                        UnitOfWork.AllDynamicAttribute = _DbContext.TLIdynamicAtt
-                            .AsNoTracking()
-                            .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
-                            .Include(x => x.tablesNames).ToList();
-                    }
-
-                    _SideArmLibraryEntities = _DbContext.TLIsideArmLibrary
-                        .AsNoTracking()
-                        .Where(x => !x.Deleted).ToList();
-                }
-
                 List<FilterObjectList> ObjectAttributeFilters = CombineFilters.filters;
                 List<DateFilterViewModel> DateFilter = CombineFilters.DateFilter;
                 int Count = 0;
@@ -1257,11 +1198,12 @@ namespace TLIS_Service.Services
                 if ((DateFilter != null ? DateFilter.Count() > 0 : false) ||
                     (ObjectAttributeFilters != null && ObjectAttributeFilters.Count > 0))
                 {
-                    SideArmLibraryAttribute = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                    SideArmLibraryAttribute = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
                         x.Enable && x.AttributeActivatedId != null &&
                         x.AttributeActivated.DataType.ToLower() != "datetime" &&
                         x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.SideArmLibrary.ToString() &&
-                        x.EditableManagmentView.TLItablesNames1.TableName == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString())
+                        x.EditableManagmentView.TLItablesNames1.TableName == TablesNames.TLIsideArmLibrary.ToString(),
+                            x => x.AttributeActivated, x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1)
                     .Select(x => x.AttributeActivated).ToList();
                 }
 
@@ -1297,11 +1239,10 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-
-                    List<TLIdynamicAtt> LibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    List<TLIdynamicAtt> LibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                         AttributeFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString()).ToList();
+                        x.tablesNames.TableName == TablesNames.TLIsideArmLibrary.ToString(), x => x.tablesNames, x => x.DataType).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1337,7 +1278,7 @@ namespace TLIS_Service.Services
                             NonStringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower()) ||
                             StringLibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        IEnumerable<TLIsideArmLibrary> Libraries = _SideArmLibraryEntities.AsEnumerable();
+                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (StringFilterObjectList LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1373,8 +1314,8 @@ namespace TLIS_Service.Services
                         IntersectLibraryIds = DynamicLibValueListIds;
                     }
 
-                    WithoutDateFilterSideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_SideArmLibraryEntities.Where(x =>
-                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id)).ToList());
+                    WithoutDateFilterSideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_unitOfWork.SideArmLibraryRepository.GetWhere(x =>
+                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted).ToList());
                 }
 
                 //
@@ -1420,11 +1361,10 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes...
                     //
-
-                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = UnitOfWork.AllDynamicAttribute.Where(x =>
+                    List<TLIdynamicAtt> DateTimeLibDynamicAttListIds = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
                         AfterConvertDateFilters.AsEnumerable().Select(y => y.key.ToLower()).Contains(x.Key.ToLower()) &&
                         x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString()).ToList();
+                        x.tablesNames.TableName == TablesNames.TLIsideArmLibrary.ToString(), x => x.tablesNames).ToList();
 
                     List<int> DynamicLibValueListIds = new List<int>();
                     bool DynamicLibExist = false;
@@ -1437,7 +1377,7 @@ namespace TLIS_Service.Services
 
                         DynamicLibValueListIds = new List<int>();
 
-                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _DbContext.TLIdynamicAttLibValue.AsNoTracking().Where(x =>
+                        List<TLIdynamicAttLibValue> DynamicLibValueListObjects = _unitOfWork.DynamicAttLibRepository.GetIncludeWhere(x =>
                             DateTimeLibDynamicAttListIds.Select(y => y.Id).Any(y => y == x.DynamicAttId) && !x.disable).ToList();
 
                         List<int> InventoriesIds = DynamicLibValueListObjects.Select(x => x.InventoryId).Distinct().ToList();
@@ -1473,7 +1413,7 @@ namespace TLIS_Service.Services
                         List<DateFilterViewModel> LibraryPropsAttributeFilters = AfterConvertDateFilters.Where(x =>
                             LibraryProps.Select(y => y.Name.ToLower()).Contains(x.key.ToLower())).ToList();
 
-                        IEnumerable<TLIsideArmLibrary> Libraries = _SideArmLibraryEntities.AsEnumerable();
+                        IEnumerable<TLIsideArmLibrary> Libraries = _unitOfWork.SideArmLibraryRepository.GetWhere(x => !x.Deleted).AsEnumerable();
 
                         foreach (DateFilterViewModel LibraryProp in LibraryPropsAttributeFilters)
                         {
@@ -1502,8 +1442,8 @@ namespace TLIS_Service.Services
                         IntersectLibraryIds = DynamicLibValueListIds;
                     }
 
-                    WithDateFilterSideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_SideArmLibraryEntities.Where(x =>
-                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id)).ToList());
+                    WithDateFilterSideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_unitOfWork.SideArmLibraryRepository.GetWhere(x =>
+                        x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted).ToList());
                 }
 
                 //
@@ -1512,14 +1452,14 @@ namespace TLIS_Service.Services
                 if ((AttributeFilters != null ? AttributeFilters.Count() == 0 : true) &&
                     (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() == 0 : true))
                 {
-                    SideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_SideArmLibraryEntities.Where(x =>
-                        x.Id > 0).ToList());
+                    SideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_unitOfWork.SideArmLibraryRepository.GetWhere(x =>
+                        x.Id > 0 && !x.Deleted).ToList());
                 }
                 else if ((AttributeFilters != null ? AttributeFilters.Count > 0 : false) &&
                         (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() > 0 : false))
                 {
                     List<int> SideArmIds = WithoutDateFilterSideArmLibraries.Select(x => x.Id).Intersect(WithDateFilterSideArmLibraries.Select(x => x.Id)).ToList();
-                    SideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_SideArmLibraryEntities.Where(x =>
+                    SideArmLibraries = _mapper.Map<List<SideArmLibraryViewModel>>(_unitOfWork.SideArmLibraryRepository.GetWhere(x =>
                         SideArmIds.Contains(x.Id)).ToList());
                 }
                 else if (AttributeFilters != null ? AttributeFilters.Count > 0 : false)
@@ -1536,14 +1476,15 @@ namespace TLIS_Service.Services
                 SideArmLibraries = SideArmLibraries.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).
                     Take(parameterPagination.PageSize).ToList();
 
-                List<TLIattributeViewManagment> AllAttributes = UnitOfWork.AllAttributeViewManagment.Where(x =>
+                List<TLIattributeViewManagment> AllAttributes = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
                    (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.SideArmLibrary.ToString() &&
                    (x.AttributeActivatedId != null ?
-                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString() && x.AttributeActivated.enable) :
-                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString()))) ||
+                        (x.AttributeActivated.Tabel == TablesNames.TLIsideArmLibrary.ToString() && x.AttributeActivated.enable) :
+                        (x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == TablesNames.TLIsideArmLibrary.ToString()))) ||
                     (x.AttributeActivated != null ?
-                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") &&
-                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString()) : false)).ToList();
+                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == TablesNames.TLIsideArmLibrary.ToString()) : false),
+                       x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1, x => x.EditableManagmentView.TLItablesNames2,
+                       x => x.AttributeActivated, x => x.DynamicAtt, x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType).ToList();
 
                 List<TLIattributeViewManagment> NotDateTimeLibraryAttributesViewModel = AllAttributes.Where(x =>
                     x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
@@ -1610,21 +1551,19 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (Not DateTime DataType Attribute)
                     // 
-
-                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
-                        x.DataType.Name.ToLower() != "datetime" &&
-                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString()).ToList();
+                    List<TLIdynamicAtt> NotDateTimeLibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
+                       !x.disable && x.tablesNames.TableName == TablesNames.TLIsideArmLibrary.ToString() &&
+                        x.LibraryAtt && x.DataType.Name.ToLower() != "datetime" &&
+                        NotDateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames, x => x.DataType).ToList();
 
                     foreach (var LibraryDynamicAtt in NotDateTimeLibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = _DbContext.TLIdynamicAttLibValue.AsNoTracking()
-                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
-                                x.DynamicAttId == LibraryDynamicAtt.Id &&
-                                x.InventoryId == SideArmLibraryViewModel.Id && !x.disable &&
-                                x.DynamicAtt.LibraryAtt &&
-                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
+                            x.DynamicAttId == LibraryDynamicAtt.Id &&
+                            x.InventoryId == SideArmLibraryViewModel.Id && !x.disable &&
+                            x.DynamicAtt.LibraryAtt &&
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key,
+                                x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -1679,21 +1618,19 @@ namespace TLIS_Service.Services
                     //
                     // Library Dynamic Attributes... (DateTime DataType Attribute)
                     // 
-
-                    List<TLIdynamicAtt> LibraryDynamicAttributes = UnitOfWork.AllDynamicAttribute.Where(x =>
-                        x.DataType.Name.ToLower() == "datetime" &&
-                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id) &&
-                        x.LibraryAtt && !x.disable &&
-                        x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString()).ToList();
+                    List<TLIdynamicAtt> LibraryDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
+                       !x.disable && x.tablesNames.TableName == TablesNames.TLIsideArmLibrary.ToString() &&
+                        x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
+                        DateTimeDynamicLibraryAttributesViewModel.AsEnumerable().Select(y => y.DynamicAttId).Contains(x.Id), x => x.tablesNames).ToList();
 
                     foreach (TLIdynamicAtt LibraryDynamicAtt in LibraryDynamicAttributes)
                     {
-                        TLIdynamicAttLibValue DynamicAttLibValue = _DbContext.TLIdynamicAttLibValue.AsNoTracking()
-                            .Include(x => x.DynamicAtt).FirstOrDefault(x =>
-                                x.DynamicAttId == LibraryDynamicAtt.Id &&
-                                x.InventoryId == SideArmLibraryViewModel.Id && !x.disable &&
-                                x.DynamicAtt.LibraryAtt &&
-                                x.DynamicAtt.Key == LibraryDynamicAtt.Key);
+                        TLIdynamicAttLibValue DynamicAttLibValue = _unitOfWork.DynamicAttLibRepository.GetIncludeWhereFirst(x =>
+                            x.DynamicAttId == LibraryDynamicAtt.Id &&
+                            x.InventoryId == SideArmLibraryViewModel.Id && !x.disable &&
+                            x.DynamicAtt.LibraryAtt &&
+                            x.DynamicAtt.Key == LibraryDynamicAtt.Key,
+                                x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType);
 
                         if (DynamicAttLibValue != null)
                         {
@@ -1717,23 +1654,11 @@ namespace TLIS_Service.Services
                 SideArmTableDisplay.Model = OutPutList;
                 SideArmTableDisplay.filters = _unitOfWork.SideArmLibraryRepository.GetRelatedTables();
 
-                return new Response<ReturnWithFilters<object>>(true, SideArmTableDisplay, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<ReturnWithFilters<object>>(true, SideArmTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }
             catch (Exception err)
             {
-                isRefresh = true;
-                if (ErrorMessagesWhenReturning == null)
-                {
-                    ErrorMessagesWhenReturning = new string[]
-                    {
-                        "After Caching"
-                    };
-                    goto StartAgainWithRefresh;
-                }
-                else
-                {
-                    return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-                }
+                return new Response<ReturnWithFilters<object>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         #endregion

@@ -43,9 +43,9 @@ namespace TLIS_API.Controllers.Load
         }
         [HttpPost("GetMW_RFULibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_RFULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetMW_RFULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_RFULibraries(CombineFilters, WithFilterData, parameters, isRefresh);
+            var response = _unitOfWorkService.MWLibraryService.GetMW_RFULibraries(CombineFilters, WithFilterData, parameters);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

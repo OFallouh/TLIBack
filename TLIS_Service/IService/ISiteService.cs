@@ -36,7 +36,7 @@ namespace TLIS_Service.IService
         Response<List<SiteStatusViewModel>> GetAllSiteStatusForSiteOperation();
         Response<List<RegionViewModel>> GetAllRegionsForSiteOperation();
         Response<List<LocationTypeViewModel>> GetAllLocationTypesForSiteOperation();
-        Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
+        Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Task<Response<SiteViewModel>> UpdateRentedSpace(string SiteCode, float RentedSpaceValue, int installationSpace);
         bool CheckRentedSpace(string SiteCode, float ReservedSpaceValue);
         Response<List<KeyValuePair<string, float>>> GetSpaceDetails(string SiteCode);
