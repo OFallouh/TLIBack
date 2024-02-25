@@ -20,7 +20,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -33,7 +32,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("AddInternalUser")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
         public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<string> Permissions)
@@ -43,7 +42,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.UserService.AddInternalUser(UserName, Permissions, domain);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("Updateuser")]
         [ProducesResponseType(200, Type = typeof(EditUserViewModel))]
         public async Task<IActionResult> Updateuser(EditUserViewModel model)
@@ -62,7 +61,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditUserViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ChangePassword")]
         [ProducesResponseType(200, Type = typeof(ChangePasswordViewModel))]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel View)
@@ -80,7 +79,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<ChangePasswordViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ForgetPassword")]
         [ProducesResponseType(200, Type = typeof(ForgetPassword))]
         public async Task<IActionResult> ForgetPassword(ForgetPassword View)
@@ -98,7 +97,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<ForgetPassword>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("DeactivateUser")]
         [ProducesResponseType(200, Type = typeof(EditUserViewModel))]
         public async Task<IActionResult> DeactivateUser(int UserId)
@@ -107,7 +106,7 @@ namespace TLIS_API.Controllers
              var response = await _unitOfWorkService.UserService.DeactivateUser(UserId);
              return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("SendConfirmationCode")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
         public IActionResult SendConfirmationCode(string UserEmail, int? UserId)
@@ -116,7 +115,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.SendConfirmationCode(UserEmail, Uservalue);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ValidateEmail")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
         public IActionResult ValidateEmail(string UserConfirmCode, int UserId)
@@ -124,7 +123,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.ValidateEmail(UserConfirmCode, UserId);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("AddExternalUser")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
         public async Task<IActionResult> AddExternalUser(AddUserViewModel User)
@@ -144,7 +143,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<UserViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("getAll/{GroupName}")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetUsersByGroupName(string GroupName)
@@ -153,7 +152,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.GetUsersByGroupName(GroupName, domain);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAll")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetAll([FromBody]List<FilterObjectList> filters, [FromQuery]ParameterPagination parameter)
@@ -161,7 +160,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.GetAll(filters, parameter);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllExternalUsers")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> GetAllExternalUsers(string UserName, [FromQuery] ParameterPagination parameter)
@@ -169,7 +168,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.UserService.GetAllExternalUsers(UserName, parameter);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetExternalUsersByUserName")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetExternalUsersByUserName(string UserName, [FromQuery] ParameterPagination parameterPagination)
@@ -177,7 +176,7 @@ namespace TLIS_API.Controllers
             var response =  _unitOfWorkService.UserService.GetExternalUsersByName(UserName, parameterPagination);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllUsers_WFVersion")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetAllUsers_WFVersion(string UserName, [FromQuery] ParameterPagination parameterPagination)
@@ -187,7 +186,7 @@ namespace TLIS_API.Controllers
             var Data = response1.Data.Concat(response2.Data).ToList();
             return Ok(Data);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllInternalUsers")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> GetAllInternalUsers(string UserName, [FromQuery]ParameterPagination parameter)
@@ -195,7 +194,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.UserService.GetAllInternalUsers(UserName, parameter);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetInternalUsersByUserName")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetInternalUsersByUserName(string UserName, [FromQuery] ParameterPagination parameter)
@@ -203,7 +202,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.GetInternalUsersByName(UserName, parameter);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetUsersByUserType")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetUsersByUserType(int UserTypeId, string UserName, [FromQuery] ParameterPagination parameterPagination)
@@ -218,7 +217,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.UserService.GetUserById(Id);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("CheckPasswordExpiryDate/{Id}")]
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult CheckPasswordExpiryDate(int Id)
@@ -226,7 +225,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.CheckPasswordExpiryDate(Id);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAllUserWithoutGroup")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetAllUserWithoutGroup()
@@ -234,7 +233,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.GetAllUserWithoutGroup();
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("EncryptAllUserPassword")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
         public async Task<IActionResult> EncryptAllUserPassword(string UserName)
@@ -242,7 +241,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.UserService.EncryptAllUserPassword(UserName);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("DeletePassword")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
         public IActionResult DeletePassword()
