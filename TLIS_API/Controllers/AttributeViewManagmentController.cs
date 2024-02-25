@@ -18,7 +18,7 @@ using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-   // [ServiceFilter(typeof(WorkFlowMiddleware))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

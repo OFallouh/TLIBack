@@ -13,7 +13,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [Route("api/[controller]")]
     [ApiController]
     public class AttributesHistoryController : ControllerBase

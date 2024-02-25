@@ -18,7 +18,7 @@ using static TLIS_Service.Services.DynamicAttService;
 
 namespace TLIS_API.Controllers.DynamicAtt
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

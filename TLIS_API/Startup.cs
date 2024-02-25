@@ -121,6 +121,7 @@ namespace TLIS_API
             services.AddScoped<LogFilterAttribute>();
             services.AddScoped<ExternalSystemFilter>();
             services.AddScoped<WorkFlowMiddleware>();
+            services.AddScoped<MiddlewareLibraryAndUserManagment>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

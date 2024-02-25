@@ -17,7 +17,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.Load
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class PowerLibraryController : Controller

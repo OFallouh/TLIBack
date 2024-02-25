@@ -21,7 +21,7 @@ using Constants = TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilNonSteelLibraryController : Controller

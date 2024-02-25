@@ -22,7 +22,7 @@ using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -42,6 +42,7 @@ namespace TLIS_API.Controllers
 
 
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GenerateExcelTemplacteByTableName")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<ActionResult> GenerateExcelTemplacteByTableName(string TableName, int? CategoryId)
@@ -87,6 +88,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ImportFile")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult ImportFile(string TableName = null, int? CategoryId = null)
@@ -96,7 +98,8 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.FileManagmentService.ImportFile(file, TableName,CategoryId, ConnectionString);
             return Ok(response);
         }
-        [HttpPost("AttachFile")]
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AttachFileInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult AttachFile(string RecordId, string TableName, int DocumentTypeId, string Model = null, string Name = null, string SiteCode = null)
         {
@@ -121,16 +124,60 @@ namespace TLIS_API.Controllers
                 return BadRequest(response);
             return Ok(response);
         }
-        [HttpGet("DeleteFile")]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("AttachFileLibrary")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult AttachFileLibrary(string RecordId, string TableName, int DocumentTypeId, string Model = null, string Name = null, string SiteCode = null)
+        {
+            var asset = _configuration["assets"];
+
+            //string contentRootPath = _hostingEnvironment.ContentRootPath;
+            string contentRootPath = _configuration["StoreFiles"];
+
+            string AttachFolder = Path.Combine(contentRootPath, "AttachFiles");
+
+            if (!Directory.Exists(AttachFolder))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(AttachFolder);
+            }
+
+            var File = Request.Form.Files[0];
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+
+            var response = _unitOfWorkService.FileManagmentService.AttachFile(File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
+
+            if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
+                return BadRequest(response);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpGet("DeleteFileInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult DeleteFile(string FileName, int RecordId, string TableName, string SiteCode)
         {
             var Response = _unitOfWorkService.FileManagmentService.DeleteFile(FileName, RecordId, TableName, SiteCode);
             return Ok(Response);
         }
-        [HttpGet("GetFilesByRecordIdAndTableName")]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("DeleteFileLibrary")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult DeleteFileLibrary(string FileName, int RecordId, string TableName, string SiteCode)
+        {
+            var Response = _unitOfWorkService.FileManagmentService.DeleteFile(FileName, RecordId, TableName, SiteCode);
+            return Ok(Response);
+        }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpGet("GetFilesByRecordIdAndTableNameInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination)
+        {
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetFilesByRecordIdAndTableNameLibrary")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult GetFilesByRecordIdAndTableNameLibrary(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination)
         {
             var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination);
             return Ok(response);
@@ -142,6 +189,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.FileManagmentService.GetAttachecdFiles(RecordId, TableName);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("GetAttachecdFilesBySite")]
         [ProducesResponseType(200, Type = typeof(Response<List<AttachedFilesViewModel>>))]
         public IActionResult GetAttachecdFilesBySite(string SiteCode, [FromQuery] ParameterPagination parameterPagination)
@@ -156,10 +204,37 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.FileManagmentService.AttachedUnAttached(Id);
             return Ok(response);
         }
-
-        [HttpGet("GetAttachFile")]
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpGet("GetAttachFileInstallation")]
         public async Task<IActionResult> GetAttachFile(string filename, int recordid, string tablename)
+        {
+            var asset = _configuration["assets"];
+            var response = _unitOfWorkService.FileManagmentService.GetAttachedToDownload(filename, recordid, tablename);
+
+            if (response == null)
+            {
+                return BadRequest("This file is not found");
+            }
+            if ((response.Data.ToLower().Contains(".jpg") || response.Data.ToLower().Contains(".jpeg") || response.Data.ToLower().Contains(".png")) && tablename.Contains("TLIsite"))
+            {
+                response.Data = asset + "\\" + filename + "";
+            }
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(response.Data, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(response.Data);
+
+            Response.Headers.Add("x-file-name", Path.GetFileName(response.Data));
+            Response.Headers.Add("Access-Control-Expose-Headers", "x-file-name");
+            return File(bytes, contentType, Path.GetFileName(response.Data));
+
+        }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttachFileLibrary")]
+        public async Task<IActionResult> GetAttachFileLibrary(string filename, int recordid, string tablename)
         {
             var asset = _configuration["assets"];
             var response = _unitOfWorkService.FileManagmentService.GetAttachedToDownload(filename, recordid, tablename);
