@@ -22,7 +22,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-   [ServiceFilter(typeof(WorkFlowMiddleware))]
+    //[ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -48,7 +48,8 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithLegsWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
 

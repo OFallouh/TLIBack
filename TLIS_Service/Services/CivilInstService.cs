@@ -80,6 +80,8 @@ using Microsoft.Extensions.Configuration;
 using LinqToExcel.Extensions;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using static TLIS_Repository.Repositories.SiteRepository;
+using System.Drawing.Drawing2D;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TLIS_Service.Services
 {
@@ -4835,255 +4837,110 @@ namespace TLIS_Service.Services
             });
         }
         #region Get Enabled Attributes Only With Dynamic Objects...
-        public Response<ReturnWithFilters<object>> GetCivilWithLegsWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination)
+        public Response<object> GetCivilWithLegsWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination,string ConnectionString)
         {
-            try
+            using (var connection = new OracleConnection(ConnectionString))
             {
-                int Count = 0;
-                List<object> OutPutList = new List<object>();
-                ReturnWithFilters<object> CivilTableDisplay = new ReturnWithFilters<object>();
-
-                //
-                // Get All CivilSiteDateRecords To This BaseFilter
-                //
-                List<TLIcivilSiteDate> AllCivilSiteDateRecords = GetCivilSiteDateBySiteBaseFilter(BaseFilter, "CivilWithLegs", CombineFilters, null);
-
-                List<TLIcivilSiteDate> CivilSiteDateRecords = GetMaxInstallationDate(out Count, AllCivilSiteDateRecords, "CivilWithLegs", parameterPagination);
-
-                List<CivilWithLegsViewModel> Civils = _mapper.Map<List<CivilWithLegsViewModel>>(CivilSiteDateRecords.Select(x =>
-                    x.allCivilInst.civilWithLegs).ToList());
-
-                List<TLIattributeViewManagment> AllAttributes = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhere(x =>
-                   (x.Enable && x.EditableManagmentView.View == Helpers.Constants.EditableManamgmantViewNames.CivilWithLegInstallation.ToString() &&
-                   (x.AttributeActivatedId != null ?
-                        (x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() && x.AttributeActivated.enable) :
-                        (!x.DynamicAtt.LibraryAtt && !x.DynamicAtt.disable && x.DynamicAtt.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString()))) ||
-                    (x.AttributeActivated != null ?
-                        ((x.AttributeActivated.Key.ToLower() == "id" || x.AttributeActivated.Key.ToLower() == "active") && x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString()) : false),
-                       x => x.EditableManagmentView, x => x.EditableManagmentView.TLItablesNames1, x => x.EditableManagmentView.TLItablesNames2,
-                       x => x.AttributeActivated, x => x.DynamicAtt, x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType).ToList();
-
-                List<TLIattributeViewManagment> NotDateTimeInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() != "datetime") : false).ToList();
-
-                List<TLIattributeViewManagment> NotDateTimeDynamicInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.DynamicAttId != null ? x.DynamicAtt.DataType.Name.ToLower() != "datetime" : false).ToList();
-
-                List<TLIattributeViewManagment> DateTimeInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.AttributeActivatedId != null ? (x.AttributeActivated.Key.ToLower() != "deleted" && x.AttributeActivated.DataType.ToLower() == "datetime") : false).ToList();
-
-                List<TLIattributeViewManagment> DateTimeDynamicInstallationAttributesViewModel = AllAttributes.Where(x =>
-                    x.DynamicAttId != null ? x.DynamicAtt.DataType.Name.ToLower() == "datetime" : false).ToList();
-
-                foreach (CivilWithLegsViewModel CivilWithLegInstallationObject in Civils)
+                try
                 {
-                    dynamic DynamicCivilWithLegInstallation = new ExpandoObject();
-
-                    //
-                    // Installation Object ViewModel...
-                    //
-                    if (NotDateTimeInstallationAttributesViewModel != null ? NotDateTimeInstallationAttributesViewModel.Count > 0 : false)
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegInstallation" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                    List<string> propertyNamesStatic = new List<string>();
+                    List<string> propertyNamesDynamic = new List<string>();
+                    foreach (var key in attActivated)
                     {
-                        List<PropertyInfo> InstallationProps = typeof(CivilWithLegsViewModel).GetProperties().Where(x =>
-                            x.PropertyType.GenericTypeArguments != null ?
-                                (x.PropertyType.GenericTypeArguments.Count() > 0 ? x.PropertyType.GenericTypeArguments.FirstOrDefault().Name.ToLower() != "datetime" :
-                                (x.PropertyType.Name.ToLower() != "datetime")) :
-                            (x.PropertyType.Name.ToLower() != "datetime")).ToList();
-
-                        foreach (PropertyInfo prop in InstallationProps)
+                        if (key.attribute != null)
                         {
-                            if (prop.Name.ToLower().Contains("_name") &&
-                                NotDateTimeInstallationAttributesViewModel.Select(x =>
-                                    x.AttributeActivated.Label.ToLower()).Contains(prop.Name.ToLower()))
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
                             {
-                                object ForeignKeyNamePropObject = prop.GetValue(CivilWithLegInstallationObject, null);
-                                ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(prop.Name, ForeignKeyNamePropObject));
-                            }
-                            else if (NotDateTimeInstallationAttributesViewModel.Select(x =>
-                                 x.AttributeActivated.Key.ToLower()).Contains(prop.Name.ToLower()) &&
-                                !prop.Name.ToLower().Contains("_name") &&
-                                (prop.Name.ToLower().Substring(Math.Max(0, prop.Name.Length - 2)) != "id" || prop.Name.ToLower() == "id"))
-                            {
-                                if (prop.Name.ToLower() == "StructureType".ToLower() ||
-                                    prop.Name.ToLower() == "SectionsLegType".ToLower())
-                                {
-                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
-                                        x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
-
-                                    if (LabelName != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(prop.GetValue(CivilWithLegInstallationObject, null).ToString()))
-                                        {
-                                            object PropObject = prop.GetValue(CivilWithLegInstallationObject, null);
-                                            ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject.ToString()));
-                                        }
-                                        else
-                                        {
-                                            ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, null));
-                                        }
-                                    }
-                                }
-                                else if (prop.Name.ToLower() != "id" && prop.Name.ToLower() != "active")
-                                {
-                                    TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                        x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
-                                        x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
-
-                                    if (LabelName != null)
-                                    {
-                                        object PropObject = prop.GetValue(CivilWithLegInstallationObject, null);
-                                        ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject));
-                                    }
-                                }
-                                else
-                                {
-                                    object PropObject = prop.GetValue(CivilWithLegInstallationObject, null);
-                                    ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(prop.Name, PropObject));
-                                }
-                            }
-                        }
-                    }
-
-                    //
-                    // Installation Dynamic Attributes... (Not DateTime DataType Attribute)
-                    //
-                    if (NotDateTimeDynamicInstallationAttributesViewModel != null ? NotDateTimeDynamicInstallationAttributesViewModel.Count > 0 : false)
-                    {
-                        var temp = NotDateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
-                        List<TLIdynamicAtt> NotDateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository
-                            .GetIncludeWhere(x =>
-                                !x.disable &&
-                                x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
-                                !x.LibraryAtt &&
-                                x.DataType.Name.ToLower() != "datetime" &&
-                                temp.Any(y => y == x.Id)
-                            , x => x.tablesNames, x => x.DataType)
-                            .ToList();
-
-                        var tempno = NotDateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
-                        List<TLIdynamicAttInstValue> NotDateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
-                            !x.DynamicAtt.LibraryAtt && !x.disable &&
-                            x.InventoryId == CivilWithLegInstallationObject.Id &&
-                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
-                            x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString()
-                                , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
-
-                        foreach (TLIdynamicAtt InstallationDynamicAtt in NotDateTimeInstallationDynamicAttributes)
-                        {
-                            TLIdynamicAttInstValue DynamicAttInstValue = NotDateTimeDynamicAttInstValues.FirstOrDefault(x =>
-                                x.DynamicAtt.Key.ToLower() == InstallationDynamicAtt.Key.ToLower());
-
-                            if (DynamicAttInstValue != null)
-                            {
-                                dynamic DynamicAttValue = new ExpandoObject();
-                                if (DynamicAttInstValue.ValueString != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueString;
-
-                                else if (DynamicAttInstValue.ValueDouble != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueDouble;
-
-                                else if (DynamicAttInstValue.ValueDateTime != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueDateTime;
-
-                                else if (DynamicAttInstValue.ValueBoolean != null)
-                                    DynamicAttValue = DynamicAttInstValue.ValueBoolean;
-
-                                ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, DynamicAttValue));
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
                             }
                             else
                             {
-                                ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, null));
+                                propertyNamesStatic.Add(name);
                             }
+
                         }
-                    }
-
-                    //
-                    // Installation Object ViewModel... (DateTime DataType Attribute)
-                    //
-                    dynamic DateTimeAttributes = new ExpandoObject();
-                    if (DateTimeInstallationAttributesViewModel != null ? DateTimeInstallationAttributesViewModel.Count() > 0 : false)
-                    {
-                        List<PropertyInfo> DateTimeInstallationProps = typeof(CivilWithLegsViewModel).GetProperties().Where(x =>
-                            x.PropertyType.GenericTypeArguments != null ?
-                                (x.PropertyType.GenericTypeArguments.Count() > 0 ? x.PropertyType.GenericTypeArguments.FirstOrDefault().Name.ToLower() == "datetime" :
-                                (x.PropertyType.Name.ToLower() == "datetime")) :
-                            (x.PropertyType.Name.ToLower() == "datetime")).ToList();
-
-                        foreach (PropertyInfo prop in DateTimeInstallationProps)
+                        else
                         {
-                            TLIattributeViewManagment LabelName = AllAttributes.FirstOrDefault(x => ((x.AttributeActivated != null) ? x.AttributeActivated.Key == prop.Name : false) &&
-                                x.AttributeActivated.Tabel == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
-                                x.Enable && x.AttributeActivated.DataType != "List" && x.Id != 0);
-
-                            if (LabelName != null)
-                            {
-                                object PropObject = prop.GetValue(CivilWithLegInstallationObject, null);
-                                ((IDictionary<String, Object>)DateTimeAttributes).Add(new KeyValuePair<string, object>(LabelName.AttributeActivated.Label, PropObject));
-                            }
+                            string name = key.dynamic;
+                            propertyNamesDynamic.Add(name);
                         }
-                    }
 
-                    //
-                    // Installation Dynamic Attributes... (DateTime DataType Attribute)
-                    // 
-                    if (DateTimeDynamicInstallationAttributesViewModel != null ? DateTimeDynamicInstallationAttributesViewModel.Count() > 0 : false)
+                    }
+                    var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == BaseFilter.SiteCode.ToLower()).AsEnumerable()
+                    .GroupBy(x => new
                     {
-                        var temp = DateTimeDynamicInstallationAttributesViewModel.Select(x => x.DynamicAttId).ToList();
-                        List<TLIdynamicAtt> DateTimeInstallationDynamicAttributes = _unitOfWork.DynamicAttRepository.GetIncludeWhere(x =>
-                           !x.disable && x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString() &&
-                           !x.LibraryAtt && x.DataType.Name.ToLower() == "datetime" &&
-                            temp.Any(y => y == x.Id), x => x.tablesNames).ToList();
+                        Id = x.Id,
+                        Name = x.Name,
+                        SITECODE = x.SITECODE,
+                        WindMaxLoadm2 = x.WindMaxLoadm2,
+                        LocationHeight = x.LocationHeight,
+                        PoType = x.PoType,
+                        PoNo = x.PoNo,
+                        PoDate = x.PoDate,
+                        HeightImplemented = x.HeightImplemented,
+                        BuildingMaxLoad = x.BuildingMaxLoad,
+                        SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                        CurrentLoads = x.CurrentLoads,
+                        warningpercentageloads = x.warningpercentageloads,
+                        VisiableStatus = x.VisiableStatus,
+                        VerticalMeasured = x.VerticalMeasured,
+                        OtherBaseType = x.OtherBaseType,
+                        IsEnforeced = x.IsEnforeced,
+                        H2height = x.H2height,
+                        HeightBase = x.HeightBase,
+                        DimensionsLeg = x.DimensionsLeg,
+                        DiagonalMemberSection = x.DiagonalMemberSection,
+                        DiagonalMemberDimensions = x.DiagonalMemberDimensions,
+                        BoltHoles = x.BoltHoles,
+                        BasePlatethickness = x.BasePlatethickness,
+                        BasePlateShape = x.BasePlateShape,
+                        BasePlateDimensions = x.BasePlateDimensions,
+                        BaseNote = x.BaseNote,
+                        LOCATIONTYPE = x.LOCATIONTYPE,
+                        BASETYPE = x.BASETYPE,
+                        VerticalMeasurement = x.VerticalMeasurement,
+                        SteelCrossSection = x.SteelCrossSection,
+                        DiagonalMemberPrefix = x.DiagonalMemberPrefix,
+                        EnforcementHeightBase = x.EnforcementHeightBase,
+                        Enforcementlevel = x.Enforcementlevel,
+                        StructureType=x.StructureType,
+                        SectionsLegType=x.SectionsLegType,
+                        TotalHeight = x.TotalHeight,
+                        SpaceInstallation = x.SpaceInstallation,
+                        OWNER = x.OWNER,
+                        CIVILWITHLEGSLIB=x.CIVILWITHLEGSLIB,
+                        GUYLINETYPE = x.GUYLINETYPE,
+                        CIVILWITHLEGSTYPE = x.CIVILWITHLEGSTYPE,
+                        SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                        BaseCivilWithLegType = x.CIVILWITHLEGSTYPE,
+                        CenterHigh = x.CenterHigh,
+                        HBA = x.HBA,
+                        EquivalentSpace = x.EquivalentSpace,
+                        HieghFromLand = x.HieghFromLand,
+                        Support_Limited_Load = x.Support_Limited_Load,
+                        ENFORCMENTCATEGORY = x.ENFORCMENTCATEGORY,
+                    })
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
+                    int count = query.Count();
+                    query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
-                        var tempno = DateTimeInstallationDynamicAttributes.Select(x => x.Key.ToLower()).ToList();
-                        List<TLIdynamicAttInstValue> DateTimeDynamicAttInstValues = _unitOfWork.DynamicAttInstValueRepository.GetIncludeWhere(x =>
-                            x.InventoryId == CivilWithLegInstallationObject.Id && !x.disable &&
-                           !x.DynamicAtt.LibraryAtt &&
-                            tempno.Any(y => y == x.DynamicAtt.Key.ToLower()) &&
-                            x.tablesNames.TableName == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString()
-                               , x => x.DynamicAtt, x => x.tablesNames, x => x.DynamicAtt.DataType).ToList();
-
-                        foreach (TLIdynamicAtt InstallationDynamicAtt in DateTimeInstallationDynamicAttributes)
-                        {
-                            TLIdynamicAttInstValue DynamicAttInstallationValue = DateTimeDynamicAttInstValues.FirstOrDefault(x =>
-                                x.DynamicAtt.Key.ToLower() == InstallationDynamicAtt.Key.ToLower());
-
-                            if (DynamicAttInstallationValue != null)
-                            {
-                                dynamic DynamicAttValue = new ExpandoObject();
-                                if (DynamicAttInstallationValue.ValueDateTime != null)
-                                    DynamicAttValue = DynamicAttInstallationValue.ValueDateTime;
-
-                                ((IDictionary<String, Object>)DateTimeAttributes).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, DynamicAttValue));
-                            }
-                            else
-                            {
-                                ((IDictionary<String, Object>)DateTimeAttributes).Add(new KeyValuePair<string, object>(InstallationDynamicAtt.Key, null));
-                            }
-                        }
-                    }
-
-                    ((IDictionary<String, Object>)DynamicCivilWithLegInstallation).Add(new KeyValuePair<string, object>("DateTimeAttributes", DateTimeAttributes));
-
-                    OutPutList.Add(DynamicCivilWithLegInstallation);
+                    return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                 }
-
-                CivilTableDisplay.Model = OutPutList;
-
-                if (WithFilterData)
+                catch (Exception err)
                 {
-                    CivilTableDisplay.filters = _unitOfWork.CivilWithLegsRepository.GetRelatedTables();
+                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                else
-                {
-                    CivilTableDisplay.filters = null;
-                }
-
-                return new Response<ReturnWithFilters<object>>(true, CivilTableDisplay, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
-            }
-            catch (Exception err)
-            {
-                return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         public Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId)
@@ -5518,7 +5375,7 @@ namespace TLIS_Service.Services
                 int count = 0;
                 string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
 
-                MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination).Data;
+                MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, ConnectionString).Data;
                 MainOutPut.CivilWithoutLeg = GetCivilWithoutLegWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, 0).Data;
                 MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, ConnectionString).Data;
 
