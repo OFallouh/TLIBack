@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TLIS_API.Helpers;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -18,6 +19,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilWithoutLegLibraryController : Controller
@@ -39,9 +41,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetCivilWithoutLegLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithoutLegLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetCivilWithoutLegLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters, isRefresh);
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

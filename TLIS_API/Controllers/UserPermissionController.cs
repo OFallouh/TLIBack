@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.ViewModels.UserPermissionDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

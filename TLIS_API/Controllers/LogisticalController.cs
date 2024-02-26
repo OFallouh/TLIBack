@@ -8,9 +8,11 @@ using TLIS_Service.ServiceBase;
 using System.Collections.Generic;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using Org.BouncyCastle.Asn1.Cmp;
+using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [Route("api/[controller]")]
     [ApiController]
     public class LogisticalController : ControllerBase

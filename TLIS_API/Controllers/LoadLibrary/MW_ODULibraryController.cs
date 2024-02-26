@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TLIS_API.Helpers;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -19,6 +20,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.LoadLibrary
 {
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
    
@@ -41,9 +43,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetMW_ODULibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_ODULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetMW_ODULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_ODULibraries(CombineFilters, WithFilterData, parameters, isRefresh);
+            var response = _unitOfWorkService.MWLibraryService.GetMW_ODULibraries(CombineFilters, WithFilterData, parameters);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

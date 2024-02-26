@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using TLIS_API.Middleware.ActionFilters;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -54,6 +55,7 @@ using static TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(ExternalSystemFilter))]
     [Route("api/[controller]")]
     [ApiController]

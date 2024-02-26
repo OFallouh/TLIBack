@@ -28,8 +28,8 @@ namespace TLIS_Service.IService
         Task<Response<AllItemAttributes>> Delete(int Id, string CivilType);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
         Response<AllItemAttributes> GetForAdd(string CivilType, int? CategoryId = null);
-        Response<ReturnWithFilters<object>> GetCivilWithLegLibrariesEnabledAtt(CombineFilters ComineOutPut, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh);
-        Response<ReturnWithFilters<object>> GetCivilWithoutLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, int CategoryId, ParameterPagination parameterPagination, bool? isRefresh);
-        Response<ReturnWithFilters<object>> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, bool? isRefresh);
+        Response<ReturnWithFilters<object>> GetCivilWithLegLibrariesEnabledAtt(CombineFilters ComineOutPut, bool WithFilterData, ParameterPagination parameterPagination);
+        Response<ReturnWithFilters<object>> GetCivilWithoutLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, int CategoryId, ParameterPagination parameterPagination);
+        Response<ReturnWithFilters<object>> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
     }
 }

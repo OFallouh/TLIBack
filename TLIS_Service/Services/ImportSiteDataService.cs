@@ -981,7 +981,7 @@ namespace TLIS_Service.Services
 
                                     SideArmTransaction.Complete();
 
-                                    SideArmLibraryService._SideArmLibraryEntities.Add(NewSideArmLibraryEntity);
+                                  //  SideArmLibraryService._SideArmLibraryEntities.Add(NewSideArmLibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -1229,7 +1229,7 @@ namespace TLIS_Service.Services
 
                                         MastTransaction.Complete();
 
-                                        CivilLibraryService._CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
+                                       // CivilLibraryService._CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
 
                                     }
                                     else
@@ -1635,7 +1635,7 @@ namespace TLIS_Service.Services
 
                                     MW_ODUTransaction.Complete();
                                     
-                                    MWLibraryService._MW_ODULibraryEntities.Add(ObjectForAddInCashList);
+                                  //  MWLibraryService._MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -1971,7 +1971,7 @@ namespace TLIS_Service.Services
 
                                     RadioAntennaTransaction.Complete();
 
-                                    RadioLibraryService._RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
+                                   /// RadioLibraryService._RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -2303,7 +2303,7 @@ namespace TLIS_Service.Services
 
                                     RadioRRUTransaction.Complete();
 
-                                    RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
+                                  //  RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -2543,7 +2543,7 @@ namespace TLIS_Service.Services
 
                                     MW_RFUTransaction.Complete();
 
-                                    MWLibraryService._MW_RFULibraryEntities.Add(ObjectForAddInCashList);
+                                  //  MWLibraryService._MW_RFULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -2937,7 +2937,7 @@ namespace TLIS_Service.Services
 
                                     MW_BUTransaction.Complete();
 
-                                    MWLibraryService._MW_BULibraryEntities.Add(ObjectForAddInCashList);
+                                    //MWLibraryService._MW_BULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -3278,7 +3278,7 @@ namespace TLIS_Service.Services
 
                                     MW_DishTransaction.Complete();
 
-                                    MWLibraryService._MW_DishLibraryEntities.Add(ObjectForAddInCashList);
+                                   // MWLibraryService._MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -3621,7 +3621,7 @@ namespace TLIS_Service.Services
 
                                         PowerTransaction.Complete();
 
-                                        PowerLibraryService._PowerLibraryEntities.Add(ObjectForAddInCashList);
+                                      //  PowerLibraryService._PowerLibraryEntities.Add(ObjectForAddInCashList);
                                     }
                                 }
                                 catch (Exception err)
@@ -3894,7 +3894,7 @@ namespace TLIS_Service.Services
 
                                         CivilWithLegsTransaction.Complete();
 
-                                        CivilLibraryService._CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
+                                        //CivilLibraryService._CivilWithLegLibraryEntities.Add(ObjectForAddInCashList);
 
                                         // Dimensions / Bottom_ Top /  between legs
                                         // Diagonal member dimension (at base plate) (Installation)

@@ -14,9 +14,11 @@ using System.Net.Http.Headers;
 using TLIS_Service.Helpers;
 using TLIS_DAL.ViewModels.ComplixFilter;
 using Microsoft.AspNetCore.StaticFiles;
+using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
+    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]

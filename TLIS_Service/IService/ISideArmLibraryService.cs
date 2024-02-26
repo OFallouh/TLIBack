@@ -22,6 +22,6 @@ namespace TLIS_Service.IService
         Task<Response<SideArmLibraryViewModel>> Disable(int id);
         Task<Response<SideArmLibraryViewModel>> Delete(int id);
         Response<AllItemAttributes> GetForAdd();
-        Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination, bool? isRefresh);
+        Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }
 }

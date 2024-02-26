@@ -121,6 +121,7 @@ namespace TLIS_API
             services.AddScoped<LogFilterAttribute>();
             services.AddScoped<ExternalSystemFilter>();
             services.AddScoped<WorkFlowMiddleware>();
+            services.AddScoped<MiddlewareLibraryAndUserManagment>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -205,208 +206,47 @@ namespace TLIS_API
             /*------------------------------------------------------------------------------------*/
             /*                              Windows Authentication                                */
             /*------------------------------------------------------------------------------------*/
-            app.Use(async (Runcontext, next) =>
-            {
-                ApplicationDbContext _Context = Runcontext.RequestServices.GetService<ApplicationDbContext>();
-                IMapper _Mapper = Runcontext.RequestServices.GetService<IMapper>();
+            //app.Use(async (Runcontext, next) =>
+            //{
+            //    ApplicationDbContext _Context = Runcontext.RequestServices.GetService<ApplicationDbContext>();
+            //    IMapper _Mapper = Runcontext.RequestServices.GetService<IMapper>();
 
-                //
-                // Sites..
-                //
+            //    //
+            //    // Sites..
+            //    //
 
-                SiteService._MySites = await _Context.TLIsite
-                    .AsNoTracking().Include(x => x.Area).Include(x => x.Region)
-                    .Include(x => x.siteStatus).ToListAsync();
+            //    SiteService._MySites = await _Context.TLIsite
+            //        .AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+            //        .Include(x => x.siteStatus).ToListAsync();
 
-                //
-                // General Lists..
-                //
+            //    //
+            //    // General Lists..
+            //    //
 
-                UnitOfWork.AllAttributeViewManagment = await _Context.TLIattributeViewManagment
-                    .AsNoTracking()
-                    .Include(x => x.AttributeActivated)
-                    .Include(x => x.DynamicAtt)
-                    .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
-                    .Include(x => x.DynamicAtt.DataType)
-                    .Include(x => x.DynamicAtt.tablesNames)
-                    .Include(x => x.EditableManagmentView)
-                    .Include(x => x.EditableManagmentView.TLItablesNames1)
-                    .ToListAsync();
+            //    UnitOfWork.AllAttributeViewManagment = await _Context.TLIattributeViewManagment
+            //        .AsNoTracking()
+            //        .Include(x => x.AttributeActivated)
+            //        .Include(x => x.DynamicAtt)
+            //        .Include(x => x.DynamicAtt.CivilWithoutLegCategory)
+            //        .Include(x => x.DynamicAtt.DataType)
+            //        .Include(x => x.DynamicAtt.tablesNames)
+            //        .Include(x => x.EditableManagmentView)
+            //        .Include(x => x.EditableManagmentView.TLItablesNames1)
+            //        .ToListAsync();
 
-                UnitOfWork.AllAttributeActivated = await _Context.TLIattributeActivated
-                    .AsNoTracking().ToListAsync();
-                UnitOfWork.AllAttributeActivatedCategory = await _Context.TLIattActivatedCategory
-                    .AsNoTracking()
-                    .Include(x => x.attributeActivated).Include(x => x.civilWithoutLegCategory).ToListAsync();
+            //    UnitOfWork.AllAttributeActivated = await _Context.TLIattributeActivated
+            //        .AsNoTracking().ToListAsync();
+            //    UnitOfWork.AllAttributeActivatedCategory = await _Context.TLIattActivatedCategory
+            //        .AsNoTracking()
+            //        .Include(x => x.attributeActivated).Include(x => x.civilWithoutLegCategory).ToListAsync();
 
-                UnitOfWork.AllDynamicAttribute = await _Context.TLIdynamicAtt
-                    .AsNoTracking()
-                    .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
-                    .Include(x => x.tablesNames).ToListAsync();
+            //    UnitOfWork.AllDynamicAttribute = await _Context.TLIdynamicAtt
+            //        .AsNoTracking()
+            //        .Include(x => x.CivilWithoutLegCategory).Include(x => x.DataType)
+            //        .Include(x => x.tablesNames).ToListAsync();
 
-                //
-                // Civil With Leg Library..
-                //
-
-                CivilLibraryService._CivilWithLegLibraryEntities = await _Context.TLIcivilWithLegLibrary
-                    .AsNoTracking()
-                    .Include(x => x.civilSteelSupportCategory)
-                    .Include(x => x.sectionsLegType)
-                    .Include(x => x.structureType)
-                    .Include(x => x.supportTypeDesigned)
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // Civil NON Steel Library..
-                //
-
-                CivilLibraryService._CivilNonSteelLibraryEntities = await _Context.TLIcivilNonSteelLibrary
-                    .AsNoTracking()
-                    .Include(x => x.civilNonSteelType).Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // Civil Without Leg Library..
-                //
-
-                CivilLibraryService._CivilWithoutLegLibraryEntities = await _Context.TLIcivilWithoutLegLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted)
-                    .Include(x => x.CivilSteelSupportCategory)
-                    .Include(x => x.CivilWithoutLegCategory)
-                    .Include(x => x.InstallationCivilwithoutLegsType)
-                    .Include(x => x.structureType).ToListAsync();
-
-                //
-                // Cabinet Power Library..
-                //
-
-                OtherInventoryLibraryService._CabinetPowerLibraryEntities = await _Context.TLIcabinetPowerLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted)
-                    .Include(x => x.CabinetPowerType).ToListAsync();
-
-                //
-                // Cabinet Telecom Library..
-                //
-
-                OtherInventoryLibraryService._CabinetTelecomLibraryEntities = await _Context.TLIcabinetTelecomLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted)
-                    .Include(x => x.TelecomType).ToListAsync();
-
-                //
-                // Solar Library..
-                //
-
-                OtherInventoryLibraryService._SolarLibraryEntities = await _Context.TLIsolarLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted)
-                    .Include(x => x.Capacity).ToListAsync();
-
-                //
-                // Generator Library..
-                //
-
-                OtherInventoryLibraryService._GeneratorLibraryEntities = await _Context.TLIgeneratorLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted)
-                    .Include(x => x.Capacity).ToListAsync();
-
-                //
-                // Power Library..
-                //
-
-                PowerLibraryService._PowerLibraryEntities = await _Context.TLIpowerLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // Load Other Library..
-                //
-
-                LoadOtherLibraryService._LoadOtherLibraryEntities = await _Context.TLIloadOtherLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // MW_ODU Library..
-                //
-
-                MWLibraryService._MW_ODULibraryEntities = await _Context.TLImwODULibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).Include(x => x.parity).ToListAsync();
-
-                //
-                // MW_Dish Library..
-                //
-
-                MWLibraryService._MW_DishLibraryEntities = await _Context.TLImwDishLibrary
-                    .AsNoTracking()
-                    .Include(x => x.asType)
-                    .Include(x => x.polarityType)
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // MW_BU Library..
-                //
-
-                MWLibraryService._MW_BULibraryEntities = await _Context.TLImwBULibrary
-                    .AsNoTracking()
-                    .Include(x => x.diversityType)
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // MW_RFU Library..
-                //
-
-                MWLibraryService._MW_RFULibraryEntities = await _Context.TLImwRFULibrary
-                    .AsNoTracking()
-                    .Include(x => x.boardType)
-                    .Include(x => x.diversityType)
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // MW_Other Library..
-                //
-
-                MWLibraryService._MW_OtherLibraryEntities = await _Context.TLImwOtherLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // Radio Antenna Library..
-                //
-
-                RadioLibraryService._RadioAntennaLibraryEntities = await _Context.TLIradioAntennaLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // Radio RRU Library..
-                //
-
-                RadioLibraryService._RadioRRULibraryEntities = await _Context.TLIradioRRULibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // Radio Other Library..
-                //
-
-                RadioLibraryService._RadioOtherLibraryEntities = await _Context.TLIradioOtherLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                //
-                // SideArm Library..
-                //
-
-                SideArmLibraryService._SideArmLibraryEntities = await _Context.TLIsideArmLibrary
-                    .AsNoTracking()
-                    .Where(x => !x.Deleted).ToListAsync();
-
-                await next();
-            });
+              
+            //});
             //app.Use(async (Runcontext, next) =>
             //{
             //    ApplicationDbContext _context = Runcontext.RequestServices.GetService<ApplicationDbContext>();

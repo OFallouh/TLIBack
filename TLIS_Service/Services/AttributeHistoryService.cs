@@ -38,7 +38,7 @@ namespace TLIS_Service.Services
                 ReturnWithFilters<StaticAttsHistoryViewModel> OutPut = new ReturnWithFilters<StaticAttsHistoryViewModel>();
                 List<StaticAttsHistoryViewModel> StaticAttsHistoryViewModelList = new List<StaticAttsHistoryViewModel>();
                 var list = _unitOfWork.TablesHistoryRepository.GetStaticAttributesHistory(TableName, parameters);
-               
+
                 OutPut.Model = list;
                 OutPut.filters = null;
                 return new Response<ReturnWithFilters<StaticAttsHistoryViewModel>>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -55,7 +55,7 @@ namespace TLIS_Service.Services
             {
                 ReturnWithFilters<StaticAttsHistoryViewModel> OutPut = new ReturnWithFilters<StaticAttsHistoryViewModel>();
                 var list = _unitOfWork.TablesHistoryRepository.GetDynamicAttributesHistory(TableName, parameters);
-                
+
                 OutPut.Model = list;
                 return new Response<ReturnWithFilters<StaticAttsHistoryViewModel>>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
@@ -65,11 +65,11 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<StaticAttsHistoryViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<List<HistoryViewModel>> GetAttachedFileHistory( string TableName,int RecordId, ParameterPagination parameters)
+        public Response<List<HistoryViewModel>> GetAttachedFileHistory(string TableName, int RecordId, ParameterPagination parameters)
         {
             try
             {
-                var list = _unitOfWork.TablesHistoryRepository.GetAttachedFileHistory( TableName, RecordId, parameters);
+                var list = _unitOfWork.TablesHistoryRepository.GetAttachedFileHistory(TableName, RecordId, parameters);
 
                 return new Response<List<HistoryViewModel>>(true, list, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

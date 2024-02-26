@@ -42,6 +42,7 @@ using TLIS_DAL.ViewModels.LoadOtherDTOs;
 using TLIS_DAL.ViewModels.GeneratorDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 
 namespace TLIS_Service.Services
 {
@@ -161,9 +162,23 @@ namespace TLIS_Service.Services
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transactionScope.Complete();
+                        }
+                        else
+                        {
+                            transactionScope.Dispose();
+                            return new Response<bool>(false, false, null, result.errorMessage.ToString(), (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                     }
-                    transactionScope.Complete();
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transactionScope.Complete();
+                    }
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception er)
@@ -2246,10 +2261,23 @@ namespace TLIS_Service.Services
                             if (TaskId != null)
                             {
                                 var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                                var result = Submit.Result;
+                                if (result.result == true && result.errorMessage == null)
+                                {
+                                    _unitOfWork.SaveChanges();
+                                    transaction.Complete();
+                                }
+                                else
+                                {
+                                    transaction.Dispose();
+                                    return new Response<AllItemAttributes>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                                }
                             }
-                            transaction.Complete();
-                            tran.Commit();
+                            else
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
                             return new Response<AllItemAttributes>();
                         }
                         catch (Exception err)
@@ -2326,7 +2354,22 @@ namespace TLIS_Service.Services
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transactionScope.Complete();
+                        }
+                        else
+                        {
+                            transactionScope.Dispose();
+                            return new Response<AllItemAttributes>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transactionScope.Complete();
                     }
                     return new Response<AllItemAttributes>();
                 }

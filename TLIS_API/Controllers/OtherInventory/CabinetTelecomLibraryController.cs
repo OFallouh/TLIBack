@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -15,6 +16,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.OtherInventory
 {
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -36,9 +38,9 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("GetCabinetTelecomLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCabinetTelecomLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters, bool? isRefresh)
+        public IActionResult GetCabinetTelecomLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters )
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetTelecomLibraryEnabledAtt(CombineFilters, WithFilterData, parameters, isRefresh);
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetTelecomLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
             return Ok(response);
         }
         [HttpGet("GetCabinetTelecomLibraryById/{id}")]

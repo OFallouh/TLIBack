@@ -27,7 +27,7 @@ using TLIS_Service.ServiceBase;
 namespace TLIS_API.Controllers
 {
 
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    //[ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -84,11 +84,11 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [HttpPost("getAllSites")]
-        [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
-        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
+        [ProducesResponseType(200, Type = typeof(List<SiteViewModel>))]
+        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.SiteService.GetSites(parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
+            var response = _unitOfWorkService.SiteService.GetAllSites(ConnectionString, parameterPagination, filters);
             return Ok(response);
         }
         [HttpPost("GetSiteMainSpaces")]
@@ -420,12 +420,6 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetItemsOnSite(SiteCode);
             return Ok(response);
         }
-        [HttpPost("GetSiteInfo")]
-        [ProducesResponseType(200, Type = typeof(List<SiteInfo>))]
-        public IActionResult GetSiteInfo(string SiteCode)
-        {
-            var response = _unitOfWorkService.SiteService.GetSiteInfo(SiteCode);
-            return Ok(response);
-        }
+       
     }
 }

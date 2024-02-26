@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -15,6 +16,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.LoadLibrary
 {
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -36,9 +38,9 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
         [HttpPost("GetRadioAntennaLibrariesWithEnabledAttribute")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetRadioAntennaLibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination, bool? isRefresh)
+        public IActionResult GetRadioAntennaLibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters, parameterPagination, isRefresh);
+            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
             return Ok(response);
         }
         [HttpGet("GetRadioAntennaLibraryById/{Id}")]
