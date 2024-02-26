@@ -582,6 +582,7 @@ namespace TLIS_Service.Services
         }
         public Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
         {
+            int totalCount = 0;
             IQueryable<TLIsite> sitesQuery = _context.TLIsite
                 .Include(x => x.Area)
                 .Include(x => x.Region)
@@ -608,8 +609,10 @@ namespace TLIS_Service.Services
                     }
                 }
             }
-
-            int totalCount = sitesQuery.Count();
+            if (filters == null)
+            {
+                 totalCount = sitesQuery.Count();
+            }
 
             sitesQuery = sitesQuery.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
                 .Take(parameterPagination.PageSize);
