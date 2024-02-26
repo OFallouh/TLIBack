@@ -240,7 +240,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_AttributeActivatedService == null)
-                    _AttributeActivatedService = new AttributeActivatedService(_unitOfWork, _services,_mapper);
+                    _AttributeActivatedService = new AttributeActivatedService(_unitOfWork, _services,_mapper,db);
                 return _AttributeActivatedService;
             }
         }
