@@ -2150,7 +2150,7 @@ namespace TLIS_Service.Services
             {
                 return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-        }s
+        }
         //Function take 2 parameters 
         //First TableName to specify the table i deal with
         //Second CivilWithoutLegCategoryId to specify the category of civil Without Leg Library 

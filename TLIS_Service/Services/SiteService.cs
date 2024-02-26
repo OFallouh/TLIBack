@@ -580,6 +580,68 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
+        public Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
+        {
+            IQueryable<TLIsite> sitesQuery = _context.TLIsite
+                .Include(x => x.Area)
+                .Include(x => x.Region)
+                .Include(x => x.siteStatus);
+
+            if (filters != null && filters.Any())
+            {
+                foreach (FilterObjectList filter in filters)
+                {
+                    PropertyInfo property = typeof(SiteViewModel).GetProperties()
+                        .FirstOrDefault(x => x.Name.Equals(filter.key, StringComparison.OrdinalIgnoreCase));
+
+                    if (property == null)
+                        continue;
+
+                    if (property.PropertyType == typeof(string))
+                    {
+                        sitesQuery = sitesQuery.Where(site => filter.value.Any(filterValue =>
+                            EF.Functions.Like(property.GetValue(site).ToString(), $"{filterValue}%")));
+                    }
+                    else
+                    {
+                        sitesQuery = sitesQuery.Where(site => filter.value.Contains(property.GetValue(site).ToString()));
+                    }
+                }
+            }
+
+            int totalCount = sitesQuery.Count();
+
+            sitesQuery = sitesQuery.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                .Take(parameterPagination.PageSize);
+
+            var sites = sitesQuery.ToList();
+
+            var sitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(sites);
+
+            var locationTypeMap = _context.TLIlocationType.ToDictionary(l => l.Id.ToString(), l => l.Name);
+
+            foreach (var siteViewModel in sitesViewModels)
+            {
+                if (siteViewModel.LocationType != null && locationTypeMap.TryGetValue(siteViewModel.LocationType, out string locationTypeName))
+                {
+                    siteViewModel.LocationType = locationTypeName;
+                }
+                else
+                {
+                    siteViewModel.LocationType = null;
+                }
+            }
+
+            return new Response<IEnumerable<SiteViewModel>>(
+                true,
+                sitesViewModels,
+                null,
+                null,
+                (int)Helpers.Constants.ApiReturnCode.success,
+                totalCount);
+        }
+
+
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
         {
             return _mapper.Map<List<SiteViewModel>>(_unitOfWork.SiteRepository
