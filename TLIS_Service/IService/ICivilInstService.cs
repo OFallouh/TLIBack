@@ -21,6 +21,7 @@ namespace TLIS_Service.IService
 {
     public interface ICivilInstService
     {
+        Response<GetForAddCivilWithLegObject> GetForAddCivilWithLeg(string TableName, int CivilLibraryId);
         Response<LoadsOnSideArm> GetLoadsOnSideArm(int SideArmId);
 
         Response<CivilLoads> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType);

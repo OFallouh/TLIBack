@@ -453,6 +453,13 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<ConfigurationAttsViewModel, TLIdocumentType>().ReverseMap();
 
+            CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIsectionsLegType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIsupportTypeDesigned>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIstructureType>().ReverseMap();
+
+            CreateMap<BaseAttViews, BaseAttView>().ReverseMap();
+
             CreateMap<TLIradioOther, RadioOtherViewModel>()
                 .ForMember(x => x.installationPlace_Name, x => x.MapFrom(f => f.installationPlace.Name))
                 .ForMember(x => x.owner_Name, x => x.MapFrom(f => f.owner.OwnerName))

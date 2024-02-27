@@ -4,6 +4,7 @@ using System.Text;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.AttributeActivatedDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_Repository.Base;
 
 namespace TLIS_Repository.IRepository
@@ -13,5 +14,7 @@ namespace TLIS_Repository.IRepository
         IEnumerable<BaseAttView> GetAttributeActivated(string Type, Object Library = null, int? CategoryId = null, params string[] ExceptAtrributes);
         List<BaseInstAttView> GetInstAttributeActivatedForCivilWithoutLeg(int? CategoryId, object Installation = null, params string[] ExceptAtrributes);
         IEnumerable<BaseInstAttView> GetInstAttributeActivated(string Type, Object Installation = null, params string[] ExceptAtrributes);
+        IEnumerable<BaseInstAttViews> GetInstAttributeActivatedGetForAdd(string Type, object Installation = null, params string[] ExceptAtrributes);
+        IEnumerable<BaseAttViews> GetAttributeActivatedGetForAdd(string Type, object Library = null, int? CategoryId = null, params string[] ExceptAtrributes);
     }
 }

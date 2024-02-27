@@ -9254,5 +9254,158 @@ namespace TLIS_Service.Services
 
             return new Response<LoadsCountOnSideArm>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
+        public Response<GetForAddCivilWithLegObject> GetForAddCivilWithLeg(string TableName, int CivilLibraryId)
+        {
+            try
+            {
+                int NumberofNumber = 0;
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                   .GetWhereFirst(c => c.TableName.ToLower() == TableName.ToLower());
+
+                GetForAddCivilWithLegObject objectInst = new GetForAddCivilWithLegObject();
+
+                CivilWithLegLibraryViewModel CivilWithLegLibrary = _mapper.Map<CivilWithLegLibraryViewModel>(_unitOfWork.CivilWithLegLibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == CivilLibraryId, x => x.civilSteelSupportCategory, x => x.sectionsLegType,
+                        x => x.structureType, x => x.supportTypeDesigned));
+
+                List<BaseAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary, null).ToList();
+
+                Dictionary<string, Func<IEnumerable<object>>> repository = new Dictionary<string, Func<IEnumerable<object>>>
+                {
+                    { "tlicivilsteelsupportcategory", () => new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.civilSteelSupportCategoryId)) } },
+                    { "tlisectionslegtype", () => new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.sectionsLegTypeId)) } },
+                    { "tlisupporttypedesigned", () => new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.supportTypeDesignedId)) } },
+                    { "tlistructuretype", () => new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.structureTypeId)) } }
+                };
+                LibraryAttributes = LibraryAttributes
+                   .Select(FKitem =>
+                   {
+                       if (repository.ContainsKey(FKitem.Desc.ToLower()))
+                       {
+                           FKitem.Options = repository[FKitem.Desc.ToLower()]();
+                       }
+                       return FKitem;
+                   })
+                   .ToList();
+                List<BaseAttViews> LibraryLogisticalAttributes = _mapper.Map<List<BaseAttViews>>(_unitOfWork.LogistcalRepository
+                    .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary.Id).ToList());
+
+                LibraryAttributes.AddRange(LibraryLogisticalAttributes);
+                var NumberOfLeg =LibraryAttributes.FirstOrDefault(x => x.Key == "NumberOfLegs");
+                if(NumberOfLeg != null)
+                {
+                     NumberofNumber =(int) NumberOfLeg.Value;
+                }
+                objectInst.LibraryAttribute = LibraryAttributes;
+
+                List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+                    .GetInstAttributeActivatedGetForAdd(TableName, null, "Name", "CivilWithLegsLibId", "CurrentLoads").ToList();
+
+                BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                if (NameAttribute != null)
+                {
+                    BaseInstAttViews Swap = ListAttributesActivated[0];
+                    ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                    ListAttributesActivated[0] = NameAttribute;
+                }
+                Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                {
+                    { "tlilocationtype", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "tlibasetype", () => _mapper.Map<List<BaseTypeViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "tlibasecivilwithlegstype", () => _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "tliguylinetype", () => _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "tlisupporttypeimplemented", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "tlienforcmentcategory", () => _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "structuretype", () => {
+                        List<EnumOutPut> structureTypeCompatibleWithDesigns = new List<EnumOutPut>
+                        {
+                            new EnumOutPut { Id = (int)StructureTypeCompatibleWithDesign.Yes, Name = StructureTypeCompatibleWithDesign.Yes.ToString() },
+                            new EnumOutPut { Id = (int)StructureTypeCompatibleWithDesign.No, Name = StructureTypeCompatibleWithDesign.No.ToString() }
+                        };
+                        return structureTypeCompatibleWithDesigns;
+                    }},
+                    { "sectionslegtype", () => {
+                        List<EnumOutPut> sectionsLegType = new List<EnumOutPut>
+                        {
+                            new EnumOutPut { Id = (int)SectionsLegTypeCompatibleWithDesign.Yes, Name = SectionsLegTypeCompatibleWithDesign.Yes.ToString() },
+                            new EnumOutPut { Id = (int)SectionsLegTypeCompatibleWithDesign.No, Name = SectionsLegTypeCompatibleWithDesign.No.ToString() }
+                        };
+                        return sectionsLegType;
+                    }}
+                };
+
+                ListAttributesActivated = ListAttributesActivated
+                    .Select(FKitem =>
+                    {
+                        if (repositoryMethods.ContainsKey(FKitem.Desc.ToLower()))
+                        {
+                            FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
+                        }
+                        return FKitem;
+                    })
+                    .ToList();
+
+                objectInst.InstallationAttributes = ListAttributesActivated;
+                objectInst.CivilSiteDate = _unitOfWork.AttributeActivatedRepository
+               .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(), null, "allCivilInstId", "Dismantle", "SiteCode");
+
+                objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
+                    .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
+                for (int i = 0; i < NumberofNumber; i++)
+                {
+                    objectInst.LegsInfo = _unitOfWork.AttributeActivatedRepository
+                    .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId");
+                }
+                IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                .GetDynamicInstAtts(TableNameEntity.Id, null);
+
+                DynamicAttributesWithoutValue = DynamicAttributesWithoutValue.Select((DynamicAttribute, index) =>
+                {
+                    TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+
+                    if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                    {
+                        switch (DynamicAttribute.DataType.ToLower())
+                        {
+                            case "string":
+                                DynamicAttribute.ValueString = DynamicAttributeEntity.DefaultValue;
+                                break;
+                            case "int":
+                                DynamicAttribute.ValueDouble = int.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                            case "double":
+                                DynamicAttribute.ValueDouble = double.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                            case "boolean":
+                                DynamicAttribute.ValueBoolean = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                            case "datetime":
+                                DynamicAttribute.ValueDateTime = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        DynamicAttribute.ValueString = " ".Split(' ')[0];
+                    }
+
+                    return DynamicAttribute;
+                });
+
+                objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
+
+    
+
+                return new Response<GetForAddCivilWithLegObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+
+                return new Response<GetForAddCivilWithLegObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
     }
 }
