@@ -151,7 +151,8 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<TLIcity, CityViewModel>().ReverseMap();
             CreateMap<BaseInstAttViewDynamic, TLIdynamicAtt>().ReverseMap()
-                .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name));
+                .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name))
+                  .ForMember(x => x.Label, x => x.MapFrom(f => f.Key));
             CreateMap<TLIbaseBU, BaseBUViewModel>().ReverseMap();
             CreateMap<TLIbaseBU, AddBaseBUViewModel>().ReverseMap();
             CreateMap<TLIbaseBU, EditBaseBUViewModel>().ReverseMap();
@@ -459,6 +460,9 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LocationTypeViewModel, TLIsectionsLegType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIsupportTypeDesigned>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIstructureType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilSiteDate>().ReverseMap()
+                .ForMember(x => x.Name, x => x.MapFrom(f => f.allCivilInst.civilWithLegs.Name));
 
             CreateMap<BaseAttViews, BaseAttView>().ReverseMap();
 

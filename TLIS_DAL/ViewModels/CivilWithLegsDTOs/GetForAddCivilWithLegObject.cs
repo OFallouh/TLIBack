@@ -32,7 +32,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public bool enable { get; set; }
         public bool AutoFill { get; set; }
         public string DataType { get; set; }
-        public object Options { get; set; }
+        public object Options { get; set; } 
     }
     public class BaseInstAttViews
     {

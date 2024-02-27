@@ -9254,7 +9254,7 @@ namespace TLIS_Service.Services
 
             return new Response<LoadsCountOnSideArm>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
-        public Response<GetForAddCivilWithLegObject> GetForAddCivilWithLeg(string TableName, int CivilLibraryId)
+        public Response<GetForAddCivilWithLegObject> GetForAddCivilWithLeg(string TableName, int CivilLibraryId,string SiteCode)
         {
             try
             {
@@ -9284,6 +9284,10 @@ namespace TLIS_Service.Services
                        if (repository.ContainsKey(FKitem.Desc.ToLower()))
                        {
                            FKitem.Options = repository[FKitem.Desc.ToLower()]();
+                       }
+                       else
+                       {
+                           FKitem.Options = new object[0];
                        }
                        return FKitem;
                    })
@@ -9343,6 +9347,10 @@ namespace TLIS_Service.Services
                         {
                             FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
                         }
+                        else
+                        {
+                            FKitem.Options = new object[0];
+                        }
                         return FKitem;
                     })
                     .ToList();
@@ -9353,6 +9361,28 @@ namespace TLIS_Service.Services
 
                 objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
+                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
+                {
+                    { "referencecivilid", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithLegs)
+                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithLegs !=null).Select(x=>x.allCivilInst.civilWithLegs).ToList()) }
+
+                };
+
+                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
+                   .Select(FKitem =>
+                   {
+                       if (repositoryM.ContainsKey(FKitem.Desc.ToLower()))
+                       {
+                           FKitem.Options = repositoryM[FKitem.Desc.ToLower()]();
+                       }
+                       else
+                       {
+                           FKitem.Options = new object[0];
+                       }
+                       return FKitem;
+                   })
+                   .ToList();
+
                 List<BaseInstAttViews> baseInstAttViews = new List<BaseInstAttViews>();
                 for (int i = 0; i < NumberofNumber; i++)
                 {
@@ -9377,6 +9407,7 @@ namespace TLIS_Service.Services
                     {
                         DynamicAttribute.Value = " ".Split(' ')[0];
                     }
+                    DynamicAttribute.Options= new object[0];
 
                     return DynamicAttribute;
                 });

@@ -38,9 +38,9 @@ namespace TLIS_API.Controllers
 
         [HttpGet("GetAttForAddCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId)
+        public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId,string SiteCode)
         {
-            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLeg(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId);
+            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLeg(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
 
