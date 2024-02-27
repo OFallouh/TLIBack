@@ -7,6 +7,6 @@ namespace TLIS_DAL.ViewModels.EnforcmentCategoryDTOs
     public class EnforcmentCategoryViewModel
     {
         public int Id { get; set; }
-        public string Value { get; set; }
+        public string Name { get; set; }
     }
 }

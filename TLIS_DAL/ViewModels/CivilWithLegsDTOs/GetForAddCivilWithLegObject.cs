@@ -18,7 +18,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
 
         public IEnumerable<BaseInstAttViews> CivilSupportDistance { get; set; } = new List<BaseInstAttViews>();
         public IEnumerable<BaseInstAttViews> LegsInfo { get; set; } = new List<BaseInstAttViews>();
-        public IEnumerable<DynaminAttInstViewModel> DynamicAttribute { get; set; } = new List<DynaminAttInstViewModel>();
+        public IEnumerable<BaseInstAttViewDynamic> DynamicAttribute { get; set; } = new List<BaseInstAttViewDynamic>();
  
     }
     public class BaseAttViews
@@ -36,6 +36,21 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
     }
     public class BaseInstAttViews
     {
+        public string Key { get; set; }
+        public object Value { get; set; }
+        public string Desc { get; set; }
+        public string Label { get; set; }
+        public bool Manage { get; set; }
+        public bool Required { get; set; }
+        public bool enable { get; set; }
+        public bool AutoFill { get; set; }
+        public int? DataTypeId { get; set; }
+        public string DataType { get; set; }
+        public object Options { get; set; }
+    }
+    public class BaseInstAttViewDynamic
+    {
+        public int Id { get; set; }
         public string Key { get; set; }
         public object Value { get; set; }
         public string Desc { get; set; }

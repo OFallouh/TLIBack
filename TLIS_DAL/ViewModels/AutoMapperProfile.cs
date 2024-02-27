@@ -150,6 +150,8 @@ namespace TLIS_DAL.ViewModels
             //CreateMap<ConditionType, ConditionTypeViewModel>().ReverseMap();
 
             CreateMap<TLIcity, CityViewModel>().ReverseMap();
+            CreateMap<BaseInstAttViewDynamic, TLIdynamicAtt>().ReverseMap()
+                .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name));
             CreateMap<TLIbaseBU, BaseBUViewModel>().ReverseMap();
             CreateMap<TLIbaseBU, AddBaseBUViewModel>().ReverseMap();
             CreateMap<TLIbaseBU, EditBaseBUViewModel>().ReverseMap();

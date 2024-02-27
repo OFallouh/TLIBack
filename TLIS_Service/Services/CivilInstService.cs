@@ -9353,42 +9353,29 @@ namespace TLIS_Service.Services
 
                 objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
+                List<BaseInstAttViews> baseInstAttViews = new List<BaseInstAttViews>();
                 for (int i = 0; i < NumberofNumber; i++)
                 {
-                    objectInst.LegsInfo = _unitOfWork.AttributeActivatedRepository
+                    var leg  = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId");
+                    baseInstAttViews.AddRange(leg);
+                  
                 }
-                IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                .GetDynamicInstAtts(TableNameEntity.Id, null);
+                objectInst.LegsInfo = baseInstAttViews;
+                IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
                 DynamicAttributesWithoutValue = DynamicAttributesWithoutValue.Select((DynamicAttribute, index) =>
                 {
                     TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
+               
                     if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
                     {
-                        switch (DynamicAttribute.DataType.ToLower())
-                        {
-                            case "string":
-                                DynamicAttribute.ValueString = DynamicAttributeEntity.DefaultValue;
-                                break;
-                            case "int":
-                                DynamicAttribute.ValueDouble = int.Parse(DynamicAttributeEntity.DefaultValue);
-                                break;
-                            case "double":
-                                DynamicAttribute.ValueDouble = double.Parse(DynamicAttributeEntity.DefaultValue);
-                                break;
-                            case "boolean":
-                                DynamicAttribute.ValueBoolean = bool.Parse(DynamicAttributeEntity.DefaultValue);
-                                break;
-                            case "datetime":
-                                DynamicAttribute.ValueDateTime = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                                break;
-                        }
+                        DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
                     }
                     else
                     {
-                        DynamicAttribute.ValueString = " ".Split(' ')[0];
+                        DynamicAttribute.Value = " ".Split(' ')[0];
                     }
 
                     return DynamicAttribute;

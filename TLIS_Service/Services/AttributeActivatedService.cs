@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TLIS_DAL;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -25,11 +26,13 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        public AttributeActivatedService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
+        private readonly ApplicationDbContext _dbContext;
+        public AttributeActivatedService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper, ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
+            _dbContext = context;
         }
         public Response<AttributeActivatedViewModel> GetById(int Id)
         {

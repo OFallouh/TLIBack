@@ -8,6 +8,7 @@ using System.Text;
 using TLIS_DAL;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
@@ -77,6 +78,29 @@ namespace TLIS_Repository.Repositories
                 dynamicAtts = _mapper.Map<List<DynaminAttInstViewModel>>(DynamicAtts);
             }
             return dynamicAtts;
+
+        }
+        public IEnumerable<BaseInstAttViewDynamic> GetDynamicInstAttInst(int TableNameId, int? CategoryId)
+        {
+            List<BaseInstAttViewDynamic> dynamicAtts = null;
+            if (CategoryId == null)
+            {
+                var DynamicAtts = _context.TLIdynamicAtt
+                    .Where(d => !d.LibraryAtt && d.tablesNamesId == TableNameId && !d.disable)
+                    .Include(d => d.DataType)
+                    .ToList();
+                dynamicAtts = _mapper.Map<List<BaseInstAttViewDynamic>>(DynamicAtts);
+            }
+            else
+            {
+                var DynamicAtts = _context.TLIdynamicAtt
+                    .Where(d => !d.LibraryAtt && d.tablesNamesId == TableNameId && d.CivilWithoutLegCategoryId == CategoryId && !d.disable)
+                    .Include(d => d.DataType)
+                    .ToList();
+                dynamicAtts = _mapper.Map<List<BaseInstAttViewDynamic>>(DynamicAtts);
+            }
+            return dynamicAtts;
+
         }
     }
 }
