@@ -12,8 +12,8 @@ namespace TLIS_DAL.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public float? Distance { get; set; }
-        public float? Azimuth { get; set; }
+        public float Distance { get; set; } 
+        public float Azimuth { get; set; } 
         public virtual TLIallCivilInst CivilInst { get; set; }
         [Required]
         public int CivilInstId { get; set; }

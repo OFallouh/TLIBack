@@ -7,10 +7,10 @@ namespace TLIS_DAL.ViewModels.CivilSiteDateDTOs
 {
     public class AddCivilSiteDateViewModel
     {
-        public float? LongitudinalSpindleLengthm { get; set; }
-        public float? HorizontalSpindleLengthm { get; set; }
-        public DateTime InstallationDate { get; set; }
-        public bool ReservedSpace { get; set; }
+        public float LongitudinalSpindleLengthm { get; set; } = 0;
+        public float HorizontalSpindleLengthm { get; set; } = 0;
+        public DateTime InstallationDate { get; set; }=DateTime.Now;
+        public bool ReservedSpace { get; set; } = false;
         public bool Dismantle { get; set; } = false;
     }
 }

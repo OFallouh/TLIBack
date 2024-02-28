@@ -7,6 +7,7 @@ using System.Text;
 using TLIS_DAL;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_Repository.Base;
@@ -64,6 +65,51 @@ namespace TLIS_Repository.Repositories
                 dynamicAttInstValue.InventoryId = Id;
                 dynamicAttInstValue.tablesNamesId = TableNameId;
                 dynamicAttInstValue.ValueBoolean = addDynamicInstAttValue.ValueBoolean;
+                dynamicAttInstValue.disable = false;
+                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                _context.SaveChanges();
+            }
+        }
+        public void AddDdynamicAttributeInstallation(AddDdynamicAttributeInstallationValueViewModel addDynamicInstAttValue, int TableNameId, int Id)
+        {
+            var DynamicAtt = _context.TLIdynamicAtt.Include(x => x.DataType).FirstOrDefault(x => x.Id == addDynamicInstAttValue.id);
+            TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
+            if (addDynamicInstAttValue.value is string stringValue)
+            {
+                dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
+                dynamicAttInstValue.InventoryId = Id;
+                dynamicAttInstValue.tablesNamesId = TableNameId;
+                dynamicAttInstValue.ValueString = stringValue;
+                dynamicAttInstValue.disable = false;
+                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                _context.SaveChanges();
+            }
+            else if( addDynamicInstAttValue.value is double DoubleValue)
+            {
+                dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
+                dynamicAttInstValue.InventoryId = Id;
+                dynamicAttInstValue.tablesNamesId = TableNameId;
+                dynamicAttInstValue.ValueDouble = DoubleValue;
+                dynamicAttInstValue.disable = false;
+                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                _context.SaveChanges();
+            }
+            else if (addDynamicInstAttValue.value is DateTime dateTimeValue)
+            {
+                dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
+                dynamicAttInstValue.InventoryId = Id;
+                dynamicAttInstValue.tablesNamesId = TableNameId;
+                dynamicAttInstValue.ValueDateTime = dateTimeValue;
+                dynamicAttInstValue.disable = false;
+                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                _context.SaveChanges();
+            }
+            else if (addDynamicInstAttValue.value is bool booleanValue)
+            {
+                dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
+                dynamicAttInstValue.InventoryId = Id;
+                dynamicAttInstValue.tablesNamesId = TableNameId;
+                dynamicAttInstValue.ValueBoolean = booleanValue;
                 dynamicAttInstValue.disable = false;
                 _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
                 _context.SaveChanges();

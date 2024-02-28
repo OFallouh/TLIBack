@@ -7,8 +7,8 @@ namespace TLIS_DAL.ViewModels.CivilSupportDistanceDTOs
 {
     public class AddCivilSupportDistanceViewModel
     {
-        public float? Distance { get; set; }
-        public float? Azimuth { get; set; }
+        public float Distance { get; set; } = 0;
+        public float Azimuth { get; set; } = 0;
         public int ReferenceCivilId { get; set; }
     }
 }

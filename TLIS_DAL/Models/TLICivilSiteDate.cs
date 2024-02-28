@@ -11,8 +11,8 @@ namespace TLIS_DAL.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public float? LongitudinalSpindleLengthm { get; set; }
-        public float? HorizontalSpindleLengthm { get; set; }
+        public float LongitudinalSpindleLengthm { get; set; }
+        public float HorizontalSpindleLengthm { get; set; }
         public DateTime InstallationDate { get; set; }
         public TLIallCivilInst allCivilInst { get; set; }
         [Required]

@@ -1841,7 +1841,7 @@ namespace TLIS_Service.Services
                                     x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).Select(x => x.allCivilInst.civilWithLegs)
                             .ToList().ForEach(ListItem =>
                             {
-                                ListItem.OwnerId = null;
+                                ListItem.OwnerId = 0;
                             });
 
                         _unitOfWork.CivilSiteDateRepository

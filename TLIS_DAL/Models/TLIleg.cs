@@ -13,8 +13,8 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         public string CiviLegName { get; set; }
         public string LegLetter { get; set; }
-        public float LegAzimuth { get; set; }
-        public string Notes { get; set; }
+        public float LegAzimuth { get; set; } 
+        public string? Notes { get; set; }
         public TLIcivilWithLegs CivilWithLegInst { get; set; }
         public int CivilWithLegInstId { get; set; }
         public IEnumerable<TLIcivilLoadLegs> civilLoadsLegs { get; set; }

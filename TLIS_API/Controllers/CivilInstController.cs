@@ -110,9 +110,9 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == true)
+            if (addCivilWithLeg.civilSiteDate.ReservedSpace == true)
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithLeg.SpaceInstallation);
+                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithLeg.installationAttributes.SpaceInstallation);
                 if (CheckReservedSapce == true)
                 {
                     if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
@@ -129,7 +129,7 @@ namespace TLIS_API.Controllers
                     }
                 }
             }
-            else if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == false)
+            else if (addCivilWithLeg.civilSiteDate.ReservedSpace == false)
             {
                 if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
                 {

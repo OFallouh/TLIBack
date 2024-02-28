@@ -1005,7 +1005,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     double? Freespace = 0;
-                    double? EquivalentSpace = 0;
+                    double EquivalentSpace = 0;
                     var allLoadInst = _dbContext.TLIallLoadInst.Where(x => x.mwBUId == LoadId || x.mwDishId == LoadId || x.mwODUId == LoadId || x.mwRFUId == LoadId || x.mwOtherId == LoadId || x.radioAntennaId == LoadId || x.radioRRUId == LoadId || x.radioOtherId == LoadId || x.powerId == LoadId || x.loadOtherId == LoadId)
                         .Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU)
                         .Include(x => x.mwRFU).Include(x => x.mwOther).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).

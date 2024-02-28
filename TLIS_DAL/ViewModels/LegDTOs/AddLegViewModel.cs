@@ -9,7 +9,7 @@ namespace TLIS_DAL.ViewModels.LegDTOs
     {
         public string CiviLegName { get; set; }
         public string LegLetter { get; set; }
-        public float LegAzimuth { get; set; }
-        public string Notes { get; set; }
+        public float LegAzimuth { get; set; } = 0;
+        public string? Notes { get; set; }
     }
 }

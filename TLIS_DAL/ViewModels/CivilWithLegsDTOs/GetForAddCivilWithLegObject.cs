@@ -17,7 +17,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public IEnumerable<BaseInstAttViews> CivilSiteDate { get; set; } = new List<BaseInstAttViews>();
 
         public IEnumerable<BaseInstAttViews> CivilSupportDistance { get; set; } = new List<BaseInstAttViews>();
-        public IEnumerable<BaseInstAttViews> LegsInfo { get; set; } = new List<BaseInstAttViews>();
+        public IEnumerable<IEnumerable<BaseInstAttViews>> LegsInfo { get; set; } = new List<List<BaseInstAttViews>>();
         public IEnumerable<BaseInstAttViewDynamic> DynamicAttribute { get; set; } = new List<BaseInstAttViewDynamic>();
  
     }
