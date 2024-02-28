@@ -1262,7 +1262,7 @@ namespace TLIS_Service.Services
                             (x.allCivilInst.civilWithLegs.baseTypeId == Id && !x.allCivilInst.Draft) : false),
                                 x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
 
-                    var Entity = _unitOfWork.LocationTypeRepository.GetByID(Id);
+                    var Entity = _unitOfWork.BaseTypeRepository.GetByID(Id);
                     if (Entity == null || Civils.Count() > 0)
                     {
                         Entity.Deleted = (false);
@@ -1272,7 +1272,7 @@ namespace TLIS_Service.Services
                     {
                         Entity.Deleted = (true);
                     }
-                    _unitOfWork.LocationTypeRepository.Update(Entity);
+                    _unitOfWork.BaseTypeRepository.Update(Entity);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
@@ -1323,7 +1323,7 @@ namespace TLIS_Service.Services
                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.sideArmTypeId == Id) : false),
                                 x => x.sideArm).ToList();
 
-                    var Entity = _unitOfWork.LocationTypeRepository.GetByID(Id);
+                    var Entity = _unitOfWork.SideArmTypeRepository.GetByID(Id);
                     if (Entity == null || Loads.Count() > 0)
                     {
                         Entity.Deleted = (false);
@@ -1333,7 +1333,7 @@ namespace TLIS_Service.Services
                     {
                         Entity.Deleted = (true);
                     }
-                    _unitOfWork.LocationTypeRepository.Update(Entity);
+                    _unitOfWork.SideArmTypeRepository.Update(Entity);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
@@ -1351,7 +1351,7 @@ namespace TLIS_Service.Services
                                  x.allLoadInst.loadOtherId != null ? x.allLoadInst.loadOther.InstallationPlaceId == Id : false)) : false),
                             x => x.allLoadInst).ToList();
 
-                    var Entity = _unitOfWork.LocationTypeRepository.GetByID(Id);
+                    var Entity = _unitOfWork.InstallationPlaceRepository.GetByID(Id);
                     if (Entity == null || Loads.Count() > 0)
                     {
                         Entity.Deleted = (false);
@@ -1361,7 +1361,7 @@ namespace TLIS_Service.Services
                     {
                         Entity.Deleted = (true);
                     }
-                    _unitOfWork.LocationTypeRepository.Update(Entity);
+                    _unitOfWork.InstallationPlaceRepository.Update(Entity);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 //---------------------------------------------------------

@@ -2539,7 +2539,7 @@ namespace TLIS_Service.Helpers
             //TLIloadOther,
             // mwother
 
-            [Description("TLIowner")]
+            [Description("TLIowner TLIitemStatus")]
             TLIsideArm,
 
             [Description("TLIrenewableCabinetType")]
