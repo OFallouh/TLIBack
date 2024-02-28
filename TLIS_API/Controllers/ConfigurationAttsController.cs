@@ -84,9 +84,9 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("Disable")]
         [ProducesResponseType(200, Type = typeof(TableAffected))]
-        public async Task<IActionResult> Disable( string TableName, int Id, bool isForced)
+        public async Task<IActionResult> Disable( string TableName, int Id)
         {
-            var response = await _unitOfWorkService.ConfigurationAttsService.Disable(TableName, Id, isForced);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Disable(TableName, Id);
             return Ok(response);
         }
         [HttpPost("Delete")]

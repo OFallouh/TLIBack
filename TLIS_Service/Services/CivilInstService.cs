@@ -1,28 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Dynamic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using TLIS_DAL;
 using TLIS_DAL.Helper;
-using System.Collections;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
-using TLIS_DAL.ViewModels.AllLoadInstDTOs;
 using TLIS_DAL.ViewModels.AttActivatedCategoryDTOs;
 using TLIS_DAL.ViewModels.AttributeActivatedDTOs;
-using TLIS_DAL.ViewModels.AttributeViewManagmentDTOs;
 using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
 using TLIS_DAL.ViewModels.BaseTypeDTOs;
 using TLIS_DAL.ViewModels.CabinetDTOs;
@@ -55,33 +53,10 @@ using TLIS_DAL.ViewModels.RuleDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.ViewModels.SubTypeDTOs;
 using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
-using TLIS_DAL.ViewModels.TablesHistoryDTOs;
-using TLIS_DAL.ViewModels.WorkflowHistoryDTOs;
 using TLIS_Repository.Base;
 using TLIS_Service.IService;
-using static TLIS_Repository.Helpers.Constants;
 using static TLIS_Service.Helpers.Constants;
 using TablesNames = TLIS_Repository.Helpers.Constants.TablesNames;
-using System.Runtime.CompilerServices;
-using TLIS_DAL.ViewModels.LegDTOs;
-using AutoMapper;
-using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
-using Remotion.Utilities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.DependencyModel;
-using LoadSubType = TLIS_Service.Helpers.Constants.LoadSubType;
-using System.Data.Linq;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Diagnostics.Eventing.Reader;
-using System.Data;
-using System.Net.WebSockets;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
-using Microsoft.Extensions.Configuration;
-using LinqToExcel.Extensions;
-using TLIS_DAL.ViewModels.SiteDTOs;
-using static TLIS_Repository.Repositories.SiteRepository;
-using System.Drawing.Drawing2D;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TLIS_Service.Services
 {
@@ -9379,15 +9354,15 @@ namespace TLIS_Service.Services
 
                 List<List<BaseInstAttViews>> baseInstAttViews = new List<List<BaseInstAttViews>>();
                 List<BaseInstAttViews> baseInstAttView = new List<BaseInstAttViews>();
+
+                var leg  = _unitOfWork.AttributeActivatedRepository
+                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId");
+                baseInstAttView.AddRange(leg);
                 for (int i = 0; i < NumberofNumber; i++)
                 {
-                    var leg  = _unitOfWork.AttributeActivatedRepository
-                    .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId");
-                    baseInstAttView.AddRange(leg);
                     baseInstAttViews.Add(baseInstAttView);
-
-
                 }
+                
                 objectInst.LegsInfo = baseInstAttViews;
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);

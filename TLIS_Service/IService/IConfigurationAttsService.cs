@@ -15,7 +15,7 @@ namespace TLIS_Service.IService
         Response<ConfigurationAttsViewModel> GetById(string TableName, int Id);
         Response<ConfigurationAttsViewModel> Add(AddConfigrationAttViewModel viewModel);
         Task<Response<ConfigurationAttsViewModel>> Update(ConfigurationAttsViewModel viewModel);
-        Task<Response<List<TableAffected>>> Disable(string TableName, int Id, bool isForced);
+        Task<Response<List<TableAffected>>> Disable(string TableName, int Id);
         Task<Response<ConfigurationAttsViewModel>> Delete(string TableName, int Id);
     }
 }
