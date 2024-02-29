@@ -21,7 +21,11 @@ namespace TLIS_Service.IService
 {
     public interface ICivilInstService
     {
-        Response<GetForAddCivilWithLegObject> GetForAddCivilWithLeg(string TableName, int CivilLibraryId, string SiteCode);
+        Response<GetForAddCivilWithLegObject> GetForAddCivilWithLegInstallation(string TableName, int CivilLibraryId, string SiteCode);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCiviNonSteelInstallation(string TableName, int CivilLibraryId, string SiteCode);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Monople(string TableName, int CivilLibraryId, string SiteCode);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Capsule(string TableName, int CivilLibraryId, string SiteCode);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Mast(string TableName, int CivilLibraryId, string SiteCode);
         Response<LoadsOnSideArm> GetLoadsOnSideArm(int SideArmId);
 
         Response<CivilLoads> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType);

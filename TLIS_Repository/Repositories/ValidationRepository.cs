@@ -652,12 +652,12 @@ namespace TLIS_Repository.Repositories
                         else if (Rule.DynamicAttribute != null)
                         {
                             var Operation = Operations.Where(x => x.Id == Rule.Rule.OperationId).FirstOrDefault();
-                            AddDynamicAttInstValueViewModel dynamicAttributeInstValue = null;
+                            AddDdynamicAttributeInstallationValueViewModel dynamicAttributeInstValue = null;
                             TLIdynamicAttLibValue dynamicAttLibValue = null;
                             TLIdynamicAttInstValue dynamicAttInstValue = null;
                             if (Rule.DynamicAttribute.tablesNamesId == TableNameId)
                             {
-                                dynamicAttributeInstValue = addCivilWithoutLeg.TLIdynamicAttInstValue.Where(x => x.DynamicAttId == Rule.DynamicAttribute.Id).FirstOrDefault();
+                                dynamicAttributeInstValue = addCivilWithoutLeg.dynamicAttribute.Where(x => x.id == Rule.DynamicAttribute.Id).FirstOrDefault();
                                 if (Operation.Name.ToLower() == "required")
                                 {
                                     if (dynamicAttributeInstValue == null)
@@ -669,42 +669,39 @@ namespace TLIS_Repository.Repositories
                                 }
                                 else
                                 {
+
                                     if (dynamicAttributeInstValue != null)
                                     {
-                                        if (dynamicAttributeInstValue.ValueBoolean != null)
+                                        if (dynamicAttributeInstValue.value is bool booleanValue)
                                         {
-                                            if (CheckValue(dynamicAttributeInstValue.ValueBoolean, Operation.Name, Rule.Rule.OperationValueBoolean) == false)
+                                            if (CheckValue(booleanValue, Operation.Name, Rule.Rule.OperationValueBoolean) == false)
                                             {
                                                 ValidationResult = false;
                                                 ErrorMessage = $"{Rule.DynamicAttribute.Key} from {Rule.AttributeActivated.Tabel} Should {Operation.Name} {Rule.Rule.OperationValueBoolean}";
-                                                break;
                                             }
                                         }
-                                        else if (dynamicAttributeInstValue.ValueDateTime != null)
+                                        else if (dynamicAttributeInstValue.value is DateTime dateTimeValue)
                                         {
-                                            if (CheckValue(dynamicAttributeInstValue.ValueDateTime, Operation.Name, Rule.Rule.OperationValueDateTime) == false)
+                                            if (CheckValue(dateTimeValue, Operation.Name, Rule.Rule.OperationValueDateTime) == false)
                                             {
                                                 ValidationResult = false;
                                                 ErrorMessage = $"{Rule.DynamicAttribute.Key} from {Rule.AttributeActivated.Tabel} Should {Operation.Name} {Rule.Rule.OperationValueDateTime}";
-                                                break;
                                             }
                                         }
-                                        else if (dynamicAttributeInstValue.ValueDouble != null)
+                                        else if (dynamicAttributeInstValue.value is double doubleValue)
                                         {
-                                            if (CheckValue(dynamicAttributeInstValue.ValueDouble, Operation.Name, Rule.Rule.OperationValueDouble) == false)
+                                            if (CheckValue(doubleValue, Operation.Name, Rule.Rule.OperationValueDouble) == false)
                                             {
                                                 ValidationResult = false;
                                                 ErrorMessage = $"{Rule.DynamicAttribute.Key} from {Rule.AttributeActivated.Tabel} Should {Operation.Name} {Rule.Rule.OperationValueDouble}";
-                                                break;
                                             }
                                         }
-                                        else if (dynamicAttributeInstValue.ValueString != null)
+                                        else if (dynamicAttributeInstValue.value is string stringValue)
                                         {
-                                            if (CheckValue(dynamicAttributeInstValue.ValueString, Operation.Name, Rule.Rule.OperationValueString) == false)
+                                            if (CheckValue(stringValue, Operation.Name, Rule.Rule.OperationValueString) == false)
                                             {
                                                 ValidationResult = false;
                                                 ErrorMessage = $"{Rule.DynamicAttribute.Key} from {Rule.AttributeActivated.Tabel} Should {Operation.Name} {Rule.Rule.OperationValueString}";
-                                                break;
                                             }
                                         }
                                     }
@@ -719,7 +716,7 @@ namespace TLIS_Repository.Repositories
                             {
                                 if (Rule.DynamicAttribute.LibraryAtt == true)
                                 {
-                                    dynamicAttLibValue = _context.TLIdynamicAttLibValue.Where(x => x.DynamicAttId == Rule.DynamicAttribute.Id && x.tablesNamesId == Rule.DynamicAttribute.tablesNamesId && x.InventoryId == addCivilWithoutLeg.CivilWithoutlegsLibId).FirstOrDefault();
+                                    dynamicAttLibValue = _context.TLIdynamicAttLibValue.Where(x => x.DynamicAttId == Rule.DynamicAttribute.Id && x.tablesNamesId == Rule.DynamicAttribute.tablesNamesId && x.InventoryId == addCivilWithoutLeg.civilType.civilWithOutLegsLibId).FirstOrDefault();
                                     if (Operation.Name.ToLower() == "required")
                                     {
                                         if (dynamicAttLibValue == null)

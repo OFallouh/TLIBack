@@ -154,7 +154,74 @@ namespace TLIS_Repository.Repositories
             return BaseAttsView;
         }
 
+        public List<BaseInstAttViews> GetInstAttributeActivatedForCivilWithoutLegGetForAdd(int? CategoryId, object Installation = null, params string[] ExceptAtrributes)
+        {
+            List<TLIattActivatedCategory> Excepted = _context.TLIattActivatedCategory.Include(x => x.attributeActivated)
+                .Where(x => ExceptAtrributes.Contains(x.attributeActivated.Key) && x.civilWithoutLegCategoryId == CategoryId).ToList();
 
+            List<TLIattActivatedCategory> AttActivatedCategories = _context.TLIattActivatedCategory.Include(x => x.attributeActivated)
+                .Where(x => x.enable && x.civilWithoutLegCategoryId.Value == CategoryId.Value && !x.IsLibrary &&
+                    x.attributeActivated.Tabel.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower() &&
+                    x.attributeActivated.Key.ToLower() != "id" && x.attributeActivated.Key.ToLower() != "active" &&
+                    x.attributeActivated.Key.ToLower() != "deleted").ToList().Except(Excepted).ToList();
+
+            var temp = AttActivatedCategories.Select(x => x.attributeActivatedId).ToList();
+            List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x => temp.Any(y => y == x.Id) && x != null).ToList();
+
+            //List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated
+            //   .Where(x => AttActivatedCategories.ToList().FirstOrDefault(y => y.attributeActivatedId == x.Id) != null).ToList();
+
+            List<BaseInstAttViews> BaseAttsView = new List<BaseInstAttViews>();
+            if (Installation == null)
+            {
+                foreach (var AttributeActivated in AttributesActivated)
+                {
+                    TLIattActivatedCategory AttActivatedCategory = AttActivatedCategories
+                        .FirstOrDefault(x => x.attributeActivatedId == AttributeActivated.Id);
+
+                    BaseAttsView.Add(new BaseInstAttViews
+                    {
+                        Key = AttributeActivated.Key,
+                        Label = AttActivatedCategory.Label,
+                        Desc = AttActivatedCategory.Description,
+                        enable = AttActivatedCategory.enable,
+                        AutoFill = AttributeActivated.AutoFill,
+                        Manage = AttributeActivated.Manage,
+                        Required = AttActivatedCategory.Required,
+                        DataType = AttributeActivated.DataType
+                    });
+                }
+            }
+            else
+            {
+                foreach (var AttributeActivated in AttributesActivated)
+                {
+                    TLIattActivatedCategory AttActivatedCategory = AttActivatedCategories
+                        .FirstOrDefault(x => x.attributeActivatedId == AttributeActivated.Id);
+
+                    object value = Installation.GetType().GetProperty(AttributeActivated.Key).GetValue(Installation);
+                    if (AttributeActivated.Key == "equipmentsLocation" || AttributeActivated.Key == "reinforced" ||
+                        AttributeActivated.Key == "availabilityOfWorkPlatforms" || AttributeActivated.Key == "ladderSteps")
+                    {
+                        if (value != null)
+                            value = value.ToString();
+                    }
+                    BaseAttsView.Add(new BaseInstAttViews
+                    {
+                        Key = AttributeActivated.Key,
+                        Label = AttActivatedCategory.Label,
+                        Desc = AttActivatedCategory.Description,
+                        Value = value,
+                        enable = AttActivatedCategory.enable,
+                        AutoFill = AttributeActivated.AutoFill,
+                        Manage = AttributeActivated.Manage,
+                        Required = AttActivatedCategory.Required,
+                        DataType = AttributeActivated.DataType
+                    });
+                }
+            }
+            return BaseAttsView;
+        }
         public IEnumerable<BaseInstAttView> GetInstAttributeActivated(string Type, object Installation = null, params string[] ExceptAtrributes)
         {
             List<TLIattributeActivated> Excepted = _context.TLIattributeActivated.Where(x =>

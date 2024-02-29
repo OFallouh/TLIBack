@@ -148,6 +148,22 @@ namespace TLIS_DAL.ViewModels
 
 
             //CreateMap<ConditionType, ConditionTypeViewModel>().ReverseMap();
+           // ---------------------------------------------------------------------------------------
+
+            CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithoutLegCategory>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIsectionsLegType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIsupportTypeDesigned>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilNonSteelType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIstructureType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilSiteDate>().ReverseMap()
+                .ForMember(x => x.Name, x => x.MapFrom(f => f.allCivilInst.civilWithLegs.Name));
+
+            //---------------------------------------------------------------------------
+
+
 
             CreateMap<TLIcity, CityViewModel>().ReverseMap();
             CreateMap<BaseInstAttViewDynamic, TLIdynamicAtt>().ReverseMap()
@@ -456,13 +472,6 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<ConfigurationAttsViewModel, TLIdocumentType>().ReverseMap();
 
-            CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
-            CreateMap<LocationTypeViewModel, TLIsectionsLegType>().ReverseMap();
-            CreateMap<LocationTypeViewModel, TLIsupportTypeDesigned>().ReverseMap();
-            CreateMap<LocationTypeViewModel, TLIstructureType>().ReverseMap();
-            CreateMap<LocationTypeViewModel, TLIcivilWithLegs>().ReverseMap();
-            CreateMap<LocationTypeViewModel, TLIcivilSiteDate>().ReverseMap()
-                .ForMember(x => x.Name, x => x.MapFrom(f => f.allCivilInst.civilWithLegs.Name));
 
             CreateMap<BaseAttViews, BaseAttView>().ReverseMap();
 
@@ -477,6 +486,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<AddRadioOtherViewModel, TLIradioOther>();
 
             CreateMap<TLIradioOther, EditRadioOtherViewModel>();
+
+            CreateMap<installationAttributes, TLIcivilWithLegs>();
 
             CreateMap<EditRadioOtherViewModel, TLIradioOther>();
             // CreateMap<TLIcondition, ConditionViewModel>().ReverseMap();

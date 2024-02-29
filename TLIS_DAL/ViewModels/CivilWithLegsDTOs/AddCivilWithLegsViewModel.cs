@@ -33,7 +33,6 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
 
     public class installationAttributes
     {
-        public string Name { get; set; }
         public float WindMaxLoadm2 { get; set; } = 0;
         public double LocationHeight { get; set; } = 0;
         public string? PoType { get; set; }
@@ -65,8 +64,8 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public string? DiagonalMemberPrefix { get; set; }
         public float EnforcementHeightBase { get; set; } = 0;
         public float Enforcementlevel { get; set; } = 0;
-        public StructureTypeCompatibleWithDesign StructureType { get; set; }
-        public SectionsLegTypeCompatibleWithDesign SectionsLegType { get; set; }
+        public StructureTypeCompatibleWithDesign? StructureType { get; set; }
+        public SectionsLegTypeCompatibleWithDesign? SectionsLegType { get; set; }
         public float TotalHeight { get; set; } = 0;
         public float SpaceInstallation { get; set; } = 0;
         public int OwnerId { get; set; }

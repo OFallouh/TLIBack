@@ -57,17 +57,17 @@ namespace TLIS_DAL.Models
         public string? BasePlateShape { get; set; }
         public string? BasePlateDimensions { get; set; }
         public string? BaseNote { get; set; }
-        public TLIlocationType locationType { get; set; }
+        public TLIlocationType? locationType { get; set; }
         public int? locationTypeId { get; set; }
-        public TLIbaseType baseType { get; set; }
+        public TLIbaseType? baseType { get; set; }
         public int? baseTypeId { get; set; }
         public string? VerticalMeasurement { get; set; }
         public string? SteelCrossSection { get; set; }
         public string? DiagonalMemberPrefix { get; set; }
         public float EnforcementHeightBase { get; set; } = 0;
         public float Enforcementlevel { get; set; } = 0;
-        public StructureTypeCompatibleWithDesign StructureType { get; set; }
-        public SectionsLegTypeCompatibleWithDesign SectionsLegType { get; set; }
+        public StructureTypeCompatibleWithDesign? StructureType { get; set; }
+        public SectionsLegTypeCompatibleWithDesign? SectionsLegType { get; set; }
 
 
 
@@ -78,12 +78,12 @@ namespace TLIS_DAL.Models
         public int CivilWithLegsLibId { get; set; }
         public TLIcivilWithLegLibrary CivilWithLegsLib { get; set; }
         public int? BaseCivilWithLegTypeId { get; set; }
-        public TLIbaseCivilWithLegsType BaseCivilWithLegType { get; set; }
+        public TLIbaseCivilWithLegsType? BaseCivilWithLegType { get; set; }
 
         public int? GuylineTypeId { get; set; }
-        public TLIguyLineType GuyLineType { get; set; }
+        public TLIguyLineType? GuyLineType { get; set; }
         public int? SupportTypeImplementedId { get; set; }
-        public TLIsupportTypeImplemented SupportTypeImplemented { get; set; }
+        public TLIsupportTypeImplemented? SupportTypeImplemented { get; set; }
         public int? enforcmentCategoryId { get; set; }
         public float CenterHigh { get; set; } = 0;
         public float HBA { get; set; } = 0;
@@ -91,7 +91,7 @@ namespace TLIS_DAL.Models
         public float EquivalentSpace { get; set; } = 0;
 
         public float Support_Limited_Load { get; set; } = 0;
-        public TLIenforcmentCategory enforcmentCategory { get; set; }
+        public TLIenforcmentCategory? enforcmentCategory { get; set; }
         public IEnumerable<TLIallCivilInst> allCivilInsts { get; set; }
         public IEnumerable<TLIleg> Legs { get; set; }
     }

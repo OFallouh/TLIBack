@@ -14,24 +14,24 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
 
         public string Model { get; set; }
 
-        public string Note { get; set; }
-        public float Height_Designed { get; set; }
-        public float? Max_Load { get; set; }
-        public float SpaceLibrary { get; set; }
+        public string? Note { get; set; }
+        public float Height_Designed { get; set; } 
+        public float Max_Load { get; set; } 
+        public float SpaceLibrary { get; set; } 
         //public string Civil_Type_Name { get; set; }
-        public bool Active { get; set; }
-        public bool Deleted { get; set; }
-        public float HeightBase { get; set; }
-        public string Prefix { get; set; }
+        public bool Active { get; set; } = false;
+        public bool Deleted { get; set; } = false;
+        public float HeightBase { get; set; } 
+        public string? Prefix { get; set; }
         public int CivilSteelSupportCategoryId { get; set; }
         public string CivilSteelSupportCategory_Name { get; set; }
         public int? InstallationCivilwithoutLegsTypeId { get; set; }
-        public string InstallationCivilwithoutLegsType_Name { get; set; }
+        public string? InstallationCivilwithoutLegsType_Name { get; set; }
         public int? CivilWithoutLegCategoryId { get; set; }
-        public string CivilWithoutLegCategory_Name { get; set; }
+        public string? CivilWithoutLegCategory_Name { get; set; }
         public int? structureTypeId { get; set; }
-        public float Manufactured_Max_Load { get; set; }
-        public string structureType_Name { get; set; }
+        public float Manufactured_Max_Load { get; set; } 
+        public string? structureType_Name { get; set; }
         
 
     }

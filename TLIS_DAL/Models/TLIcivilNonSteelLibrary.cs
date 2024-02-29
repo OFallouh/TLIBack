@@ -13,13 +13,13 @@ namespace TLIS_DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         // [Index(IsUnique = true)]
-        public string Model { get; set; }
-        public string Note { get; set; }
+        public string? Model { get; set; }
+        public string? Note { get; set; }
         public float Hight { get; set; }
         public float SpaceLibrary { get; set; }
         public bool VerticalMeasured { get; set; }
-        public TLIcivilNonSteelType civilNonSteelType { get; set; }
-        public int civilNonSteelTypeId { get; set; }
+        public TLIcivilNonSteelType? civilNonSteelType { get; set; }
+        public int? civilNonSteelTypeId { get; set; }
         public float NumberofBoltHoles { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }

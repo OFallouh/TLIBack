@@ -12632,7 +12632,7 @@ namespace TLIS_Service.Services
                                     int? MW_DishSideArmId = null;
                                     int? MW_DishLegId = null;
                                     int MW_DishAllCivilInstId = 0;
-                                    int MW_DishCivilSteelSupportCategoryId = 0;
+                                    int? MW_DishCivilSteelSupportCategoryId = 0;
 
                                     if (string.IsNullOrEmpty(MW_DishCheckSideArmName))
                                     {
@@ -13676,7 +13676,7 @@ namespace TLIS_Service.Services
                                     //
 
                                     string MW_BUTowerName = MW_BUDataTable.Rows[j]["Tower Name"].ToString();
-                                    int MW_BUCivilSupportCategoryId = 0;
+                                    int? MW_BUCivilSupportCategoryId = 0;
                                     int MW_BUAllCivilInstId = 0;
                                     if (string.IsNullOrEmpty(MW_BUTowerName))
                                     {
@@ -14920,7 +14920,7 @@ namespace TLIS_Service.Services
                                     string RadioAntennaCivilName = RadioAntannaDataTable.Rows[j]["Civil Steel Name"].ToString();
 
                                     int RadioAntennaAllCivilInstId = 0;
-                                    int RadioAntennaAllCivilSteelSupportCategoryId = 0;
+                                    int? RadioAntennaAllCivilSteelSupportCategoryId = 0;
                                     int? RadioAntennaLegId = null;
                                     int? RadioAntennaSideArmId = null;
 
@@ -15921,7 +15921,7 @@ namespace TLIS_Service.Services
                                     }
 
                                     int MW_RFUAllCivilInstId = 0;
-                                    int MW_RFUCivilSteelSupportCategoryId = 0;
+                                    int? MW_RFUCivilSteelSupportCategoryId = 0;
                                     string MW_RFUBU_Name = MW_RFUDataTable.Rows[j]["Branching Unit Name"].ToString();
                                     int? MW_RFUPortId = null;
                                     if (!string.IsNullOrEmpty(MW_RFUBU_Name))
@@ -16924,7 +16924,7 @@ namespace TLIS_Service.Services
                                     string MW_ODUName = string.Empty;
                                     string MW_ODU_MW_DishName = MW_ODUDataTable.Rows[j]["ODU MW Dish Name"].ToString();
                                     int? MW_ODU_MW_DishId = null;
-                                    int MW_ODUCivilSupportCategoryId = 0;
+                                    int? MW_ODUCivilSupportCategoryId = 0;
                                     string MW_ODUTowerType = MW_ODUDataTable.Rows[j]["type"].ToString();
 
                                     if (string.IsNullOrEmpty(MW_ODU_MW_DishName))
@@ -18313,7 +18313,7 @@ namespace TLIS_Service.Services
                                         continue;
                                     }
 
-                                    int RadioRRUCivilSupportCategoryId = 0;
+                                    int? RadioRRUCivilSupportCategoryId = 0;
                                     string RadioRRUCivilType = RadioRRUDataTable.Rows[j]["type"].ToString();
 
                                     TLIallCivilInst RadioRRUAllCivilInst = _unitOfWork.AllCivilInstRepository
@@ -18991,7 +18991,7 @@ namespace TLIS_Service.Services
                                     }
 
                                     int PowerAllCivilInstId = 0;
-                                    int PowerCivilSupportCategoryId = 0;
+                                    int? PowerCivilSupportCategoryId = 0;
 
                                     string PowerSideArmName = PowerDataTable.Rows[j]["Side Arm Name"].ToString();
                                     int? PowerSideArmId = null;

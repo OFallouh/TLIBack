@@ -15,13 +15,10 @@ namespace TLIS_DAL.Models
         public float Distance { get; set; } 
         public float Azimuth { get; set; } 
         public virtual TLIallCivilInst CivilInst { get; set; }
-        [Required]
-        public int CivilInstId { get; set; }
+        public int? CivilInstId { get; set; }
        // public virtual TLIallCivilInst ReferenceCivil { get; set; }
-       [Required]
-        public int ReferenceCivilId { get; set; }
+        public int? ReferenceCivilId { get; set; }
         public TLIsite site { get; set; }
-        [Required]
-        public string SiteCode { get; set; }
+        public string? SiteCode { get; set; }
     }
 }

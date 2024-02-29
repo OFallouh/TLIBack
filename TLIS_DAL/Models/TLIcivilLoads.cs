@@ -27,8 +27,8 @@ namespace TLIS_DAL.Models
         public int allCivilInstId { get; set; }
         public TLIallLoadInst allLoadInst { get; set; }
         public int? allLoadInstId { get; set; }
-        public TLIcivilSteelSupportCategory civilSteelSupportCategory { get; set; }
-        public int civilSteelSupportCategoryId { get; set; }
+        public TLIcivilSteelSupportCategory? civilSteelSupportCategory { get; set; }
+        public int? civilSteelSupportCategoryId { get; set; }
         public TLIsite site { get; set; }
         public string SiteCode { get; set; }
         public IEnumerable<TLIcivilLoadLegs> civilLoads { get; set; }

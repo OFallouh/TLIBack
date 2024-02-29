@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
@@ -14,7 +11,6 @@ using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
-using TLIS_DAL.ViewModels.DismantleDto;
 using TLIS_DAL.ViewModels.LogicalOperationDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_Service.Helpers;
@@ -36,11 +32,39 @@ namespace TLIS_API.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("GetAttForAddCivilWithLegs")]
+        [HttpGet("GetForAddCivilWithLegInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId,string SiteCode)
         {
-            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLeg(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
+            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithOutLegInstallation_Capsule")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetForAddCivilWithOutLegInstallation_Capsule(int CivilLibraryId, string SiteCode)
+        {
+            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Capsule(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithOutLegInstallation_Mast")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetForAddCivilWithOutLegInstallation_Mast(int CivilLibraryId, string SiteCode)
+        {
+            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Mast(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithOutLegInstallation_Monople")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetForAddCivilWithOutLegInstallation_Monople(int CivilLibraryId, string SiteCode)
+        {
+            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Monople(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCiviNonSteelInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetForAddCiviNonSteelInstallation(int CivilLibraryId, string SiteCode)
+        {
+            var response = _unitOfWorkService.CivilInstService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
 
@@ -153,9 +177,9 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId )
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == true)
+            if (addCivilWithoutLeg.civilSiteDate.ReservedSpace == true)
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithoutLeg.SpaceInstallation);
+                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithoutLeg.installationAttributes.SpaceInstallation);
                 if (CheckReservedSapce == true)
                 {
                     if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
@@ -172,7 +196,7 @@ namespace TLIS_API.Controllers
                     }
                 }
             }
-            else if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == false)
+            else if (addCivilWithoutLeg.civilSiteDate.ReservedSpace == false)
             {
                 if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
                 {
