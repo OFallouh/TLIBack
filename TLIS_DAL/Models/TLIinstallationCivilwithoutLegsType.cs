@@ -7,7 +7,7 @@ using Toolbelt.ComponentModel.DataAnnotations.Schema;
 
 namespace TLIS_DAL.Models
 {
-    public class TLIinstallationCivilwithoutLegsType
+    public class TLIInstCivilwithoutLegsType
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -1105,25 +1105,25 @@ namespace TLIS_Service.Services
 
                                         if (!string.IsNullOrEmpty(Type))
                                         {
-                                            TLIinstallationCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
+                                            TLIInstCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstCivilwithoutLegsTypeRepository
                                                 .GetWhereFirst(x => x.Name.ToLower() == Type.ToLower() && !x.Deleted);
 
                                             if (CheckInstallationTypeIfExist != null)
-                                                NewMastEntity.InstallationCivilwithoutLegsTypeId = CheckInstallationTypeIfExist.Id;
+                                                NewMastEntity.InstCivilwithoutLegsTypeId = CheckInstallationTypeIfExist.Id;
 
                                             else
                                             {
-                                                TLIinstallationCivilwithoutLegsType NewInstallationTypeEntity = new TLIinstallationCivilwithoutLegsType()
+                                                TLIInstCivilwithoutLegsType NewInstallationTypeEntity = new TLIInstCivilwithoutLegsType()
                                                 {
                                                     Name = Type,
                                                     Deleted = false,
                                                     Disable = false
                                                 };
 
-                                                _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Add(NewInstallationTypeEntity);
+                                                _unitOfWork.InstCivilwithoutLegsTypeRepository.Add(NewInstallationTypeEntity);
                                                 _unitOfWork.SaveChanges();
 
-                                                NewMastEntity.InstallationCivilwithoutLegsTypeId = NewInstallationTypeEntity.Id;
+                                                NewMastEntity.InstCivilwithoutLegsTypeId = NewInstallationTypeEntity.Id;
                                             }
                                         }
 
@@ -1225,7 +1225,7 @@ namespace TLIS_Service.Services
 
                                         var ObjectForAddInCashList = _unitOfWork.CivilWithoutLegLibraryRepository
                                             .GetIncludeWhereFirst(x => x.Id == NewMastEntity.Id, x => x.CivilSteelSupportCategory,
-                                                x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType, x => x.structureType);
+                                                x => x.CivilWithoutLegCategory, x => x.InstCivilwithoutLegsType, x => x.structureType);
 
                                         MastTransaction.Complete();
 
@@ -4024,25 +4024,25 @@ namespace TLIS_Service.Services
 
                         string Type = row["Type1"].ToString();
 
-                        TLIinstallationCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
+                        TLIInstCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstCivilwithoutLegsTypeRepository
                             .GetWhereFirst(x => x.Name.ToLower() == Type.ToLower() && !x.Deleted);
 
                         if (CheckInstallationTypeIfExist != null)
-                            NewMastEntity.InstallationCivilwithoutLegsTypeId = CheckInstallationTypeIfExist.Id;
+                            NewMastEntity.InstCivilwithoutLegsTypeId = CheckInstallationTypeIfExist.Id;
 
                         else
                         {
-                            TLIinstallationCivilwithoutLegsType NewInstallationTypeEntity = new TLIinstallationCivilwithoutLegsType()
+                            TLIInstCivilwithoutLegsType NewInstallationTypeEntity = new TLIInstCivilwithoutLegsType()
                             {
                                 Name = Type,
                                 Deleted = false,
                                 Disable = false
                             };
 
-                            _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Add(NewInstallationTypeEntity);
+                            _unitOfWork.InstCivilwithoutLegsTypeRepository.Add(NewInstallationTypeEntity);
                             _unitOfWork.SaveChanges();
 
-                            NewMastEntity.InstallationCivilwithoutLegsTypeId = NewInstallationTypeEntity.Id;
+                            NewMastEntity.InstCivilwithoutLegsTypeId = NewInstallationTypeEntity.Id;
                         }
 
                         string MastHeight_Designed = row["Height As Design (m)"].ToString();

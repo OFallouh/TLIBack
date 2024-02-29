@@ -41,7 +41,7 @@ namespace TLIS_Repository.Base
         ISectionsLegTypeRepository SectionsLegTypeRepository { get; }
         IStructureTypeRepository StructureTypeRepository { get; }
         ICivilSteelSupportCategoryRepository CivilSteelSupportCategoryRepository { get; }
-        IInstallationCivilwithoutLegsTypeRepository InstallationCivilwithoutLegsTypeRepository { get; }
+        IInstCivilwithoutLegsTypeRepository InstCivilwithoutLegsTypeRepository { get; }
         ISupportTypeDesignedRepository SupportTypeDesignedRepository { get; }
         ILogRepository LogRepository { get; }
         //ITaskStatusRepository TaskStatusRepository { get; }

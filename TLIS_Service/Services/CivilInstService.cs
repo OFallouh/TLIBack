@@ -351,7 +351,7 @@ namespace TLIS_Service.Services
                 {
                     CivilWithoutLegLibraryViewModel CivilWithoutLegLibrary = _mapper.Map<CivilWithoutLegLibraryViewModel>(_unitOfWork.CivilWithoutLegLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == CivilLibraryId, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
-                        x => x.InstallationCivilwithoutLegsType, x => x.structureType));
+                        x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                     List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary, null).ToList();
@@ -2335,7 +2335,7 @@ namespace TLIS_Service.Services
                         if (!string.IsNullOrEmpty(CheckDependencyValidation))
                             return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        string CheckGeneralValidation = CheckGeneralValidationFunction(AddCivilWithoutLeg.dynamicAttribute, TableName, CivilWithoutLegLibrary.CivilWithoutLegCategoryId.Value);
+                        string CheckGeneralValidation = CheckGeneralValidationFunction(AddCivilWithoutLeg.dynamicAttribute, TableName, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
                         if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -4444,7 +4444,7 @@ namespace TLIS_Service.Services
 
                     CivilWithoutLegLibraryViewModel CivilWithoutLegLibrary = _mapper.Map<CivilWithoutLegLibraryViewModel>(_unitOfWork.CivilWithoutLegLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == CivilWithoutLegInst.CivilWithoutlegsLibId, x => x.CivilSteelSupportCategory,
-                            x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType, x => x.structureType));
+                            x => x.CivilWithoutLegCategory, x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                     List<BaseAttView> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivated(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(),
@@ -9389,7 +9389,7 @@ namespace TLIS_Service.Services
             {
                 TLIstructureType structureType=null;
                 TLIcivilSteelSupportCategory supportCategory=null;
-                TLIinstallationCivilwithoutLegsType installationType=null;
+                TLIInstCivilwithoutLegsType installationType=null;
                 TLIcivilWithoutLegCategory withoutLegCategory = null;
                 int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
@@ -9399,7 +9399,7 @@ namespace TLIS_Service.Services
 
                 CivilWithoutLegLibraryViewModel CivilWithoutLegLibrary = _mapper.Map<CivilWithoutLegLibraryViewModel>(_unitOfWork.CivilWithoutLegLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == CivilLibraryId, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
-                        x => x.InstallationCivilwithoutLegsType, x => x.structureType));
+                        x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                 List<BaseAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary, null).ToList();
@@ -9411,9 +9411,9 @@ namespace TLIS_Service.Services
                 {
                      supportCategory = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.CivilSteelSupportCategoryId);
                 }
-                if (CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId != null || CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId != 0)
+                if (CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId != null || CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId != 0)
                 {
-                     installationType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId);
+                     installationType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId);
                 }
                 if (CivilWithoutLegLibrary.CivilWithoutLegCategoryId != null || CivilWithoutLegLibrary.CivilWithoutLegCategoryId != 0)
                 {
@@ -9447,7 +9447,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     },
-                    { "tliinstallationcivilwithoutlegstype", () =>
+                    { "tliInstCivilwithoutLegsType", () =>
                         {
                            
                             if (installationType != null)
@@ -9627,7 +9627,7 @@ namespace TLIS_Service.Services
             {
                 TLIstructureType structureType = null;
                 TLIcivilSteelSupportCategory supportCategory = null;
-                TLIinstallationCivilwithoutLegsType installationType = null;
+                TLIInstCivilwithoutLegsType installationType = null;
                 TLIcivilWithoutLegCategory withoutLegCategory = null;
                 int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
@@ -9637,7 +9637,7 @@ namespace TLIS_Service.Services
 
                 CivilWithoutLegLibraryViewModel CivilWithoutLegLibrary = _mapper.Map<CivilWithoutLegLibraryViewModel>(_unitOfWork.CivilWithoutLegLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == CivilLibraryId, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
-                        x => x.InstallationCivilwithoutLegsType, x => x.structureType));
+                        x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                 List<BaseAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary, null).ToList();
@@ -9649,9 +9649,9 @@ namespace TLIS_Service.Services
                 {
                     supportCategory = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.CivilSteelSupportCategoryId);
                 }
-                if (CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId != null || CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId != 0)
+                if (CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId != null || CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId != 0)
                 {
-                    installationType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId);
+                    installationType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId);
                 }
                 if (CivilWithoutLegLibrary.CivilWithoutLegCategoryId != null || CivilWithoutLegLibrary.CivilWithoutLegCategoryId != 0)
                 {
@@ -9685,7 +9685,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     },
-                    { "tliinstallationcivilwithoutlegstype", () =>
+                    { "tliInstCivilwithoutLegsType", () =>
                         {
 
                             if (installationType != null)
@@ -9863,7 +9863,7 @@ namespace TLIS_Service.Services
             {
                 TLIstructureType structureType = null;
                 TLIcivilSteelSupportCategory supportCategory = null;
-                TLIinstallationCivilwithoutLegsType installationType = null;
+                TLIInstCivilwithoutLegsType installationType = null;
                 TLIcivilWithoutLegCategory withoutLegCategory = null;
                 int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
@@ -9873,7 +9873,7 @@ namespace TLIS_Service.Services
 
                 CivilWithoutLegLibraryViewModel CivilWithoutLegLibrary = _mapper.Map<CivilWithoutLegLibraryViewModel>(_unitOfWork.CivilWithoutLegLibraryRepository
                         .GetIncludeWhereFirst(x => x.Id == CivilLibraryId, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
-                        x => x.InstallationCivilwithoutLegsType, x => x.structureType));
+                        x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                 List<BaseAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary, null).ToList();
@@ -9885,9 +9885,9 @@ namespace TLIS_Service.Services
                 {
                     supportCategory = _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.CivilSteelSupportCategoryId);
                 }
-                if (CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId != null || CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId != 0)
+                if (CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId != null || CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId != 0)
                 {
-                    installationType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.InstallationCivilwithoutLegsTypeId);
+                    installationType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.InstCivilwithoutLegsTypeId);
                 }
                 if (CivilWithoutLegLibrary.CivilWithoutLegCategoryId != null || CivilWithoutLegLibrary.CivilWithoutLegCategoryId != 0)
                 {
@@ -9921,7 +9921,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     },
-                    { "tliinstallationcivilwithoutlegstype", () =>
+                    { "tliInstCivilwithoutLegsType", () =>
                         {
 
                             if (installationType != null)

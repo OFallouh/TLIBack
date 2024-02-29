@@ -2052,7 +2052,7 @@ namespace TLIS_Service.Services
                 List<float> max_man_loads = new List<float>();
                 List<float> SpaceLibraries = new List<float>();
                 List<int?> CivilSteelSupportCategoryIds = new List<int?>();
-                List<int> InstallationCivilwithoutLegsTypeIds = new List<int>();
+                List<int> InstCivilwithoutLegsTypeIds = new List<int>();
                 List<int?> CivilWithoutLegCategoryIds = new List<int?>();
                 List<float> HeightBases = new List<float>();
                 List<string> Prefixes = new List<string>();
@@ -2151,22 +2151,22 @@ namespace TLIS_Service.Services
                                 CivilSteelSupportCategoryId_test = Convert.ToInt32(CivilSteelSupportCategory.Id);
                             }
                         }
-                        int InstallationCivilwithoutLegsTypeId_test = 0;
+                        int InstCivilwithoutLegsTypeId_test = 0;
 
-                        if (dt.Columns.Contains("InstallationCivilwithoutLegsTypeId"))
+                        if (dt.Columns.Contains("InstCivilwithoutLegsTypeId"))
                         {
-                            DropDownListFilters InstallationCivilwithoutLegsType = RelatedTables.FirstOrDefault(x =>
-                                                        x.Key == "InstallationCivilwithoutLegsTypeId").Value.FirstOrDefault(x =>
-                                                            x.Value == dt.Rows[j]["InstallationCivilwithoutLegsTypeId"].ToString());
+                            DropDownListFilters InstCivilwithoutLegsType = RelatedTables.FirstOrDefault(x =>
+                                                        x.Key == "InstCivilwithoutLegsTypeId").Value.FirstOrDefault(x =>
+                                                            x.Value == dt.Rows[j]["InstCivilwithoutLegsTypeId"].ToString());
 
 
-                            if (InstallationCivilwithoutLegsType != null)
+                            if (InstCivilwithoutLegsType != null)
                             {
-                                InstallationCivilwithoutLegsTypeId_test = Convert.ToInt32(InstallationCivilwithoutLegsType.Id);
+                                InstCivilwithoutLegsTypeId_test = Convert.ToInt32(InstCivilwithoutLegsType.Id);
                             }
                             else
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"InstallationCivilWithoutLegsTypeId Wrong Input Value in the row {j + 2}"));
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"InstCivilwithoutLegsTypeId Wrong Input Value in the row {j + 2}"));
                                 goto ERROR;
                             }
                         }
@@ -2360,7 +2360,7 @@ namespace TLIS_Service.Services
                         structureTypeIds.Add(structureTypeId_test != 0 ? structureTypeId_test : 0);
 
                         CivilSteelSupportCategoryIds.Add(CivilSteelSupportCategoryId_test != 0 ? CivilSteelSupportCategoryId_test : 0);
-                        InstallationCivilwithoutLegsTypeIds.Add(InstallationCivilwithoutLegsTypeId_test != 0 ? InstallationCivilwithoutLegsTypeId_test : 0);
+                        InstCivilwithoutLegsTypeIds.Add(InstCivilwithoutLegsTypeId_test != 0 ? InstCivilwithoutLegsTypeId_test : 0);
                         CivilWithoutLegCategoryIds.Add(CivilWithoutLegCategoryId_test != 0 ? CivilWithoutLegCategoryId_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
@@ -2417,9 +2417,9 @@ namespace TLIS_Service.Services
                     civilSteelSupportCategoryId.OracleDbType = OracleDbType.Int32;
                     civilSteelSupportCategoryId.Value = CivilSteelSupportCategoryIds.ToArray();
 
-                    OracleParameter installationCivilwithoutLegsTypeId = new OracleParameter();
-                    installationCivilwithoutLegsTypeId.OracleDbType = OracleDbType.Int32;
-                    installationCivilwithoutLegsTypeId.Value = InstallationCivilwithoutLegsTypeIds.ToArray();
+                    OracleParameter InstCivilwithoutLegsTypeId = new OracleParameter();
+                    InstCivilwithoutLegsTypeId.OracleDbType = OracleDbType.Int32;
+                    InstCivilwithoutLegsTypeId.Value = InstCivilwithoutLegsTypeIds.ToArray();
 
                     OracleParameter structureTypeId = new OracleParameter();
                     structureTypeId.OracleDbType = OracleDbType.Int32;
@@ -2431,7 +2431,7 @@ namespace TLIS_Service.Services
 
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "INSERT INTO \"TLIcivilWithoutLegLibrary\" (\"Model\", \"Note\", \"Height_Designed\", \"Max_Load\", \"SpaceLibrary\", \"HeightBase\", \"Prefix\", \"structureTypeId\", \"CivilSteelSupportCategoryId\", \"InstallationCivilwithoutLegsTypeId\", \"CivilWithoutLegCategoryId\",\"Manufactured_Max_Load\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11,:12)";
+                    cmd.CommandText = "INSERT INTO \"TLIcivilWithoutLegLibrary\" (\"Model\", \"Note\", \"Height_Designed\", \"Max_Load\", \"SpaceLibrary\", \"HeightBase\", \"Prefix\", \"structureTypeId\", \"CivilSteelSupportCategoryId\", \"InstCivilwithoutLegsTypeId\", \"CivilWithoutLegCategoryId\",\"Manufactured_Max_Load\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11,:12)";
                     cmd.ArrayBindCount = models.Count;
                     cmd.Parameters.Add(model);
                     cmd.Parameters.Add(note);
@@ -2442,7 +2442,7 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(Prefix);
                     cmd.Parameters.Add(structureTypeId);
                     cmd.Parameters.Add(civilSteelSupportCategoryId);
-                    cmd.Parameters.Add(installationCivilwithoutLegsTypeId);
+                    cmd.Parameters.Add(InstCivilwithoutLegsTypeId);
                     cmd.Parameters.Add(civilWithoutLegCategoryId);
                     cmd.Parameters.Add(max_man_load);
 

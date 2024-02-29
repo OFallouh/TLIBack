@@ -34,7 +34,7 @@ using TLIS_DAL.ViewModels.DiversityTypeDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.DynamicAttLibValueDTOs;
-using TLIS_DAL.ViewModels.InstallationCivilwithoutLegsTypeDTOs;
+using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 using TLIS_DAL.ViewModels.LogisticalitemDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL.ViewModels.PolarityTypeDTOs;
@@ -2050,14 +2050,14 @@ namespace TLIS_Service.Services
                 else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                 {
                     TLIcivilWithoutLegLibrary CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType, x => x.structureType);
+                        x.Id == Id, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstCivilwithoutLegsType, x => x.structureType);
                     CatId = (int)CivilWithoutLegLibrary.CivilWithoutLegCategoryId;
 
                     object FK_CivilSteelSupportCategory_Name = CivilWithoutLegLibrary.CivilSteelSupportCategory != null ? CivilWithoutLegLibrary.CivilSteelSupportCategory.Name : null;
 
                     object FK_CivilWithoutLegCategory_Name = CivilWithoutLegLibrary.CivilWithoutLegCategory != null ? CivilWithoutLegLibrary.CivilWithoutLegCategory.Name : null;
 
-                    object FK_InstallationCivilwithoutLegsType_Name = CivilWithoutLegLibrary.InstallationCivilwithoutLegsType != null ? CivilWithoutLegLibrary.InstallationCivilwithoutLegsType.Name : null;
+                    object FK_InstCivilwithoutLegsType_Name = CivilWithoutLegLibrary.InstCivilwithoutLegsType != null ? CivilWithoutLegLibrary.InstCivilwithoutLegsType.Name : null;
 
                     object FK_structureType_Name = CivilWithoutLegLibrary.structureType != null ? CivilWithoutLegLibrary.structureType.Name : null;
 
@@ -2081,13 +2081,13 @@ namespace TLIS_Service.Services
                             else
                                 FKitem.Value = FK_CivilWithoutLegCategory_Name;
                         }
-                        else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
+                        else if (FKitem.Label.ToLower() == "InstCivilwithoutLegsType_name")
                         {
-                            if (FK_InstallationCivilwithoutLegsType_Name == null)
+                            if (FK_InstCivilwithoutLegsType_Name == null)
                                 FKitem.Value = "NA";
 
                             else
-                                FKitem.Value = FK_InstallationCivilwithoutLegsType_Name;
+                                FKitem.Value = FK_InstCivilwithoutLegsType_Name;
                         }
                         else if (FKitem.Label.ToLower() == "structuretype_name")
                         {
@@ -2256,7 +2256,7 @@ namespace TLIS_Service.Services
                 List<FilterObject> condition = new List<FilterObject>();
                 // condition.Add(new FilterObject("Active", true));
                 condition.Add(new FilterObject("Deleted", false));
-                civilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllIncludeMultipleWithCondition(parameters, filters, condition, out count, c => c.CivilSteelSupportCategory, c => c.CivilWithoutLegCategory, c => c.InstallationCivilwithoutLegsType).OrderBy(x => x.Id).ToList();
+                civilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllIncludeMultipleWithCondition(parameters, filters, condition, out count, c => c.CivilSteelSupportCategory, c => c.CivilWithoutLegCategory, c => c.InstCivilwithoutLegsType).OrderBy(x => x.Id).ToList();
                 var FilteredcivilWithoutLegLibrariesModel = _mapper.Map<IEnumerable<CivilWithoutLegLibraryViewModel>>(civilWithoutLegLibraries);
                 ReturnWithFilters<CivilWithoutLegLibraryViewModel> civilWithoutLeg = new ReturnWithFilters<CivilWithoutLegLibraryViewModel>();
                 civilWithoutLeg.Model = FilteredcivilWithoutLegLibrariesModel.ToList();
@@ -2306,8 +2306,8 @@ namespace TLIS_Service.Services
                             else if (FKitem.Desc.ToLower() == "tlisupporttypedesigned")
                                 FKitem.Value = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
-                            else if (FKitem.Desc.ToLower() == "tliinstallationcivilwithoutlegstype")
-                                FKitem.Value = _mapper.Map<List<InstallationCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            else if (FKitem.Desc.ToLower() == "tliInstCivilwithoutLegsType")
+                                FKitem.Value = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
                             else if (FKitem.Desc.ToLower() == "tlicivilwithoutlegcategory")
                                 FKitem.Value = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
@@ -2366,8 +2366,8 @@ namespace TLIS_Service.Services
                             else if (item.Desc.ToLower() == "tlistructuretype")
                                 item.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
                             
-                            else if (item.Desc.ToLower() == "tliinstallationcivilwithoutlegstype")
-                                item.Value = _mapper.Map<List<InstallationCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
+                            else if (item.Desc.ToLower() == "tliInstCivilwithoutLegsType")
+                                item.Value = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => x.Deleted == false && x.Disable == false).ToList());
 
                             else if (item.Desc.ToLower() == "tlicivilwithoutlegcategory")
                                 item.Value = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => x.disable == false).ToList());
@@ -3974,7 +3974,7 @@ namespace TLIS_Service.Services
                     WithoutDateFilterCivilWithoutLegLibraries = _mapper.Map<List<CivilWithoutLegLibraryViewModel>>(_unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhere(x =>
                         IntersectLibraryIds.Contains(x.Id) && !x.Deleted && x.Id > 0 &&
                         x.CivilWithoutLegCategoryId == CategoryId,
-                        x => x.structureType, x => x.CivilSteelSupportCategory, x => x.InstallationCivilwithoutLegsType, x => x.CivilWithoutLegCategory).ToList());
+                        x => x.structureType, x => x.CivilSteelSupportCategory, x => x.InstCivilwithoutLegsType, x => x.CivilWithoutLegCategory).ToList());
                 }
 
                 //
@@ -4114,7 +4114,7 @@ namespace TLIS_Service.Services
                     WithDateFilterCivilWithoutLegLibraries = _mapper.Map<List<CivilWithoutLegLibraryViewModel>>(_unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhere(x =>
                         x.Id > 0 && IntersectLibraryIds.Contains(x.Id) && !x.Deleted &&
                         x.CivilWithoutLegCategoryId == CategoryId, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
-                        x => x.InstallationCivilwithoutLegsType, x => x.structureType).ToList());
+                        x => x.InstCivilwithoutLegsType, x => x.structureType).ToList());
                 }
 
                 //
@@ -4125,7 +4125,7 @@ namespace TLIS_Service.Services
                 {
                     CivilWithoutLegLibraries = _mapper.Map<List<CivilWithoutLegLibraryViewModel>>(_unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhere(x =>
                         x.Id > 0 && !x.Deleted && x.CivilWithoutLegCategoryId == CategoryId, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory,
-                        x => x.structureType, x => x.InstallationCivilwithoutLegsType).ToList());
+                        x => x.structureType, x => x.InstCivilwithoutLegsType).ToList());
                 }
                 else if ((AttributeFilters != null ? AttributeFilters.Count > 0 : false) &&
                         (AfterConvertDateFilters != null ? AfterConvertDateFilters.Count() > 0 : false))

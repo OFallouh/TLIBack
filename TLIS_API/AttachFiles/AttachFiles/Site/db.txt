@@ -534,7 +534,7 @@ END;
 
 BEGIN
 INSERT INTO "TLItablesNames" ("Id", "TableName", "tablePartNameId")
-VALUES (44, N'TLIinstallationCivilwithoutLegsType', NULL);
+VALUES (44, N'TLIInstCivilwithoutLegsType', NULL);
 END;
 /
 

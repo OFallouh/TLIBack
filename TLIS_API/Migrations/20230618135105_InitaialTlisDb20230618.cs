@@ -379,7 +379,7 @@ namespace TLIS_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TLIinstallationCivilwithoutLegsType",
+                name: "TLIInstCivilwithoutLegsType",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -390,7 +390,7 @@ namespace TLIS_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TLIinstallationCivilwithoutLegsType", x => x.Id);
+                    table.PrimaryKey("PK_TLIInstCivilwithoutLegsType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -1896,7 +1896,7 @@ namespace TLIS_API.Migrations
                     Prefix = table.Column<string>(nullable: true),
                     structureTypeId = table.Column<int>(nullable: false),
                     CivilSteelSupportCategoryId = table.Column<int>(nullable: false),
-                    InstallationCivilwithoutLegsTypeId = table.Column<int>(nullable: true),
+                    InstCivilwithoutLegsTypeId = table.Column<int>(nullable: true),
                     CivilWithoutLegCategoryId = table.Column<int>(nullable: true),
                     Manufactured_Max_Load = table.Column<float>(nullable: false)
                 },
@@ -1916,9 +1916,9 @@ namespace TLIS_API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TLIcivilWithoutLegLibrary_TLIinstallationCivilwithoutLegsType_InstallationCivilwithoutLegsTypeId",
-                        column: x => x.InstallationCivilwithoutLegsTypeId,
-                        principalTable: "TLIinstallationCivilwithoutLegsType",
+                        name: "FK_TLIcivilWithoutLegLibrary_TLIInstCivilwithoutLegsType_InstCivilwithoutLegsTypeId",
+                        column: x => x.InstCivilwithoutLegsTypeId,
+                        principalTable: "TLIInstCivilwithoutLegsType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -7888,7 +7888,7 @@ namespace TLIS_API.Migrations
             migrationBuilder.InsertData(
                 table: "TLItablesNames",
                 columns: new[] { "Id", "TableName", "tablePartNameId" },
-                values: new object[] { 44, "TLIinstallationCivilwithoutLegsType", null });
+                values: new object[] { 44, "TLIInstCivilwithoutLegsType", null });
 
             migrationBuilder.InsertData(
                 table: "TLItablesNames",
@@ -13112,9 +13112,9 @@ namespace TLIS_API.Migrations
                 column: "CivilWithoutLegCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TLIcivilWithoutLegLibrary_InstallationCivilwithoutLegsTypeId",
+                name: "IX_TLIcivilWithoutLegLibrary_InstCivilwithoutLegsTypeId",
                 table: "TLIcivilWithoutLegLibrary",
-                column: "InstallationCivilwithoutLegsTypeId");
+                column: "InstCivilwithoutLegsTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TLIcivilWithoutLegLibrary_structureTypeId",
@@ -14646,7 +14646,7 @@ namespace TLIS_API.Migrations
                 name: "TLIcivilWithoutLegCategory");
 
             migrationBuilder.DropTable(
-                name: "TLIinstallationCivilwithoutLegsType");
+                name: "TLIInstCivilwithoutLegsType");
 
             migrationBuilder.DropTable(
                 name: "TLIparity");

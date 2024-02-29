@@ -1032,7 +1032,7 @@ namespace TLIS_Service.Services
                             else if (addDependencyViewModel.TableName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                             {
                                 List<CivilWithoutLegLibraryViewModel> CivilWithoutLegLibraries = _mapper.Map<List<CivilWithoutLegLibraryViewModel>>(_unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhere(x =>
-                                    x.Id > 0 && !x.Deleted, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstallationCivilwithoutLegsType,
+                                    x.Id > 0 && !x.Deleted, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstCivilwithoutLegsType,
                                     x => x.structureType).ToList());
 
                                 foreach (DependencyViewModel Dependency in addDependencyViewModel.Dependencies)
@@ -9121,9 +9121,9 @@ namespace TLIS_Service.Services
                                         .value = _mapper.Map<List<DropDownListFilters>>(_unitOfWork.CivilSteelSupportCategoryRepository
                                             .GetAllWithoutCount().ToList());
 
-                                else if (Attribute.columnName.ToLower() == "installationcivilwithoutlegstype_name")
-                                    MainAttributes.FirstOrDefault(x => x.columnName.ToLower() == "installationcivilwithoutlegstype_name")
-                                        .value = _mapper.Map<List<DropDownListFilters>>(_unitOfWork.InstallationCivilwithoutLegsTypeRepository
+                                else if (Attribute.columnName.ToLower() == "InstCivilwithoutLegsType_name")
+                                    MainAttributes.FirstOrDefault(x => x.columnName.ToLower() == "InstCivilwithoutLegsType_name")
+                                        .value = _mapper.Map<List<DropDownListFilters>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
                                             .GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
                                 else if (Attribute.columnName.ToLower() == "civilwithoutlegcategory_name")

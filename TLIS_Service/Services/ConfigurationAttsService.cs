@@ -23,7 +23,7 @@ using TLIS_DAL.ViewModels.DiversityTypeDTOs;
 using TLIS_DAL.ViewModels.DocumentTypeDTOs;
 using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
 using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
-using TLIS_DAL.ViewModels.InstallationCivilwithoutLegsTypeDTOs;
+using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 using TLIS_DAL.ViewModels.InstallationPlaceDTOs;
 using TLIS_DAL.ViewModels.ItemStatusDTOs;
 using TLIS_DAL.ViewModels.LocationTypeDTOs;
@@ -50,6 +50,9 @@ using TLIS_Repository.Base;
 using TLIS_Service.Helpers;
 using TLIS_Service.IService;
 using static TLIS_Service.Helpers.Constants;
+using static Dapper.SqlMapper;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using Org.BouncyCastle.Utilities;
 
 namespace TLIS_Service.Services
 {
@@ -318,18 +321,18 @@ namespace TLIS_Service.Services
                         return new Response<ConfigurationAttsViewModel>(true, null, null, $"This baseGeneratorType { baseGeneratorType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
                 {
-                    var installationCivilwithoutLegsType = _mapper.Map<AddInstallationCivilwithoutLegsTypeViewModel>(model);
-                    var installationCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(installationCivilwithoutLegsType);
-                    if(!ValidateAdd(ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString(),installationCivilwithoutLegsTypeEntity))
+                    var InstCivilwithoutLegsType = _mapper.Map<AddInstCivilwithoutLegsTypeViewModel>(model);
+                    var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIInstCivilwithoutLegsType>(InstCivilwithoutLegsType);
+                    if(!ValidateAdd(ConfigrationTables.TLIInstCivilwithoutLegsType.ToString(),InstCivilwithoutLegsTypeEntity))
                     {
-                        _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Add(installationCivilwithoutLegsTypeEntity);
+                        _unitOfWork.InstCivilwithoutLegsTypeRepository.Add(InstCivilwithoutLegsTypeEntity);
                         _unitOfWork.SaveChanges();
                     }
                   else
                     {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This installationCivilwithoutLegsType { installationCivilwithoutLegsType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This InstCivilwithoutLegsType { InstCivilwithoutLegsType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
@@ -674,190 +677,422 @@ namespace TLIS_Service.Services
             }
         }
 
-        public async Task<Response<ConfigurationAttsViewModel>> Delete(string TableName, int Id)
+        public async Task<Response<List<TableAffected>>> Delete(string TableName, int Id)
         {
             try
             {
                 if (ConfigrationTables.TLIdiversityType.ToString() == TableName)
                 {
                     var diversityType = _unitOfWork.DiversityTypeRepository.GetByID(Id);
-
-                    var TLIMW_BULibrary = _unitOfWork.MW_BULibraryRepository
-                        .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
-
-                    var MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
-                        .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
-
-                    if (TLIMW_BULibrary.Count() > 0 || MW_RFULibraries.Count() > 0)
+                    if (diversityType != null)
                     {
-                        diversityType.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var TLIMW_BULibrary = _unitOfWork.MW_BULibraryRepository
+                            .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
+
+                        var MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
+                            .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
+
+                        if (TLIMW_BULibrary.Count() > 0 || MW_RFULibraries.Count() > 0)
+                        {
+                            diversityType.Deleted = false;
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            if (TLIMW_BULibrary.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "MW_BU Library",
+                                    isLibrary = true,
+                                    RecordsAffected = TLIMW_BULibrary.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                            if (MW_RFULibraries.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "MW_RFU Library",
+                                    isLibrary = true,
+                                    RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            diversityType.Deleted = (true);
+                        }
+                        _unitOfWork.DiversityTypeRepository.Update(diversityType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        diversityType.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.DiversityTypeRepository.Update(diversityType);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
                 {
                     var telecomType = _unitOfWork.TelecomTypeRepository.GetByID(Id);
-
-                    var TLIcabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
-                        .GetWhere(x => x.TelecomTypeId == Id && !x.Deleted).ToList();
-
-                    if (TLIcabinetTelecomLibrary.Count() > 0)
+                    if (telecomType != null)
                     {
-                        telecomType.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var TLIcabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
+                            .GetWhere(x => x.TelecomTypeId == Id && !x.Deleted).ToList();
+
+                        if (TLIcabinetTelecomLibrary.Count() > 0)
+                        {
+                            telecomType.Deleted = false;
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Cabinet Telecom Library",
+                                isLibrary = true,
+                                RecordsAffected = TLIcabinetTelecomLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            telecomType.Deleted = (true);
+                        }
+                        _unitOfWork.TelecomTypeRepository.Update(telecomType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        telecomType.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.TelecomTypeRepository.Update(telecomType);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
                 {
                     var supportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
-
-                    var TLIcivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                        .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
-
-                    if (TLIcivilWithLegLibrary.Count() > 0)
+                    if (supportTypeDesigned != null)
                     {
-                        supportTypeDesigned.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var TLIcivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
+
+                        if (TLIcivilWithLegLibrary.Count() > 0)
+                        {
+                            supportTypeDesigned.Deleted = false;
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = TLIcivilWithLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            supportTypeDesigned.Deleted = (true);
+                        }
+                        _unitOfWork.SupportTypeDesignedRepository.Update(supportTypeDesigned);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        supportTypeDesigned.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.SupportTypeDesignedRepository.Update(supportTypeDesigned);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
                 {
                     var structureType = _unitOfWork.StructureTypeRepository.GetByID(Id);
-
-                    var CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
-                        .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
-
-                    var CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
-                        .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
-
-                    if (CivilWithLegLibraries.Count() > 0 && CivilWithoutLegLibraries.Count() > 0)
+                    if (structureType != null)
                     {
-                        structureType.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
+
+                        var CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
+                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
+
+                        if (CivilWithLegLibraries.Count() > 0 && CivilWithoutLegLibraries.Count() > 0)
+                        {
+                            structureType.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            if (CivilWithLegLibraries.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Civil Steel Support With Legs Library",
+                                    isLibrary = true,
+                                    RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                            if (CivilWithoutLegLibraries.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Civil Steel Support Without Legs Library",
+                                    isLibrary = true,
+                                    RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            structureType.Deleted = (true);
+                        }
+                        _unitOfWork.StructureTypeRepository.Update(structureType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        structureType.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.StructureTypeRepository.Update(structureType);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
                 {
                     var sectionsLegType = _unitOfWork.SectionsLegTypeRepository.GetByID(Id);
-
-                    var TLIcivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                        .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
-
-                    if (TLIcivilWithLegLibrary.Count() > 0)
+                    if (sectionsLegType != null)
                     {
-                        sectionsLegType.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var TLIcivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (TLIcivilWithLegLibrary.Count != 0)
+                        {
+                            sectionsLegType.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = TLIcivilWithLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            sectionsLegType.Deleted = (true);
+                        }
+                        _unitOfWork.SectionsLegTypeRepository.Update(sectionsLegType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        sectionsLegType.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.SectionsLegTypeRepository.Update(sectionsLegType);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && 
-                            (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.SupportTypeImplementedId == Id :
-                             x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.supportTypeImplementedId == Id : false),
-                                x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilNonSteel).ToList();
+                    var supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
+                    if (supportTypeImplemented != null) {
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                                 .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                     x.allCivilInst.civilWithLegs.SupportTypeImplementedId == Id : false),
+                                         x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
 
-                    var Entity = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
+                        List<TLIcivilSiteDate> CivilNonSteelInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilNonSteelId != null ?
+                                x.allCivilInst.civilNonSteel.supportTypeImplementedId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).ToList();
 
-                    if (Civils.Count() > 0)
-                    {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (CivilWithLegInstallation.Count != 0 || CivilNonSteelInstallation.Count != 0)
+                        {
+                            supportTypeImplemented.Deleted = (false);
+                            if (CivilWithLegInstallation.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Civil Steel Support With Legs Installation",
+                                    isLibrary = false,
+                                    RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.allCivilInst.civilWithLegs.Name,
+                                        SiteCode = x.SiteCode
+                                    }).ToList()
+                                });
+                            }
+                            if (CivilNonSteelInstallation.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Civil Non Steel Installation",
+                                    isLibrary = false,
+                                    RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.allCivilInst.civilNonSteel.Name,
+                                        SiteCode = x.SiteCode
+                                    }).ToList()
+                                });
+                            }
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+
+                        else
+                        {
+                            supportTypeImplemented.Deleted = (true);
+                        }
+                        _unitOfWork.SupportTypeImplementedRepository.Update(supportTypeImplemented);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.SupportTypeImplementedRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.BaseCivilWithLegTypeId == Id : false),
-                            x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
-
                     var Entity = _unitOfWork.BaseCivilWithLegsTypeRepository.GetByID(Id);
 
-                    if (Civils.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var Civils = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.BaseCivilWithLegTypeId == Id : false),
+                            x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+                        if (Civils.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.BaseCivilWithLegsTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.BaseCivilWithLegsTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
                 {
                     var Generators = _unitOfWork.OtherInSiteRepository.GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                        (x.allOtherInventoryInst.generatorId != null ? 
+                        (x.allOtherInventoryInst.generatorId != null ?
                             x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false)).ToList();
-                    
-                    var Entity = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
 
-                    if (Generators.Count() > 0)
+                    var Entity = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Generators.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Generator Installation",
+                                isLibrary = false,
+                                RecordsAffected = Generators.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allOtherInventoryInst.generator.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.BaseGeneratorTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.BaseGeneratorTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
                 {
                     var CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                        .GetWhere(x => x.InstallationCivilwithoutLegsTypeId == Id && !x.Deleted).ToList();
+                        .GetWhere(x => x.InstCivilwithoutLegsTypeId == Id && !x.Deleted).ToList();
 
-                    var Entity = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetByID(Id);
-                    if (CivilWithoutLegLibrary.Count() > 0)
+                    var Entity = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (CivilWithoutLegLibrary.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support Without Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilWithoutLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.InstCivilwithoutLegsTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
                 {
@@ -865,60 +1100,122 @@ namespace TLIS_Service.Services
                         .GetWhere(x => x.boardTypeId == Id && !x.Deleted).ToList();
 
                     var Entity = _unitOfWork.BoardTypeRepository.GetByID(Id);
-
-                    if (MW_RFULibraries.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_RFULibraries.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_RFU Library",
+                                isLibrary = true,
+                                RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.BoardTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.BoardTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIguyLineType.ToString() == TableName)
                 {
                     var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && 
+                        .GetIncludeWhere(x => !x.Dismantle &&
                             (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.GuylineTypeId == Id : false)).ToList();
-                    
-                    var Entity = _unitOfWork.GuyLineTypeRepository.GetByID(Id);
 
-                    if (Civils.Count() > 0)
+                    var Entity = _unitOfWork.GuyLineTypeRepository.GetByID(Id);
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Civils.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.GuyLineTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.GuyLineTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIpolarityOnLocation.ToString() == TableName)
                 {
                     var MW_Dishes = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && 
-                            (x.allLoadInstId != null ? (!x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? 
+                        .GetIncludeWhere(x => !x.Dismantle &&
+                            (x.allLoadInstId != null ? (!x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
                                 x.allLoadInst.mwDish.PolarityOnLocationId == Id : false)) : false),
                                     x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
 
                     var Entity = _unitOfWork.PolarityOnLocationRepository.GetByID(Id);
-
-                    if (MW_Dishes.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_Dishes.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_Dish Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_Dishes.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwDish.DishName,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.PolarityOnLocationRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.PolarityOnLocationRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIitemConnectTo.ToString() == TableName)
                 {
@@ -929,18 +1226,38 @@ namespace TLIS_Service.Services
                                     x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
 
                     var Entity = _unitOfWork.ItemConnectToRepository.GetByID(Id);
-
-                    if (MW_Dishes.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_Dishes.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_Dish Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_Dishes.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwDish.DishName,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.ItemConnectToRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.ItemConnectToRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIrepeaterType.ToString() == TableName)
                 {
@@ -951,18 +1268,38 @@ namespace TLIS_Service.Services
                                     x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
 
                     var Entity = _unitOfWork.RepeaterTypeRepository.GetByID(Id);
-
-                    if (MW_Dishes.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_Dishes.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_Dish Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_Dishes.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwDish.DishName,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.RepeaterTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.RepeaterTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIoduInstallationType.ToString() == TableName)
                 {
@@ -973,186 +1310,404 @@ namespace TLIS_Service.Services
                                    x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
 
                     var Entity = _unitOfWork.OduInstallationTypeRepository.GetByID(Id);
-
-                    if (MW_ODUes.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_ODUes.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_ODU Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_ODUes.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwODU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.OduInstallationTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.OduInstallationTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIsideArmInstallationPlace.ToString() == TableName)
                 {
                     var SideArms = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && (x.sideArmId != null ? 
+                        .GetIncludeWhere(x => !x.Dismantle && (x.sideArmId != null ?
                             (!x.sideArm.Draft && x.sideArm.sideArmInstallationPlaceId == Id) : false), x => x.sideArm).ToList();
 
                     var Entity = _unitOfWork.SideArmInstallationPlaceRepository.GetByID(Id);
-
-                    if (SideArms.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (SideArms.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "sideArm Installation",
+                                isLibrary = false,
+                                RecordsAffected = SideArms.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.SideArmInstallationPlaceRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.SideArmInstallationPlaceRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
                 {
                     var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && 
+                        .GetIncludeWhere(x => !x.Dismantle &&
                             (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.enforcmentCategoryId == Id : false),
                                 x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
 
                     var Entity = _unitOfWork.EnforcmentCategoryRepository.GetByID(Id);
-
-                    if (Civils.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Civils.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "civilWithLegs Installation",
+                                isLibrary = false,
+                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.EnforcmentCategoryRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.EnforcmentCategoryRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIpowerType.ToString() == TableName)
                 {
                     var Powers = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && 
-                            (x.allLoadInstId != null ? 
-                                (x.allLoadInst.powerId != null ? x.allLoadInst.power.powerTypeId == Id : false) : false), 
+                        .GetIncludeWhere(x => !x.Dismantle &&
+                            (x.allLoadInstId != null ?
+                                (x.allLoadInst.powerId != null ? x.allLoadInst.power.powerTypeId == Id : false) : false),
                             x => x.allLoadInst, x => x.allLoadInst.power).ToList();
 
                     var Entity = _unitOfWork.PowerTypeRepository.GetByID(Id);
-
-                    if (Powers.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Powers.Count() > 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "power Installation",
+                                isLibrary = false,
+                                RecordsAffected = Powers.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.power.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.PowerTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.PowerTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                }
+                else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
+                {
+                    var civilNonSteelType = _unitOfWork.CivilNonSteelTypeRepository.GetByID(Id);
+                    if (civilNonSteelType != null)
+                    {
+
+                        List<TLIcivilNonSteelLibrary> CivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
+                        .GetWhere(x => x.civilNonSteelTypeId == Id && !x.Deleted).ToList();
+
+                        civilNonSteelType.Deleted = (false);
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilNonSteelLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Non Steel Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilNonSteelLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+
+                        else
+                        {
+
+                            civilNonSteelType.Deleted = (true);
+
+                        }
+                        await _unitOfWork.CivilNonSteelTypeRepository.UpdateItem(civilNonSteelType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
 
                 //----------------------------------------------------------
                 else if (ConfigrationTables.TLIsubType.ToString() == TableName)
                 {
                     var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && 
+                        .GetIncludeWhere(x => !x.Dismantle &&
                             (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.subTypeId == Id : false),
                                 x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).ToList();
 
                     var Entity = _unitOfWork.SubTypeRepository.GetByID(Id);
-
-                    if (Civils.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Civils.Count() > 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support Without Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithoutLeg.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.SubTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.SubTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-
                 else if (ConfigrationTables.TLIasType.ToString() == TableName)
                 {
                     var MW_DishesLibraries = _unitOfWork.MW_DishLibraryRepository
                         .GetWhere(x => !x.Deleted && x.asTypeId == Id).ToList();
 
                     var Entity = _unitOfWork.AsTypeRepository.GetByID(Id);
-
-                    if (MW_DishesLibraries.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_DishesLibraries.Count() > 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_Dish Library",
+                                isLibrary = true,
+                                RecordsAffected = MW_DishesLibraries.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.AsTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.AsTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-
                 else if (ConfigrationTables.TLIpolarityType.ToString() == TableName)
                 {
                     var MW_DishesLibraries = _unitOfWork.MW_DishLibraryRepository
                         .GetWhere(x => !x.Deleted && x.polarityTypeId == Id).ToList();
 
                     var Entity = _unitOfWork.PolarityTypeRepository.GetByID(Id);
-
-                    if (MW_DishesLibraries.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_DishesLibraries.Count() > 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_Dish Library",
+                                isLibrary = true,
+                                RecordsAffected = MW_DishesLibraries.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.PolarityTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.PolarityTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-
                 else if (ConfigrationTables.TLIparity.ToString() == TableName)
                 {
                     var MW_DishesLibraries = _unitOfWork.MW_ODULibraryRepository
                         .GetWhere(x => !x.Deleted && x.parityId == Id).ToList();
 
                     var Entity = _unitOfWork.ParityRepository.GetByID(Id);
-
-                    if (Entity == null)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (MW_DishesLibraries.Count != 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_ODU Library",
+                                isLibrary = true,
+                                RecordsAffected = MW_DishesLibraries.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.ParityRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.ParityRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-
                 else if (ConfigrationTables.TLIcabinetPowerType.ToString() == TableName)
                 {
                     var CabinetPowerLibraries = _unitOfWork.CabinetPowerLibraryRepository
                         .GetWhere(x => !x.Deleted && x.CabinetPowerTypeId == Id).ToList();
 
                     var Entity = _unitOfWork.CabinetPowerTypeRepository.GetByID(Id);
-
-                    if (CabinetPowerLibraries.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (CabinetPowerLibraries.Count() > 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            if (CabinetPowerLibraries.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Cabinet Power Library",
+                                    isLibrary = true,
+                                    RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.CabinetPowerTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.CabinetPowerTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-
                 else if (ConfigrationTables.TLIcapacity.ToString() == TableName)
                 {
                     var SolarLibraries = _unitOfWork.SolarLibraryRepository
@@ -1162,98 +1717,379 @@ namespace TLIS_Service.Services
                         .GetWhere(x => !x.Deleted && x.CapacityId == Id).ToList();
 
                     var Entity = _unitOfWork.CapacityRepository.GetByID(Id);
-
-                    if (SolarLibraries.Count() > 0 || GeneratorLibraries.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Delete = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (SolarLibraries.Count() > 0 || GeneratorLibraries.Count() > 0)
+                        {
+                            Entity.Delete = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            if (GeneratorLibraries.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Generator Library",
+                                    isLibrary = true,
+                                    RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+                            if (SolarLibraries.Count != 0)
+                            {
+                                ListOfResponse.Add(new TableAffected()
+                                {
+                                    TableName = "Solar Library",
+                                    isLibrary = true,
+                                    RecordsAffected = SolarLibraries.Select(x => new RecordAffected
+                                    {
+                                        RecordName = x.Model,
+                                        SiteCode = null
+                                    }).ToList()
+                                });
+                            }
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Delete = (true);
+                        }
+                        _unitOfWork.CapacityRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Delete = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.CapacityRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
-                }
-                else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
-                {
-                    var CivilNonSteelLibraries = _unitOfWork.CivilNonSteelLibraryRepository
-                        .GetWhere(x => !x.Deleted && x.civilNonSteelTypeId == Id).ToList();
-
-                    var Entity = _unitOfWork.CivilNonSteelTypeRepository.GetByID(Id);
-
-                    if (CivilNonSteelLibraries.Count() > 0)
-                    {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    else
-                    {
-                        Entity.Deleted = (true);
-                    }
-                    _unitOfWork.CivilNonSteelTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIowner.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegs != null ? x.allCivilInst.civilWithLegs.OwnerId == Id :
-                            x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.OwnerId == Id :
-                            x.allCivilInst.civilNonSteel.ownerId == Id), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                            x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel).ToList();
-
-                    var Loads = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
-                        x.allLoadInstId != null ?
-                            ((!x.allLoadInst.Draft) &&
-                            (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.OwnerId == Id :
-                             x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.ownerId == Id :
-                             x.allLoadInst.mwODUId != null ? x.allLoadInst.mwODU.OwnerId == Id :
-                             x.allLoadInst.mwRFUId != null ? x.allLoadInst.mwRFU.OwnerId == Id :
-                             x.allLoadInst.radioAntennaId != null ? x.allLoadInst.radioAntenna.ownerId == Id :
-                             x.allLoadInst.radioRRUId != null ? x.allLoadInst.radioRRU.ownerId == Id :
-                             x.allLoadInst.radioOtherId != null ? x.allLoadInst.radioOther.ownerId == Id :
-                             x.allLoadInst.powerId != null ? x.allLoadInst.power.ownerId == Id : false)) : 
-                        x.sideArmId != null ? 
-                             (x.sideArm.ownerId == Id && !x.sideArm.Draft) : false, 
-                        x => x.allLoadInst, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU,
-                        x => x.allLoadInst.mwRFU, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther,
-                        x => x.allLoadInst.radioRRU, x => x.allLoadInst.power, x => x.sideArm).ToList();
-
                     var Entity = _unitOfWork.OwnerRepository.GetByID(Id);
-
-                    if (Entity == null || Civils.Count() > 0 || Loads.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                x.allCivilInst.civilWithLegs.OwnerId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+
+                        if (CivilWithLegInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilSiteDate> CivilWithoutLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithoutLegId != null ?
+                                x.allCivilInst.civilWithoutLeg.OwnerId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).ToList();
+
+                        if (CivilWithoutLegInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support Without Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilWithoutLegInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithoutLeg.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilSiteDate> CivilNonSteelInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilNonSteelId != null ?
+                                x.allCivilInst.civilNonSteel.ownerId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).ToList();
+
+                        if (CivilNonSteelInstallation.Count != 0)
+                            Entity.Deleted = false;
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Non Steel Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilNonSteel.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> MW_RFUInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwRFUId != null ?
+                                x.allLoadInst.mwRFU.OwnerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
+
+                        if (MW_RFUInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_RFU Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_RFUInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwRFU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> MW_BUInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ?
+                                x.allLoadInst.mwBU.OwnerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
+
+                        if (MW_BUInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_BU Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_BUInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwBU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
+                                x.allLoadInst.mwDish.ownerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
+
+                        if (MW_DishInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_Dish Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwDish.DishName,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> MW_ODUInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ?
+                                x.allLoadInst.mwODU.OwnerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+
+                        if (MW_ODUInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_ODU Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_ODUInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwODU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> RadioAnteenInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.radioAntennaId != null ?
+                                x.allLoadInst.radioAntenna.ownerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.radioAntenna).ToList();
+
+                        if (RadioAnteenInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Radio Antenna Installation",
+                                isLibrary = false,
+                                RecordsAffected = RadioAnteenInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioAntenna.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> RadioRRUInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.radioRRUId != null ?
+                                x.allLoadInst.radioRRU.ownerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.radioRRU).ToList();
+
+                        if (RadioRRUInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Radio RRU Installation",
+                                isLibrary = false,
+                                RecordsAffected = RadioRRUInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioRRU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> RadioOtherInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.radioOtherId != null ?
+                                x.allLoadInst.radioOther.ownerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.radioOther).ToList();
+
+                        if (RadioOtherInstallation.Count != 0)
+                            Entity.Deleted = false;
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Radio Other Installation",
+                                isLibrary = false,
+                                RecordsAffected = RadioOtherInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioOther.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> PowerInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.powerId != null ?
+                                x.allLoadInst.power.ownerId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.power).ToList();
+
+                        if (PowerInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Power Load Installation",
+                                isLibrary = false,
+                                RecordsAffected = PowerInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.power.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilLoads> SideArmInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && (x.sideArmId != null ?
+                                (!x.sideArm.Draft && x.sideArm.ownerId == Id) : false),
+                                    x => x.sideArm).ToList();
+
+                        if (SideArmInstallation.Count != 0)
+                        {
+                            Entity.Deleted = false;
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Side Arm Installation",
+                                isLibrary = false,
+                                RecordsAffected = SideArmInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.OwnerRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.OwnerRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
-                            x.allCivilInst.civilWithLegs.locationTypeId.Value == Id :
-                            x.allCivilInst.civilNonSteelId != null ? 
-                                x.allCivilInst.civilNonSteel.locationTypeId.Value == Id : false), 
-                        x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilNonSteel).ToList();
-
                     var Entity = _unitOfWork.LocationTypeRepository.GetByID(Id);
-                    if (Entity == null || Civils.Count() > 0)
+                    if (Entity != null)
                     {
                         Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                x.allCivilInst.civilWithLegs.locationTypeId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+
+                        if (CivilWithLegInstallation.Count != 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        List<TLIcivilSiteDate> CivilNonSteelInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilNonSteelId != null ?
+                                x.allCivilInst.civilNonSteel.locationTypeId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).ToList();
+
+                        if (CivilNonSteelInstallation.Count != 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Non Steel Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilNonSteel.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.LocationTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.LocationTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIbaseType.ToString() == TableName)
                 {
@@ -1263,117 +2099,587 @@ namespace TLIS_Service.Services
                                 x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
 
                     var Entity = _unitOfWork.BaseTypeRepository.GetByID(Id);
-                    if (Entity == null || Civils.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Civils.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.BaseTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.BaseTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
                 {
                     var Loads = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && 
+                        .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft &&
                             (x.allLoadInstId != null ? (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.BaseBUId == Id : false) : false),
                                 x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
 
                     var Entity = _unitOfWork.BaseBURepository.GetByID(Id);
-                    if (Entity == null || Loads.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Loads.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_BU Installation",
+                                isLibrary = false,
+                                RecordsAffected = Loads.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwBU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.BaseBURepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.BaseBURepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIrenewableCabinetType.ToString() == TableName)
                 {
                     var Cabinets = _unitOfWork.OtherInSiteRepository
-                        .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && 
-                            (x.allOtherInventoryInst.cabinetId != null ? 
+                        .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
+                            (x.allOtherInventoryInst.cabinetId != null ?
                                 x.allOtherInventoryInst.cabinet.RenewableCabinetTypeId == Id : false),
                                     x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet).ToList();
 
                     var Entity = _unitOfWork.RenewableCabinetTypeRepository.GetByID(Id);
-                    if (Entity == null || Cabinets.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Cabinets.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Cabinet Installation",
+                                isLibrary = false,
+                                RecordsAffected = Cabinets.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allOtherInventoryInst.cabinet.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.RenewableCabinetTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.RenewableCabinetTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIsideArmType.ToString() == TableName)
                 {
                     var Loads = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && 
+                        .GetIncludeWhere(x => !x.Dismantle &&
                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.sideArmTypeId == Id) : false),
                                 x => x.sideArm).ToList();
 
                     var Entity = _unitOfWork.SideArmTypeRepository.GetByID(Id);
-                    if (Entity == null || Loads.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Entity == null || Loads.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "sideArm Installation",
+                                isLibrary = false,
+                                RecordsAffected = Loads.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.SideArmTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.SideArmTypeRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
                 {
-                    var Loads = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allLoadInstId != null ? (!x.allLoadInst.Draft && 
-                                (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.InstallationPlaceId == Id : 
-                                 x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.InstallationPlaceId == Id :
-                                 x.allLoadInst.mwOtherId != null ? x.allLoadInst.mwOther.InstallationPlaceId == Id :
-                                 x.allLoadInst.radioAntennaId != null ? x.allLoadInst.radioAntenna.installationPlaceId == Id :
-                                 x.allLoadInst.radioRRUId != null ? x.allLoadInst.radioRRU.installationPlaceId == Id :
-                                 x.allLoadInst.radioOtherId != null ? x.allLoadInst.radioOther.installationPlaceId == Id :
-                                 x.allLoadInst.powerId != null ? x.allLoadInst.power.installationPlaceId == Id :
-                                 x.allLoadInst.loadOtherId != null ? x.allLoadInst.loadOther.InstallationPlaceId == Id : false)) : false),
-                            x => x.allLoadInst).ToList();
-
                     var Entity = _unitOfWork.InstallationPlaceRepository.GetByID(Id);
-                    if (Entity == null || Loads.Count() > 0)
+                    if (Entity != null)
                     {
-                        Entity.Deleted = (false);
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Record Can Not Be Deleted ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        var mwBU = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                                x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                    x.allLoadInst.mwBUId != null && x.allLoadInst.mwBU.InstallationPlaceId == Id);
+                        var mwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                             x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                 x.allLoadInst.mwDishId != null && x.allLoadInst.mwDish.InstallationPlaceId == Id);
+                        var mwOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                            x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                x.allLoadInst.mwOtherId != null && x.allLoadInst.mwOther.InstallationPlaceId == Id);
+                        var radioAntenna = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                            x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                x.allLoadInst.radioAntennaId != null && x.allLoadInst.radioAntenna.installationPlaceId == Id);
+                        var radioRRU = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                           x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                               x.allLoadInst.radioRRUId != null && x.allLoadInst.radioRRU.installationPlaceId == Id);
+                        var power = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                         x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                             x.allLoadInst.powerId != null && x.allLoadInst.power.installationPlaceId == Id);
+                        var loadOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                        x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                            x.allLoadInst.loadOtherId != null && x.allLoadInst.loadOther.InstallationPlaceId == Id);
+
+
+
+                        if (mwBU.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "mwBU Installation",
+                                isLibrary = false,
+                                RecordsAffected = mwBU.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwBU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (mwDish.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "mwDish Installation",
+                                isLibrary = false,
+                                RecordsAffected = mwDish.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwDish.DishName,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (mwOther.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "mwOther Installation",
+                                isLibrary = false,
+                                RecordsAffected = mwOther.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwOther.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (radioAntenna.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "radioAntenna Installation",
+                                isLibrary = false,
+                                RecordsAffected = radioAntenna.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioAntenna.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (radioRRU.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "radioRRU Installation",
+                                isLibrary = false,
+                                RecordsAffected = radioRRU.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioRRU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (power.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "power Installation",
+                                isLibrary = false,
+                                RecordsAffected = power.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.power.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (loadOther.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "loadOther Installation",
+                                isLibrary = false,
+                                RecordsAffected = power.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.loadOther.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.InstallationPlaceRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
-                        Entity.Deleted = (true);
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    _unitOfWork.InstallationPlaceRepository.Update(Entity);
-                    await _unitOfWork.SaveChangesAsync();
                 }
-                //---------------------------------------------------------
+                else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
+                {
+                    var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
+                    if (logisticalType != null)
+                    {
+                        var Logic = _unitOfWork.LogistcalRepository.GetIncludeWhere(x => x.logisticalTypeId == Id && !x.Deleted && x.Active, x => x.tablePartName.tablesNames);
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (Logic.Count() > 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Logistcal",
+                                isLibrary = false,
+                                RecordsAffected = Logic.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Name,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+                        else
+                        {
+                            logisticalType.Deleted = (true);
+                        }
+                        await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIdataType.ToString() == TableName)
+                {
+                    var dataType = _unitOfWork.DataTypeRepository.GetByID(Id);
+
+                    var DynamicAtt = _unitOfWork.DynamicAttRepository
+                         .GetIncludeWhere(x => x.DataTypeId == Id, x => x.tablesNames.TableName).ToList();
+
+                    if (dataType != null)
+                    {
+                        if (DynamicAtt.Count() > 0)
+                        {
+                            dataType.Deleted = (false);
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "DynamicAtt",
+                                isLibrary = false,
+                                RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.tablesNames.TableName,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            dataType.Deleted = (true);
+                        }
+                        _unitOfWork.DataTypeRepository.Update(dataType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIoperation.ToString() == TableName)
+                {
+                    var operation = _unitOfWork.OperationRepository.GetByID(Id);
+                    if (operation != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        var validation = _unitOfWork.ValidationRepository.GetWhere(x => x.OperationId == Id);
+                        if (validation.Count != 0)
+                        {
+                            operation.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "ValidationDynamic",
+                                isLibrary = false,
+                                RecordsAffected = validation.Select(x => new RecordAffected
+                                {
+                                    RecordName = null,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                        }
+                        var Dependence = _unitOfWork.DependencieRepository.GetWhere(x => x.OperationId == Id);
+                        if (Dependence.Count != 0)
+                        {
+                            operation.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "DependencieDynamicAtt",
+                                isLibrary = false,
+                                RecordsAffected = Dependence.Select(x => new RecordAffected
+                                {
+                                    RecordName = null,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        else
+                        {
+                            operation.Deleted = (true);
+                        }
+                        await _unitOfWork.OperationRepository.UpdateItem(operation);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
+                {
+                    var logicalOperation = _unitOfWork.LogicalOperationRepository.GetByID(Id);
+                    if (logicalOperation != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        var validation = _unitOfWork.DependencyRowRepository.GetWhere(x => x.LogicalOperationId == Id);
+                        if (validation.Count != 0)
+                        {
+                            logicalOperation.Deleted = (false);
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "DependencyRow Dynamic",
+                                isLibrary = false,
+                                RecordsAffected = validation.Select(x => new RecordAffected
+                                {
+                                    RecordName = null,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                        }
+                        else
+                        {
+                            logicalOperation.Deleted = (true);
+                        }
+                        await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
+                {
+                    var Entity = _unitOfWork.ItemStatusRepository.GetByID(Id);
+
+                    var sideArm = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle &&
+                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.ItemStatusId == Id) : false),
+                                 x => x.sideArm).ToList();
+                    var allcivil = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle &&
+                             (x.allCivilInstId != null ? (!x.allCivilInst.Draft && x.allCivilInst.ItemStatusId == Id) : false),
+                                 x => x.allCivilInst).ToList();
+                    var allload = _unitOfWork.CivilLoadsRepository
+                       .GetIncludeWhere(x => !x.Dismantle &&
+                           (x.allLoadInstId != null ? (!x.allLoadInst.Draft && x.allLoadInst.ItemStatusId == Id) : false),
+                               x => x.allLoadInst).ToList();
+                    var allotherenventory = _unitOfWork.OtherInSiteRepository
+                       .GetIncludeWhere(x => !x.Dismantle &&
+                           (x.allOtherInventoryInstId != null ? (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.ItemStatusId == Id) : false),
+                               x => x.allOtherInventoryInst).ToList();
+                    if (Entity != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (sideArm.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "sideArm Installation",
+                                isLibrary = false,
+                                RecordsAffected = sideArm.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (allcivil.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "AllCivil Installation",
+                                isLibrary = false,
+                                RecordsAffected = allcivil.Select(x => new RecordAffected
+                                {
+                                    RecordName = "AllCivil Installation",
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (allload.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Allload Installation",
+                                isLibrary = false,
+                                RecordsAffected = allload.Select(x => new RecordAffected
+                                {
+                                    RecordName = "Allload Installation",
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (allotherenventory.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "AllOtherEnventory Installation",
+                                isLibrary = false,
+                                RecordsAffected = allotherenventory.Select(x => new RecordAffected
+                                {
+                                    RecordName = "AllOtherEnventory Installation",
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Deleted = (true);
+                        }
+                        _unitOfWork.ItemStatusRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
                 else
                 {
-                    //add validation after adding relation between dy
+                    return new Response<List<TableAffected>>(true, null, null, "The TabelName Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                return new Response<ConfigurationAttsViewModel>();
+                
+                return new Response<List<TableAffected>>();
             }
             catch(Exception err)
             {
-                return new Response<ConfigurationAttsViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<List<TableAffected>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
@@ -1385,7 +2691,7 @@ namespace TLIS_Service.Services
                 {
                     var diversityType = _unitOfWork.DiversityTypeRepository.GetByID(Id);
 
-                    if (!diversityType.Disable)
+                    if (diversityType != null)
                     {
                         List<TLImwBULibrary> MW_BULibraries = _unitOfWork.MW_BULibraryRepository
                             .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
@@ -1424,18 +2730,25 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        else
+                        {
+                            diversityType.Disable = !(diversityType.Disable);
+
+                        }
+                        _unitOfWork.DiversityTypeRepository.Update(diversityType);
+                        await _unitOfWork.SaveChangesAsync();
 
                     }
-
-                    diversityType.Disable = !(diversityType.Disable);
-                    _unitOfWork.DiversityTypeRepository.Update(diversityType);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
                 {
                     var TelecomType = _unitOfWork.TelecomTypeRepository.GetByID(Id);
 
-                    if (!TelecomType.Disable)
+                    if (TelecomType != null)
                     {
                         List<TLIcabinetTelecomLibrary> CabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
                             .GetIncludeWhere(x => x.TelecomTypeId == Id && !x.Deleted).ToList();
@@ -1458,12 +2771,17 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
+                        else
+                        {
+                            TelecomType.Disable = !(TelecomType.Disable);
+                        }
+                        await _unitOfWork.TelecomTypeRepository.UpdateItem(TelecomType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
-
-                    TelecomType.Disable = !(TelecomType.Disable);
-                    await _unitOfWork.TelecomTypeRepository.UpdateItem(TelecomType);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
                 {
@@ -1502,7 +2820,7 @@ namespace TLIS_Service.Services
                 {
                     var supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
 
-                    if (!supportTypeImplemented.Disable)
+                    if (supportTypeImplemented != null)
                     {
                         List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
@@ -1546,17 +2864,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    supportTypeImplemented.Disable = !(supportTypeImplemented.Disable);
-                    await _unitOfWork.SupportTypeImplementedRepository.UpdateItem(supportTypeImplemented);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            supportTypeImplemented.Disable = !(supportTypeImplemented.Disable);
+                        }
+                        await _unitOfWork.SupportTypeImplementedRepository.UpdateItem(supportTypeImplemented);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
                 {
                     var structureType = _unitOfWork.StructureTypeRepository.GetByID(Id);
 
-                    if (!structureType.Disable)
+                    if (structureType != null)
                     {
                         List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
                             .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
@@ -1596,17 +2921,23 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+                        else
+                        {
+                            structureType.Disable = !(structureType.Disable);
+                        }
+                        await _unitOfWork.StructureTypeRepository.UpdateItem(structureType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
-
-                    structureType.Disable = !(structureType.Disable);
-                    await _unitOfWork.StructureTypeRepository.UpdateItem(structureType);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
                 {
                     var sectionsLegType = _unitOfWork.SectionsLegTypeRepository.GetByID(Id);
 
-                    if (!sectionsLegType.Disable)
+                    if (sectionsLegType != null)
                     {
                         List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
                             .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
@@ -1630,24 +2961,53 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
+                        else
+                        {
 
-                    sectionsLegType.Disable = !(sectionsLegType.Disable);
-                    await _unitOfWork.SectionsLegTypeRepository.UpdateItem(sectionsLegType);
-                    await _unitOfWork.SaveChangesAsync();
+                            sectionsLegType.Disable = !(sectionsLegType.Disable);
+                        }
+                        await _unitOfWork.SectionsLegTypeRepository.UpdateItem(sectionsLegType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
                 }
                 else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
                 {
                     var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
-                    logisticalType.Disable = !(logisticalType.Disable);
-                    await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
-                    await _unitOfWork.SaveChangesAsync();
+                    if (logisticalType != null)
+                    {
+                        var Logic = _unitOfWork.LogistcalRepository.GetIncludeWhere(x => x.logisticalTypeId == Id && !x.Deleted && x.Active, x => x.tablePartName.tablesNames);
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (Logic.Count() > 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Logistcal",
+                                isLibrary = false,
+                                RecordsAffected = Logic.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Name,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+                        else
+                        {
+                            logisticalType.Disable = !(logisticalType.Disable);
+                        }
+                        await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
                 {
                     var baseCivilWithLegs = _unitOfWork.BaseCivilWithLegsTypeRepository.GetByID(Id);
 
-                    if (!baseCivilWithLegs.Disable)
+                    if (baseCivilWithLegs != null)
                     {
                         List<TLIcivilSiteDate> CivilWithLegsInstallation = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
@@ -1672,21 +3032,28 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    baseCivilWithLegs.Disable = !(baseCivilWithLegs.Disable);
-                    await _unitOfWork.BaseCivilWithLegsTypeRepository.UpdateItem(baseCivilWithLegs);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            baseCivilWithLegs.Disable = !(baseCivilWithLegs.Disable);
+                        }
+                        await _unitOfWork.BaseCivilWithLegsTypeRepository.UpdateItem(baseCivilWithLegs);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
                 {
                     var baseGeneratorType = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
 
-                    if (!baseGeneratorType.Disable)
+                    if (baseGeneratorType != null)
                     {
                         List<TLIotherInSite> GeneratorInstallation = _unitOfWork.OtherInSiteRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && (x.allOtherInventoryInst.generatorId != null ?
-                                x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false), 
+                                x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false),
                                     x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator).ToList();
 
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
@@ -1708,20 +3075,27 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+                        else
+                        {
+
+                            baseGeneratorType.Disable = !(baseGeneratorType.Disable);
+                        }
+                        await _unitOfWork.BaseGeneratorTypeRepository.UpdateItem(baseGeneratorType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
-
-                    baseGeneratorType.Disable = !(baseGeneratorType.Disable);
-                    await _unitOfWork.BaseGeneratorTypeRepository.UpdateItem(baseGeneratorType);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
                 {
-                    var installationCivilwithoutLegsType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetByID(Id);
+                    var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
 
-                    if (!installationCivilwithoutLegsType.Disable)
+                    if (InstCivilwithoutLegsType != null)
                     {
                         List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                            .GetWhere(x => x.InstallationCivilwithoutLegsTypeId == Id && !x.Deleted).ToList();
+                            .GetWhere(x => x.InstCivilwithoutLegsTypeId == Id && !x.Deleted).ToList();
 
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
@@ -1741,17 +3115,24 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
+                        else
+                        {
 
-                    installationCivilwithoutLegsType.Disable = !(installationCivilwithoutLegsType.Disable);
-                    await _unitOfWork.InstallationCivilwithoutLegsTypeRepository.UpdateItem(installationCivilwithoutLegsType);
-                    await _unitOfWork.SaveChangesAsync();
+                            InstCivilwithoutLegsType.Disable = !(InstCivilwithoutLegsType.Disable);
+                        }
+                        await _unitOfWork.InstCivilwithoutLegsTypeRepository.UpdateItem(InstCivilwithoutLegsType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
                 {
                     var boardType = _unitOfWork.BoardTypeRepository.GetByID(Id);
 
-                    if (!boardType.Disable)
+                    if (boardType != null)
                     {
                         List<TLImwRFULibrary> MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository
                             .GetWhere(x => x.boardTypeId == Id && !x.Deleted).ToList();
@@ -1774,17 +3155,24 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    boardType.Disable = !(boardType.Disable);
-                    await _unitOfWork.BoardTypeRepository.UpdateItem(boardType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            boardType.Disable = !(boardType.Disable);
+                        }
+                        await _unitOfWork.BoardTypeRepository.UpdateItem(boardType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIguyLineType.ToString() == TableName)
                 {
                     var guyLineType = _unitOfWork.GuyLineTypeRepository.GetByID(Id);
 
-                    if (!guyLineType.Disable)
+                    if (guyLineType != null)
                     {
                         List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
@@ -1810,17 +3198,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    guyLineType.Disable = !(guyLineType.Disable);
-                    await _unitOfWork.GuyLineTypeRepository.UpdateItem(guyLineType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            guyLineType.Disable = !(guyLineType.Disable);
+                        }
+                        await _unitOfWork.GuyLineTypeRepository.UpdateItem(guyLineType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIpolarityOnLocation.ToString() == TableName)
                 {
                     var polarityOnLocation = _unitOfWork.PolarityOnLocationRepository.GetByID(Id);
 
-                    if (!polarityOnLocation.Disable)
+                    if (polarityOnLocation != null)
                     {
                         List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
@@ -1846,17 +3241,23 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+                        else
+                        {
+                            polarityOnLocation.Disable = !(polarityOnLocation.Disable);
+                        }
+                        await _unitOfWork.PolarityOnLocationRepository.UpdateItem(polarityOnLocation);
+                        await _unitOfWork.SaveChangesAsync();
                     }
-
-                    polarityOnLocation.Disable = !(polarityOnLocation.Disable);
-                    await _unitOfWork.PolarityOnLocationRepository.UpdateItem(polarityOnLocation);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIitemConnectTo.ToString() == TableName)
                 {
                     var itemConnectTo = _unitOfWork.ItemConnectToRepository.GetByID(Id);
 
-                    if (!itemConnectTo.Disable)
+                    if (itemConnectTo != null)
                     {
                         List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
@@ -1882,17 +3283,20 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    itemConnectTo.Disable = !(itemConnectTo.Disable);
-                    await _unitOfWork.ItemConnectToRepository.UpdateItem(itemConnectTo);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            itemConnectTo.Disable = !(itemConnectTo.Disable);
+                        }
+                        await _unitOfWork.ItemConnectToRepository.UpdateItem(itemConnectTo);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
                 }
                 else if (ConfigrationTables.TLIrepeaterType.ToString() == TableName)
                 {
                     var repeaterType = _unitOfWork.RepeaterTypeRepository.GetByID(Id);
 
-                    if (!repeaterType.Disable)
+                    if (repeaterType != null)
                     {
                         List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
@@ -1918,52 +3322,230 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    repeaterType.Disable = !(repeaterType.Disable);
-                    await _unitOfWork.RepeaterTypeRepository.UpdateItem(repeaterType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            repeaterType.Disable = !(repeaterType.Disable);
+                        }
+                        await _unitOfWork.RepeaterTypeRepository.UpdateItem(repeaterType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIoduInstallationType.ToString() == TableName)
                 {
-                    var oduInstallationType = _unitOfWork.OduInstallationTypeRepository.GetByID(Id);
-                    oduInstallationType.Disable = !(oduInstallationType.Disable);
-                    await _unitOfWork.OduInstallationTypeRepository.UpdateItem(oduInstallationType);
-                    await _unitOfWork.SaveChangesAsync();
+                    var MW_ODUes = _unitOfWork.CivilLoadsRepository
+                       .GetIncludeWhere(x => !x.Dismantle &&
+                           (x.allLoadInstId != null ? (!x.allLoadInst.Draft && (x.allLoadInst.mwODUId != null ?
+                               x.allLoadInst.mwODU.OduInstallationTypeId == Id : false)) : false),
+                                   x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+
+                    var Entity = _unitOfWork.OduInstallationTypeRepository.GetByID(Id);
+                    if (Entity != null)
+                    {
+                        if (MW_ODUes.Count() > 0)
+                        {
+
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_ODU Installation",
+                                isLibrary = false,
+                                RecordsAffected = MW_ODUes.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwODU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        _unitOfWork.OduInstallationTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIsideArmInstallationPlace.ToString() == TableName)
                 {
-                    var sideArmInstallationPlace = _unitOfWork.SideArmInstallationPlaceRepository.GetByID(Id);
-                    sideArmInstallationPlace.Disable = !(sideArmInstallationPlace.Disable);
-                    await _unitOfWork.SideArmInstallationPlaceRepository.UpdateItem(sideArmInstallationPlace);
-                    await _unitOfWork.SaveChangesAsync();
+                    var SideArms = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle && (x.sideArmId != null ?
+                             (!x.sideArm.Draft && x.sideArm.sideArmInstallationPlaceId == Id) : false), x => x.sideArm).ToList();
+
+                    var Entity = _unitOfWork.SideArmInstallationPlaceRepository.GetByID(Id);
+                    if (Entity != null)
+                    {
+                        if (SideArms.Count() > 0)
+                        {
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "sideArm Installation",
+                                isLibrary = false,
+                                RecordsAffected = SideArms.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        _unitOfWork.SideArmInstallationPlaceRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIdataType.ToString() == TableName)
                 {
                     var dataType = _unitOfWork.DataTypeRepository.GetByID(Id);
-                    dataType.Disable = !(dataType.Disable);
-                    await _unitOfWork.DataTypeRepository.UpdateItem(dataType);
-                    await _unitOfWork.SaveChangesAsync();
+
+                    var DynamicAtt = _unitOfWork.DynamicAttRepository
+                         .GetIncludeWhere(x => x.DataTypeId == Id, x => x.tablesNames.TableName).ToList();
+
+                    if (dataType != null)
+                    {
+                        if (DynamicAtt.Count() > 0)
+                        {
+                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "DynamicAtt",
+                                isLibrary = false,
+                                RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.tablesNames.TableName,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+                            if (ListOfResponse.Count != 0)
+                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            dataType.Disable = !(dataType.Disable);
+                        }
+                        _unitOfWork.DataTypeRepository.Update(dataType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIoperation.ToString() == TableName)
                 {
                     var operation = _unitOfWork.OperationRepository.GetByID(Id);
-                    operation.Disable = !(operation.Disable);
-                    await _unitOfWork.OperationRepository.UpdateItem(operation);
-                    await _unitOfWork.SaveChangesAsync();
+                    if (operation != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        var validation = _unitOfWork.ValidationRepository.GetWhere(x => x.OperationId == Id);
+                        if (validation.Count != 0)
+                        {
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "ValidationDynamic",
+                                isLibrary = false,
+                                RecordsAffected = validation.Select(x => new RecordAffected
+                                {
+                                    RecordName = null,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                        }
+                        var Dependence = _unitOfWork.DependencieRepository.GetWhere(x => x.OperationId == Id);
+                        if (Dependence.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "DependencieDynamicAtt",
+                                isLibrary = false,
+                                RecordsAffected = Dependence.Select(x => new RecordAffected
+                                {
+                                    RecordName = null,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        else
+                        {
+                            operation.Disable = !(operation.Disable);
+                        }
+                        await _unitOfWork.OperationRepository.UpdateItem(operation);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
                 {
                     var logicalOperation = _unitOfWork.LogicalOperationRepository.GetByID(Id);
-                    logicalOperation.Disable = !(logicalOperation.Disable);
-                    await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
-                    await _unitOfWork.SaveChangesAsync();
+                    if (logicalOperation != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        var validation = _unitOfWork.DependencyRowRepository.GetWhere(x => x.LogicalOperationId == Id);
+                        if (validation.Count != 0)
+                        {
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "DependencyRow Dynamic",
+                                isLibrary = false,
+                                RecordsAffected = validation.Select(x => new RecordAffected
+                                {
+                                    RecordName = null,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+
+
+                        }
+                        else
+                        {
+                            logicalOperation.Disable = !(logicalOperation.Disable);
+                        }
+                        await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
                 {
                     var enforcmentCategory = _unitOfWork.EnforcmentCategoryRepository.GetByID(Id);
 
-                    if (!enforcmentCategory.Disable)
+                    if (enforcmentCategory != null)
                     {
                         List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
@@ -1988,17 +3570,24 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    enforcmentCategory.Disable = !(enforcmentCategory.Disable);
-                    await _unitOfWork.EnforcmentCategoryRepository.UpdateItem(enforcmentCategory);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            enforcmentCategory.Disable = !(enforcmentCategory.Disable);
+                        }
+                        await _unitOfWork.EnforcmentCategoryRepository.UpdateItem(enforcmentCategory);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIpowerType.ToString() == TableName)
                 {
                     var powerType = _unitOfWork.PowerTypeRepository.GetByID(Id);
 
-                    if (!powerType.Disable)
+                    if (powerType != null)
                     {
                         List<TLIcivilLoads> PowerInstallation = _unitOfWork.CivilLoadsRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.powerId != null ?
@@ -2024,17 +3613,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+                        else
+                        {
+                            powerType.Disable = !(powerType.Disable);
+                        }
+                        await _unitOfWork.PowerTypeRepository.UpdateItem(powerType);
+                        await _unitOfWork.SaveChangesAsync();
                     }
-
-                    powerType.Disable = !(powerType.Disable);
-                    await _unitOfWork.PowerTypeRepository.UpdateItem(powerType);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
+
                 else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
                 {
                     var civilNonSteelType = _unitOfWork.CivilNonSteelTypeRepository.GetByID(Id);
 
-                    if (!civilNonSteelType.Disable)
+                    if (civilNonSteelType != null)
                     {
                         List<TLIcivilNonSteelLibrary> CivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
                             .GetWhere(x => x.civilNonSteelTypeId == Id && !x.Deleted).ToList();
@@ -2058,17 +3654,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    civilNonSteelType.Disable = !(civilNonSteelType.Disable);
-                    await _unitOfWork.CivilNonSteelTypeRepository.UpdateItem(civilNonSteelType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            civilNonSteelType.Disable = !(civilNonSteelType.Disable);
+                        }
+                        await _unitOfWork.CivilNonSteelTypeRepository.UpdateItem(civilNonSteelType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIsubType.ToString() == TableName)
                 {
                     var subType = _unitOfWork.SubTypeRepository.GetByID(Id);
 
-                    if (!subType.Disable)
+                    if (subType != null)
                     {
                         List<TLIcivilSiteDate> CivilWithoutLegInstallation = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithoutLegId != null ?
@@ -2094,17 +3697,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    subType.Disable = !(subType.Disable);
-                    await _unitOfWork.SubTypeRepository.UpdateItem(subType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            subType.Disable = !(subType.Disable);
+                        }
+                        await _unitOfWork.SubTypeRepository.UpdateItem(subType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIasType.ToString() == TableName)
                 {
                     var asType = _unitOfWork.AsTypeRepository.GetByID(Id);
 
-                    if (!asType.Disable)
+                    if (asType != null)
                     {
                         List<TLImwDishLibrary> MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
                             .GetWhere(x => x.asTypeId == Id && !x.Deleted).ToList();
@@ -2128,17 +3738,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    asType.Disable = !(asType.Disable);
-                    await _unitOfWork.AsTypeRepository.UpdateItem(asType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            asType.Disable = !(asType.Disable);
+                        }
+                        await _unitOfWork.AsTypeRepository.UpdateItem(asType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIpolarityType.ToString() == TableName)
                 {
                     var polarityType = _unitOfWork.PolarityTypeRepository.GetByID(Id);
 
-                    if (!polarityType.Disable)
+                    if (polarityType != null)
                     {
                         List<TLImwDishLibrary> MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
                             .GetWhere(x => x.polarityTypeId == Id && !x.Deleted).ToList();
@@ -2161,17 +3778,24 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    polarityType.Disable = !(polarityType.Disable);
-                    await _unitOfWork.PolarityTypeRepository.UpdateItem(polarityType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            polarityType.Disable = !(polarityType.Disable);
+                        }
+                        await _unitOfWork.PolarityTypeRepository.UpdateItem(polarityType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIparity.ToString() == TableName)
                 {
                     var parity = _unitOfWork.ParityRepository.GetByID(Id);
 
-                    if (!parity.Disable)
+                    if (parity != null)
                     {
                         List<TLImwODULibrary> MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository
                             .GetWhere(x => x.parityId == Id && !x.Deleted).ToList();
@@ -2195,17 +3819,23 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+                        else
+                        {
+                            parity.Disable = !(parity.Disable);
+                        }
+                        await _unitOfWork.ParityRepository.UpdateItem(parity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
-
-                    parity.Disable = !(parity.Disable);
-                    await _unitOfWork.ParityRepository.UpdateItem(parity);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIcabinetPowerType.ToString() == TableName)
                 {
                     var cabinetPowerType = _unitOfWork.CabinetPowerTypeRepository.GetByID(Id);
 
-                    if (!cabinetPowerType.Disable)
+                    if (cabinetPowerType != null)
                     {
                         List<TLIcabinetPowerLibrary> CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
                             .GetWhere(x => x.CabinetPowerTypeId == Id && !x.Deleted).ToList();
@@ -2228,17 +3858,24 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    cabinetPowerType.Disable = !(cabinetPowerType.Disable);
-                    await _unitOfWork.CabinetPowerTypeRepository.UpdateItem(cabinetPowerType);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            cabinetPowerType.Disable = !(cabinetPowerType.Disable);
+                        }
+                        await _unitOfWork.CabinetPowerTypeRepository.UpdateItem(cabinetPowerType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIcapacity.ToString() == TableName)
                 {
                     var capacity = _unitOfWork.CapacityRepository.GetByID(Id);
 
-                    if (!capacity.Disable)
+                    if (capacity != null)
                     {
                         List<TLIgeneratorLibrary> GeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
                             .GetWhere(x => x.CapacityId == Id && !x.Deleted).ToList();
@@ -2278,17 +3915,26 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+
+                        else
+                        {
+                            capacity.Disable = !(capacity.Disable);
+                        }
+                        await _unitOfWork.CapacityRepository.UpdateItem(capacity);
+                        await _unitOfWork.SaveChangesAsync();
                     }
 
-                    capacity.Disable = !(capacity.Disable);
-                    await _unitOfWork.CapacityRepository.UpdateItem(capacity);
-                    await _unitOfWork.SaveChangesAsync();
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
+
                 else if (ConfigrationTables.TLIowner.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.OwnerRepository.GetByID(Id);
 
-                    if (!Entity.Disable)
+                    if (Entity != null)
                     {
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
@@ -2522,17 +4168,20 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.OwnerRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        await _unitOfWork.OwnerRepository.UpdateItem(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
                 }
                 else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.LocationTypeRepository.GetByID(Id);
 
-                    if (!Entity.Disable)
+                    if (Entity != null)
                     {
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
@@ -2577,17 +4226,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.LocationTypeRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        await _unitOfWork.LocationTypeRepository.UpdateItem(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIbaseType.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.BaseTypeRepository.GetByID(Id);
 
-                    if (!Entity.Disable)
+                    if (Entity != null)
                     {
                         List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
                         .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
@@ -2613,17 +4269,25 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.BaseTypeRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        await _unitOfWork.BaseTypeRepository.UpdateItem(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
+
                 else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.BaseBURepository.GetByID(Id);
 
-                    if (!Entity.Disable)
+                    if (Entity != null)
                     {
                         List<TLIcivilLoads> MW_BUInstallation = _unitOfWork.CivilLoadsRepository
                         .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ?
@@ -2649,17 +4313,24 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
+                        else
+                        {
 
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.BaseBURepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        await _unitOfWork.BaseBURepository.UpdateItem(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIrenewableCabinetType.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.RenewableCabinetTypeRepository.GetByID(Id);
 
-                    if (!Entity.Disable)
+                    if (Entity != null)
                     {
                         List<TLIotherInSite> CabinetInstallation = _unitOfWork.OtherInSiteRepository
                         .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && (x.allOtherInventoryInst.cabinetId != null ?
@@ -2685,42 +4356,320 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    }
 
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.RenewableCabinetTypeRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        await _unitOfWork.RenewableCabinetTypeRepository.UpdateItem(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIsideArmType.ToString() == TableName)
                 {
+                    var sideArm = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle &&
+                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.sideArmTypeId == Id) : false),
+                                 x => x.sideArm).ToList();
+
                     var Entity = _unitOfWork.SideArmTypeRepository.GetByID(Id);
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.SideArmTypeRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                    if (Entity != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (sideArm.Count() > 0)
+                        {
+
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "sideArm Installation",
+                                isLibrary = false,
+                                RecordsAffected = sideArm.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+
+
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        _unitOfWork.SideArmTypeRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.ItemStatusRepository.GetByID(Id);
-                    Entity.Active = !(Entity.Active);
-                    await _unitOfWork.ItemStatusRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+
+                    var sideArm = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle &&
+                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.ItemStatusId == Id) : false),
+                                 x => x.sideArm).ToList();
+                    var allcivil = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle &&
+                             (x.allCivilInstId != null ? (!x.allCivilInst.Draft && x.allCivilInst.ItemStatusId == Id) : false),
+                                 x => x.allCivilInst).ToList();
+                    var allload = _unitOfWork.CivilLoadsRepository
+                       .GetIncludeWhere(x => !x.Dismantle &&
+                           (x.allLoadInstId != null ? (!x.allLoadInst.Draft && x.allLoadInst.ItemStatusId == Id) : false),
+                               x => x.allLoadInst).ToList();
+                    var allotherenventory = _unitOfWork.OtherInSiteRepository
+                       .GetIncludeWhere(x => !x.Dismantle &&
+                           (x.allOtherInventoryInstId != null ? (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.ItemStatusId == Id) : false),
+                               x => x.allOtherInventoryInst).ToList();
+                    if (Entity != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (sideArm.Count() > 0)
+                        {
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "sideArm Installation",
+                                isLibrary = false,
+                                RecordsAffected = sideArm.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.sideArm.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (allcivil.Count() > 0)
+                        {
+
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "AllCivil Installation",
+                                isLibrary = false,
+                                RecordsAffected = allcivil.Select(x => new RecordAffected
+                                {
+                                    RecordName = "AllCivil Installation",
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (allload.Count() > 0)
+                        {
+
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Allload Installation",
+                                isLibrary = false,
+                                RecordsAffected = allload.Select(x => new RecordAffected
+                                {
+                                    RecordName = "Allload Installation",
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (allotherenventory.Count() > 0)
+                        {
+
+
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "AllOtherEnventory Installation",
+                                isLibrary = false,
+                                RecordsAffected = allotherenventory.Select(x => new RecordAffected
+                                {
+                                    RecordName = "AllOtherEnventory Installation",
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Active = !(Entity.Active);
+                        }
+                        _unitOfWork.ItemStatusRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.InstallationPlaceRepository.GetByID(Id);
-                    Entity.Disable = !(Entity.Disable);
-                    await _unitOfWork.InstallationPlaceRepository.UpdateItem(Entity);
-                    await _unitOfWork.SaveChangesAsync();
+                    if (Entity != null)
+                    {
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        var mwBU = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                                x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                    x.allLoadInst.mwBUId != null && x.allLoadInst.mwBU.InstallationPlaceId == Id);
+                        var mwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                             x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                 x.allLoadInst.mwDishId != null && x.allLoadInst.mwDish.InstallationPlaceId == Id);
+                        var mwOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                            x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                x.allLoadInst.mwOtherId != null && x.allLoadInst.mwOther.InstallationPlaceId == Id);
+                        var radioAntenna = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                            x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                                x.allLoadInst.radioAntennaId != null && x.allLoadInst.radioAntenna.installationPlaceId == Id);
+                        var radioRRU = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                           x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                               x.allLoadInst.radioRRUId != null && x.allLoadInst.radioRRU.installationPlaceId == Id);
+                        var power = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                         x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                             x.allLoadInst.powerId != null && x.allLoadInst.power.installationPlaceId == Id);
+                        var loadOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                        x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                            x.allLoadInst.loadOtherId != null && x.allLoadInst.loadOther.InstallationPlaceId == Id);
+
+
+
+                        if (mwBU.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "mwBU Installation",
+                                isLibrary = false,
+                                RecordsAffected = mwBU.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwBU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (mwDish.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "mwDish Installation",
+                                isLibrary = false,
+                                RecordsAffected = mwDish.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwDish.DishName,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (mwOther.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "mwOther Installation",
+                                isLibrary = false,
+                                RecordsAffected = mwOther.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwOther.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (radioAntenna.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "radioAntenna Installation",
+                                isLibrary = false,
+                                RecordsAffected = radioAntenna.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioAntenna.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (radioRRU.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "radioRRU Installation",
+                                isLibrary = false,
+                                RecordsAffected = radioRRU.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.radioRRU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (power.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "power Installation",
+                                isLibrary = false,
+                                RecordsAffected = power.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.power.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (loadOther.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "loadOther Installation",
+                                isLibrary = false,
+                                RecordsAffected = power.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.loadOther.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            Entity.Disable = !(Entity.Disable);
+                        }
+                        _unitOfWork.InstallationPlaceRepository.Update(Entity);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else
                 {
-                    var dynamicListValues = _unitOfWork.DynamicListValuesRepository.GetByID(Id);
-                    dynamicListValues.Disable = !(dynamicListValues.Disable);
-                    await _unitOfWork.DynamicListValuesRepository.UpdateItem(dynamicListValues);
-                    await _unitOfWork.SaveChangesAsync();
+                    return new Response<List<TableAffected>>(true, null, null, $"The TabelName Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                
-                
+              
                 return new Response<List<TableAffected>>();
             }
             catch(Exception err)
@@ -2857,9 +4806,9 @@ namespace TLIS_Service.Services
                     ConfigurationAtts = _unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
                         .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
                 }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
+                    ConfigurationAtts = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
                         .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
@@ -3069,10 +5018,10 @@ namespace TLIS_Service.Services
                     var TLIbaseGeneratorType = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
                     ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIbaseGeneratorType);
                 }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
                 {
-                    var TLIinstallationCivilwithoutLegsType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetByID(Id);
-                    ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIinstallationCivilwithoutLegsType);
+                    var TLIInstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
+                    ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIInstCivilwithoutLegsType);
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
                 {
@@ -3461,19 +5410,19 @@ namespace TLIS_Service.Services
                         return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Base Generator Type Name {viewModel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
                 {
-                    TLIinstallationCivilwithoutLegsType CheckName = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
+                    TLIInstCivilwithoutLegsType CheckName = _unitOfWork.InstCivilwithoutLegsTypeRepository
                         .GetWhereFirst(x => x.Name.ToLower() == viewModel.Name.ToLower() && x.Id != viewModel.Id && !x.Deleted);
 
                     if (CheckName == null)
                     {
-                        TLIinstallationCivilwithoutLegsType OldEntity = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
+                        TLIInstCivilwithoutLegsType OldEntity = _unitOfWork.InstCivilwithoutLegsTypeRepository
                             .GetWhereFirst(x => x.Id == viewModel.Id);
 
                         OldEntity.Name = viewModel.Name;
 
-                        _unitOfWork.InstallationCivilwithoutLegsTypeRepository.Update(OldEntity);
+                        _unitOfWork.InstCivilwithoutLegsTypeRepository.Update(OldEntity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -4180,14 +6129,14 @@ namespace TLIS_Service.Services
                 else
                     return false;
             }
-            else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+            else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
             {
-                TLIinstallationCivilwithoutLegsType installationCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(entity);
+                TLIInstCivilwithoutLegsType InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIInstCivilwithoutLegsType>(entity);
 
-                TLIinstallationCivilwithoutLegsType installationCivilwithoutLegsType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository
-                    .GetWhereFirst(x => x.Name.ToLower() == installationCivilwithoutLegsTypeEntity.Name.ToLower() && !x.Deleted);
+                TLIInstCivilwithoutLegsType InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository
+                    .GetWhereFirst(x => x.Name.ToLower() == InstCivilwithoutLegsTypeEntity.Name.ToLower() && !x.Deleted);
                 
-                if (installationCivilwithoutLegsType != null)
+                if (InstCivilwithoutLegsType != null)
                     return true;
 
                 else
@@ -4573,12 +6522,12 @@ namespace TLIS_Service.Services
                     return false;
                 }
             }
-            else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == Name)
+            else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == Name)
             {
-                var installationCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(entity);
-                //  var installationCivilwithoutLegsType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.WhereFilters(new List<TLIS_DAL.Helper.Filters.FilterExperssionOneValue> { new TLIS_DAL.Helper.Filters.FilterExperssionOneValue { propertyName = "Name", comparison = "==", value = installationCivilwithoutLegsTypeEntity.Name },
-                var installationCivilwithoutLegsType = _unitOfWork.InstallationCivilwithoutLegsTypeRepository.GetWhereFirst(x => (x.Name == installationCivilwithoutLegsTypeEntity.Name && x.Id != installationCivilwithoutLegsTypeEntity.Id));                                                                                                                              // new TLIS_DAL.Helper.Filters.FilterExperssionOneValue { propertyName = "Id", comparison = "!=", value = installationCivilwithoutLegsTypeEntity.Id.ToString() }}).FirstOrDefault();
-                if (installationCivilwithoutLegsType == null)
+                var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIInstCivilwithoutLegsType>(entity);
+                //  var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.WhereFilters(new List<TLIS_DAL.Helper.Filters.FilterExperssionOneValue> { new TLIS_DAL.Helper.Filters.FilterExperssionOneValue { propertyName = "Name", comparison = "==", value = InstCivilwithoutLegsTypeEntity.Name },
+                var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => (x.Name == InstCivilwithoutLegsTypeEntity.Name && x.Id != InstCivilwithoutLegsTypeEntity.Id));                                                                                                                              // new TLIS_DAL.Helper.Filters.FilterExperssionOneValue { propertyName = "Id", comparison = "!=", value = InstCivilwithoutLegsTypeEntity.Id.ToString() }}).FirstOrDefault();
+                if (InstCivilwithoutLegsType == null)
                 {
                     return true;
                 }

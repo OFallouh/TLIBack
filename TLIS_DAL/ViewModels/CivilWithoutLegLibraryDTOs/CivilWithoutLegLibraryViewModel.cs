@@ -25,8 +25,8 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public string? Prefix { get; set; }
         public int CivilSteelSupportCategoryId { get; set; }
         public string CivilSteelSupportCategory_Name { get; set; }
-        public int? InstallationCivilwithoutLegsTypeId { get; set; }
-        public string? InstallationCivilwithoutLegsType_Name { get; set; }
+        public int? InstCivilwithoutLegsTypeId { get; set; }
+        public string? InstCivilwithoutLegsType_Name { get; set; }
         public int? CivilWithoutLegCategoryId { get; set; }
         public string? CivilWithoutLegCategory_Name { get; set; }
         public int? structureTypeId { get; set; }

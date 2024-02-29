@@ -54,7 +54,7 @@ namespace TLIS_Repository.Base
         ISectionsLegTypeRepository _SectionsLegTypeRepository;
         IStructureTypeRepository _StructureTypeRepository;
         ICivilSteelSupportCategoryRepository _CivilSteelSupportCategoryRepository;
-        IInstallationCivilwithoutLegsTypeRepository _InstallationCivilwithoutLegsTypeRepository;
+        IInstCivilwithoutLegsTypeRepository _InstCivilwithoutLegsTypeRepository;
         ISupportTypeDesignedRepository _SupportTypeDesignedRepository;
         ILogRepository _LogRepository;
         ITokenRepository _TokenRepository;
@@ -573,14 +573,14 @@ namespace TLIS_Repository.Base
             }
         }
 
-        public IInstallationCivilwithoutLegsTypeRepository InstallationCivilwithoutLegsTypeRepository
+        public IInstCivilwithoutLegsTypeRepository InstCivilwithoutLegsTypeRepository
         {
             get
             {
-                if (_InstallationCivilwithoutLegsTypeRepository == null)
-                    _InstallationCivilwithoutLegsTypeRepository = new InstallationCivilwithoutLegsTypeRepository(_context, _mapper);
+                if (_InstCivilwithoutLegsTypeRepository == null)
+                    _InstCivilwithoutLegsTypeRepository = new InstCivilwithoutLegsTypeRepository(_context, _mapper);
 
-                return _InstallationCivilwithoutLegsTypeRepository;
+                return _InstCivilwithoutLegsTypeRepository;
             }
         }
 

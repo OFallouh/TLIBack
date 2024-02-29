@@ -26,13 +26,13 @@ namespace TLIS_DAL.Models
         public TLIstructureType? structureType { get; set; }
         public int? structureTypeId { get; set; }             
         [ForeignKey("TLIcivilSteelSupportCategory")]
-        public int CivilSteelSupportCategoryId { get; set; }
-        public TLIcivilSteelSupportCategory CivilSteelSupportCategory { get; set; }
-        [ForeignKey("TLIinstallationCivilwithoutLegsType")]
-        public int? InstallationCivilwithoutLegsTypeId { get; set; }
-        public TLIinstallationCivilwithoutLegsType? InstallationCivilwithoutLegsType { get; set; }
+        public int? CivilSteelSupportCategoryId { get; set; }
+        public TLIcivilSteelSupportCategory? CivilSteelSupportCategory { get; set; }
+        [ForeignKey("TLIInstCivilwithoutLegsType")]
+        public int? InstCivilwithoutLegsTypeId { get; set; }
+        public TLIInstCivilwithoutLegsType? InstCivilwithoutLegsType { get; set; }
         [ForeignKey("TLIcivilWithoutLegCategory")]
-        public int? CivilWithoutLegCategoryId { get; set; }
+        public int CivilWithoutLegCategoryId { get; set; }
         public float Manufactured_Max_Load { get; set; }
 
         public TLIcivilWithoutLegCategory? CivilWithoutLegCategory { get; set; }

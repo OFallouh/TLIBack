@@ -1347,7 +1347,7 @@ namespace TLIS_API.Migrations
 
                     b.Property<float>("Height_Designed");
 
-                    b.Property<int?>("InstallationCivilwithoutLegsTypeId");
+                    b.Property<int?>("InstCivilwithoutLegsTypeId");
 
                     b.Property<float>("Manufactured_Max_Load");
 
@@ -1369,7 +1369,7 @@ namespace TLIS_API.Migrations
 
                     b.HasIndex("CivilWithoutLegCategoryId");
 
-                    b.HasIndex("InstallationCivilwithoutLegsTypeId");
+                    b.HasIndex("InstCivilwithoutLegsTypeId");
 
                     b.HasIndex("structureTypeId");
 
@@ -2216,7 +2216,7 @@ namespace TLIS_API.Migrations
                     b.ToTable("TLIimportSheets");
                 });
 
-            modelBuilder.Entity("TLIS_DAL.Models.TLIinstallationCivilwithoutLegsType", b =>
+            modelBuilder.Entity("TLIS_DAL.Models.TLIInstCivilwithoutLegsType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -2234,7 +2234,7 @@ namespace TLIS_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TLIinstallationCivilwithoutLegsType");
+                    b.ToTable("TLIInstCivilwithoutLegsType");
                 });
 
             modelBuilder.Entity("TLIS_DAL.Models.TLIinstallationPlace", b =>
@@ -9841,7 +9841,7 @@ namespace TLIS_API.Migrations
                         {
                             Id = 44,
                             IsEquip = false,
-                            TableName = "TLIinstallationCivilwithoutLegsType"
+                            TableName = "TLIInstCivilwithoutLegsType"
                         },
                         new
                         {
@@ -18710,9 +18710,9 @@ namespace TLIS_API.Migrations
                         .WithMany("civilWithoutLegLibraries")
                         .HasForeignKey("CivilWithoutLegCategoryId");
 
-                    b.HasOne("TLIS_DAL.Models.TLIinstallationCivilwithoutLegsType", "InstallationCivilwithoutLegsType")
+                    b.HasOne("TLIS_DAL.Models.TLIInstCivilwithoutLegsType", "InstCivilwithoutLegsType")
                         .WithMany("civilWithoutLeg")
-                        .HasForeignKey("InstallationCivilwithoutLegsTypeId");
+                        .HasForeignKey("InstCivilwithoutLegsTypeId");
 
                     b.HasOne("TLIS_DAL.Models.TLIstructureType", "structureType")
                         .WithMany("civilWithoutLegLibrary")

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
 
-namespace TLIS_DAL.ViewModels.InstallationCivilwithoutLegsTypeDTOs
+namespace TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs
 {
-    public class EditInstallationCivilwithoutLegsTypeViewModel
+    public class EditInstCivilwithoutLegsTypeViewModel
     {
         public int Id { get; set; }
 

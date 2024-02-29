@@ -30,7 +30,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIcivilWithoutLegLibrary> TLIcivilWithoutLegLibrary { get; set; }
         public virtual DbSet<TLIconditionType> TLIconditionType { get; set; }
         public virtual DbSet<TLIdiversityType> TLIdiversityType { get; set; }
-        public virtual DbSet<TLIinstallationCivilwithoutLegsType> TLIinstallationCivilwithoutLegsType { get; set; }
+        public virtual DbSet<TLIInstCivilwithoutLegsType> TLIInstCivilwithoutLegsType { get; set; }
         public virtual DbSet<TLIleg> TLIleg { get; set; }
         public virtual DbSet<TLIlog> TLIlog { get; set; }
         public virtual DbSet<TLIlogistical> TLIlogistical { get; set; }
@@ -408,7 +408,7 @@ namespace TLIS_DAL
 
             builder.Entity<TLIbaseGeneratorType>().Property(x => x.Disable).HasDefaultValue(false);
 
-            builder.Entity<TLIinstallationCivilwithoutLegsType>().Property(x => x.Disable).HasDefaultValue(false);
+            builder.Entity<TLIInstCivilwithoutLegsType>().Property(x => x.Disable).HasDefaultValue(false);
 
             builder.Entity<TLIboardType>().Property(x => x.Disable).HasDefaultValue(false);
 
@@ -452,7 +452,7 @@ namespace TLIS_DAL
 
             builder.Entity<TLIbaseGeneratorType>().Property(x => x.Deleted).HasDefaultValue(false);
 
-            builder.Entity<TLIinstallationCivilwithoutLegsType>().Property(x => x.Deleted).HasDefaultValue(false);
+            builder.Entity<TLIInstCivilwithoutLegsType>().Property(x => x.Deleted).HasDefaultValue(false);
 
             builder.Entity<TLIboardType>().Property(x => x.Deleted).HasDefaultValue(false);
 

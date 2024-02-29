@@ -24,7 +24,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
        // public bool Active { get; set; }
        // public bool Deleted { get; set; }
         public int CivilSteelSupportCategoryId { get; set; }
-        public int? InstallationCivilwithoutLegsTypeId { get; set; }
+        public int? InstCivilwithoutLegsTypeId { get; set; }
         public int? CivilWithoutLegCategoryId { get; set; }
         public int structureTypeId { get; set; }
         //public List<DynamicAttLibViewModel> DynamicAtts { get; set; }
