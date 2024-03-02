@@ -15,18 +15,18 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
 {
     public class AddCivilWithoutLegViewModel
     {
-        public CivilWithOutLibraryAttributes civilType { get; set; }
-        public installationAttribute installationAttributes { get; set; }
+        public CivilWithOutLegsLibraryAttributes civilType { get; set; }
+        public installationAttributesCivilWithoutLegs installationAttributes { get; set; }
         public AddCivilSiteDateViewModel civilSiteDate { get; set; }
         public AddCivilSupportDistanceViewModel civilSupportDistance { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
     }
-    public class CivilWithOutLibraryAttributes
+    public class CivilWithOutLegsLibraryAttributes
     {
         public int civilWithOutLegsLibId { get; set; }
     }
 
-    public class installationAttribute
+    public class installationAttributesCivilWithoutLegs
     {
         public string Name { get; set; }
         public float HeightBase { get; set; }

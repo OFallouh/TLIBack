@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TLIS_DAL;
 using TLIS_DAL.Helper;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
@@ -23,8 +25,8 @@ using TLIS_DAL.ViewModels.DiversityTypeDTOs;
 using TLIS_DAL.ViewModels.DocumentTypeDTOs;
 using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
 using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
-using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 using TLIS_DAL.ViewModels.InstallationPlaceDTOs;
+using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 using TLIS_DAL.ViewModels.ItemStatusDTOs;
 using TLIS_DAL.ViewModels.LocationTypeDTOs;
 using TLIS_DAL.ViewModels.LogicalOperationDTOs;
@@ -49,10 +51,9 @@ using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 using TLIS_Repository.Base;
 using TLIS_Service.Helpers;
 using TLIS_Service.IService;
+using static TLIS_Repository.Helpers.Constants;
 using static TLIS_Service.Helpers.Constants;
-using static Dapper.SqlMapper;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
-using Org.BouncyCastle.Utilities;
+using TLIlogisticalType = TLIS_DAL.Models.TLIlogisticalType;
 
 namespace TLIS_Service.Services
 {
@@ -61,11 +62,13 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        public ConfigurationAttsService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper)
+        private ApplicationDbContext db;
+        public ConfigurationAttsService(IUnitOfWork unitOfWork, IServiceCollection services,IMapper mapper,ApplicationDbContext _db)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
+            db = _db;
         }
         public Response<ConfigurationAttsViewModel> Add(AddConfigrationAttViewModel Viewmodel)
         {
@@ -684,429 +687,32 @@ namespace TLIS_Service.Services
                 if (ConfigrationTables.TLIdiversityType.ToString() == TableName)
                 {
                     var diversityType = _unitOfWork.DiversityTypeRepository.GetByID(Id);
+
                     if (diversityType != null)
                     {
-                        var TLIMW_BULibrary = _unitOfWork.MW_BULibraryRepository
+                        List<TLImwBULibrary> MW_BULibraries = _unitOfWork.MW_BULibraryRepository
                             .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
 
-                        var MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
+                        List<TLImwRFULibrary> MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
                             .GetWhere(x => x.diversityTypeId == Id && !x.Deleted).ToList();
-
-                        if (TLIMW_BULibrary.Count() > 0 || MW_RFULibraries.Count() > 0)
-                        {
-                            diversityType.Deleted = false;
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-                            if (TLIMW_BULibrary.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "MW_BU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = TLIMW_BULibrary.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-                            if (MW_RFULibraries.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "MW_RFU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            diversityType.Deleted = (true);
-                        }
-                        _unitOfWork.DiversityTypeRepository.Update(diversityType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
-                {
-                    var telecomType = _unitOfWork.TelecomTypeRepository.GetByID(Id);
-                    if (telecomType != null)
-                    {
-                        var TLIcabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
-                            .GetWhere(x => x.TelecomTypeId == Id && !x.Deleted).ToList();
-
-                        if (TLIcabinetTelecomLibrary.Count() > 0)
-                        {
-                            telecomType.Deleted = false;
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Cabinet Telecom Library",
-                                isLibrary = true,
-                                RecordsAffected = TLIcabinetTelecomLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            telecomType.Deleted = (true);
-                        }
-                        _unitOfWork.TelecomTypeRepository.Update(telecomType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
-                {
-                    var supportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
-                    if (supportTypeDesigned != null)
-                    {
-                        var TLIcivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
-
-                        if (TLIcivilWithLegLibrary.Count() > 0)
-                        {
-                            supportTypeDesigned.Deleted = false;
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support With Legs Library",
-                                isLibrary = true,
-                                RecordsAffected = TLIcivilWithLegLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            supportTypeDesigned.Deleted = (true);
-                        }
-                        _unitOfWork.SupportTypeDesignedRepository.Update(supportTypeDesigned);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
-                {
-                    var structureType = _unitOfWork.StructureTypeRepository.GetByID(Id);
-                    if (structureType != null)
-                    {
-                        var CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
-
-                        var CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
-                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
-
-                        if (CivilWithLegLibraries.Count() > 0 && CivilWithoutLegLibraries.Count() > 0)
-                        {
-                            structureType.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                            if (CivilWithLegLibraries.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "Civil Steel Support With Legs Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-                            if (CivilWithoutLegLibraries.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "Civil Steel Support Without Legs Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            structureType.Deleted = (true);
-                        }
-                        _unitOfWork.StructureTypeRepository.Update(structureType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
-                {
-                    var sectionsLegType = _unitOfWork.SectionsLegTypeRepository.GetByID(Id);
-                    if (sectionsLegType != null)
-                    {
-                        var TLIcivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
 
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
-                        if (TLIcivilWithLegLibrary.Count != 0)
+                        if (MW_BULibraries.Count != 0)
                         {
-                            sectionsLegType.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
-                                TableName = "Civil Steel Support With Legs Library",
+                                TableName = "MW_BU Library",
                                 isLibrary = true,
-                                RecordsAffected = TLIcivilWithLegLibrary.Select(x => new RecordAffected
+                                RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
                                 {
                                     RecordName = x.Model,
                                     SiteCode = null
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
-                        else
+                        if (MW_RFULibraries.Count != 0)
                         {
-                            sectionsLegType.Deleted = (true);
-                        }
-                        _unitOfWork.SectionsLegTypeRepository.Update(sectionsLegType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
-                {
-                    var supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
-                    if (supportTypeImplemented != null) {
-                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
-                                 .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
-                                     x.allCivilInst.civilWithLegs.SupportTypeImplementedId == Id : false),
-                                         x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
-
-                        List<TLIcivilSiteDate> CivilNonSteelInstallation = _unitOfWork.CivilSiteDateRepository
-                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilNonSteelId != null ?
-                                x.allCivilInst.civilNonSteel.supportTypeImplementedId == Id : false),
-                                    x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).ToList();
-
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        if (CivilWithLegInstallation.Count != 0 || CivilNonSteelInstallation.Count != 0)
-                        {
-                            supportTypeImplemented.Deleted = (false);
-                            if (CivilWithLegInstallation.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "Civil Steel Support With Legs Installation",
-                                    isLibrary = false,
-                                    RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.allCivilInst.civilWithLegs.Name,
-                                        SiteCode = x.SiteCode
-                                    }).ToList()
-                                });
-                            }
-                            if (CivilNonSteelInstallation.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "Civil Non Steel Installation",
-                                    isLibrary = false,
-                                    RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.allCivilInst.civilNonSteel.Name,
-                                        SiteCode = x.SiteCode
-                                    }).ToList()
-                                });
-                            }
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-
-                        else
-                        {
-                            supportTypeImplemented.Deleted = (true);
-                        }
-                        _unitOfWork.SupportTypeImplementedRepository.Update(supportTypeImplemented);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
-                {
-                    var Entity = _unitOfWork.BaseCivilWithLegsTypeRepository.GetByID(Id);
-
-                    if (Entity != null)
-                    {
-                        var Civils = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.BaseCivilWithLegTypeId == Id : false),
-                            x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
-                        if (Civils.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support With Legs Installation",
-                                isLibrary = false,
-                                RecordsAffected = Civils.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.allCivilInst.civilWithLegs.Name,
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            Entity.Deleted = (true);
-                        }
-                        _unitOfWork.BaseCivilWithLegsTypeRepository.Update(Entity);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
-                {
-                    var Generators = _unitOfWork.OtherInSiteRepository.GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                        (x.allOtherInventoryInst.generatorId != null ?
-                            x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false)).ToList();
-
-                    var Entity = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
-                    if (Entity != null)
-                    {
-                        if (Generators.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Generator Installation",
-                                isLibrary = false,
-                                RecordsAffected = Generators.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.allOtherInventoryInst.generator.Name,
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            Entity.Deleted = (true);
-                        }
-                        _unitOfWork.BaseGeneratorTypeRepository.Update(Entity);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
-                {
-                    var CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                        .GetWhere(x => x.InstCivilwithoutLegsTypeId == Id && !x.Deleted).ToList();
-
-                    var Entity = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
-                    if (Entity != null)
-                    {
-                        if (CivilWithoutLegLibrary.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support Without Legs Library",
-                                isLibrary = true,
-                                RecordsAffected = CivilWithoutLegLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            Entity.Deleted = (true);
-                        }
-                        _unitOfWork.InstCivilwithoutLegsTypeRepository.Update(Entity);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIboardType.ToString() == TableName)
-                {
-                    var MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
-                        .GetWhere(x => x.boardTypeId == Id && !x.Deleted).ToList();
-
-                    var Entity = _unitOfWork.BoardTypeRepository.GetByID(Id);
-                    if (Entity != null)
-                    {
-                        if (MW_RFULibraries.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_RFU Library",
@@ -1117,16 +723,496 @@ namespace TLIS_Service.Services
                                     SiteCode = null
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         else
                         {
-                            Entity.Deleted = (true);
+                            diversityType.Deleted = (true);
+
                         }
-                        _unitOfWork.BoardTypeRepository.Update(Entity);
+                        _unitOfWork.DiversityTypeRepository.Update(diversityType);
+                        await _unitOfWork.SaveChangesAsync();
+
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
+                {
+                    var TelecomType = _unitOfWork.TelecomTypeRepository.GetByID(Id);
+
+                    if (TelecomType != null)
+                    {
+                        List<TLIcabinetTelecomLibrary> CabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository
+                            .GetIncludeWhere(x => x.TelecomTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CabinetTelecomLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Cabinet Telecom Library",
+                                isLibrary = true,
+                                RecordsAffected = CabinetTelecomLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        else
+                        {
+                            TelecomType.Deleted = (true);
+                        }
+                        await _unitOfWork.TelecomTypeRepository.UpdateItem(TelecomType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
+                {
+                    var supportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
+
+                    if (supportTypeDesigned != null)
+                    {
+                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            supportTypeDesigned.Deleted = (true);
+                        }
+                        await _unitOfWork.SupportTypeDesignedRepository.UpdateItem(supportTypeDesigned);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
+                {
+                    var supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
+
+                    if (supportTypeImplemented != null)
+                    {
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                x.allCivilInst.civilWithLegs.SupportTypeImplementedId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+
+                        List<TLIcivilSiteDate> CivilNonSteelInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilNonSteelId != null ?
+                                x.allCivilInst.civilNonSteel.supportTypeImplementedId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegInstallation.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+                        if (CivilNonSteelInstallation.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Non Steel Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilNonSteelInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilNonSteel.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
+                        else
+                        {
+                            supportTypeImplemented.Deleted = (true);
+                        }
+                        await _unitOfWork.SupportTypeImplementedRepository.UpdateItem(supportTypeImplemented);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
+                {
+                    var structureType = _unitOfWork.StructureTypeRepository.GetByID(Id);
+
+                    if (structureType != null)
+                    {
+                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
+
+                        List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
+                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+                        if (CivilWithoutLegLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support Without Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilWithoutLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            structureType.Deleted = (true);
+                        }
+                        await _unitOfWork.StructureTypeRepository.UpdateItem(structureType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
+                {
+                    var sectionsLegType = _unitOfWork.SectionsLegTypeRepository.GetByID(Id);
+
+                    if (sectionsLegType != null)
+                    {
+                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                            .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+
+                            sectionsLegType.Deleted = (true);
+                        }
+                        await _unitOfWork.SectionsLegTypeRepository.UpdateItem(sectionsLegType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                //else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
+                //{
+                //    var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
+                //    if (logisticalType != null)
+                //    {
+                //        var Logic = db.TLIlogisticalitem.Include(x => x.logistical)
+                //            .Include(x => x.tablesNames).Where(x => x.logistical.logisticalTypeId == Id).ToList();
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        if (Logic.Count() > 0)
+                //        {
+                //            foreach (var itemlogisticalitem in Logic)
+                //            {
+
+                //                var query = db.GetType().GetProperty(itemlogisticalitem.tablesNames.TableName)?.GetValue(db, null);
+                //                if (query != null)
+                //                {
+                //                    var resultList = ((IEnumerable<object>)query)
+                //                        .Where(x =>
+                //                        {
+                //                            var idProperty = x.GetType().GetProperty("Id");
+                //                            if (idProperty != null)
+                //                            {
+                //                                var idValue = idProperty.GetValue(x);
+                //                                if (idValue != null && idValue is int)
+                //                                {
+                //                                    return (int)idValue == itemlogisticalitem.RecordId;
+                //                                }
+                //                            }
+                //                            return false;
+                //                        })
+                //                        .Select(x =>
+                //                        {
+                //                            var idProperty = x.GetType().GetProperty("Id");
+                //                            var nameProperty = x.GetType().GetProperty("Model");
+                //                            if (idProperty != null && nameProperty != null)
+                //                            {
+                //                                return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                            }
+                //                            return null;
+                //                        })
+                //                        .FirstOrDefault();
+
+                //                    if (resultList != null)
+                //                    {
+                //                        ListOfResponse.Add(new TableAffected()
+                //                        {
+                //                            TableName = itemlogisticalitem.tablesNames.TableName + $"",
+                //                            isLibrary = itemlogisticalitem.IsLib,
+                //                            RecordsAffected = new List<RecordAffected>
+                //                            {
+                //                                new RecordAffected
+                //                                {
+
+                //                                    RecordName = resultList.Name,
+                //                                    SiteCode = null
+                //                                }
+                //                            }
+                //                        });
+                //                    }
+                //                }
+
+                //            }
+
+
+                //        }
+                //        else
+                //        {
+                //            logisticalType.Deleted = (true);
+                //        }
+                //        await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
+                {
+                    var baseCivilWithLegs = _unitOfWork.BaseCivilWithLegsTypeRepository.GetByID(Id);
+
+                    if (baseCivilWithLegs != null)
+                    {
+                        List<TLIcivilSiteDate> CivilWithLegsInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                x.allCivilInst.civilWithLegs.BaseCivilWithLegTypeId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegsInstallation.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support With Legs Installation",
+                                isLibrary = false,
+                                RecordsAffected = CivilWithLegsInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allCivilInst.civilWithLegs.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            baseCivilWithLegs.Deleted = (true);
+                        }
+                        await _unitOfWork.BaseCivilWithLegsTypeRepository.UpdateItem(baseCivilWithLegs);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
+                {
+                    var baseGeneratorType = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
+
+                    if (baseGeneratorType != null)
+                    {
+                        List<TLIotherInSite> GeneratorInstallation = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && (x.allOtherInventoryInst.generatorId != null ?
+                                x.allOtherInventoryInst.generator.BaseGeneratorTypeId == Id : false),
+                                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (GeneratorInstallation.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Generator Installation",
+                                isLibrary = false,
+                                RecordsAffected = GeneratorInstallation.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allOtherInventoryInst.generator.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+
+                            baseGeneratorType.Deleted = (true);
+                        }
+                        await _unitOfWork.BaseGeneratorTypeRepository.UpdateItem(baseGeneratorType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                {
+                    var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
+
+                    if (InstCivilwithoutLegsType != null)
+                    {
+                        List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
+                            .GetWhere(x => x.InstCivilwithoutLegsTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithoutLegLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Civil Steel Support Without Legs Library",
+                                isLibrary = true,
+                                RecordsAffected = CivilWithoutLegLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        else
+                        {
+
+                            InstCivilwithoutLegsType.Deleted = (true);
+                        }
+                        await _unitOfWork.InstCivilwithoutLegsTypeRepository.UpdateItem(InstCivilwithoutLegsType);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (ConfigrationTables.TLIboardType.ToString() == TableName)
+                {
+                    var boardType = _unitOfWork.BoardTypeRepository.GetByID(Id);
+
+                    if (boardType != null)
+                    {
+                        List<TLImwRFULibrary> MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository
+                            .GetWhere(x => x.boardTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_RFULibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "MW_RFU Library",
+                                isLibrary = true,
+                                RecordsAffected = MW_RFULibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        else
+                        {
+                            boardType.Deleted = (true);
+                        }
+                        await _unitOfWork.BoardTypeRepository.UpdateItem(boardType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1136,38 +1222,40 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIguyLineType.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.GuylineTypeId == Id : false)).ToList();
+                    var guyLineType = _unitOfWork.GuyLineTypeRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.GuyLineTypeRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (guyLineType != null)
                     {
-                        if (Civils.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                x.allCivilInst.civilWithLegs.GuylineTypeId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegInstallation.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Steel Support With Legs Installation",
                                 isLibrary = false,
-                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allCivilInst.civilWithLegs.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
-                            Entity.Deleted = (true);
+                            guyLineType.Deleted = (true);
                         }
-                        _unitOfWork.GuyLineTypeRepository.Update(Entity);
+                        await _unitOfWork.GuyLineTypeRepository.UpdateItem(guyLineType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1177,39 +1265,39 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIpolarityOnLocation.ToString() == TableName)
                 {
-                    var MW_Dishes = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allLoadInstId != null ? (!x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
-                                x.allLoadInst.mwDish.PolarityOnLocationId == Id : false)) : false),
+                    var polarityOnLocation = _unitOfWork.PolarityOnLocationRepository.GetByID(Id);
+
+                    if (polarityOnLocation != null)
+                    {
+                        List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
+                                x.allLoadInst.mwDish.PolarityOnLocationId == Id : false),
                                     x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
 
-                    var Entity = _unitOfWork.PolarityOnLocationRepository.GetByID(Id);
-                    if (Entity != null)
-                    {
-                        if (MW_Dishes.Count() > 0)
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_DishInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_Dish Installation",
                                 isLibrary = false,
-                                RecordsAffected = MW_Dishes.Select(x => new RecordAffected
+                                RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allLoadInst.mwDish.DishName,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Deleted = (true);
+                            polarityOnLocation.Deleted = (true);
                         }
-                        _unitOfWork.PolarityOnLocationRepository.Update(Entity);
+                        await _unitOfWork.PolarityOnLocationRepository.UpdateItem(polarityOnLocation);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1219,81 +1307,79 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIitemConnectTo.ToString() == TableName)
                 {
-                    var MW_Dishes = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allLoadInstId != null ? (!x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
-                                x.allLoadInst.mwDish.ItemConnectToId == Id : false)) : false),
+                    var itemConnectTo = _unitOfWork.ItemConnectToRepository.GetByID(Id);
+
+                    if (itemConnectTo != null)
+                    {
+                        List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
+                                x.allLoadInst.mwDish.ItemConnectToId == Id : false),
                                     x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
 
-                    var Entity = _unitOfWork.ItemConnectToRepository.GetByID(Id);
-                    if (Entity != null)
-                    {
-                        if (MW_Dishes.Count() > 0)
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_DishInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_Dish Installation",
                                 isLibrary = false,
-                                RecordsAffected = MW_Dishes.Select(x => new RecordAffected
+                                RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allLoadInst.mwDish.DishName,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
-                            Entity.Deleted = (true);
+                            itemConnectTo.Deleted = (true);
                         }
-                        _unitOfWork.ItemConnectToRepository.Update(Entity);
+                        await _unitOfWork.ItemConnectToRepository.UpdateItem(itemConnectTo);
                         await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (ConfigrationTables.TLIrepeaterType.ToString() == TableName)
                 {
-                    var MW_Dishes = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allLoadInstId != null ? (!x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
-                                x.allLoadInst.mwDish.RepeaterTypeId == Id : false)) : false),
+                    var repeaterType = _unitOfWork.RepeaterTypeRepository.GetByID(Id);
+
+                    if (repeaterType != null)
+                    {
+                        List<TLIcivilLoads> MW_DishInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ?
+                                x.allLoadInst.mwDish.RepeaterTypeId == Id : false),
                                     x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
 
-                    var Entity = _unitOfWork.RepeaterTypeRepository.GetByID(Id);
-                    if (Entity != null)
-                    {
-                        if (MW_Dishes.Count() > 0)
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_DishInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_Dish Installation",
                                 isLibrary = false,
-                                RecordsAffected = MW_Dishes.Select(x => new RecordAffected
+                                RecordsAffected = MW_DishInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allLoadInst.mwDish.DishName,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
-                            Entity.Deleted = (true);
+                            repeaterType.Deleted = (true);
                         }
-                        _unitOfWork.RepeaterTypeRepository.Update(Entity);
+                        await _unitOfWork.RepeaterTypeRepository.UpdateItem(repeaterType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1314,7 +1400,6 @@ namespace TLIS_Service.Services
                     {
                         if (MW_ODUes.Count() > 0)
                         {
-                            Entity.Deleted = (false);
 
                             List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
@@ -1346,15 +1431,14 @@ namespace TLIS_Service.Services
                 else if (ConfigrationTables.TLIsideArmInstallationPlace.ToString() == TableName)
                 {
                     var SideArms = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && (x.sideArmId != null ?
-                            (!x.sideArm.Draft && x.sideArm.sideArmInstallationPlaceId == Id) : false), x => x.sideArm).ToList();
+                         .GetIncludeWhere(x => !x.Dismantle && (x.sideArmId != null ?
+                             (!x.sideArm.Draft && x.sideArm.sideArmInstallationPlaceId == Id) : false), x => x.sideArm).ToList();
 
                     var Entity = _unitOfWork.SideArmInstallationPlaceRepository.GetByID(Id);
                     if (Entity != null)
                     {
                         if (SideArms.Count() > 0)
                         {
-                            Entity.Deleted = (false);
                             List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
@@ -1382,39 +1466,3898 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
+                //else if (ConfigrationTables.TLIdataType.ToString() == TableName)
+                //{
+                //    var dataType = _unitOfWork.DataTypeRepository.GetByID(Id);
+                //    List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //    var DynamicAtt = db.TLIdynamicAtt.Where(x => x.DataTypeId == Id && !x.disable).ToList();
+                //    if (dataType != null)
+                //    {
+                //        if (DynamicAtt.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAtt)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+                //        else
+                //        {
+                //            dataType.Deleted = (true);
+                //        }
+                //        _unitOfWork.DataTypeRepository.Update(dataType);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (ConfigrationTables.TLIoperation.ToString() == TableName)
+                //{
+                //    var operation = _unitOfWork.OperationRepository.GetByID(Id);
+                //    if (operation != null)
+                //    {
+
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        var DynamicAttdependency = db.TLIdependency.Include(x => x.DynamicAtt).Where(x => x.OperationId == Id && !x.DynamicAtt.disable)
+                //            .Select(x => x.DynamicAtt).ToList();
+
+                //        if (DynamicAttdependency.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttdependency)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttdependency.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttdependency.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+
+                //        var DynamicAttvalidation = db.TLIvalidation.Include(x => x.DynamicAtt).Where(x => x.OperationId == Id && !x.DynamicAtt.disable)
+                //           .Select(x => x.DynamicAtt).ToList();
+
+                //        if (DynamicAttvalidation.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttvalidation)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttvalidation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttvalidation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+                //        var DynamicAttrule = db.TLIrule.Include(x => x.dynamicAtt).Where(x => x.OperationId == Id && !x.dynamicAtt.disable)
+                //         .Select(x => x.dynamicAtt).ToList();
+
+                //        if (DynamicAttrule.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttrule)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttrule.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+                //        if (ListOfResponse.Count != 0)
+                //            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        else
+                //        {
+                //            operation.Deleted = (true);
+                //        }
+                //        await _unitOfWork.OperationRepository.UpdateItem(operation);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
+                //{
+                //    var logicalOperation = _unitOfWork.LogicalOperationRepository.GetByID(Id);
+                //    if (logicalOperation != null)
+                //    {
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        var DynamicAttdependency = db.TLIdependency
+                //        .Include(x => x.DynamicAtt)
+                //        .Include(x => x.DependencyRows)
+                //            .ThenInclude(x => x.LogicalOperation)
+                //        .Where(dependency => dependency.DependencyRows.Any(row =>
+                //            row.LogicalOperationId == Id && !row.LogicalOperation.Deleted))
+                //        .Select(dependency => dependency.DynamicAtt)
+                //        .ToList();
+
+                //        if (DynamicAttdependency.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttdependency)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttdependency.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+                //        var DynamicAttrule = db.TLIrule
+                //        .Include(x => x.dynamicAtt)
+                //        .Include(x => x.rowRules)
+                //            .ThenInclude(x => x.LogicalOperation)
+                //        .Where(dependency => dependency.rowRules.Any(row =>
+                //            row.LogicalOperationId == Id && !row.LogicalOperation.Deleted))
+                //        .Select(dependency => dependency.dynamicAtt)
+                //        .ToList();
+
+                //        if (DynamicAttrule.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttrule)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //        }
+
+                //        if (ListOfResponse.Count != 0)
+                //            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                //        else
+                //        {
+                //            logicalOperation.Deleted = (true);
+                //        }
+                //        await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
                 else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.enforcmentCategoryId == Id : false),
-                                x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+                    var enforcmentCategory = _unitOfWork.EnforcmentCategoryRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.EnforcmentCategoryRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (enforcmentCategory != null)
                     {
-                        if (Civils.Count() > 0)
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                                x.allCivilInst.civilWithLegs.enforcmentCategoryId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
-                                TableName = "civilWithLegs Installation",
+                                TableName = "Civil Steel Support With Legs Installation",
                                 isLibrary = false,
-                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allCivilInst.civilWithLegs.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Deleted = (true);
+                            enforcmentCategory.Deleted = (true);
                         }
-                        _unitOfWork.EnforcmentCategoryRepository.Update(Entity);
+                        await _unitOfWork.EnforcmentCategoryRepository.UpdateItem(enforcmentCategory);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1424,38 +5367,39 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIpowerType.ToString() == TableName)
                 {
-                    var Powers = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allLoadInstId != null ?
-                                (x.allLoadInst.powerId != null ? x.allLoadInst.power.powerTypeId == Id : false) : false),
-                            x => x.allLoadInst, x => x.allLoadInst.power).ToList();
+                    var powerType = _unitOfWork.PowerTypeRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.PowerTypeRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (powerType != null)
                     {
-                        if (Powers.Count() > 0)
+                        List<TLIcivilLoads> PowerInstallation = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.powerId != null ?
+                                x.allLoadInst.power.powerTypeId == Id : false),
+                                    x => x.allLoadInst, x => x.allLoadInst.power).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (PowerInstallation.Count != 0)
                         {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
-                                TableName = "power Installation",
+                                TableName = "Power Load Installation",
                                 isLibrary = false,
-                                RecordsAffected = Powers.Select(x => new RecordAffected
+                                RecordsAffected = PowerInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allLoadInst.power.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Delete = (true);
+                            powerType.Delete = (true);
                         }
-                        _unitOfWork.PowerTypeRepository.Update(Entity);
+                        await _unitOfWork.PowerTypeRepository.UpdateItem(powerType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1466,13 +5410,12 @@ namespace TLIS_Service.Services
                 else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
                 {
                     var civilNonSteelType = _unitOfWork.CivilNonSteelTypeRepository.GetByID(Id);
+
                     if (civilNonSteelType != null)
                     {
-
                         List<TLIcivilNonSteelLibrary> CivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository
-                        .GetWhere(x => x.civilNonSteelTypeId == Id && !x.Deleted).ToList();
+                            .GetWhere(x => x.civilNonSteelTypeId == Id && !x.Deleted).ToList();
 
-                        civilNonSteelType.Deleted = (false);
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
                         if (CivilNonSteelLibrary.Count != 0)
@@ -1487,15 +5430,15 @@ namespace TLIS_Service.Services
                                     SiteCode = null
                                 }).ToList()
                             });
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
 
                         else
                         {
-
                             civilNonSteelType.Deleted = (true);
-
                         }
                         await _unitOfWork.CivilNonSteelTypeRepository.UpdateItem(civilNonSteelType);
                         await _unitOfWork.SaveChangesAsync();
@@ -1505,42 +5448,42 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-
-                //----------------------------------------------------------
                 else if (ConfigrationTables.TLIsubType.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.subTypeId == Id : false),
-                                x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).ToList();
+                    var subType = _unitOfWork.SubTypeRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.SubTypeRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (subType != null)
                     {
-                        if (Civils.Count() > 0)
-                        {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLIcivilSiteDate> CivilWithoutLegInstallation = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithoutLegId != null ?
+                                x.allCivilInst.civilWithoutLeg.subTypeId == Id : false),
+                                    x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithoutLegInstallation.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Steel Support Without Legs Installation",
                                 isLibrary = false,
-                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                RecordsAffected = CivilWithoutLegInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allCivilInst.civilWithoutLeg.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
-                            Entity.Delete = (true);
+                            subType.Delete = (true);
                         }
-                        _unitOfWork.SubTypeRepository.Update(Entity);
+                        await _unitOfWork.SubTypeRepository.UpdateItem(subType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1550,36 +5493,38 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIasType.ToString() == TableName)
                 {
-                    var MW_DishesLibraries = _unitOfWork.MW_DishLibraryRepository
-                        .GetWhere(x => !x.Deleted && x.asTypeId == Id).ToList();
+                    var asType = _unitOfWork.AsTypeRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.AsTypeRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (asType != null)
                     {
-                        if (MW_DishesLibraries.Count() > 0)
-                        {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLImwDishLibrary> MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
+                            .GetWhere(x => x.asTypeId == Id && !x.Deleted).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_DishLibrary.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_Dish Library",
                                 isLibrary = true,
-                                RecordsAffected = MW_DishesLibraries.Select(x => new RecordAffected
+                                RecordsAffected = MW_DishLibrary.Select(x => new RecordAffected
                                 {
                                     RecordName = x.Model,
                                     SiteCode = null
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
-                            Entity.Delete = (true);
+                            asType.Delete = (true);
                         }
-                        _unitOfWork.AsTypeRepository.Update(Entity);
+                        await _unitOfWork.AsTypeRepository.UpdateItem(asType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1589,37 +5534,37 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIpolarityType.ToString() == TableName)
                 {
-                    var MW_DishesLibraries = _unitOfWork.MW_DishLibraryRepository
-                        .GetWhere(x => !x.Deleted && x.polarityTypeId == Id).ToList();
+                    var polarityType = _unitOfWork.PolarityTypeRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.PolarityTypeRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (polarityType != null)
                     {
-                        if (MW_DishesLibraries.Count() > 0)
-                        {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLImwDishLibrary> MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository
+                            .GetWhere(x => x.polarityTypeId == Id && !x.Deleted).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_DishLibrary.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_Dish Library",
                                 isLibrary = true,
-                                RecordsAffected = MW_DishesLibraries.Select(x => new RecordAffected
+                                RecordsAffected = MW_DishLibrary.Select(x => new RecordAffected
                                 {
                                     RecordName = x.Model,
                                     SiteCode = null
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Delete = (true);
+                            polarityType.Delete = (true);
                         }
-                        _unitOfWork.PolarityTypeRepository.Update(Entity);
+                        await _unitOfWork.PolarityTypeRepository.UpdateItem(polarityType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1629,36 +5574,37 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIparity.ToString() == TableName)
                 {
-                    var MW_DishesLibraries = _unitOfWork.MW_ODULibraryRepository
-                        .GetWhere(x => !x.Deleted && x.parityId == Id).ToList();
+                    var parity = _unitOfWork.ParityRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.ParityRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (parity != null)
                     {
-                        if (MW_DishesLibraries.Count != 0)
-                        {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLImwODULibrary> MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository
+                            .GetWhere(x => x.parityId == Id && !x.Deleted).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_ODULibrary.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_ODU Library",
                                 isLibrary = true,
-                                RecordsAffected = MW_DishesLibraries.Select(x => new RecordAffected
+                                RecordsAffected = MW_ODULibrary.Select(x => new RecordAffected
                                 {
                                     RecordName = x.Model,
                                     SiteCode = null
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Delete = (true);
+                            parity.Delete = (true);
                         }
-                        _unitOfWork.ParityRepository.Update(Entity);
+                        await _unitOfWork.ParityRepository.UpdateItem(parity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1668,39 +5614,37 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIcabinetPowerType.ToString() == TableName)
                 {
-                    var CabinetPowerLibraries = _unitOfWork.CabinetPowerLibraryRepository
-                        .GetWhere(x => !x.Deleted && x.CabinetPowerTypeId == Id).ToList();
+                    var cabinetPowerType = _unitOfWork.CabinetPowerTypeRepository.GetByID(Id);
 
-                    var Entity = _unitOfWork.CabinetPowerTypeRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (cabinetPowerType != null)
                     {
-                        if (CabinetPowerLibraries.Count() > 0)
+                        List<TLIcabinetPowerLibrary> CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository
+                            .GetWhere(x => x.CabinetPowerTypeId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CabinetPowerLibrary.Count != 0)
                         {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                            if (CabinetPowerLibraries.Count != 0)
+                            ListOfResponse.Add(new TableAffected()
                             {
-                                ListOfResponse.Add(new TableAffected()
+                                TableName = "Cabinet Power Library",
+                                isLibrary = true,
+                                RecordsAffected = CabinetPowerLibrary.Select(x => new RecordAffected
                                 {
-                                    TableName = "Cabinet Power Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Delete = (true);
+                            cabinetPowerType.Delete = (true);
                         }
-                        _unitOfWork.CabinetPowerTypeRepository.Update(Entity);
+                        await _unitOfWork.CabinetPowerTypeRepository.UpdateItem(cabinetPowerType);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -1710,57 +5654,56 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIcapacity.ToString() == TableName)
                 {
-                    var SolarLibraries = _unitOfWork.SolarLibraryRepository
-                        .GetWhere(x => !x.Deleted && x.CapacityId == Id).ToList();
+                    var capacity = _unitOfWork.CapacityRepository.GetByID(Id);
 
-                    var GeneratorLibraries = _unitOfWork.GeneratorLibraryRepository
-                        .GetWhere(x => !x.Deleted && x.CapacityId == Id).ToList();
-
-                    var Entity = _unitOfWork.CapacityRepository.GetByID(Id);
-                    if (Entity != null)
+                    if (capacity != null)
                     {
-                        if (SolarLibraries.Count() > 0 || GeneratorLibraries.Count() > 0)
+                        List<TLIgeneratorLibrary> GeneratorLibrary = _unitOfWork.GeneratorLibraryRepository
+                            .GetWhere(x => x.CapacityId == Id && !x.Deleted).ToList();
+
+                        List<TLIsolarLibrary> SolarLibrary = _unitOfWork.SolarLibraryRepository
+                            .GetWhere(x => x.CapacityId == Id && !x.Deleted).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (GeneratorLibrary.Count != 0)
                         {
-                            Entity.Delete = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                            if (GeneratorLibraries.Count != 0)
+                            ListOfResponse.Add(new TableAffected()
                             {
-                                ListOfResponse.Add(new TableAffected()
+                                TableName = "Generator Library",
+                                isLibrary = true,
+                                RecordsAffected = GeneratorLibrary.Select(x => new RecordAffected
                                 {
-                                    TableName = "Generator Library",
-                                    isLibrary = true,
-                                    RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-                            if (SolarLibraries.Count != 0)
-                            {
-                                ListOfResponse.Add(new TableAffected()
-                                {
-                                    TableName = "Solar Library",
-                                    isLibrary = true,
-                                    RecordsAffected = SolarLibraries.Select(x => new RecordAffected
-                                    {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
-                            }
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
                         }
+                        if (SolarLibrary.Count != 0)
+                        {
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "Solar Library",
+                                isLibrary = true,
+                                RecordsAffected = SolarLibrary.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.Model,
+                                    SiteCode = null
+                                }).ToList()
+                            });
+                        }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
-                            Entity.Delete = (true);
+                            capacity.Delete = (true);
                         }
-                        _unitOfWork.CapacityRepository.Update(Entity);
+                        await _unitOfWork.CapacityRepository.UpdateItem(capacity);
                         await _unitOfWork.SaveChangesAsync();
                     }
+
                     else
                     {
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1769,6 +5712,7 @@ namespace TLIS_Service.Services
                 else if (ConfigrationTables.TLIowner.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.OwnerRepository.GetByID(Id);
+
                     if (Entity != null)
                     {
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
@@ -1780,7 +5724,6 @@ namespace TLIS_Service.Services
 
                         if (CivilWithLegInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Steel Support With Legs Installation",
@@ -1800,7 +5743,6 @@ namespace TLIS_Service.Services
 
                         if (CivilWithoutLegInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Steel Support Without Legs Installation",
@@ -1819,7 +5761,6 @@ namespace TLIS_Service.Services
                                     x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).ToList();
 
                         if (CivilNonSteelInstallation.Count != 0)
-                            Entity.Deleted = false;
                         {
                             ListOfResponse.Add(new TableAffected()
                             {
@@ -1840,7 +5781,6 @@ namespace TLIS_Service.Services
 
                         if (MW_RFUInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_RFU Installation",
@@ -1860,7 +5800,6 @@ namespace TLIS_Service.Services
 
                         if (MW_BUInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_BU Installation",
@@ -1880,7 +5819,6 @@ namespace TLIS_Service.Services
 
                         if (MW_DishInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_Dish Installation",
@@ -1900,7 +5838,6 @@ namespace TLIS_Service.Services
 
                         if (MW_ODUInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_ODU Installation",
@@ -1920,7 +5857,6 @@ namespace TLIS_Service.Services
 
                         if (RadioAnteenInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Radio Antenna Installation",
@@ -1940,7 +5876,6 @@ namespace TLIS_Service.Services
 
                         if (RadioRRUInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Radio RRU Installation",
@@ -1959,7 +5894,6 @@ namespace TLIS_Service.Services
                                     x => x.allLoadInst, x => x.allLoadInst.radioOther).ToList();
 
                         if (RadioOtherInstallation.Count != 0)
-                            Entity.Deleted = false;
                         {
                             ListOfResponse.Add(new TableAffected()
                             {
@@ -1980,7 +5914,6 @@ namespace TLIS_Service.Services
 
                         if (PowerInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Power Load Installation",
@@ -2000,7 +5933,6 @@ namespace TLIS_Service.Services
 
                         if (SideArmInstallation.Count != 0)
                         {
-                            Entity.Deleted = false;
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Side Arm Installation",
@@ -2020,7 +5952,7 @@ namespace TLIS_Service.Services
                         {
                             Entity.Deleted = (true);
                         }
-                        _unitOfWork.OwnerRepository.Update(Entity);
+                        await _unitOfWork.OwnerRepository.UpdateItem(Entity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -2031,9 +5963,9 @@ namespace TLIS_Service.Services
                 else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.LocationTypeRepository.GetByID(Id);
+
                     if (Entity != null)
                     {
-                        Entity.Deleted = (false);
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
                         List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
@@ -2043,7 +5975,6 @@ namespace TLIS_Service.Services
 
                         if (CivilWithLegInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Steel Support With Legs Installation",
@@ -2063,7 +5994,6 @@ namespace TLIS_Service.Services
 
                         if (CivilNonSteelInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Non Steel Installation",
@@ -2079,11 +6009,12 @@ namespace TLIS_Service.Services
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
+
                         else
                         {
                             Entity.Deleted = (true);
                         }
-                        _unitOfWork.LocationTypeRepository.Update(Entity);
+                        await _unitOfWork.LocationTypeRepository.UpdateItem(Entity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -2093,39 +6024,40 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIbaseType.ToString() == TableName)
                 {
-                    var Civils = _unitOfWork.CivilSiteDateRepository
-                        .GetIncludeWhere(x => !x.Dismantle && (x.allCivilInst.civilWithLegsId != null ?
-                            (x.allCivilInst.civilWithLegs.baseTypeId == Id && !x.allCivilInst.Draft) : false),
-                                x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
-
                     var Entity = _unitOfWork.BaseTypeRepository.GetByID(Id);
+
                     if (Entity != null)
                     {
-                        if (Civils.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLIcivilSiteDate> CivilWithLegInstallation = _unitOfWork.CivilSiteDateRepository
+                        .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft && (x.allCivilInst.civilWithLegsId != null ?
+                            x.allCivilInst.civilWithLegs.baseTypeId == Id : false),
+                                x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CivilWithLegInstallation.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Civil Steel Support With Legs Installation",
                                 isLibrary = false,
-                                RecordsAffected = Civils.Select(x => new RecordAffected
+                                RecordsAffected = CivilWithLegInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allCivilInst.civilWithLegs.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
                             Entity.Deleted = (true);
                         }
-                        _unitOfWork.BaseTypeRepository.Update(Entity);
+                        await _unitOfWork.BaseTypeRepository.UpdateItem(Entity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -2135,38 +6067,40 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
                 {
-                    var Loads = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                            (x.allLoadInstId != null ? (x.allLoadInst.mwBUId != null ? x.allLoadInst.mwBU.BaseBUId == Id : false) : false),
-                                x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
-
                     var Entity = _unitOfWork.BaseBURepository.GetByID(Id);
+
                     if (Entity != null)
                     {
-                        if (Loads.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        List<TLIcivilLoads> MW_BUInstallation = _unitOfWork.CivilLoadsRepository
+                        .GetIncludeWhere(x => !x.Dismantle && !x.allLoadInst.Draft && (x.allLoadInst.mwBUId != null ?
+                            x.allLoadInst.mwBU.BaseBUId == Id : false),
+                                x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
 
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (MW_BUInstallation.Count != 0)
+                        {
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "MW_BU Installation",
                                 isLibrary = false,
-                                RecordsAffected = Loads.Select(x => new RecordAffected
+                                RecordsAffected = MW_BUInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allLoadInst.mwBU.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
+
                             Entity.Deleted = (true);
                         }
-                        _unitOfWork.BaseBURepository.Update(Entity);
+                        await _unitOfWork.BaseBURepository.UpdateItem(Entity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -2176,39 +6110,40 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIrenewableCabinetType.ToString() == TableName)
                 {
-                    var Cabinets = _unitOfWork.OtherInSiteRepository
-                        .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                            (x.allOtherInventoryInst.cabinetId != null ?
-                                x.allOtherInventoryInst.cabinet.RenewableCabinetTypeId == Id : false),
-                                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet).ToList();
-
                     var Entity = _unitOfWork.RenewableCabinetTypeRepository.GetByID(Id);
+
                     if (Entity != null)
                     {
-                        if (Cabinets.Count() > 0)
+                        List<TLIotherInSite> CabinetInstallation = _unitOfWork.OtherInSiteRepository
+                        .GetIncludeWhere(x => !x.Dismantle && !x.allOtherInventoryInst.Draft && (x.allOtherInventoryInst.cabinetId != null ?
+                            x.allOtherInventoryInst.cabinet.RenewableCabinetTypeId == Id : false),
+                                x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet).ToList();
+
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+                        if (CabinetInstallation.Count != 0)
                         {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "Cabinet Installation",
                                 isLibrary = false,
-                                RecordsAffected = Cabinets.Select(x => new RecordAffected
+                                RecordsAffected = CabinetInstallation.Select(x => new RecordAffected
                                 {
                                     RecordName = x.allOtherInventoryInst.cabinet.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
-
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+
                         else
                         {
                             Entity.Deleted = (true);
                         }
-                        _unitOfWork.RenewableCabinetTypeRepository.Update(Entity);
+                        await _unitOfWork.RenewableCabinetTypeRepository.UpdateItem(Entity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else
@@ -2218,33 +6153,35 @@ namespace TLIS_Service.Services
                 }
                 else if (ConfigrationTables.TLIsideArmType.ToString() == TableName)
                 {
-                    var Loads = _unitOfWork.CivilLoadsRepository
-                        .GetIncludeWhere(x => !x.Dismantle &&
-                            (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.sideArmTypeId == Id) : false),
-                                x => x.sideArm).ToList();
+                    var sideArm = _unitOfWork.CivilLoadsRepository
+                         .GetIncludeWhere(x => !x.Dismantle &&
+                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.sideArmTypeId == Id) : false),
+                                 x => x.sideArm).ToList();
 
                     var Entity = _unitOfWork.SideArmTypeRepository.GetByID(Id);
                     if (Entity != null)
                     {
-                        if (Entity == null || Loads.Count() > 0)
+                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                        if (sideArm.Count() > 0)
                         {
-                            Entity.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
+
+
                             ListOfResponse.Add(new TableAffected()
                             {
                                 TableName = "sideArm Installation",
                                 isLibrary = false,
-                                RecordsAffected = Loads.Select(x => new RecordAffected
+                                RecordsAffected = sideArm.Select(x => new RecordAffected
                                 {
                                     RecordName = x.sideArm.Name,
                                     SiteCode = x.SiteCode
                                 }).ToList()
                             });
 
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
+
+                        if (ListOfResponse.Count != 0)
+                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
                         else
                         {
                             Entity.Deleted = (true);
@@ -2284,7 +6221,23 @@ namespace TLIS_Service.Services
                         var loadOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
                         x.allLoadInstId != null && !x.allLoadInst.Draft &&
                             x.allLoadInst.loadOtherId != null && x.allLoadInst.loadOther.InstallationPlaceId == Id);
-
+                        var radioother = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                          x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                              x.allLoadInst.radioOtherId != null && x.allLoadInst.radioOther.installationPlaceId == Id);
+                        if (radioother.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "radioOther Installation",
+                                isLibrary = false,
+                                RecordsAffected = radioother.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwBU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
 
 
                         if (mwBU.Count() > 0)
@@ -2402,282 +6355,14 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
-                {
-                    var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
-                    if (logisticalType != null)
-                    {
-                        var Logic = _unitOfWork.LogistcalRepository.GetIncludeWhere(x => x.logisticalTypeId == Id && !x.Deleted && x.Active, x => x.tablePartName.tablesNames);
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        if (Logic.Count() > 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Logistcal",
-                                isLibrary = false,
-                                RecordsAffected = Logic.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Name,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                        else
-                        {
-                            logisticalType.Deleted = (true);
-                        }
-                        await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIdataType.ToString() == TableName)
-                {
-                    var dataType = _unitOfWork.DataTypeRepository.GetByID(Id);
-
-                    var DynamicAtt = _unitOfWork.DynamicAttRepository
-                         .GetIncludeWhere(x => x.DataTypeId == Id, x => x.tablesNames.TableName).ToList();
-
-                    if (dataType != null)
-                    {
-                        if (DynamicAtt.Count() > 0)
-                        {
-                            dataType.Deleted = (false);
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "DynamicAtt",
-                                isLibrary = false,
-                                RecordsAffected = DynamicAtt.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.tablesNames.TableName,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            dataType.Deleted = (true);
-                        }
-                        _unitOfWork.DataTypeRepository.Update(dataType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIoperation.ToString() == TableName)
-                {
-                    var operation = _unitOfWork.OperationRepository.GetByID(Id);
-                    if (operation != null)
-                    {
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        var validation = _unitOfWork.ValidationRepository.GetWhere(x => x.OperationId == Id);
-                        if (validation.Count != 0)
-                        {
-                            operation.Deleted = (false);
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "ValidationDynamic",
-                                isLibrary = false,
-                                RecordsAffected = validation.Select(x => new RecordAffected
-                                {
-                                    RecordName = null,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                        }
-                        var Dependence = _unitOfWork.DependencieRepository.GetWhere(x => x.OperationId == Id);
-                        if (Dependence.Count != 0)
-                        {
-                            operation.Deleted = (false);
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "DependencieDynamicAtt",
-                                isLibrary = false,
-                                RecordsAffected = Dependence.Select(x => new RecordAffected
-                                {
-                                    RecordName = null,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                        }
-
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        else
-                        {
-                            operation.Deleted = (true);
-                        }
-                        await _unitOfWork.OperationRepository.UpdateItem(operation);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
-                {
-                    var logicalOperation = _unitOfWork.LogicalOperationRepository.GetByID(Id);
-                    if (logicalOperation != null)
-                    {
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        var validation = _unitOfWork.DependencyRowRepository.GetWhere(x => x.LogicalOperationId == Id);
-                        if (validation.Count != 0)
-                        {
-                            logicalOperation.Deleted = (false);
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "DependencyRow Dynamic",
-                                isLibrary = false,
-                                RecordsAffected = validation.Select(x => new RecordAffected
-                                {
-                                    RecordName = null,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                        }
-                        else
-                        {
-                            logicalOperation.Deleted = (true);
-                        }
-                        await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
-                {
-                    var Entity = _unitOfWork.ItemStatusRepository.GetByID(Id);
-
-                    var sideArm = _unitOfWork.CivilLoadsRepository
-                         .GetIncludeWhere(x => !x.Dismantle &&
-                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.ItemStatusId == Id) : false),
-                                 x => x.sideArm).ToList();
-                    var allcivil = _unitOfWork.CivilLoadsRepository
-                         .GetIncludeWhere(x => !x.Dismantle &&
-                             (x.allCivilInstId != null ? (!x.allCivilInst.Draft && x.allCivilInst.ItemStatusId == Id) : false),
-                                 x => x.allCivilInst).ToList();
-                    var allload = _unitOfWork.CivilLoadsRepository
-                       .GetIncludeWhere(x => !x.Dismantle &&
-                           (x.allLoadInstId != null ? (!x.allLoadInst.Draft && x.allLoadInst.ItemStatusId == Id) : false),
-                               x => x.allLoadInst).ToList();
-                    var allotherenventory = _unitOfWork.OtherInSiteRepository
-                       .GetIncludeWhere(x => !x.Dismantle &&
-                           (x.allOtherInventoryInstId != null ? (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.ItemStatusId == Id) : false),
-                               x => x.allOtherInventoryInst).ToList();
-                    if (Entity != null)
-                    {
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        if (sideArm.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "sideArm Installation",
-                                isLibrary = false,
-                                RecordsAffected = sideArm.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.sideArm.Name,
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (allcivil.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "AllCivil Installation",
-                                isLibrary = false,
-                                RecordsAffected = allcivil.Select(x => new RecordAffected
-                                {
-                                    RecordName = "AllCivil Installation",
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (allload.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Allload Installation",
-                                isLibrary = false,
-                                RecordsAffected = allload.Select(x => new RecordAffected
-                                {
-                                    RecordName = "Allload Installation",
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (allotherenventory.Count() > 0)
-                        {
-                            Entity.Deleted = (false);
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "AllOtherEnventory Installation",
-                                isLibrary = false,
-                                RecordsAffected = allotherenventory.Select(x => new RecordAffected
-                                {
-                                    RecordName = "AllOtherEnventory Installation",
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
-                        else
-                        {
-                            Entity.Deleted = (true);
-                        }
-                        _unitOfWork.ItemStatusRepository.Update(Entity);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
                 else
                 {
-                    return new Response<List<TableAffected>>(true, null, null, "The TabelName Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<List<TableAffected>>(true, null, null, $"The TabelName Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                
+
                 return new Response<List<TableAffected>>();
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 return new Response<List<TableAffected>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
@@ -2787,7 +6472,7 @@ namespace TLIS_Service.Services
                 {
                     var supportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
 
-                    if (!supportTypeDesigned.Disable)
+                    if (supportTypeDesigned != null)
                     {
                         List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
                             .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
@@ -2810,11 +6495,18 @@ namespace TLIS_Service.Services
 
                         if (ListOfResponse.Count != 0)
                             return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                    }
 
-                    supportTypeDesigned.Disable = !(supportTypeDesigned.Disable);
-                    await _unitOfWork.SupportTypeDesignedRepository.UpdateItem(supportTypeDesigned);
-                    await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            supportTypeDesigned.Disable = !(supportTypeDesigned.Disable);
+                        }
+                        await _unitOfWork.SupportTypeDesignedRepository.UpdateItem(supportTypeDesigned);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
@@ -2887,7 +6579,7 @@ namespace TLIS_Service.Services
                             .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
 
                         List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                            .GetWhere(x => x.structureTypeId == Id).ToList();
+                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
 
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
 
@@ -2969,40 +6661,88 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SectionsLegTypeRepository.UpdateItem(sectionsLegType);
                         await _unitOfWork.SaveChangesAsync();
                     }
-                }
-                else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
-                {
-                    var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
-                    if (logisticalType != null)
-                    {
-                        var Logic = _unitOfWork.LogistcalRepository.GetIncludeWhere(x => x.logisticalTypeId == Id && !x.Deleted && x.Active, x => x.tablePartName.tablesNames);
-
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        if (Logic.Count() > 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Logistcal",
-                                isLibrary = false,
-                                RecordsAffected = Logic.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Name,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-                        else
-                        {
-                            logisticalType.Disable = !(logisticalType.Disable);
-                        }
-                        await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
                     else
                     {
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
+                //else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
+                //{
+                //    var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
+                //    if (logisticalType != null)
+                //    {
+                //        var Logic = db.TLIlogisticalitem.Include(x => x.logistical)
+                //            .Include(x => x.tablesNames).Where(x => x.logistical.logisticalTypeId == Id).ToList();
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        if (Logic.Count() > 0)
+                //        {
+                //            foreach (var itemlogisticalitem in Logic)
+                //            {  
+ 
+                //                var query = db.GetType().GetProperty(itemlogisticalitem.tablesNames.TableName)?.GetValue(db, null);
+                //                if (query != null)
+                //                {
+                //                    var resultList = ((IEnumerable<object>)query)
+                //                        .Where(x =>
+                //                        {
+                //                            var idProperty = x.GetType().GetProperty("Id");
+                //                            if (idProperty != null)
+                //                            {
+                //                                var idValue = idProperty.GetValue(x);
+                //                                if (idValue != null && idValue is int)
+                //                                {
+                //                                    return (int)idValue == itemlogisticalitem.RecordId;
+                //                                }
+                //                            }
+                //                            return false;
+                //                        })
+                //                        .Select(x =>
+                //                        {
+                //                            var idProperty = x.GetType().GetProperty("Id");
+                //                            var nameProperty = x.GetType().GetProperty("Model");
+                //                            if (idProperty != null && nameProperty != null)
+                //                            {
+                //                                return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                            }
+                //                            return null;
+                //                        })
+                //                        .FirstOrDefault();
+
+                //                    if (resultList != null)
+                //                    {
+                //                        ListOfResponse.Add(new TableAffected()
+                //                        {
+                //                            TableName = itemlogisticalitem.tablesNames.TableName + $"",
+                //                            isLibrary = itemlogisticalitem.IsLib,
+                //                            RecordsAffected = new List<RecordAffected>
+                //                            {
+                //                                new RecordAffected
+                //                                {
+
+                //                                    RecordName = resultList.Name,
+                //                                    SiteCode = null
+                //                                }
+                //                            }
+                //                        });
+                //                    }
+                //                }
+
+                //            }
+
+                            
+                //        }
+                //        else
+                //        {
+                //            logisticalType.Disable = !(logisticalType.Disable);
+                //        }
+                //        await _unitOfWork.logisticalTypeRepository.UpdateItem(logisticalType);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
                 else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
                 {
                     var baseCivilWithLegs = _unitOfWork.BaseCivilWithLegsTypeRepository.GetByID(Id);
@@ -3414,133 +7154,3862 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIdataType.ToString() == TableName)
-                {
-                    var dataType = _unitOfWork.DataTypeRepository.GetByID(Id);
+                //else if (ConfigrationTables.TLIdataType.ToString() == TableName)
+                //{
+                //    var dataType = _unitOfWork.DataTypeRepository.GetByID(Id);
+                //    List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //    var DynamicAtt = db.TLIdynamicAtt.Where(x => x.DataTypeId == Id && !x.disable).ToList();
+                //    if (dataType != null)
+                //    {
+                //        if (DynamicAtt.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAtt)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x=>x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x=>x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
 
-                    var DynamicAtt = _unitOfWork.DynamicAttRepository
-                         .GetIncludeWhere(x => x.DataTypeId == Id, x => x.tablesNames.TableName).ToList();
-
-                    if (dataType != null)
-                    {
-                        if (DynamicAtt.Count() > 0)
-                        {
-                            List<TableAffected> ListOfResponse = new List<TableAffected>();
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "DynamicAtt",
-                                isLibrary = false,
-                                RecordsAffected = DynamicAtt.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.tablesNames.TableName,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-                            if (ListOfResponse.Count != 0)
-                                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        }
-                        else
-                        {
-                            dataType.Disable = !(dataType.Disable);
-                        }
-                        _unitOfWork.DataTypeRepository.Update(dataType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIoperation.ToString() == TableName)
-                {
-                    var operation = _unitOfWork.OperationRepository.GetByID(Id);
-                    if (operation != null)
-                    {
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        var validation = _unitOfWork.ValidationRepository.GetWhere(x => x.OperationId == Id);
-                        if (validation.Count != 0)
-                        {
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "ValidationDynamic",
-                                isLibrary = false,
-                                RecordsAffected = validation.Select(x => new RecordAffected
-                                {
-                                    RecordName = null,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                        }
-                        var Dependence = _unitOfWork.DependencieRepository.GetWhere(x => x.OperationId == Id);
-                        if (Dependence.Count != 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "DependencieDynamicAtt",
-                                isLibrary = false,
-                                RecordsAffected = Dependence.Select(x => new RecordAffected
-                                {
-                                    RecordName = null,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-
-
-                        }
-
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                        else
-                        {
-                            operation.Disable = !(operation.Disable);
-                        }
-                        await _unitOfWork.OperationRepository.UpdateItem(operation);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
-                {
-                    var logicalOperation = _unitOfWork.LogicalOperationRepository.GetByID(Id);
-                    if (logicalOperation != null)
-                    {
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        var validation = _unitOfWork.DependencyRowRepository.GetWhere(x => x.LogicalOperationId == Id);
-                        if (validation.Count != 0)
-                        {
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "DependencyRow Dynamic",
-                                isLibrary = false,
-                                RecordsAffected = validation.Select(x => new RecordAffected
-                                {
-                                    RecordName = null,
-                                    SiteCode = null
-                                }).ToList()
-                            });
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
 
 
-                        }
-                        else
-                        {
-                            logicalOperation.Disable = !(logicalOperation.Disable);
-                        }
-                        await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                                                
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+                                                       
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                if (idProperty != null)
+                //                                {
+                //                                    var idValue = idProperty.GetValue(x);
+                //                                    if (idValue != null && idValue is int)
+                //                                    {
+                //                                        return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                    }
+                //                                }
+                //                                return false;
+                //                            })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if(resultList != null){
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAtt.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+                           
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+                //        else
+                //        {
+                //            dataType.Disable = !(dataType.Disable);
+                //        }
+                //        _unitOfWork.DataTypeRepository.Update(dataType);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (ConfigrationTables.TLIoperation.ToString() == TableName)
+                //{
+                //    var operation = _unitOfWork.OperationRepository.GetByID(Id);
+                //    if (operation != null)
+                //    {
+
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        var DynamicAttdependency = db.TLIdependency.Include(x => x.DynamicAtt).Where(x => x.OperationId == Id && !x.DynamicAtt.disable)
+                //            .Select(x => x.DynamicAtt).ToList();
+
+                //        if (DynamicAttdependency.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttdependency)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttdependency.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttdependency.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+
+                //        var DynamicAttvalidation = db.TLIvalidation.Include(x => x.DynamicAtt).Where(x => x.OperationId == Id && !x.DynamicAtt.disable)
+                //           .Select(x => x.DynamicAtt).ToList();
+
+                //        if (DynamicAttvalidation.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttvalidation)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttvalidation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttvalidation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+                //        var DynamicAttrule = db.TLIrule.Include(x => x.dynamicAtt).Where(x => x.OperationId == Id && !x.dynamicAtt.disable)
+                //         .Select(x => x.dynamicAtt).ToList();
+
+                //        if (DynamicAttrule.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttrule)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttrule.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                                            
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+                //        if (ListOfResponse.Count != 0)
+                //            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        else
+                //        {
+                //            operation.Disable = !(operation.Disable);
+                //        }
+                //        await _unitOfWork.OperationRepository.UpdateItem(operation);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
+                //{
+                //    var logicalOperation = _unitOfWork.LogicalOperationRepository.GetByID(Id);
+                //    if (logicalOperation != null)
+                //    {
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        var DynamicAttdependency = db.TLIdependency
+                //        .Include(x => x.DynamicAtt)
+                //        .Include(x => x.DependencyRows)
+                //            .ThenInclude(x => x.LogicalOperation)
+                //        .Where(dependency => dependency.DependencyRows.Any(row =>
+                //            row.LogicalOperationId == Id && !row.LogicalOperation.Deleted))
+                //        .Select(dependency => dependency.DynamicAtt)
+                //        .ToList();
+
+                //        if (DynamicAttdependency.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttdependency)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttdependency.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                     .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                          siteDate.allCivilInst != null &&
+                //                                          !siteDate.allCivilInst.Draft &&
+                //                                          siteDate.allCivilInst.civilWithLegsId != null &&
+                //                                          siteDate.allCivilInst.civilWithLegsId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+
+
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                    .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                         siteDate.allCivilInst != null &&
+                //                                         !siteDate.allCivilInst.Draft &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId != null &&
+                //                                         siteDate.allCivilInst.civilWithoutLegId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var siteCodeEntry = db.TLIcivilSiteDate
+                //                                 .Include(x => x.allCivilInst).FirstOrDefault(siteDate => !siteDate.Dismantle &&
+                //                                      siteDate.allCivilInst != null &&
+                //                                      !siteDate.allCivilInst.Draft &&
+                //                                      siteDate.allCivilInst.civilNonSteelId != null &&
+                //                                      siteDate.allCivilInst.civilNonSteelId == resultList.Id);
+
+                //                                    var siteCode = siteCodeEntry != null ?
+                //                                                   siteCodeEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.loadOtherId != null &&
+                //                                            x.allLoadInst.loadOtherId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.powerId != null &&
+                //                                            x.allLoadInst.powerId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.radioAntennaId != null &&
+                //                                            x.allLoadInst.radioAntennaId == resultList.Id);
+
+                //                                    var siteCode = loadEntry != null ?
+                //                                                   loadEntry.SiteCode :
+                //                                                   null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                      .FirstOrDefault(x => !x.Dismantle &&
+                //                                          x.allLoadInst != null &&
+                //                                          !x.allLoadInst.Draft &&
+                //                                          x.allLoadInst.radioRRUId != null &&
+                //                                          x.allLoadInst.radioRRUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.radioOtherId != null &&
+                //                                           x.allLoadInst.radioOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.sideArm != null &&
+                //                                             !x.sideArm.Draft &&
+
+                //                                             x.sideArmId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                     .FirstOrDefault(x => !x.Dismantle &&
+                //                                         x.allLoadInst != null &&
+                //                                         !x.allLoadInst.Draft &&
+                //                                         x.allLoadInst.mwBUId != null &&
+                //                                         x.allLoadInst.mwBUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwDishId != null &&
+                //                                           x.allLoadInst.mwDishId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwODUId != null &&
+                //                                            x.allLoadInst.mwODUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allLoadInst != null &&
+                //                                            !x.allLoadInst.Draft &&
+                //                                            x.allLoadInst.mwRFUId != null &&
+                //                                            x.allLoadInst.mwRFUId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIcivilLoads
+                //                                       .FirstOrDefault(x => !x.Dismantle &&
+                //                                           x.allLoadInst != null &&
+                //                                           !x.allLoadInst.Draft &&
+                //                                           x.allLoadInst.mwOtherId != null &&
+                //                                           x.allLoadInst.mwOtherId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.cabinetId != null &&
+                //                                            x.allOtherInventoryInst.cabinetId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                        .FirstOrDefault(x => !x.Dismantle &&
+                //                                            x.allOtherInventoryInst != null &&
+                //                                            !x.allOtherInventoryInst.Draft &&
+                //                                            x.allOtherInventoryInst.solarId != null &&
+                //                                            x.allOtherInventoryInst.solarId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var loadEntry = db.TLIotherInSite
+                //                                         .FirstOrDefault(x => !x.Dismantle &&
+                //                                             x.allOtherInventoryInst != null &&
+                //                                             !x.allOtherInventoryInst.Draft &&
+                //                                             x.allOtherInventoryInst.generatorId != null &&
+                //                                             x.allOtherInventoryInst.generatorId == resultList.Id);
+                //                                    var siteCode = loadEntry != null ?
+                //                                                  loadEntry.SiteCode :
+                //                                                  null;
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+
+
+                //            if (ListOfResponse.Count != 0)
+                //                return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        }
+
+                //        var DynamicAttrule = db.TLIrule
+                //        .Include(x => x.dynamicAtt)
+                //        .Include(x => x.rowRules)
+                //            .ThenInclude(x => x.LogicalOperation)
+                //        .Where(dependency => dependency.rowRules.Any(row =>
+                //            row.LogicalOperationId == Id && !row.LogicalOperation.Deleted))
+                //        .Select(dependency => dependency.dynamicAtt)
+                //        .ToList();
+
+                //        if (DynamicAttrule.Count() > 0)
+                //        {
+                //            foreach (var item in DynamicAttrule)
+                //            {
+                //                var DynamicAttInstallation = db.TLIdynamicAttInstValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttInstallation in DynamicAttInstallation)
+                //                {
+                //                    if (itemDynamicAttInstallation.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttInstallation.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttInstallation.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttInstallation.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttInstallation.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttInstallation.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttInstallation.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+
+                //                }
+                //                var DynamicAttLibrary = db.TLIdynamicAttLibValue.Include(x => x.tablesNames).Include(x => x.DynamicAtt)
+                //                     .Where(x => x.DynamicAttId == item.Id).ToList();
+                //                foreach (var itemDynamicAttLibrary in DynamicAttLibrary)
+                //                {
+                //                    if (itemDynamicAttLibrary.DynamicAtt.LibraryAtt == true)
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Model");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = null
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var query = db.GetType().GetProperty(itemDynamicAttLibrary.tablesNames.TableName)?.GetValue(db, null);
+                //                        if (query != null)
+                //                        {
+                //                            var resultList = ((IEnumerable<object>)query)
+                //                           .Where(x =>
+                //                           {
+                //                               var idProperty = x.GetType().GetProperty("Id");
+                //                               if (idProperty != null)
+                //                               {
+                //                                   var idValue = idProperty.GetValue(x);
+                //                                   if (idValue != null && idValue is int)
+                //                                   {
+                //                                       return (int)idValue == itemDynamicAttLibrary.InventoryId;
+                //                                   }
+                //                               }
+                //                               return false;
+                //                           })
+                //                            .Select(x =>
+                //                            {
+                //                                var idProperty = x.GetType().GetProperty("Id");
+                //                                var nameProperty = x.GetType().GetProperty("Name");
+                //                                if (idProperty != null && nameProperty != null)
+                //                                {
+                //                                    return new { Id = (int)idProperty.GetValue(x), Name = (string)nameProperty.GetValue(x) };
+                //                                }
+                //                                return null;
+                //                            })
+                //                            .FirstOrDefault();
+                //                            if (resultList != null)
+                //                            {
+                //                                var tableNames = itemDynamicAttLibrary.tablesNames.TableName;
+                //                                string SiteCode = null;
+                //                                if (tableNames == Helpers.Constants.CivilType.TLIcivilWithLegs.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithLegsId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilWithoutLegId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString())
+                //                                {
+                //                                    var AllcivilInstId = db.TLIallCivilInst.FirstOrDefault(x => x.civilNonSteelId == resultList.Id);
+                //                                    if (AllcivilInstId != null)
+                //                                    {
+                //                                        var CivilSiteDate = db.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == AllcivilInstId.Id);
+                //                                        if (CivilSiteDate != null)
+                //                                        {
+                //                                            SiteCode = CivilSiteDate.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIloadOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.loadOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIpower.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.powerId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioAntennaId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioRRUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIradioOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.radioOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsideArm.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwBUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwDish.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwDishId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwODU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwODUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwRFU.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwRFUId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLImwOther.ToString())
+                //                                {
+                //                                    var AllLoadInstId = db.TLIallLoadInst.FirstOrDefault(x => x.mwOtherId == resultList.Id);
+                //                                    if (AllLoadInstId != null)
+                //                                    {
+                //                                        var CivilLoad = db.TLIcivilLoads.FirstOrDefault(x => x.allLoadInstId == AllLoadInstId.Id);
+                //                                        if (CivilLoad != null)
+                //                                        {
+                //                                            SiteCode = CivilLoad.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.cabinetId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIsolar.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.solarId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                else if (tableNames == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                //                                {
+                //                                    var AllOtherInventory = db.TLIallOtherInventoryInst.FirstOrDefault(x => x.generatorId == resultList.Id);
+                //                                    if (AllOtherInventory != null)
+                //                                    {
+                //                                        var OtherInSite = db.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == AllOtherInventory.Id);
+                //                                        if (OtherInSite != null)
+                //                                        {
+                //                                            SiteCode = OtherInSite.SiteCode;
+                //                                        }
+                //                                    }
+                //                                }
+                //                                ListOfResponse.Add(new TableAffected()
+                //                                {
+                //                                    TableName = itemDynamicAttLibrary.tablesNames.TableName,
+                //                                    isLibrary = itemDynamicAttLibrary.DynamicAtt.LibraryAtt,
+                //                                    RecordsAffected = DynamicAttLibrary.Select(x => new RecordAffected
+                //                                    {
+                //                                        RecordName = resultList.Name,
+                //                                        SiteCode = SiteCode
+                //                                    }).ToList()
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //        }
+
+                //        if (ListOfResponse.Count != 0)
+                //         return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                       
+                //        else
+                //        {
+                //            logicalOperation.Disable = !(logicalOperation.Disable);
+                //        }
+                //        await _unitOfWork.LogicalOperationRepository.UpdateItem(logicalOperation);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
                 else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
                 {
                     var enforcmentCategory = _unitOfWork.EnforcmentCategoryRepository.GetByID(Id);
@@ -3625,7 +11094,6 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-
                 else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
                 {
                     var civilNonSteelType = _unitOfWork.CivilNonSteelTypeRepository.GetByID(Id);
@@ -3929,7 +11397,6 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-
                 else if (ConfigrationTables.TLIowner.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.OwnerRepository.GetByID(Id);
@@ -4176,6 +11643,10 @@ namespace TLIS_Service.Services
                         await _unitOfWork.OwnerRepository.UpdateItem(Entity);
                         await _unitOfWork.SaveChangesAsync();
                     }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                 }
                 else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
                 {
@@ -4282,7 +11753,6 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-
                 else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.BaseBURepository.GetByID(Id);
@@ -4415,111 +11885,6 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
-                {
-                    var Entity = _unitOfWork.ItemStatusRepository.GetByID(Id);
-
-                    var sideArm = _unitOfWork.CivilLoadsRepository
-                         .GetIncludeWhere(x => !x.Dismantle &&
-                             (x.sideArmId != null ? (!x.sideArm.Draft && x.sideArm.ItemStatusId == Id) : false),
-                                 x => x.sideArm).ToList();
-                    var allcivil = _unitOfWork.CivilLoadsRepository
-                         .GetIncludeWhere(x => !x.Dismantle &&
-                             (x.allCivilInstId != null ? (!x.allCivilInst.Draft && x.allCivilInst.ItemStatusId == Id) : false),
-                                 x => x.allCivilInst).ToList();
-                    var allload = _unitOfWork.CivilLoadsRepository
-                       .GetIncludeWhere(x => !x.Dismantle &&
-                           (x.allLoadInstId != null ? (!x.allLoadInst.Draft && x.allLoadInst.ItemStatusId == Id) : false),
-                               x => x.allLoadInst).ToList();
-                    var allotherenventory = _unitOfWork.OtherInSiteRepository
-                       .GetIncludeWhere(x => !x.Dismantle &&
-                           (x.allOtherInventoryInstId != null ? (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.ItemStatusId == Id) : false),
-                               x => x.allOtherInventoryInst).ToList();
-                    if (Entity != null)
-                    {
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-                        if (sideArm.Count() > 0)
-                        {
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "sideArm Installation",
-                                isLibrary = false,
-                                RecordsAffected = sideArm.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.sideArm.Name,
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (allcivil.Count() > 0)
-                        {
-
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "AllCivil Installation",
-                                isLibrary = false,
-                                RecordsAffected = allcivil.Select(x => new RecordAffected
-                                {
-                                    RecordName = "AllCivil Installation",
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (allload.Count() > 0)
-                        {
-
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Allload Installation",
-                                isLibrary = false,
-                                RecordsAffected = allload.Select(x => new RecordAffected
-                                {
-                                    RecordName = "Allload Installation",
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (allotherenventory.Count() > 0)
-                        {
-
-
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "AllOtherEnventory Installation",
-                                isLibrary = false,
-                                RecordsAffected = allotherenventory.Select(x => new RecordAffected
-                                {
-                                    RecordName = "AllOtherEnventory Installation",
-                                    SiteCode = x.SiteCode
-                                }).ToList()
-                            });
-
-                        }
-
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
-                        else
-                        {
-                            Entity.Active = !(Entity.Active);
-                        }
-                        _unitOfWork.ItemStatusRepository.Update(Entity);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
                 else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
                 {
                     var Entity = _unitOfWork.InstallationPlaceRepository.GetByID(Id);
@@ -4547,7 +11912,23 @@ namespace TLIS_Service.Services
                         var loadOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
                         x.allLoadInstId != null && !x.allLoadInst.Draft &&
                             x.allLoadInst.loadOtherId != null && x.allLoadInst.loadOther.InstallationPlaceId == Id);
-
+                        var radioother = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&
+                          x.allLoadInstId != null && !x.allLoadInst.Draft &&
+                              x.allLoadInst.radioOtherId != null && x.allLoadInst.radioOther.installationPlaceId == Id);
+                        if (radioother.Count() > 0)
+                        {
+                            Entity.Deleted = (false);
+                            ListOfResponse.Add(new TableAffected()
+                            {
+                                TableName = "radioOther Installation",
+                                isLibrary = false,
+                                RecordsAffected = radioother.Select(x => new RecordAffected
+                                {
+                                    RecordName = x.allLoadInst.mwBU.Name,
+                                    SiteCode = x.SiteCode
+                                }).ToList()
+                            });
+                        }
 
 
                         if (mwBU.Count() > 0)
@@ -4667,7 +12048,7 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    return new Response<List<TableAffected>>(true, null, null, $"The TabelName Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<List<TableAffected>>(true, null, null, $"The TabelName Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
               
                 return new Response<List<TableAffected>>();
@@ -4905,11 +12286,11 @@ namespace TLIS_Service.Services
                 //    ConfigurationAtts = _unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
                 //        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
                 //}
-                else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
-                {
-                    ConfigurationAtts = _unitOfWork.ItemStatusRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, !x.Active)).ToList();
-                }
+                //else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
+                //{
+                //    ConfigurationAtts = _unitOfWork.ItemStatusRepository.GetWhere(x => !x.Deleted && x.Id > 0)
+                //        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, !x.Active)).ToList();
+                //}
                 //else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
                 //{
                 //    ConfigurationAtts = _unitOfWork.InstallationPlaceRepository.GetWhere(x => !x.Deleted && x.Id > 0)

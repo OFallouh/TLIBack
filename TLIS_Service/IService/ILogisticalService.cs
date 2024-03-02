@@ -13,8 +13,8 @@ namespace TLIS_Service.IService
         Response<MainLogisticalViewModel> GetById(int LogisticalId);
         Response<List<MainLogisticalViewModel>> GetLogisticalByTypeOrPart(string TablePartName, string LogisticalType, string Search, ParameterPagination parameterPagination);
         Response<bool> AddLogistical(AddNewLogistical NewLogistical);
-        Response<bool> DeleteLogistical(int LogisticalId);
-        public Response<List<TableAffected>> DisableLogistical(int LogisticalId, bool isForced);
+        Response<List<TableAffected>> DeleteLogistical(int LogisticalId);
+        Response<List<TableAffected>> DisableLogistical(int LogisticalId);
         Response<bool> EditLogistical(EditLogisticalViewModel EditLogisticalViewModel);
         Response<List<LogisticalViewModel>> GetLogisticalTypes();
     }

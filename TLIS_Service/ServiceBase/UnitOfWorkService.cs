@@ -494,7 +494,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_ConfigurationAttsService == null)
-                    _ConfigurationAttsService = new ConfigurationAttsService(_unitOfWork, _services,_mapper);
+                    _ConfigurationAttsService = new ConfigurationAttsService(_unitOfWork, _services,_mapper,db);
                 return _ConfigurationAttsService;
             }
         }

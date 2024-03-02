@@ -220,9 +220,9 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode, int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == true)
+            if (addCivilNonSteel.civilSiteDate.ReservedSpace == true)
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilNonSteel.SpaceInstallation);
+                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilNonSteel.installationAttributes.SpaceInstallation);
                 if (CheckReservedSapce == true)
                 {
                     if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
@@ -239,7 +239,7 @@ namespace TLIS_API.Controllers
                     }
                 }
             }
-            else if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == false)
+            else if (addCivilNonSteel.civilSiteDate.ReservedSpace == false)
             {
                 if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
                 {

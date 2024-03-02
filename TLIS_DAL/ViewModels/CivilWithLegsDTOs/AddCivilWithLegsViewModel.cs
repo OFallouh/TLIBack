@@ -13,15 +13,15 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
 {
     public class AddCivilWithLegsViewModel
     {
-        public LibraryAttributes civilType { get; set; }
-        public installationAttributes installationAttributes { get; set; }
+        public LibraryAttributesCivilWithLegs civilType { get; set; }
+        public installationAttributesCivilWithLegs installationAttributes { get; set; }
         public AddCivilSiteDateViewModel civilSiteDate { get; set; }
         public AddCivilSupportDistanceViewModel civilSupportDistance { get; set; }
         public List<AddLegViewModel> legsInfo { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
        
     }
-    public class LibraryAttributes
+    public class LibraryAttributesCivilWithLegs
     {
         public int civilWithLegsLibId { get; set; }
     }
@@ -31,7 +31,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public object value { get; set; }
     }
 
-    public class installationAttributes
+    public class installationAttributesCivilWithLegs
     {
         public float WindMaxLoadm2 { get; set; } = 0;
         public double LocationHeight { get; set; } = 0;

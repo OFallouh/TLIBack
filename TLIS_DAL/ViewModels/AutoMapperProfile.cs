@@ -183,6 +183,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIleg, LegViewModel>().ReverseMap();
             CreateMap<TLIleg, AddLegViewModel>().ReverseMap();
             CreateMap<TLIleg, EditLegViewModel>().ReverseMap();
+            CreateMap<TLIcivilWithoutLeg, installationAttributesCivilWithoutLegs>().ReverseMap();
+            CreateMap<TLIcivilNonSteel, installationAttributesCivilNonSteelLegs>().ReverseMap();
 
             CreateMap<TLIcivilNonSteelType, CivilNonSteelTypeViewModel>().ReverseMap();
 
@@ -487,7 +489,7 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<TLIradioOther, EditRadioOtherViewModel>();
 
-            CreateMap<installationAttributes, TLIcivilWithLegs>();
+            CreateMap<installationAttributesCivilWithLegs, TLIcivilWithLegs>();
 
             CreateMap<EditRadioOtherViewModel, TLIradioOther>();
             // CreateMap<TLIcondition, ConditionViewModel>().ReverseMap();

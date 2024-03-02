@@ -52,9 +52,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("DisableLogistical")]
         [ProducesResponseType(200, Type = typeof(bool))]
-        public IActionResult DisableLogistical(int LogisticalId, bool isForced)
+        public IActionResult DisableLogistical(int LogisticalId)
         {
-            var response = _unitOfWorkService.LogisiticalService.DisableLogistical(LogisticalId, isForced);
+            var response = _unitOfWorkService.LogisiticalService.DisableLogistical(LogisticalId);
             return Ok(response);
         }
         [HttpPut("EditLogistical/{id}")]
