@@ -2241,7 +2241,7 @@ namespace TLIS_Service.Services
                         if(civilwithleglibrary.Model != null)
                          Model = civilwithleglibrary.Model;
                         
-                        civilWithLegs.Name = sitename + Model + ownername + addCivilWithLegs.installationAttributes.HeightImplemented;
+                        civilWithLegs.Name = sitename +"" + Model +""+ ownername +""+ addCivilWithLegs.installationAttributes.HeightImplemented;
                         //Check name if already exists in database then return message that the name is already exists
                         TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
                             (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegs.Name.ToLower() : false &&
@@ -2349,23 +2349,23 @@ namespace TLIS_Service.Services
                                 var ownerName = owner?.OwnerName;
 
                                 var model = CivilWithoutLegLibrary.Model;
-                                var heightBase = AddCivilWithoutLeg.installationAttributes.HeightBase;
+                                var HeightImplemented = AddCivilWithoutLeg.installationAttributes.HeightImplemented;
 
                                 if (!string.IsNullOrEmpty(siteName) && string.IsNullOrEmpty(ownerName))
                                 {
-                                    CivilWithoutLeg.Name = $"{siteName}{model}{heightBase}";
+                                    CivilWithoutLeg.Name = $"{siteName}{model}{HeightImplemented}";
                                 }
                                 else if (string.IsNullOrEmpty(siteName) && !string.IsNullOrEmpty(ownerName))
                                 {
-                                    CivilWithoutLeg.Name = $"{model}{ownerName}{heightBase}";
+                                    CivilWithoutLeg.Name = $"{model}{ownerName}{HeightImplemented}";
                                 }
                                 else if (string.IsNullOrEmpty(siteName) && string.IsNullOrEmpty(ownerName))
                                 {
-                                    CivilWithoutLeg.Name = $"{model}{heightBase}";
+                                    CivilWithoutLeg.Name = $"{model}{HeightImplemented}";
                                 }
                                 else
                                 {
-                                    CivilWithoutLeg.Name = $"{siteName} {model} {ownerName} {heightBase}";
+                                    CivilWithoutLeg.Name = $"{siteName} {model} {ownerName} {HeightImplemented}";
 
                                 }
                                 if (CivilWithoutLeg.HeightImplemented < 6)
@@ -5146,11 +5146,8 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    var attActivated = _dbContext.TLIattributeViewManagment
-                        .Include(x => x.EditableManagmentView)
-                        .Include(x => x.AttributeActivated)
-                        .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
+                    var attActivated = _dbContext.TLIattributeViewManagment .Include(x => x.EditableManagmentView) .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
                     List<string> propertyNamesStatic = new List<string>();

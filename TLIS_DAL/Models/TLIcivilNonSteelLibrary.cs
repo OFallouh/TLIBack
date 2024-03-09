@@ -14,6 +14,7 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         // [Index(IsUnique = true)]
         public string? Model { get; set; }
+        public string Prefix { get; set; }
         public string? Note { get; set; }
         public float Hight { get; set; }
         public float SpaceLibrary { get; set; }

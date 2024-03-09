@@ -46,7 +46,27 @@ namespace TLIS_Repository.Repositories
             }
             return dynamicAtts;
         }
-
+        public IEnumerable<BaseInstAttViewDynamic> GetDynamicLibAtt(int TableNameId, int? CategoryId)
+        {
+            List<BaseInstAttViewDynamic> dynamicAtts = null;
+            if (CategoryId == null)
+            {
+                List<TLIdynamicAtt> DynamicAtts = _context.TLIdynamicAtt
+                    .Where(d => d.LibraryAtt == true && d.tablesNamesId == TableNameId && !d.disable)
+                    .Include(d => d.DataType)
+                    .ToList();
+                dynamicAtts = _mapper.Map<List<BaseInstAttViewDynamic>>(DynamicAtts);
+            }
+            else
+            {
+                List<TLIdynamicAtt> DynamicAtts = _context.TLIdynamicAtt
+                    .Where(d => !d.disable && d.LibraryAtt == true && d.tablesNamesId == TableNameId && d.CivilWithoutLegCategoryId == CategoryId)
+                    .Include(d => d.DataType)
+                    .ToList();
+                dynamicAtts = _mapper.Map<List<BaseInstAttViewDynamic>>(DynamicAtts);
+            }
+            return dynamicAtts;
+        }
         public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables()
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();

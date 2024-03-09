@@ -9,6 +9,7 @@ using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
+using TLIS_DAL.ViewModels.wf;
 
 namespace TLIS_Service.IService
 {
@@ -36,8 +37,8 @@ namespace TLIS_Service.IService
         Response<List<UserWithoutGroupViewModel>> GetAllUserWithoutGroup();
         Response<string> EncryptAllUserPassword(string UserName);
         Response<string> DeletePassword();
-        string GetEmailByUserId(int UserId);
-        string GetNameByUserId(int UserId);
+        ApiResponse GetEmailByUserId(int UserId);
+        ApiResponse GetNameByUserId(int UserId);
 
     }
 }

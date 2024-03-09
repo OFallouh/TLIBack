@@ -15,5 +15,5 @@ namespace TLIS_Repository.IRepository
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
         IEnumerable<DynaminAttInstViewModel> GetDynamicInstAtts(int TableNameId, int? CategoryId);
         IEnumerable<BaseInstAttViewDynamic> GetDynamicInstAttInst(int TableNameId, int? CategoryId);
-    }
+        IEnumerable<BaseInstAttViewDynamic> GetDynamicLibAtt(int TableNameId, int? CategoryId);
 }

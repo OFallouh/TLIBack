@@ -33,6 +33,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using System.IO;
 using LinqToExcel.Extensions;
 using Microsoft.EntityFrameworkCore.Update.Internal;
+using TLIS_DAL.ViewModels.wf;
 
 namespace TLIS_Service.Services
 {
@@ -1002,29 +1003,47 @@ namespace TLIS_Service.Services
             }
 
         }
-        public string GetEmailByUserId(int UserId)
+        public ApiResponse GetEmailByUserId(int UserId)
         {
-            var Email = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
-            if (Email != null)
+            try
             {
-                return Email.Email;
+                var Email = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
+                if (Email != null)
+                {
+                    return new ApiResponse(Email.Email, null);
+                }
+                else
+                {
+                    return new ApiResponse(false, "This User Is Not Active");
+                }
             }
-            else
+            catch (Exception err)
             {
-                return "This User Is Not Active";
+
+                return new ApiResponse(false, err.Message);
             }
+         
         }
-        public string GetNameByUserId(int UserId)
+        public ApiResponse GetNameByUserId(int UserId)
         {
-            var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
-            if (UserName != null)
+            try
             {
-                return UserName.UserName;
+                var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
+                if (UserName != null)
+                {
+                    return new ApiResponse(UserName.UserName, null);
+                }
+                else
+                {
+                    return new ApiResponse(false, "This User Is Not Active");
+                }
             }
-            else
+            catch (Exception err)
             {
-                return "This User Is Not Active";
+
+                return new ApiResponse(false, err.Message);
             }
+           
         }
         public bool GetSession(int UserId,string Ip)
         {

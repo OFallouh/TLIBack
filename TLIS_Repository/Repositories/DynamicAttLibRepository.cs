@@ -7,6 +7,7 @@ using System.Text;
 using TLIS_DAL;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
@@ -69,6 +70,45 @@ namespace TLIS_Repository.Repositories
                 _context.SaveChanges();
             }
         }
+        public void AddDynamicLibAtt(List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id)
+        {
+            var dynamicAttInstValues = addDynamicLibAttValues.Select(DynamicLibAttValue =>
+            {
+                var DynamicAttEntity = _context.TLIdynamicAtt
+                    .Where(x => x.Id == DynamicLibAttValue.id)
+                    .Include(x => x.DataType)
+                    .FirstOrDefault();
+
+                var dynamicAttLibValueEntites = _mapper.Map<TLIdynamicAttLibValue>(DynamicLibAttValue);
+                dynamicAttLibValueEntites.InventoryId = Id;
+                dynamicAttLibValueEntites.tablesNamesId = TableNameId;
+
+                dynamic value = DynamicLibAttValue.value;
+                switch (value)
+                {
+                    case string stringValue:
+                        dynamicAttLibValueEntites.ValueString = stringValue;
+                        break;
+                    case double doubleValue:
+                        dynamicAttLibValueEntites.ValueDouble = doubleValue;
+                        break;
+                    case DateTime dateTimeValue:
+                        dynamicAttLibValueEntites.ValueDateTime = dateTimeValue;
+                        break;
+                    case bool booleanValue:
+                        dynamicAttLibValueEntites.ValueBoolean = booleanValue;
+                        break;
+                       
+                }
+
+                dynamicAttLibValueEntites.disable = false;
+                return dynamicAttLibValueEntites;
+            });
+
+            _context.TLIdynamicAttLibValue.AddRange(dynamicAttInstValues);
+            _context.SaveChanges();
+        }
+
 
         public void DisableDynamicAttLibValues(int TableNameId, int Id)
         {

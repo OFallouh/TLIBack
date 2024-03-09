@@ -8,6 +8,7 @@ using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
@@ -18,16 +19,19 @@ namespace TLIS_Service.IService
 {
     public interface ICivilLibraryService
     {
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMonopleLibrary(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMastLibrary(string TableName);
         Response<ReturnWithFilters<CivilWithLegLibraryViewModel>> getCivilWithLegLibraries(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<CivilWithoutLegLibraryViewModel>> getCivilWithoutLegLibraries(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<CivilNonSteelLibraryViewModel>> getCivilNonSteelLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<AllItemAttributes> GetById(int Id,string CivilType);
         Response<AllItemAttributes> AddCivilLibrary(string CivilType, object CivilLibraryViewModel, string connectionString);
-        Task<Response<AllItemAttributes>> EditCivilLibrary(object CivilLibraryViewModel,string CivilType);
+       // Task<Response<AllItemAttributes>> EditCivilLibrary(object CivilLibraryViewModel,string CivilType);
         Task<Response<AllItemAttributes>> Disable(int Id,string CivilType);
         Task<Response<AllItemAttributes>> Delete(int Id, string CivilType);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
-        Response<AllItemAttributes> GetForAdd(string CivilType, int? CategoryId = null);
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetCivilWithLegLibrariesEnabledAtt(CombineFilters ComineOutPut, bool WithFilterData, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, int CategoryId, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);

@@ -7,6 +7,7 @@ using System.Text;
 using TLIS_DAL;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
@@ -101,6 +102,38 @@ namespace TLIS_Repository.Repositories
                     result.Add(BaseAtt);
             }
             
+            return result;
+        }
+        public IEnumerable<BaseAttViews> GetLogisticals(string Part)
+        {
+            List<BaseAttViews> result = new List<BaseAttViews>();
+
+            int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
+
+            List<TLIlogisticalType> LogisticalTypes = _context.TLIlogisticalType.Where(x => !x.Deleted && !x.Disable).ToList();
+
+            foreach (TLIlogisticalType LogisticalType in LogisticalTypes)
+            {
+                List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical
+                    .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
+                        x.Active && !x.Deleted).ToList());
+
+                BaseAttViews BaseAtt = new BaseAttViews
+                {
+                    Key = LogisticalType.Name,
+                    Label = LogisticalType.Name,
+                    Required = false,
+                    enable = true,
+                    AutoFill = false,
+                    DataType = "List",
+                    Desc = LogisticalType.Name,
+                    Manage = false,
+                    Value = Logisticals
+                };
+                if (!result.Exists(x => x.Key == BaseAtt.Key))
+                    result.Add(BaseAtt);
+            }
+
             return result;
         }
     }

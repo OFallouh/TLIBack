@@ -257,8 +257,6 @@ namespace TLIS_Repository.Repositories
             }
             return BaseAttsView;
         }
-
-
         public IEnumerable<BaseInstAttViews> GetInstAttributeActivatedGetForAdd(string Type, object Installation = null, params string[] ExceptAtrributes)
         {
             List<TLIattributeActivated> Excepted = _context.TLIattributeActivated.Where(x =>

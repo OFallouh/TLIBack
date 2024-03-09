@@ -103,5 +103,23 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.CivilLibraryService.Delete(Id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
             return Ok(response);
         }
+        [HttpGet("GetForAddCivilWithoutLegsMastLibrary")]
+        public IActionResult GetForAddCivilWithoutLegsMastLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithoutLegsCapsuleLibrary")]
+        public IActionResult GetForAddCivilWithoutLegsCapsuleLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithoutLegsMonopleLibrary")]
+        public IActionResult GetForAddCivilWithoutLegsMonopleLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
+            return Ok(response);
+        }
     }
 }

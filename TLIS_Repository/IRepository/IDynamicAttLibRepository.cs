@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_Repository.Base;
 
@@ -15,5 +16,6 @@ namespace TLIS_Repository.IRepository
         void UpdateDynamicLibAttsWithHistory(List<DynamicAttLibViewModel> DynamicLibAttValues, int TablesNameId, int LibId, int? UserId, int? TableHistoryId = null, int EntitesId = 0);
         List<DynamicAttLibViewModel> GetDynamicLibAtts(int TableNameId, int Id, int? CategoryId);
         void DisableDynamicAttLibValues(int TableNameId, int Id);
+        void AddDynamicLibAtt(List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id);
     }
 }
