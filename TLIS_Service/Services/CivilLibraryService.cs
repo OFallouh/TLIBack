@@ -55,6 +55,8 @@ using AutoMapper;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using System.Numerics;
+using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -92,7 +94,7 @@ namespace TLIS_Service.Services
                             if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                             {
 
-                                AddCivilWithLegLibraryViewModel civilWithLegLibraryViewModel = _mapper.Map<AddCivilWithLegLibraryViewModel>(CivilLibraryViewModel);
+                                AddCivilWithLegsLibraryObject civilWithLegLibraryViewModel = _mapper.Map<AddCivilWithLegsLibraryObject>(CivilLibraryViewModel);
                                 TLIcivilWithLegLibrary CivilWithLegEntites = _mapper.Map<TLIcivilWithLegLibrary>(civilWithLegLibraryViewModel.LibraryAttribute);
 
 
@@ -139,7 +141,7 @@ namespace TLIS_Service.Services
                             }
                             else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                             {
-                                AddCivilWithoutLegLibraryViewModel cwithoutLegLibraryViewModel = _mapper.Map<AddCivilWithoutLegLibraryViewModel>(CivilLibraryViewModel);
+                                AddCivilWithoutLegsLibraryObject cwithoutLegLibraryViewModel = _mapper.Map<AddCivilWithoutLegsLibraryObject>(CivilLibraryViewModel);
                                 TLIcivilWithoutLegLibrary CivilWithoutLegEntites = _mapper.Map<TLIcivilWithoutLegLibrary>(cwithoutLegLibraryViewModel.LibraryAttribute);
 
                                 var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(cwithoutLegLibraryViewModel.LogisticalItems.VendorId);
@@ -182,7 +184,7 @@ namespace TLIS_Service.Services
                             }
                             else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
                             {
-                                AddCivilNonSteelLibraryViewModel nonSteelLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryViewModel>(CivilLibraryViewModel);
+                                AddCivilNonSteelLibraryObject nonSteelLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryObject>(CivilLibraryViewModel);
                                 TLIcivilNonSteelLibrary civilNonSteelLibraryEntity = _mapper.Map<TLIcivilNonSteelLibrary>(nonSteelLibraryViewModel.LibraryAttribute);
                                 var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(nonSteelLibraryViewModel.LogisticalItems.VendorId);
                                 var vendor = logisticalObject?.Name;
@@ -239,7 +241,7 @@ namespace TLIS_Service.Services
             List<DynamicAttViewModel> DynamicAttributes = null;
             if (CivilType.Equals(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), StringComparison.OrdinalIgnoreCase))
             {
-                AddCivilWithLegLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilWithLegLibraryViewModel>(Input);
+                AddCivilWithLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithLegsLibraryObject>(Input);
 
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                     .GetIncludeWhere(x => x.tablesNames.TableName.Equals(CivilType, StringComparison.OrdinalIgnoreCase) && !x.disable
@@ -357,7 +359,7 @@ namespace TLIS_Service.Services
             }
             else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
             {
-                AddCivilWithoutLegLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegLibraryViewModel>(Input);
+                AddCivilWithoutLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegsLibraryObject>(Input);
                 if (catid != null)
                 {
                     DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
@@ -443,7 +445,7 @@ namespace TLIS_Service.Services
             }
             else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
             {
-                AddCivilNonSteelLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryViewModel>(Input);
+                AddCivilNonSteelLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryObject>(Input);
 
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable

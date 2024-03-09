@@ -68,23 +68,23 @@ namespace TLIS_API.Controllers.LoadLibrary
                 return Ok(new Response<AddRadioAntennaLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateRadioAntennaLibrary")]
-        [ProducesResponseType(200, Type = typeof(EditRadioAntennaLibraryViewModel))]
-        public async Task<IActionResult> UpdateRadioAntennaLibrary(EditRadioAntennaLibraryViewModel editRadioAntenna)
-        {
-            if (TryValidateModel(editRadioAntenna, nameof(EditRadioAntennaLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.RadioLibraryService.EditRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), editRadioAntenna);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditRadioAntennaLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateRadioAntennaLibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditRadioAntennaLibraryViewModel))]
+        //public async Task<IActionResult> UpdateRadioAntennaLibrary(EditRadioAntennaLibraryViewModel editRadioAntenna)
+        //{
+        //    if (TryValidateModel(editRadioAntenna, nameof(EditRadioAntennaLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.RadioLibraryService.EditRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), editRadioAntenna);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditRadioAntennaLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableRadioAntennaLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableRadioAntennaLibrary(int Id)

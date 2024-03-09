@@ -68,23 +68,23 @@ namespace TLIS_API.Controllers.OtherInventory
                 return Ok(new Response<AddGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateGeneratorLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> UpdateGeneratorLibrary([FromBody]EditGeneratorLibraryViewModel editGeneratorLibrary)
-        {
-            if (TryValidateModel(editGeneratorLibrary, nameof(EditGeneratorLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editGeneratorLibrary, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateGeneratorLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> UpdateGeneratorLibrary([FromBody]EditGeneratorLibraryViewModel editGeneratorLibrary)
+        //{
+        //    if (TryValidateModel(editGeneratorLibrary, nameof(EditGeneratorLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editGeneratorLibrary, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableGeneratorLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableGeneratorLibrary(int Id)

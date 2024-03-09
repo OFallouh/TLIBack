@@ -71,23 +71,23 @@ namespace TLIS_API.Controllers.LoadLibrary
             }
         }
 
-        [HttpPost("EditMW_DishLibrary")]
-        [ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]
-        public async Task<IActionResult> EditMW_DishLibrary([FromBody]EditMW_DishLibraryViewModel editMW_DishLibraryViewModel)
-        {
-            if(TryValidateModel(editMW_DishLibraryViewModel, nameof(EditMW_DishLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), editMW_DishLibraryViewModel);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("EditMW_DishLibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]
+        //public async Task<IActionResult> EditMW_DishLibrary([FromBody]EditMW_DishLibraryViewModel editMW_DishLibraryViewModel)
+        //{
+        //    if(TryValidateModel(editMW_DishLibraryViewModel, nameof(EditMW_DishLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), editMW_DishLibraryViewModel);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         [HttpPost("DisableMW_DishLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]

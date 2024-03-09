@@ -1367,420 +1367,420 @@ namespace TLIS_Service.Services
         //check validation
         //update Entity
         //Update dynamic attributes
-        public async Task<Response<AllItemAttributes>> EditOtherInventoryLibrary(object OtherInventoryLibraryViewModel, string TableName)
-        {
-            using (TransactionScope transaction =
-                new TransactionScope(TransactionScopeOption.Required,
-                                   new System.TimeSpan(0, 15, 0)))
-            {
-                try
-                {
-                    int resultId = 0;
-                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName.ToLower() == TableName.ToLower());
-                    if (OtherInventoryType.TLIcabinetPowerLibrary.ToString().ToLower() == TableName.ToLower())
-                    {
-                        EditCabinetPowerLibraryViewModel CabinetPowerLibraryViewModel = _mapper.Map<EditCabinetPowerLibraryViewModel>(OtherInventoryLibraryViewModel);
-                        TLIcabinetPowerLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetPowerLibrary>(OtherInventoryLibraryViewModel);
-                        var Cabinet = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetPowerLibraryViewModel.Id);
-
-                        CabinetPowerLibraryEntity.Active = Cabinet.Active;
-                        CabinetPowerLibraryEntity.Deleted = Cabinet.Deleted;
-                        var CheckModel = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower() &&
-                            x.Id != CabinetPowerLibraryEntity.Id && !x.Deleted);
-                        if (CheckModel != null)
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
-                        }
-                        //var testUpdate = _unitOfWork.TablesHistoryRepository.CheckUpdateObject(Cabinet, CabinetPowerLibraryEntity);
-                        //if (testUpdate.Details.Count != 0)
-                        //{
-                        _unitOfWork.CabinetPowerLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, Cabinet, CabinetPowerLibraryEntity);
-                        //  resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(CabinetPowerLibraryEntity.Id, TableNameEntity.Id, "Update", testUpdate.Details.ToList());
-                        await _unitOfWork.SaveChangesAsync();
-                        // }
-
-                        string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
-                        if (!string.IsNullOrEmpty(CheckDependency))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
-                        }
-
-                        string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(CabinetPowerLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
-                        if (!string.IsNullOrEmpty(CheckValidation))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
-                        }
-
-                        dynamic LogisticalItemIds = new ExpandoObject();
-                        LogisticalItemIds = OtherInventoryLibraryViewModel;
-
-                        AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
-
-                        var CheckVendorId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckVendorId != null)
-                            OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.VendorId = 0;
-
-                        var CheckSupplierId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckSupplierId != null)
-                            OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.SupplierId = 0;
-
-                        var CheckDesignerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckDesignerId != null)
-                            OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.DesignerId = 0;
-
-                        var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckManufacturerId != null)
-                            OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.ManufacturerId = 0;
-
-                        EditLogisticalItem(LogisticalItemIds, CabinetPowerLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
-
-                        if (CabinetPowerLibraryViewModel.DynamicAtts != null ? CabinetPowerLibraryViewModel.DynamicAtts.Count > 0 : false)
-                        {
-                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(CabinetPowerLibraryViewModel.DynamicAtts, TableNameEntity.Id, CabinetPowerLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, Cabinet.Id);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString().ToLower() == TableName.ToLower())
-                    {
-                        EditCabinetTelecomLibraryViewModel CabinetTelecomLibraryViewModel = _mapper.Map<EditCabinetTelecomLibraryViewModel>(OtherInventoryLibraryViewModel);
-                        TLIcabinetTelecomLibrary CabinetTelecomLibraryEntity = _mapper.Map<TLIcabinetTelecomLibrary>(OtherInventoryLibraryViewModel);
-                        if (CabinetTelecomLibraryEntity.Dimension_W_D_H == null || CabinetTelecomLibraryEntity.Dimension_W_D_H == "")
-                        {
-                            CabinetTelecomLibraryEntity.Dimension_W_D_H = CabinetTelecomLibraryEntity.Width + "_" + CabinetTelecomLibraryEntity.Depth + "_" + CabinetTelecomLibraryEntity.Height;
-                        }
-                        var CheckModel = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == CabinetTelecomLibraryEntity.Model.ToLower() &&
-                            x.Id != CabinetTelecomLibraryEntity.Id && !x.Deleted);
-                        var CabinetTelecom = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetTelecomLibraryViewModel.Id);
-
-                        CabinetTelecomLibraryEntity.Active = CabinetTelecom.Active;
-                        CabinetTelecomLibraryEntity.Deleted = CabinetTelecom.Deleted;
-
-                        if (CheckModel != null)
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, $"This model {CabinetTelecomLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
-                        }
-                        //_unitOfWork.CabinetTelecomLibraryRepository.Update(CabinetTelecomLibraryEntity);
-                        //if (CabinetTelecomLibraryViewModel.DynamicAtts.Count > 0)
-                        //{
-                        //    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAtts(CabinetTelecomLibraryViewModel.DynamicAtts, TableNameEntity.Id, CabinetTelecomLibraryEntity.Id);
-
-                        //}
-                        _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CabinetTelecom, CabinetTelecomLibraryEntity);
-                        //if (testUpdate.Details.Count != 0)
-                        //{
-                        //    _unitOfWork.CabinetTelecomLibraryRepository.Update((TLIcabinetTelecomLibrary)testUpdate.original);
-                        //    resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(CabinetTelecomLibraryEntity.Id, TableNameEntity.Id, "Update", testUpdate.Details.ToList());
-                        //    await _unitOfWork.SaveChangesAsync();
-                        //}
-
-                        string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
-                        if (!string.IsNullOrEmpty(CheckDependency))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
-                        }
-
-                        string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(CabinetTelecomLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
-                        if (!string.IsNullOrEmpty(CheckValidation))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
-                        }
-
-                        dynamic LogisticalItemIds = new ExpandoObject();
-                        LogisticalItemIds = OtherInventoryLibraryViewModel;
-
-                        AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
-
-                        var CheckVendorId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckVendorId != null)
-                            OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.VendorId = 0;
-
-                        var CheckSupplierId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckSupplierId != null)
-                            OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.SupplierId = 0;
-
-                        var CheckDesignerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckDesignerId != null)
-                            OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.DesignerId = 0;
-
-                        var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckManufacturerId != null)
-                            OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.ManufacturerId = 0;
-
-                        EditLogisticalItem(LogisticalItemIds, CabinetTelecomLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
-
-                        if (CabinetTelecomLibraryViewModel.DynamicAtts != null ? CabinetTelecomLibraryViewModel.DynamicAtts.Count > 0 : false)
-                        {
-                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(CabinetTelecomLibraryViewModel.DynamicAtts, TableNameEntity.Id, CabinetTelecomLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, CabinetTelecom.Id);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
-                        //if (CabinetTelecomLibraryViewModel.DynamicAttInst.Count > 0)
-                        //{
-                        //    //await _unitOfWork.Dynam
-                        //}
-                    }
-                    else if (OtherInventoryType.TLIgeneratorLibrary.ToString().ToLower() == TableName.ToLower())
-                    {
-                        EditGeneratorLibraryViewModel GeneratorLibraryViewModel = _mapper.Map<EditGeneratorLibraryViewModel>(OtherInventoryLibraryViewModel);
-                        TLIgeneratorLibrary GeneratorLibraryEntity = _mapper.Map<TLIgeneratorLibrary>(OtherInventoryLibraryViewModel);
-                        var generator = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == GeneratorLibraryViewModel.Id);
-                        var CheckModel = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == GeneratorLibraryEntity.Model.ToLower() &&
-                            x.Id != GeneratorLibraryEntity.Id && !x.Deleted);
-
-                        GeneratorLibraryEntity.Active = generator.Active;
-                        GeneratorLibraryEntity.Deleted = generator.Deleted;
-
-                        if (CheckModel != null)
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, $"This model {GeneratorLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
-                        }
-                        //_unitOfWork.GeneratorLibraryRepository.Update(GeneratorLibraryEntity);
-                        //if (GeneratorLibraryViewModel.DynamicAtts.Count > 0)
-                        //{
-                        //    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAtts(GeneratorLibraryViewModel.DynamicAtts, TableNameEntity.Id, GeneratorLibraryEntity.Id);
-
-                        //}
-
-                        _unitOfWork.GeneratorLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, generator, GeneratorLibraryEntity);
-
-                        string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
-                        if (!string.IsNullOrEmpty(CheckDependency))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
-                        }
-
-                        string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(GeneratorLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
-                        if (!string.IsNullOrEmpty(CheckValidation))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
-                        }
-
-                        dynamic LogisticalItemIds = new ExpandoObject();
-                        LogisticalItemIds = OtherInventoryLibraryViewModel;
-
-                        AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
-
-                        var CheckVendorId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckVendorId != null)
-                            OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.VendorId = 0;
-
-                        var CheckSupplierId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckSupplierId != null)
-                            OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.SupplierId = 0;
-
-                        var CheckDesignerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckDesignerId != null)
-                            OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.DesignerId = 0;
-
-                        var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckManufacturerId != null)
-                            OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.ManufacturerId = 0;
-
-                        EditLogisticalItem(LogisticalItemIds, GeneratorLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
-
-                        if (GeneratorLibraryViewModel.DynamicAtts != null ? GeneratorLibraryViewModel.DynamicAtts.Count > 0 : false)
-                        {
-                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(GeneratorLibraryViewModel.DynamicAtts, TableNameEntity.Id, GeneratorLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, generator.Id);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
-                        //if (GeneratorLibraryViewModel.DynamicAttInst.Count > 0)
-                        //{
-                        //    //await _unitOfWork.Dynam
-                        //}
-                    }
-                    else if (OtherInventoryType.TLIsolarLibrary.ToString().ToLower() == TableName.ToLower())
-                    {
-                        EditSolarLibraryViewModel SolarLibraryViewModel = _mapper.Map<EditSolarLibraryViewModel>(OtherInventoryLibraryViewModel);
-                        TLIsolarLibrary SolarLibraryEntity = _mapper.Map<TLIsolarLibrary>(OtherInventoryLibraryViewModel);
-                        var solar = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SolarLibraryViewModel.Id);
-
-                        SolarLibraryEntity.Active = solar.Active;
-                        SolarLibraryEntity.Deleted = solar.Deleted;
-
-                        var CheckModel = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == SolarLibraryEntity.Model.ToLower() &&
-                            x.Id != SolarLibraryEntity.Id && !x.Deleted);
-                        if (CheckModel != null)
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, $"This model {SolarLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
-                        }
-                        //_unitOfWork.SolarLibraryRepository.Update(SolarLibraryEntity);
-                        //if (SolarLibraryViewModel.DynamicAtts.Count > 0)
-                        //{
-                        //    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAtts(SolarLibraryViewModel.DynamicAtts, TableNameEntity.Id, SolarLibraryEntity.Id);
-
-                        //}
-                        _unitOfWork.SolarLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, solar, SolarLibraryEntity);
-                        //if (testUpdate.Details.Count != 0)
-                        //{
-                        //    _unitOfWork.SolarLibraryRepository.Update((TLIsolarLibrary)testUpdate.original);
-                        //    resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(SolarLibraryEntity.Id, TableNameEntity.Id, "Update", testUpdate.Details.ToList());
-                        //    await _unitOfWork.SaveChangesAsync();
-                        //}
-                        string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
-                        if (!string.IsNullOrEmpty(CheckDependency))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
-                        }
-
-                        string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(SolarLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
-                        if (!string.IsNullOrEmpty(CheckValidation))
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
-                        }
-
-                        dynamic LogisticalItemIds = new ExpandoObject();
-                        LogisticalItemIds = OtherInventoryLibraryViewModel;
-
-                        AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
-
-                        var CheckVendorId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckVendorId != null)
-                            OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.VendorId = 0;
-
-                        var CheckSupplierId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckSupplierId != null)
-                            OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.SupplierId = 0;
-
-                        var CheckDesignerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckDesignerId != null)
-                            OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.DesignerId = 0;
-
-                        var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
-                            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
-                                x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
-                                    x => x.logistical.logisticalType);
-
-                        if (CheckManufacturerId != null)
-                            OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
-
-                        else
-                            OldLogisticalItemIds.ManufacturerId = 0;
-
-                        EditLogisticalItem(LogisticalItemIds, SolarLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
-
-                        if (SolarLibraryViewModel.DynamicAtts != null ? SolarLibraryViewModel.DynamicAtts.Count > 0 : false)
-                        {
-                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(SolarLibraryViewModel.DynamicAtts, TableNameEntity.Id, SolarLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, solar.Id);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
-                        //if (SolarLibraryViewModel.DynamicAttInst.Count > 0)
-                        //{
-                        //    //await _unitOfWork.Dynam
-                        //}
-                    }
-                    transaction.Complete();
-                    return new Response<AllItemAttributes>();
-                }
-                catch (Exception err)
-                {
-                    return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
-                }
-            }
-        }
+        //public async Task<Response<AllItemAttributes>> EditOtherInventoryLibrary(object OtherInventoryLibraryViewModel, string TableName)
+        //{
+        //    using (TransactionScope transaction =
+        //        new TransactionScope(TransactionScopeOption.Required,
+        //                           new System.TimeSpan(0, 15, 0)))
+        //    {
+        //        try
+        //        {
+        //            int resultId = 0;
+        //            TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName.ToLower() == TableName.ToLower());
+        //            if (OtherInventoryType.TLIcabinetPowerLibrary.ToString().ToLower() == TableName.ToLower())
+        //            {
+        //                EditCabinetPowerLibraryViewModel CabinetPowerLibraryViewModel = _mapper.Map<EditCabinetPowerLibraryViewModel>(OtherInventoryLibraryViewModel);
+        //                TLIcabinetPowerLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetPowerLibrary>(OtherInventoryLibraryViewModel);
+        //                var Cabinet = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetPowerLibraryViewModel.Id);
+
+        //                CabinetPowerLibraryEntity.Active = Cabinet.Active;
+        //                CabinetPowerLibraryEntity.Deleted = Cabinet.Deleted;
+        //                var CheckModel = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower() &&
+        //                    x.Id != CabinetPowerLibraryEntity.Id && !x.Deleted);
+        //                if (CheckModel != null)
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
+        //                }
+        //                //var testUpdate = _unitOfWork.TablesHistoryRepository.CheckUpdateObject(Cabinet, CabinetPowerLibraryEntity);
+        //                //if (testUpdate.Details.Count != 0)
+        //                //{
+        //                _unitOfWork.CabinetPowerLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, Cabinet, CabinetPowerLibraryEntity);
+        //                //  resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(CabinetPowerLibraryEntity.Id, TableNameEntity.Id, "Update", testUpdate.Details.ToList());
+        //                await _unitOfWork.SaveChangesAsync();
+        //                // }
+
+        //                string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
+        //                if (!string.IsNullOrEmpty(CheckDependency))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
+        //                }
+
+        //                string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(CabinetPowerLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
+        //                if (!string.IsNullOrEmpty(CheckValidation))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
+        //                }
+
+        //                dynamic LogisticalItemIds = new ExpandoObject();
+        //                LogisticalItemIds = OtherInventoryLibraryViewModel;
+
+        //                AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+        //                var CheckVendorId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckVendorId != null)
+        //                    OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.VendorId = 0;
+
+        //                var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckSupplierId != null)
+        //                    OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.SupplierId = 0;
+
+        //                var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckDesignerId != null)
+        //                    OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.DesignerId = 0;
+
+        //                var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckManufacturerId != null)
+        //                    OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.ManufacturerId = 0;
+
+        //                EditLogisticalItem(LogisticalItemIds, CabinetPowerLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
+
+        //                if (CabinetPowerLibraryViewModel.DynamicAtts != null ? CabinetPowerLibraryViewModel.DynamicAtts.Count > 0 : false)
+        //                {
+        //                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(CabinetPowerLibraryViewModel.DynamicAtts, TableNameEntity.Id, CabinetPowerLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, Cabinet.Id);
+        //                }
+        //                await _unitOfWork.SaveChangesAsync();
+        //            }
+        //            else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString().ToLower() == TableName.ToLower())
+        //            {
+        //                EditCabinetTelecomLibraryViewModel CabinetTelecomLibraryViewModel = _mapper.Map<EditCabinetTelecomLibraryViewModel>(OtherInventoryLibraryViewModel);
+        //                TLIcabinetTelecomLibrary CabinetTelecomLibraryEntity = _mapper.Map<TLIcabinetTelecomLibrary>(OtherInventoryLibraryViewModel);
+        //                if (CabinetTelecomLibraryEntity.Dimension_W_D_H == null || CabinetTelecomLibraryEntity.Dimension_W_D_H == "")
+        //                {
+        //                    CabinetTelecomLibraryEntity.Dimension_W_D_H = CabinetTelecomLibraryEntity.Width + "_" + CabinetTelecomLibraryEntity.Depth + "_" + CabinetTelecomLibraryEntity.Height;
+        //                }
+        //                var CheckModel = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == CabinetTelecomLibraryEntity.Model.ToLower() &&
+        //                    x.Id != CabinetTelecomLibraryEntity.Id && !x.Deleted);
+        //                var CabinetTelecom = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetTelecomLibraryViewModel.Id);
+
+        //                CabinetTelecomLibraryEntity.Active = CabinetTelecom.Active;
+        //                CabinetTelecomLibraryEntity.Deleted = CabinetTelecom.Deleted;
+
+        //                if (CheckModel != null)
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, $"This model {CabinetTelecomLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
+        //                }
+        //                //_unitOfWork.CabinetTelecomLibraryRepository.Update(CabinetTelecomLibraryEntity);
+        //                //if (CabinetTelecomLibraryViewModel.DynamicAtts.Count > 0)
+        //                //{
+        //                //    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAtts(CabinetTelecomLibraryViewModel.DynamicAtts, TableNameEntity.Id, CabinetTelecomLibraryEntity.Id);
+
+        //                //}
+        //                _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CabinetTelecom, CabinetTelecomLibraryEntity);
+        //                //if (testUpdate.Details.Count != 0)
+        //                //{
+        //                //    _unitOfWork.CabinetTelecomLibraryRepository.Update((TLIcabinetTelecomLibrary)testUpdate.original);
+        //                //    resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(CabinetTelecomLibraryEntity.Id, TableNameEntity.Id, "Update", testUpdate.Details.ToList());
+        //                //    await _unitOfWork.SaveChangesAsync();
+        //                //}
+
+        //                string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
+        //                if (!string.IsNullOrEmpty(CheckDependency))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
+        //                }
+
+        //                string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(CabinetTelecomLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
+        //                if (!string.IsNullOrEmpty(CheckValidation))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
+        //                }
+
+        //                dynamic LogisticalItemIds = new ExpandoObject();
+        //                LogisticalItemIds = OtherInventoryLibraryViewModel;
+
+        //                AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+        //                var CheckVendorId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckVendorId != null)
+        //                    OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.VendorId = 0;
+
+        //                var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckSupplierId != null)
+        //                    OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.SupplierId = 0;
+
+        //                var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckDesignerId != null)
+        //                    OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.DesignerId = 0;
+
+        //                var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckManufacturerId != null)
+        //                    OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.ManufacturerId = 0;
+
+        //                EditLogisticalItem(LogisticalItemIds, CabinetTelecomLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
+
+        //                if (CabinetTelecomLibraryViewModel.DynamicAtts != null ? CabinetTelecomLibraryViewModel.DynamicAtts.Count > 0 : false)
+        //                {
+        //                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(CabinetTelecomLibraryViewModel.DynamicAtts, TableNameEntity.Id, CabinetTelecomLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, CabinetTelecom.Id);
+        //                }
+        //                await _unitOfWork.SaveChangesAsync();
+        //                //if (CabinetTelecomLibraryViewModel.DynamicAttInst.Count > 0)
+        //                //{
+        //                //    //await _unitOfWork.Dynam
+        //                //}
+        //            }
+        //            else if (OtherInventoryType.TLIgeneratorLibrary.ToString().ToLower() == TableName.ToLower())
+        //            {
+        //                EditGeneratorLibraryViewModel GeneratorLibraryViewModel = _mapper.Map<EditGeneratorLibraryViewModel>(OtherInventoryLibraryViewModel);
+        //                TLIgeneratorLibrary GeneratorLibraryEntity = _mapper.Map<TLIgeneratorLibrary>(OtherInventoryLibraryViewModel);
+        //                var generator = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == GeneratorLibraryViewModel.Id);
+        //                var CheckModel = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == GeneratorLibraryEntity.Model.ToLower() &&
+        //                    x.Id != GeneratorLibraryEntity.Id && !x.Deleted);
+
+        //                GeneratorLibraryEntity.Active = generator.Active;
+        //                GeneratorLibraryEntity.Deleted = generator.Deleted;
+
+        //                if (CheckModel != null)
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, $"This model {GeneratorLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
+        //                }
+        //                //_unitOfWork.GeneratorLibraryRepository.Update(GeneratorLibraryEntity);
+        //                //if (GeneratorLibraryViewModel.DynamicAtts.Count > 0)
+        //                //{
+        //                //    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAtts(GeneratorLibraryViewModel.DynamicAtts, TableNameEntity.Id, GeneratorLibraryEntity.Id);
+
+        //                //}
+
+        //                _unitOfWork.GeneratorLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, generator, GeneratorLibraryEntity);
+
+        //                string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
+        //                if (!string.IsNullOrEmpty(CheckDependency))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
+        //                }
+
+        //                string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(GeneratorLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
+        //                if (!string.IsNullOrEmpty(CheckValidation))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
+        //                }
+
+        //                dynamic LogisticalItemIds = new ExpandoObject();
+        //                LogisticalItemIds = OtherInventoryLibraryViewModel;
+
+        //                AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+        //                var CheckVendorId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckVendorId != null)
+        //                    OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.VendorId = 0;
+
+        //                var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckSupplierId != null)
+        //                    OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.SupplierId = 0;
+
+        //                var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckDesignerId != null)
+        //                    OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.DesignerId = 0;
+
+        //                var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == GeneratorLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckManufacturerId != null)
+        //                    OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.ManufacturerId = 0;
+
+        //                EditLogisticalItem(LogisticalItemIds, GeneratorLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
+
+        //                if (GeneratorLibraryViewModel.DynamicAtts != null ? GeneratorLibraryViewModel.DynamicAtts.Count > 0 : false)
+        //                {
+        //                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(GeneratorLibraryViewModel.DynamicAtts, TableNameEntity.Id, GeneratorLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, generator.Id);
+        //                }
+        //                await _unitOfWork.SaveChangesAsync();
+        //                //if (GeneratorLibraryViewModel.DynamicAttInst.Count > 0)
+        //                //{
+        //                //    //await _unitOfWork.Dynam
+        //                //}
+        //            }
+        //            else if (OtherInventoryType.TLIsolarLibrary.ToString().ToLower() == TableName.ToLower())
+        //            {
+        //                EditSolarLibraryViewModel SolarLibraryViewModel = _mapper.Map<EditSolarLibraryViewModel>(OtherInventoryLibraryViewModel);
+        //                TLIsolarLibrary SolarLibraryEntity = _mapper.Map<TLIsolarLibrary>(OtherInventoryLibraryViewModel);
+        //                var solar = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SolarLibraryViewModel.Id);
+
+        //                SolarLibraryEntity.Active = solar.Active;
+        //                SolarLibraryEntity.Deleted = solar.Deleted;
+
+        //                var CheckModel = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == SolarLibraryEntity.Model.ToLower() &&
+        //                    x.Id != SolarLibraryEntity.Id && !x.Deleted);
+        //                if (CheckModel != null)
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, $"This model {SolarLibraryEntity.Model} is already exists", (int)ApiReturnCode.fail);
+        //                }
+        //                //_unitOfWork.SolarLibraryRepository.Update(SolarLibraryEntity);
+        //                //if (SolarLibraryViewModel.DynamicAtts.Count > 0)
+        //                //{
+        //                //    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAtts(SolarLibraryViewModel.DynamicAtts, TableNameEntity.Id, SolarLibraryEntity.Id);
+
+        //                //}
+        //                _unitOfWork.SolarLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, solar, SolarLibraryEntity);
+        //                //if (testUpdate.Details.Count != 0)
+        //                //{
+        //                //    _unitOfWork.SolarLibraryRepository.Update((TLIsolarLibrary)testUpdate.original);
+        //                //    resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(SolarLibraryEntity.Id, TableNameEntity.Id, "Update", testUpdate.Details.ToList());
+        //                //    await _unitOfWork.SaveChangesAsync();
+        //                //}
+        //                string CheckDependency = CheckDependencyValidationForOtherInventoryTypesEditApiVersion(OtherInventoryLibraryViewModel, TableName);
+        //                if (!string.IsNullOrEmpty(CheckDependency))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)ApiReturnCode.fail);
+        //                }
+
+        //                string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(SolarLibraryViewModel.DynamicAtts, TableNameEntity.TableName);
+        //                if (!string.IsNullOrEmpty(CheckValidation))
+        //                {
+        //                    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)ApiReturnCode.fail);
+        //                }
+
+        //                dynamic LogisticalItemIds = new ExpandoObject();
+        //                LogisticalItemIds = OtherInventoryLibraryViewModel;
+
+        //                AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+        //                var CheckVendorId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckVendorId != null)
+        //                    OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.VendorId = 0;
+
+        //                var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckSupplierId != null)
+        //                    OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.SupplierId = 0;
+
+        //                var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckDesignerId != null)
+        //                    OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.DesignerId = 0;
+
+        //                var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+        //                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+        //                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntity.Id, x => x.logistical,
+        //                            x => x.logistical.logisticalType);
+
+        //                if (CheckManufacturerId != null)
+        //                    OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
+
+        //                else
+        //                    OldLogisticalItemIds.ManufacturerId = 0;
+
+        //                EditLogisticalItem(LogisticalItemIds, SolarLibraryEntity, TableNameEntity.Id, OldLogisticalItemIds);
+
+        //                if (SolarLibraryViewModel.DynamicAtts != null ? SolarLibraryViewModel.DynamicAtts.Count > 0 : false)
+        //                {
+        //                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(SolarLibraryViewModel.DynamicAtts, TableNameEntity.Id, SolarLibraryEntity.Id, Helpers.LogFilterAttribute.UserId, resultId, solar.Id);
+        //                }
+        //                await _unitOfWork.SaveChangesAsync();
+        //                //if (SolarLibraryViewModel.DynamicAttInst.Count > 0)
+        //                //{
+        //                //    //await _unitOfWork.Dynam
+        //                //}
+        //            }
+        //            transaction.Complete();
+        //            return new Response<AllItemAttributes>();
+        //        }
+        //        catch (Exception err)
+        //        {
+        //            return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+        //        }
+        //    }
+        //}
         #region Helper Methods..
         public void EditLogisticalItem(dynamic LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, dynamic OldLogisticalItemIds)
         {

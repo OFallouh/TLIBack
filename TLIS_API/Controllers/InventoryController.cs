@@ -25,9 +25,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetForAdd")]
         [ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
-        public IActionResult GetForAddLibrary(string TableName, int? CategoryId)
+        public IActionResult GetForAddLibrary(string TableName)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(TableName, CategoryId);
+            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(TableName);
             return Ok(response);
         }
     }

@@ -79,24 +79,24 @@ namespace TLIS_API.Controllers.Load
             }
         }
 
-        [HttpPost("EditPowerLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
+        //[HttpPost("EditPowerLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
 
-        public async Task<IActionResult> EditPowerLibrary([FromBody]EditPowerLibraryViewModel editPowerLibraryViewModel)
-        {
-            if(TryValidateModel(editPowerLibraryViewModel, nameof(EditPowerLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.PowerLibraryService.EditPowerLibrary(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), editPowerLibraryViewModel);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //public async Task<IActionResult> EditPowerLibrary([FromBody]EditPowerLibraryViewModel editPowerLibraryViewModel)
+        //{
+        //    if(TryValidateModel(editPowerLibraryViewModel, nameof(EditPowerLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.PowerLibraryService.EditPowerLibrary(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), editPowerLibraryViewModel);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisablePowerLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisablePowerLibrary(int Id)

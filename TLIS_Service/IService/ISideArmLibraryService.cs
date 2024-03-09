@@ -17,7 +17,7 @@ namespace TLIS_Service.IService
         Task<Response<IEnumerable<SideArmLibraryViewModel>>> GetSideArmLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<List<KeyValuePair<string, int>>> GetSideArmLibs();
         Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryViewModel addSideArmLibraryViewModel, string connectionString);
-        Task<Response<SideArmLibraryViewModel>> EditSideArmLibrary(EditSideArmLibraryViewModel editSideArmLibraryViewModel);
+       // Task<Response<SideArmLibraryViewModel>> EditSideArmLibrary(EditSideArmLibraryViewModel editSideArmLibraryViewModel);
         Response<AllItemAttributes> GetSideArmLibraryById(int id);
         Task<Response<SideArmLibraryViewModel>> Disable(int id);
         Task<Response<SideArmLibraryViewModel>> Delete(int id);

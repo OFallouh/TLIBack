@@ -16,4 +16,5 @@ namespace TLIS_Repository.IRepository
         IEnumerable<DynaminAttInstViewModel> GetDynamicInstAtts(int TableNameId, int? CategoryId);
         IEnumerable<BaseInstAttViewDynamic> GetDynamicInstAttInst(int TableNameId, int? CategoryId);
         IEnumerable<BaseInstAttViewDynamic> GetDynamicLibAtt(int TableNameId, int? CategoryId);
+    }
 }

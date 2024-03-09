@@ -62,24 +62,24 @@ namespace TLIS_API.Controllers.LoadLibrary
                 return Ok(new Response<AddMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("EditMW_OtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(EditMW_OtherLibraryViewModel))]
+        //[HttpPost("EditMW_OtherLibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_OtherLibraryViewModel))]
 
-        public async Task<IActionResult> EditMW_OtherLibrary([FromBody]EditMW_OtherLibraryViewModel editMW_OtherLibraryViewModel)
-        {
-            if (TryValidateModel(editMW_OtherLibraryViewModel, nameof(EditMW_OtherLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), editMW_OtherLibraryViewModel);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //public async Task<IActionResult> EditMW_OtherLibrary([FromBody]EditMW_OtherLibraryViewModel editMW_OtherLibraryViewModel)
+        //{
+        //    if (TryValidateModel(editMW_OtherLibraryViewModel, nameof(EditMW_OtherLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), editMW_OtherLibraryViewModel);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         [HttpPost("DisableMW_OtherLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(MW_OtherLibraryViewModel))]

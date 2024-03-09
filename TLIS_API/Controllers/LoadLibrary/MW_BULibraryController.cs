@@ -105,23 +105,23 @@ namespace TLIS_API.Controllers.LoadLibrary
             }
         }
 
-        [HttpPost("EditMW_BULibrary")]
-        [ProducesResponseType(200, Type = typeof(EditMW_BULibraryViewModel))]
-        public async Task<IActionResult> EditMW_BULibrary([FromBody]EditMW_BULibraryViewModel editMW_BULibraryViewModel)
-        {
-            if(TryValidateModel(editMW_BULibraryViewModel, nameof(EditMW_BULibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), editMW_BULibraryViewModel);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_BULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("EditMW_BULibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_BULibraryViewModel))]
+        //public async Task<IActionResult> EditMW_BULibrary([FromBody]EditMW_BULibraryViewModel editMW_BULibraryViewModel)
+        //{
+        //    if(TryValidateModel(editMW_BULibraryViewModel, nameof(EditMW_BULibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), editMW_BULibraryViewModel);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_BULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         [HttpPost("DisableMW_BULibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(EditMW_BULibraryViewModel))]

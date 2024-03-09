@@ -14,21 +14,17 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelDTOs
 {
    public class AddCivilNonSteelLibraryViewModel
     {
-        public CivilNonSteelLibraryAttributes LibraryAttribute { get; set; }
+        public string Model { get; set; }
+        public string Note { get; set; }
+        public float Hight { get; set; }
+        public float SpaceLibrary { get; set; }
+        public bool VerticalMeasured { get; set; }
+        public int civilNonSteelTypeId { get; set; } = 0;
+        public float NumberofBoltHoles { get; set; }
+        public bool Active { get; set; }
+        public bool Deleted { get; set; }
+        public float Manufactured_Max_Load { get; set; }
         public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class CivilNonSteelLibraryAttributes
-        {
-            public string Note { get; set; }
-            public float Hight { get; set; } = 0;
-            public float SpaceLibrary { get; set; } = 0;
-            public string Prefix { get; set; }
-            public bool VerticalMeasured { get; set; }=false;
-            public int civilNonSteelTypeId { get; set; } 
-            public float NumberofBoltHoles { get; set; } = 0;
-            public bool Active { get; set; } = true;
-            public bool Deleted { get; set; } = false;
-            public float Manufactured_Max_Load { get; set; } = 0;
-        }
+        public List<AddDynamicLibAttValueViewModel> TLIdynamicAttLibValue { get; set; }
     }
 }

@@ -68,23 +68,23 @@ namespace TLIS_API.Controllers.OtherInventory
                 return Ok(new Response<AddSolarLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateSolarLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> UpdateSolarLibrary([FromBody]EditSolarLibraryViewModel editSolarLibrary)
-        {
-            if (TryValidateModel(editSolarLibrary, nameof(EditSolarLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editSolarLibrary, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString());
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditSolarLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateSolarLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> UpdateSolarLibrary([FromBody]EditSolarLibraryViewModel editSolarLibrary)
+        //{
+        //    if (TryValidateModel(editSolarLibrary, nameof(EditSolarLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editSolarLibrary, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString());
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditSolarLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableSolarLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableSolarLibrary(int Id)

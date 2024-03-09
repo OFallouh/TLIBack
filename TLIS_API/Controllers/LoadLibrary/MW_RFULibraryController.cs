@@ -74,23 +74,23 @@ namespace TLIS_API.Controllers.Load
             }
         }
 
-        [HttpPost("EditMW_RFULibrary")]
-        [ProducesResponseType(200, Type = typeof(EditMW_RFULibraryViewModel))]
-        public async Task<IActionResult> EditMW_RFULibrary([FromBody]EditMW_RFULibraryViewModel editMW_RFULibraryViewModel)
-        {
-            if(TryValidateModel(editMW_RFULibraryViewModel, nameof(EditMW_RFULibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), editMW_RFULibraryViewModel);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("EditMW_RFULibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_RFULibraryViewModel))]
+        //public async Task<IActionResult> EditMW_RFULibrary([FromBody]EditMW_RFULibraryViewModel editMW_RFULibraryViewModel)
+        //{
+        //    if(TryValidateModel(editMW_RFULibraryViewModel, nameof(EditMW_RFULibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), editMW_RFULibraryViewModel);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         [HttpPost("DisableMW_RFULibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(MW_RFULibraryViewModel))]

@@ -68,23 +68,23 @@ namespace TLIS_API.Controllers.LoadLibrary
                 return Ok(new Response<AddLoadOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateLoadOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(EditLoadOtherLibraryViewModel))]
-        public async Task<IActionResult> UpdateLoadOtherLibrary(EditLoadOtherLibraryViewModel editLoadOther)
-        {
-            if (TryValidateModel(editLoadOther, nameof(EditLoadOtherLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.LoadOtherLibraryService.EditLoadOtherLibrary(editLoadOther);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditLoadOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateLoadOtherLibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditLoadOtherLibraryViewModel))]
+        //public async Task<IActionResult> UpdateLoadOtherLibrary(EditLoadOtherLibraryViewModel editLoadOther)
+        //{
+        //    if (TryValidateModel(editLoadOther, nameof(EditLoadOtherLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.LoadOtherLibraryService.EditLoadOtherLibrary(editLoadOther);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditLoadOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableLoadOtherLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableLoadOtherLibrary(int Id)

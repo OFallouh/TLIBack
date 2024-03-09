@@ -86,23 +86,23 @@ namespace TLIS_API.Controllers.OtherInventory
                 return Ok(new Response<AddCabinetPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateCabinetPowerLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> UpdateCabinetPowerLibrary([FromBody]EditCabinetPowerLibraryViewModel editCabinetPowerLibrary)
-        {
-            if (TryValidateModel(editCabinetPowerLibrary, nameof(EditCabinetPowerLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editCabinetPowerLibrary, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditCabinetPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateCabinetPowerLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> UpdateCabinetPowerLibrary([FromBody]EditCabinetPowerLibraryViewModel editCabinetPowerLibrary)
+        //{
+        //    if (TryValidateModel(editCabinetPowerLibrary, nameof(EditCabinetPowerLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editCabinetPowerLibrary, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditCabinetPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableCabinetPowerLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableCabinetPowerLibrary(int Id)

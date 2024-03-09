@@ -61,23 +61,23 @@ namespace TLIS_API.Controllers.LoadLibrary
                 return Ok(new Response<AddRadioOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateRadioOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(EditRadioOtherLibraryViewModel))]
-        public async Task<IActionResult> UpdateRadioOtherLibrary(EditRadioOtherLibraryViewModel editRadioOther)
-        {
-            if (TryValidateModel(editRadioOther, nameof(EditRadioOtherLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.RadioLibraryService.EditRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), editRadioOther);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditRadioOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateRadioOtherLibrary")]
+        //[ProducesResponseType(200, Type = typeof(EditRadioOtherLibraryViewModel))]
+        //public async Task<IActionResult> UpdateRadioOtherLibrary(EditRadioOtherLibraryViewModel editRadioOther)
+        //{
+        //    if (TryValidateModel(editRadioOther, nameof(EditRadioOtherLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.RadioLibraryService.EditRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), editRadioOther);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditRadioOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableRadioOtherLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableRadioOtherLibrary(int Id)

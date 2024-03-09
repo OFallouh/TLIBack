@@ -20,7 +20,7 @@ namespace TLIS_API.Controllers
     [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
-    
+
     public class SideArmLibraryController : Controller
     {
         private readonly IUnitOfWorkService _unitOfWorkService;
@@ -38,14 +38,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("getAll")]
         [ProducesResponseType(200, Type = typeof(List<SideArmLibraryViewModel>))]
-        public async Task<IActionResult> GetSideArmLibraries([FromBody]List<FilterObjectList> filters, [FromQuery]ParameterPagination parameters)
+        public async Task<IActionResult> GetSideArmLibraries([FromBody] List<FilterObjectList> filters, [FromQuery] ParameterPagination parameters)
         {
             var response = await _unitOfWorkService.SideArmLibraryService.GetSideArmLibraries(filters, parameters);
             return Ok(response);
         }
         [HttpPost("GetSideArmLibrariesWithEnabledAttributes")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetSideArmLibrariesWithEnabledAttributes([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetSideArmLibrariesWithEnabledAttributes([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameters)
         {
             var response = _unitOfWorkService.SideArmLibraryService.GetSideArmLibrariesWithEnabledAttributes(CombineFilters, parameters);
             return Ok(response);
@@ -61,9 +61,9 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddSideArmLibrary")]
         [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
-        public IActionResult AddSideArmLibrary([FromBody]AddSideArmLibraryViewModel addSideArmLibraryViewModel)
+        public IActionResult AddSideArmLibrary([FromBody] AddSideArmLibraryViewModel addSideArmLibraryViewModel)
         {
-            if(TryValidateModel(addSideArmLibraryViewModel, nameof(AddSideArmLibraryViewModel)))
+            if (TryValidateModel(addSideArmLibraryViewModel, nameof(AddSideArmLibraryViewModel)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.SideArmLibraryService.AddSideArmLibrary(addSideArmLibraryViewModel, ConnectionString);
@@ -78,23 +78,23 @@ namespace TLIS_API.Controllers
             }
         }
 
-        [HttpPost("EditSideArmLibrary")]
-        [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
-        public async Task<IActionResult> EditSideArmLibrary([FromBody]EditSideArmLibraryViewModel editSideArmLibraryViewModel)
-        {
-            if(TryValidateModel(editSideArmLibraryViewModel, nameof(EditSideArmLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.SideArmLibraryService.EditSideArmLibrary(editSideArmLibraryViewModel);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditSideArmLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("EditSideArmLibrary")]
+        //[ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
+        //public async Task<IActionResult> EditSideArmLibrary([FromBody]EditSideArmLibraryViewModel editSideArmLibraryViewModel)
+        //{
+        //    if(TryValidateModel(editSideArmLibraryViewModel, nameof(EditSideArmLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.SideArmLibraryService.EditSideArmLibrary(editSideArmLibraryViewModel);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditSideArmLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         [HttpPost("DisableSideArmLibrary")]
         [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
@@ -103,7 +103,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.SideArmLibraryService.Disable(id);
             return Ok(response);
         }
-        
+
         [HttpPost("DeleteSideArmLibrary")]
         [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
         public async Task<IActionResult> DeleteSideArmLibrary(int id)

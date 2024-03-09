@@ -68,23 +68,23 @@ namespace TLIS_API.Controllers.OtherInventory
                 return Ok(new Response<AddCabinetTelecomLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [HttpPost("UpdateCabinetTelecomLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> UpdateCabinetTelecomLibrary([FromBody]EditCabinetTelecomLibraryViewModel editCabinetTelecomLibrary)
-        {
-            if (TryValidateModel(editCabinetTelecomLibrary, nameof(EditCabinetTelecomLibraryViewModel)))
-            {
-                var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editCabinetTelecomLibrary, Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString());
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditCabinetTelecomLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("UpdateCabinetTelecomLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> UpdateCabinetTelecomLibrary([FromBody]EditCabinetTelecomLibraryViewModel editCabinetTelecomLibrary)
+        //{
+        //    if (TryValidateModel(editCabinetTelecomLibrary, nameof(EditCabinetTelecomLibraryViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editCabinetTelecomLibrary, Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString());
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditCabinetTelecomLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [HttpPost("DisableCabinetTelecomLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableCabinetTelecomLibrary(int Id)

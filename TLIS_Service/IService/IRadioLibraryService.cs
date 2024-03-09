@@ -20,7 +20,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<RadioOtherLibraryViewModel>> GetOtherRadioLibraries(ParameterPagination parameters, List<FilterObjectList> filters = null);
         Response<AllItemAttributes> GetById(int Id, string TableName);
         Response<AllItemAttributes> AddRadioLibrary(string TableName, object RadioLibraryViewModel, string connectionString);
-        Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);
+       // Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);
         Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id);
         Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id);
         Response<AllItemAttributes> GetForAdd(string TableName);

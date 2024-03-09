@@ -24,7 +24,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<CabinetTelecomLibraryViewModel>> GetCabinetTelecomLibraries(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<AllItemAttributes> GetById(int Id, string OtherInventoryType);
         Response<AllItemAttributes> AddOtherInventoryLibrary(string OtherInventoryType, object OtherInventoryLibraryViewModel, string connectionString);
-        Task<Response<AllItemAttributes>> EditOtherInventoryLibrary(object OtherInventoryLibraryViewModel, string OtherInventoryType);
+       // Task<Response<AllItemAttributes>> EditOtherInventoryLibrary(object OtherInventoryLibraryViewModel, string OtherInventoryType);
         Task<Response<AllItemAttributes>> Disable(int Id, string OtherInventoryType);
         Task<Response<AllItemAttributes>> Delete(int Id, string OtherInventoryType);
         Response<AllItemAttributes> GetForAdd(string OtherInventoryType);

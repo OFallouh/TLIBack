@@ -15,7 +15,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<LoadOtherLibraryViewModel>> GetLoadOtherLibraries(ParameterPagination parameters, List<FilterObjectList> filters);
         Response<AllItemAttributes> GetById(int Id);
         Response<AllItemAttributes> AddLoadOtherLibrary(AddLoadOtherLibraryViewModel LoadOtherLibraryViewModel, string connectionString);
-        Task<Response<AllItemAttributes>> EditLoadOtherLibrary(EditLoadOtherLibraryViewModel LoadOtherLibraryViewModel);
+       // Task<Response<AllItemAttributes>> EditLoadOtherLibrary(EditLoadOtherLibraryViewModel LoadOtherLibraryViewModel);
         Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id);
         Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id);
         Response<AllItemAttributes> GetForAdd();

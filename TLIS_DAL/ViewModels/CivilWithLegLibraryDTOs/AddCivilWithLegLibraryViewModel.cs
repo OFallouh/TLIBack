@@ -18,25 +18,23 @@ namespace TLIS_DAL.ViewModels.CivilWithLegDTOs
 {
     public class AddCivilWithLegLibraryViewModel
     {
-        public CivilWihtLegsLibraryAttributes LibraryAttribute { get; set; }
+        public string Model { get; set; }
+        public string Note { get; set; }
+        public string Prefix { get; set; }
+        public float? Height_Designed { get; set; }
+        public float? Max_load_M2 { get; set; }
+        public float? SpaceLibrary { get; set; }
+        public bool Active { get; set; }
+        public bool Deleted { get; set; }
+        public int supportTypeDesignedId { get; set; }
+        public int sectionsLegTypeId { get; set; }
+        public int structureTypeId { get; set; }
+        public int civilSteelSupportCategoryId { get; set; }
+        public float Manufactured_Max_Load { get; set; }
+        public int NumberOfLegs { get; set; }
         public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class CivilWihtLegsLibraryAttributes
-        {
-            public string? Note { get; set; }
-            public string Prefix { get; set; }
-            public float Height_Designed { get; set; } = 0;
-            public float Max_load_M2 { get; set; } = 0;
-            public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
-            public bool Deleted { get; set; } = false;
-            public int? supportTypeDesignedId { get; set; }
-            public int? sectionsLegTypeId { get; set; }
-            public int structureTypeId { get; set; }
-            public int? civilSteelSupportCategoryId { get; set; }
-            public float Manufactured_Max_Load { get; set; } = 0;
-            public int NumberOfLegs { get; set; } = 0;
-        }
+        public List<AddLegViewModel> LegsViewModel { get; set; }
+        public List<AddDynamicLibAttValueViewModel> TLIdynamicAttLibValue { get; set; }
     }
       
 }
