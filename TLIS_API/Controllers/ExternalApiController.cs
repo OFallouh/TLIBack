@@ -8,6 +8,7 @@ using TLIS_DAL.ViewModels.GroupDTOs;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
 using TLIS_Service.ServiceBase;
+using static TLIS_Service.Services.UserService;
 
 namespace TLIS_API.Controllers
 {
@@ -23,14 +24,14 @@ namespace TLIS_API.Controllers
             _configuration = configuration;
         }
         [HttpPost("GetEmailByUserId")]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        [ProducesResponseType(200, Type = typeof(Task<CallTLIResponse>))]
         public IActionResult GetEmailByUserId(int UserId)
         {
             var response = _unitOfWorkService.UserService.GetEmailByUserId(UserId);
             return Ok(response);
         }
         [HttpPost("GetNameByUserId")]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        [ProducesResponseType(200, Type = typeof(Task<CallTLIResponse>))]
         public IActionResult GetNameByUserId(int UserId)
         {
             var response = _unitOfWorkService.UserService.GetNameByUserId(UserId);

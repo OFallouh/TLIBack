@@ -34,6 +34,7 @@ using System.IO;
 using LinqToExcel.Extensions;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using TLIS_DAL.ViewModels.wf;
+using static TLIS_Service.Services.UserService;
 
 namespace TLIS_Service.Services
 {
@@ -1003,48 +1004,62 @@ namespace TLIS_Service.Services
             }
 
         }
-        public ApiResponse GetEmailByUserId(int UserId)
+        public async Task<CallTLIResponse> GetEmailByUserId(int UserId)
         {
+            CallTLIResponse callTLIResponse = new CallTLIResponse();
             try
             {
                 var Email = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
                 if (Email != null)
                 {
-                    return new ApiResponse(Email.Email, null);
+                    callTLIResponse.result = Email.Email;
                 }
                 else
                 {
-                    return new ApiResponse(false, "This User Is Not Active");
+                    callTLIResponse.errorMessage = "This User Is Not Active";
                 }
             }
             catch (Exception err)
             {
 
-                return new ApiResponse(false, err.Message);
+                callTLIResponse.errorMessage = err.Message;
             }
-         
+            return callTLIResponse;
         }
-        public ApiResponse GetNameByUserId(int UserId)
+        public async Task<CallTLIResponse> GetNameByUserId(int UserId)
         {
+            CallTLIResponse callTLIResponse = new CallTLIResponse();
             try
             {
+              
                 var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
                 if (UserName != null)
                 {
-                    return new ApiResponse(UserName.UserName, null);
+                    callTLIResponse.result = UserName.UserName;
                 }
                 else
                 {
-                    return new ApiResponse(false, "This User Is Not Active");
-                }
+                    callTLIResponse.errorMessage = "This User Is Not Active";
+                } 
             }
             catch (Exception err)
             {
 
-                return new ApiResponse(false, err.Message);
+                callTLIResponse.errorMessage = err.Message;
             }
-           
+            return callTLIResponse;
         }
+
+        public class CallTLIResponse
+        {
+
+            public string result { get; set; }
+            public object count { get; set; }
+            public object errorMessage { get; set; }
+
+
+        }
+    
         public bool GetSession(int UserId,string Ip)
         {
             var SessionInfo = _dbContext.TLIsession.FirstOrDefault(x => x.UserId == UserId && x.IP == Ip && x.LoginDate < DateTime.Now);
