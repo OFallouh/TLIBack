@@ -110,13 +110,26 @@ namespace TLIS_API.Middleware.WorkFlow
                                         {
                                             if (TaskInfo.Result.result.MetaLink.Api != null && TaskInfo.Result.result.AssignToUserId != 0 && TaskInfo.Result.result.Status != null)
                                             {
-                                                if (TaskInfo.Result.result.MetaLink.Api.ToLower() == apiPath.ToLower() && TaskInfo.Result.result.AssignToUserId == userIdInt64 && TaskInfo.Result.result.Status == Task_Status_Enum.Open)
+                                                string[] ApiParts = TaskInfo.Result.result.MetaLink.Api.Split('/');
+                                                string[] apiPathParts = apiPath.Split('/');
+
+                                                // Convert the first three parts of apiPath to lowercase
+                                                for (int i = 0; i < 3 && i < apiPathParts.Length; i++)
+                                                {
+                                                    apiPathParts[i] = apiPathParts[i].ToLower();
+                                                }
+
+                                                string lowerCaseApiPath = string.Join("/", apiPathParts.Take(4));
+
+                                                // Check equality
+                                                bool result = TaskInfo.Result.result.MetaLink.Api.ToLower() == lowerCaseApiPath.ToLower();
+
+                                                if (result == true && TaskInfo.Result.result.AssignToUserId == userIdInt64 && TaskInfo.Result.result.Status == Task_Status_Enum.Open)
                                                 {
                                                     context.Result = context.Result;
                                                     return;
 
                                                 }
-
                                                 else
                                                 {
                                                     context.Result = new UnauthorizedObjectResult("401 Unauthorized");
