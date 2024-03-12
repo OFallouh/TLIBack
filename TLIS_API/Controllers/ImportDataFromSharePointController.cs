@@ -18,7 +18,7 @@ using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    //[ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -143,6 +143,15 @@ namespace TLIS_API.Controllers
             var File = Request.Form.Files[0];
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.ImportSiteDataService.ImportInstallationFileDataTower(File, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("ImportFiles")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult ImportFiles()
+        {
+            var File = Request.Form.Files[0];
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.ImportSiteDataService.MigrationFiles(File, ConnectionString);
             return Ok(response);
         }
     }

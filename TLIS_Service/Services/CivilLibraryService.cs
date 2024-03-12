@@ -124,7 +124,7 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                     return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                        
-                                _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegEntites);
+                              //  _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegEntites);
                                     
                                 _unitOfWork.SaveChanges();
 
@@ -169,7 +169,7 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                     return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                _unitOfWork.CivilWithoutLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithoutLegEntites);
+                               // _unitOfWork.CivilWithoutLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithoutLegEntites);
                                 _unitOfWork.SaveChanges();
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
@@ -211,7 +211,7 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                     return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                                   
-                                _unitOfWork.CivilNonSteelLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, civilNonSteelLibraryEntity);
+                               // _unitOfWork.CivilNonSteelLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, civilNonSteelLibraryEntity);
                                 _unitOfWork.SaveChanges();
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
@@ -2186,15 +2186,15 @@ namespace TLIS_Service.Services
                             switch (item.Desc.ToLower())
                             {
                                 case "tlistructuretype":
-                                    item.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
+                                    item.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "tliInstCivilwithoutLegsType":
-                                    item.Value = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
+                                    item.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "tlicivilwithoutlegcategory":
-                                    item.Value = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
+                                    item.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
                                         .GetWhere(x => !x.disable).ToList());
                                     break;
                             }
@@ -2203,7 +2203,7 @@ namespace TLIS_Service.Services
                     })
                     .ToList();
 
-                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals("CivilSupport"));
+                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
                 Attributes.AttributesActivatedLibrary = ListOfAttributesActivated;
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2239,7 +2239,7 @@ namespace TLIS_Service.Services
                         return DynamicAttribute;
                     });
 
-                Attributes.DynamicAtts = DynamicAttributesWithoutValue;
+                Attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
                 List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
                 BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
@@ -2274,15 +2274,15 @@ namespace TLIS_Service.Services
                             switch (item.Desc.ToLower())
                             {
                                 case "tlistructuretype":
-                                    item.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
+                                    item.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "tliInstCivilwithoutLegsType":
-                                    item.Value = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
+                                    item.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "tlicivilwithoutlegcategory":
-                                    item.Value = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
+                                    item.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
                                         .GetWhere(x => !x.disable).ToList());
                                     break;
                             }
@@ -2291,7 +2291,7 @@ namespace TLIS_Service.Services
                     })
                     .ToList();
 
-                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals("CivilSupport"));
+                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
                 Attributes.AttributesActivatedLibrary = ListOfAttributesActivated;
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2327,7 +2327,7 @@ namespace TLIS_Service.Services
                         return DynamicAttribute;
                     });
 
-                Attributes.DynamicAtts = DynamicAttributesWithoutValue;
+                Attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
                 List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
                 BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
@@ -2362,15 +2362,15 @@ namespace TLIS_Service.Services
                             switch (item.Desc.ToLower())
                             {
                                 case "tlistructuretype":
-                                    item.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
+                                    item.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "tliInstCivilwithoutLegsType":
-                                    item.Value = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
+                                    item.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "tlicivilwithoutlegcategory":
-                                    item.Value = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
+                                    item.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
                                         .GetWhere(x => !x.disable).ToList());
                                     break;
                             }
@@ -2379,7 +2379,7 @@ namespace TLIS_Service.Services
                     })
                     .ToList();
 
-                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals("CivilSupport"));
+                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
                 Attributes.AttributesActivatedLibrary = ListOfAttributesActivated;
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2415,7 +2415,7 @@ namespace TLIS_Service.Services
                         return DynamicAttribute;
                     });
 
-                Attributes.DynamicAtts = DynamicAttributesWithoutValue;
+                Attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
                 List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
                 BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
@@ -2446,32 +2446,37 @@ namespace TLIS_Service.Services
                 if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                 {
                     List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs")
-                        .AsParallel()
-                        .Select(FKitem =>
+                    .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs")
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                         {
-                            if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                            switch (FKitem.Desc.ToLower())
                             {
-                                switch (FKitem.Desc.ToLower())
-                                {
-                                    case "tlisectionslegtype":
-                                        FKitem.Value = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository
-                                            .GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                        break;
-                                    case "tlistructuretype":
-                                        FKitem.Value = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
-                                            .GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                        break;
-                                    case "tlisupporttypedesigned":
-                                        FKitem.Value = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository
-                                            .GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                        break;
-                                }
+                                case "tlisectionslegtype":
+                                    FKitem.Options = _unitOfWork.SectionsLegTypeRepository
+                                        .GetWhere(x => !x.Deleted && !x.Disable)
+                                        .Select(x => _mapper.Map<SectionsLegTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                                case "tlistructuretype":
+                                    FKitem.Options = _unitOfWork.StructureTypeRepository
+                                        .GetWhere(x => !x.Deleted && !x.Disable)
+                                        .Select(x => _mapper.Map<StructureTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                                case "tlisupporttypedesigned":
+                                    FKitem.Options = _unitOfWork.SupportTypeDesignedRepository
+                                        .GetWhere(x => !x.Deleted && !x.Disable)
+                                        .Select(x => _mapper.Map<SupportTypeDesignedViewModel>(x))
+                                        .ToList();
+                                    break;
                             }
-                            return FKitem;
-                        }).ToList();
+                        }
+                        return FKitem;
+                    }).ToList();
 
-                    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString()));
+                    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.CivilSupport.ToString()));
                     Attributes.AttributesActivatedLibrary = listofAttributesActivated;
 
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2501,7 +2506,7 @@ namespace TLIS_Service.Services
                             return DynamicAttribute;
                         });
 
-                    Attributes.DynamicAtts = DynamicAttributesWithoutValue.ToList();
+                    Attributes.DynamicAttributes = DynamicAttributesWithoutValue.ToList();
                 }
 
                 else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
@@ -2511,15 +2516,15 @@ namespace TLIS_Service.Services
                     .Select(item =>
                     {
                         if (item.DataType.ToLower() == "list" && item.Desc?.ToLower() == "tlicivilnonsteeltype")
-                            item.Value = _mapper.Map<List<CivilNonSteelTypeViewModel>>(
+                            item.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(
                                 db.TLIcivilNonSteelType.Where(x => !x.Disable).ToList());
                         return item;
                     })
                     .ToList();
-                    activatedAttributes.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals("CivilSupport"));
+                    activatedAttributes.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
                     Attributes.AttributesActivatedLibrary = activatedAttributes;
 
-                    Attributes.DynamicAtts = _unitOfWork.DynamicAttRepository
+                    Attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository
                     .GetDynamicLibAtt(TableNameEntity.Id, null)
                     .Select(DynamicAttribute =>
                     {

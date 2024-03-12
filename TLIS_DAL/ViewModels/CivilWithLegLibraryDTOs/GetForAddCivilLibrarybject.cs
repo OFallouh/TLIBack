@@ -12,6 +12,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
     public class GetForAddCivilLibrarybject
     {
         public IEnumerable<BaseAttViews> AttributesActivatedLibrary { get; set; } = new List<BaseAttViews>();
-        public IEnumerable<BaseInstAttViewDynamic> DynamicAtts { get; set; } = new List<BaseInstAttViewDynamic>();
+        public IEnumerable<BaseInstAttViewDynamic> DynamicAttributes { get; set; } = new List<BaseInstAttViewDynamic>();
+        public IEnumerable<BaseAttViews> LogisticalAttributes { get; set; } = new List<BaseAttViews>();
     }
 }

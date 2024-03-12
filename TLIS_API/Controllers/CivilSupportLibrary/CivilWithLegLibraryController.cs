@@ -14,6 +14,7 @@ using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_Service.Helpers;
@@ -22,7 +23,7 @@ using static TLIS_Service.Services.CivilLibraryService;
 
 namespace TLIS_API.Controllers
 {
-    //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilWithLegLibraryController : Controller
@@ -59,11 +60,11 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddCivilWithLegLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithLegLibraryViewModel))]
-        public IActionResult AddCivilWithLegLibrary([FromBody]AddCivilWithLegLibraryViewModel CivilWithLegLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
+        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithoutLegsLibraryObject CivilWithLegLibraryViewModel)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithLegLibraryViewModel)))
+            if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithoutLegsLibraryObject)))
             {
                 var response = _unitOfWorkService.CivilLibraryService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString);
                 return Ok(response);
@@ -73,7 +74,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                             from error in state.Errors
                             select error.ErrorMessage;
-                return Ok(new Response<AddCivilWithLegLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         //[HttpPost("EditCivilWithLegLibrary")]

@@ -21,7 +21,6 @@ using System.Data;
 using System.Data.Linq;
 using System.Data.OleDb;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Security.Policy;
@@ -981,7 +980,7 @@ namespace TLIS_Service.Services
 
                                     SideArmTransaction.Complete();
 
-                                  //  SideArmLibraryService._SideArmLibraryEntities.Add(NewSideArmLibraryEntity);
+                                    //  SideArmLibraryService._SideArmLibraryEntities.Add(NewSideArmLibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -1229,7 +1228,7 @@ namespace TLIS_Service.Services
 
                                         MastTransaction.Complete();
 
-                                       // CivilLibraryService._CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
+                                        // CivilLibraryService._CivilWithoutLegLibraryEntities.Add(ObjectForAddInCashList);
 
                                     }
                                     else
@@ -1634,8 +1633,8 @@ namespace TLIS_Service.Services
                                         .GetIncludeWhereFirst(x => x.Id == NewMWODULibraryEntity.Id, x => x.parity);
 
                                     MW_ODUTransaction.Complete();
-                                    
-                                  //  MWLibraryService._MW_ODULibraryEntities.Add(ObjectForAddInCashList);
+
+                                    //  MWLibraryService._MW_ODULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -1971,7 +1970,7 @@ namespace TLIS_Service.Services
 
                                     RadioAntennaTransaction.Complete();
 
-                                   /// RadioLibraryService._RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
+                                    /// RadioLibraryService._RadioAntennaLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -2303,7 +2302,7 @@ namespace TLIS_Service.Services
 
                                     RadioRRUTransaction.Complete();
 
-                                  //  RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
+                                    //  RadioLibraryService._RadioRRULibraryEntities.Add(NewRadioRRULibraryEntity);
                                 }
                                 catch (Exception err)
                                 {
@@ -2543,7 +2542,7 @@ namespace TLIS_Service.Services
 
                                     MW_RFUTransaction.Complete();
 
-                                  //  MWLibraryService._MW_RFULibraryEntities.Add(ObjectForAddInCashList);
+                                    //  MWLibraryService._MW_RFULibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -3234,7 +3233,7 @@ namespace TLIS_Service.Services
 
                                                 NewMWDishLibraryEntity.asTypeId = NewAsTypeEntity.Id;
                                             }
-                                        } 
+                                        }
 
                                         string CSVMW_DishPolarityType = MW_DishDataTable.Rows[j]["POLARITY"].ToString();
 
@@ -3261,7 +3260,7 @@ namespace TLIS_Service.Services
                                                 NewMWDishLibraryEntity.polarityTypeId = NewPolarityTypeEntity.Id;
                                             }
                                         }
-                                        
+
                                         _unitOfWork.MW_DishLibraryRepository.Add(NewMWDishLibraryEntity);
                                         _unitOfWork.SaveChanges();
 
@@ -3278,7 +3277,7 @@ namespace TLIS_Service.Services
 
                                     MW_DishTransaction.Complete();
 
-                                   // MWLibraryService._MW_DishLibraryEntities.Add(ObjectForAddInCashList);
+                                    // MWLibraryService._MW_DishLibraryEntities.Add(ObjectForAddInCashList);
                                 }
                                 catch (Exception err)
                                 {
@@ -3621,7 +3620,7 @@ namespace TLIS_Service.Services
 
                                         PowerTransaction.Complete();
 
-                                      //  PowerLibraryService._PowerLibraryEntities.Add(ObjectForAddInCashList);
+                                        //  PowerLibraryService._PowerLibraryEntities.Add(ObjectForAddInCashList);
                                     }
                                 }
                                 catch (Exception err)
@@ -7239,11 +7238,11 @@ namespace TLIS_Service.Services
 
                     return new Response<string>(err.Message);
                 }
-                    
-            
+
+
             }
         }
-    
+
         public Response<string> ImportInstallationFileData2(IFormFile File, string ConnectionString)
         {
             List<TLIdataType> DataTypes = _unitOfWork.DataTypeRepository.GetAllWithoutCount().ToList();
@@ -20647,70 +20646,70 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                   
-                        ////////////////////////////////////////////////////////////
-                        /////////////////// Generator //////////////////////////////////
-                        ////////////////////////////////////////////////////////////
 
-                             Generator:
+                    ////////////////////////////////////////////////////////////
+                    /////////////////// Generator //////////////////////////////////
+                    ////////////////////////////////////////////////////////////
 
-                            ExcelWorksheet GeneratorSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Generator".ToLower());
-                            int GeneratorRows = 0;
-                            try
-                            {
-                                GeneratorRows = GeneratorSheet.Dimension.End.Row;
-                            }
-                            catch (NullReferenceException)
-                            {
+                    Generator:
+
+                        ExcelWorksheet GeneratorSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "Generator".ToLower());
+                        int GeneratorRows = 0;
+                        try
+                        {
+                            GeneratorRows = GeneratorSheet.Dimension.End.Row;
+                        }
+                        catch (NullReferenceException)
+                        {
                             goto SiteAttachFile;
-                            }
-                            int GeneratorColumns = GeneratorSheet.Dimension.End.Column;
+                        }
+                        int GeneratorColumns = GeneratorSheet.Dimension.End.Column;
 
-                            DataTable GeneratorDataTable = new DataTable();
-                            List<string> GeneratorSheetColumn = new List<string>();
+                        DataTable GeneratorDataTable = new DataTable();
+                        List<string> GeneratorSheetColumn = new List<string>();
 
-                            for (int i = 1; i <= GeneratorColumns; i++)
+                        for (int i = 1; i <= GeneratorColumns; i++)
+                        {
+                            string ColName = GeneratorSheet.Cells[1, i].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                            GeneratorSheetColumn.Add(ColName);
+                            GeneratorDataTable.Columns.Add(ColName);
+                        }
+
+                        for (int i = 2; i <= GeneratorRows; i++)
+                        {
+                            DataRow GeneratorDataRow = GeneratorDataTable.NewRow();
+                            for (int j = 1; j <= GeneratorColumns; j++)
                             {
-                                string ColName = GeneratorSheet.Cells[1, i].Value.ToString().Trim();
+                                string ColName = GeneratorSheet.Cells[1, j].Value.ToString().Trim();
                                 ColName = Regex.Replace(ColName, @"\s+", " ");
 
-                                GeneratorSheetColumn.Add(ColName);
-                                GeneratorDataTable.Columns.Add(ColName);
-                            }
-
-                            for (int i = 2; i <= GeneratorRows; i++)
-                            {
-                                DataRow GeneratorDataRow = GeneratorDataTable.NewRow();
-                                for (int j = 1; j <= GeneratorColumns; j++)
+                                object Value = GeneratorSheet.Cells[i, j].Value;
+                                if (Value != null)
                                 {
-                                    string ColName = GeneratorSheet.Cells[1, j].Value.ToString().Trim();
-                                    ColName = Regex.Replace(ColName, @"\s+", " ");
+                                    string ValueAsString = Value.ToString().Trim();
+                                    ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
 
-                                    object Value = GeneratorSheet.Cells[i, j].Value;
-                                    if (Value != null)
-                                    {
-                                        string ValueAsString = Value.ToString().Trim();
-                                        ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                                        Value = ValueAsString;
-                                        GeneratorDataRow[ColName] = Value;
-                                    }
-                                    else
-                                    {
-                                        GeneratorDataRow[ColName] = Value;
-                                    }
+                                    Value = ValueAsString;
+                                    GeneratorDataRow[ColName] = Value;
                                 }
-                                GeneratorDataTable.Rows.Add(GeneratorDataRow);
+                                else
+                                {
+                                    GeneratorDataRow[ColName] = Value;
+                                }
                             }
+                            GeneratorDataTable.Rows.Add(GeneratorDataRow);
+                        }
 
-                            //
-                            // Dynamic Attributes For Power..
-                            //
+                        //
+                        // Dynamic Attributes For Power..
+                        //
 
-                            int GeneratorTableNameId = TablesName.FirstOrDefault(x =>
-                             x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIgenerator.ToString().ToLower()).Id;
+                        int GeneratorTableNameId = TablesName.FirstOrDefault(x =>
+                         x.TableName.ToLower() == Helpers.Constants.TablesNames.TLIgenerator.ToString().ToLower()).Id;
 
-                            List<TLIdynamicAtt> GeneratorMissedAttributeCSV = new List<TLIdynamicAtt>()
+                        List<TLIdynamicAtt> GeneratorMissedAttributeCSV = new List<TLIdynamicAtt>()
                             {
                                 new TLIdynamicAtt
                                 {
@@ -21014,69 +21013,46 @@ namespace TLIS_Service.Services
                                 }
                             };
 
-                            List<TLIdynamicAtt> GeneratorAllDynamicAttribute = _unitOfWork.DynamicAttRepository
-                                .GetWhere(x => x.tablesNamesId == GeneratorTableNameId).ToList();
+                        List<TLIdynamicAtt> GeneratorAllDynamicAttribute = _unitOfWork.DynamicAttRepository
+                            .GetWhere(x => x.tablesNamesId == GeneratorTableNameId).ToList();
 
 
-                            List<TLIdynamicAtt> GeneratorMissedAttributes = GeneratorMissedAttributeCSV
-                               .Except(GeneratorAllDynamicAttribute, new TLIdynamicAttComparer())
-                               .ToList();
+                        List<TLIdynamicAtt> GeneratorMissedAttributes = GeneratorMissedAttributeCSV
+                           .Except(GeneratorAllDynamicAttribute, new TLIdynamicAttComparer())
+                           .ToList();
 
-                            _unitOfWork.DynamicAttRepository.AddRange(GeneratorMissedAttributes);
-                            _unitOfWork.SaveChanges();
+                        _unitOfWork.DynamicAttRepository.AddRange(GeneratorMissedAttributes);
+                        _unitOfWork.SaveChanges();
 
-                            for (int j = 0; j <= GeneratorDataTable.Rows.Count - 1; j++)
+                        for (int j = 0; j <= GeneratorDataTable.Rows.Count - 1; j++)
+                        {
+                            using (TransactionScope GeneratorTransaction = new TransactionScope(TransactionScopeOption.Required,
+                                new System.TimeSpan(0, 15, 0)))
                             {
-                                using (TransactionScope GeneratorTransaction = new TransactionScope(TransactionScopeOption.Required,
-                                    new System.TimeSpan(0, 15, 0)))
+                                try
                                 {
-                                    try
+                                    //
+                                    // Library Information..
+                                    //
+
+                                    string GeneratorLibraryModel = GeneratorDataTable.Rows[j]["Type1"].ToString();
+                                    int GeneratorLibraryId = 0;
+                                    if (!string.IsNullOrEmpty(GeneratorLibraryModel))
                                     {
-                                        //
-                                        // Library Information..
-                                        //
+                                        GeneratorTransaction.Dispose();
 
-                                        string GeneratorLibraryModel = GeneratorDataTable.Rows[j]["Type1"].ToString();
-                                        int GeneratorLibraryId = 0;
-                                        if (!string.IsNullOrEmpty(GeneratorLibraryModel))
+                                        TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
+                                             .GetWhereFirst(x => x.Model.ToLower() == GeneratorLibraryModel.ToLower() && !x.Deleted);
+
+                                        if (CheckGeneratorLibraryModel == null)
                                         {
-                                            GeneratorTransaction.Dispose();
-
-                                            TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
-                                                 .GetWhereFirst(x => x.Model.ToLower() == GeneratorLibraryModel.ToLower() && !x.Deleted);
-
-                                            if (CheckGeneratorLibraryModel == null)
-                                            {
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Type1) coulumn's value: ({GeneratorLibraryModel}) doesn't exist in TLIS",
-                                                    IsDeleted = false,
-                                                    IsLib = true,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
-                                                    SheetName = "Generator",
-                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            GeneratorLibraryId = CheckGeneratorLibraryModel.Id;
-                                        }
-                                        else
-                                        {
-                                           GeneratorTransaction.Dispose();
-
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Type1) coulumn's value can't be null or empty",
+                                                ErrMsg = $"(Type1) coulumn's value: ({GeneratorLibraryModel}) doesn't exist in TLIS",
                                                 IsDeleted = false,
                                                 IsLib = true,
-                                                RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                                RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
                                                 SheetName = "Generator",
                                                 UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
                                             };
@@ -21087,78 +21063,50 @@ namespace TLIS_Service.Services
                                             continue;
                                         }
 
-                                        //
-                                        // Installation Information..
-                                        //
+                                        GeneratorLibraryId = CheckGeneratorLibraryModel.Id;
+                                    }
+                                    else
+                                    {
+                                        GeneratorTransaction.Dispose();
 
-                                        string Generator_SiteCodeAfterCheck = string.Empty;
-                                        string Generator_SiteCode = GeneratorDataTable.Rows[j]["Site Code"].ToString();
-                                        string Generator_SiteName = GeneratorDataTable.Rows[j]["Site Name"].ToString();
-
-                                        if (!string.IsNullOrEmpty(Generator_SiteCode))
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                         {
-                                            TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                                .GetWhereFirst(x => x.SiteCode.ToLower() == Generator_SiteCode.ToLower());
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(Type1) coulumn's value can't be null or empty",
+                                            IsDeleted = false,
+                                            IsLib = true,
+                                            RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                            SheetName = "Generator",
+                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                        };
 
-                                            if (CheckSiteCode == null)
-                                            {
-                                               GeneratorTransaction.Dispose();
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
 
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Site Code) coulumn's value: ({Generator_SiteCode}) doesn't exist in TLIS",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                    SheetName = "Generator",
-                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                };
+                                        continue;
+                                    }
 
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
+                                    //
+                                    // Installation Information..
+                                    //
 
-                                                continue;
-                                            }
+                                    string Generator_SiteCodeAfterCheck = string.Empty;
+                                    string Generator_SiteCode = GeneratorDataTable.Rows[j]["Site Code"].ToString();
+                                    string Generator_SiteName = GeneratorDataTable.Rows[j]["Site Name"].ToString();
 
-                                            Generator_SiteCodeAfterCheck = Generator_SiteCode;
-                                        }
-                                        else if (!string.IsNullOrEmpty(Generator_SiteName))
-                                        {
-                                            TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                                .GetWhereFirst(x => x.SiteName.ToLower() == Generator_SiteName.ToLower());
+                                    if (!string.IsNullOrEmpty(Generator_SiteCode))
+                                    {
+                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                                            .GetWhereFirst(x => x.SiteCode.ToLower() == Generator_SiteCode.ToLower());
 
-                                            if (CheckSiteCode == null)
-                                            {
-                                                GeneratorTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Site Name) coulumn's value: ({Generator_SiteName}) doesn't exist in TLIS",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                    SheetName = "Generator",
-                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            Generator_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
-                                        }
-                                        else
+                                        if (CheckSiteCode == null)
                                         {
                                             GeneratorTransaction.Dispose();
 
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
-                                                ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
+                                                ErrMsg = $"(Site Code) coulumn's value: ({Generator_SiteCode}) doesn't exist in TLIS",
                                                 IsDeleted = false,
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
@@ -21171,126 +21119,25 @@ namespace TLIS_Service.Services
 
                                             continue;
                                         }
-                                        int IntPareser = 0;
-                                        string GeneratorSerialnumberString = GeneratorDataTable.Rows[j]["Serial number"].ToString();
-                                        string GeneratorNumberoffeultankString = GeneratorDataTable.Rows[j]["Number of feul tank"].ToString();
-                                        int GeneratorNumberoffeultank = 0;
-                                        if (!string.IsNullOrEmpty(GeneratorNumberoffeultankString))
-                                        {
-                                            CheckParser = int.TryParse(GeneratorNumberoffeultankString, out IntPareser);
 
-                                            if (CheckParser)
-                                            GeneratorNumberoffeultank = IntPareser;
+                                        Generator_SiteCodeAfterCheck = Generator_SiteCode;
+                                    }
+                                    else if (!string.IsNullOrEmpty(Generator_SiteName))
+                                    {
+                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                                            .GetWhereFirst(x => x.SiteName.ToLower() == Generator_SiteName.ToLower());
 
-                                            else
-                                            {
-                                                GeneratorTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Number of feul tank) coulumn's value: ({GeneratorNumberoffeultankString}) must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                                                    SheetName = "Generator",
-                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-
-                                        string GeneratorHeightString = GeneratorDataTable.Rows[j]["Height (Cm)"].ToString();
-                                        float GeneratorHeight = 0;
-                                        if (!string.IsNullOrEmpty(GeneratorHeightString))
-                                        {
-                                            CheckParser = float.TryParse(GeneratorHeightString, out FloatParser);
-
-                                            if (CheckParser)
-                                             GeneratorHeight = FloatParser;
-
-                                            else
-                                            {
-                                                GeneratorTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Height (Cm)) coulumn's value: ({GeneratorHeightString}) must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                                                    SheetName = "Generator",
-                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-
-                                        string GeneratoribraryModelI = GeneratorDataTable.Rows[j]["Type1"].ToString();
-                                        int GeneratorLibraryModelId = 0;
-                                        if (!string.IsNullOrEmpty(GeneratoribraryModelI))
-                                        {
-                                            TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
-                                                .GetWhereFirst(x => x.Model.ToLower() == GeneratoribraryModelI.ToLower() && !x.Deleted);
-
-                                            if (CheckGeneratorLibraryModel == null)
-                                            {
-                                                GeneratorTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(SolarLibraryModel) coulumn's value: ({GeneratoribraryModelI}) doesn't exist in TLIS",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
-                                                    SheetName = "Generator",
-                                                    UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            GeneratorLibraryModelId = CheckGeneratorLibraryModel.Id;
-                                        }
-
-                                        string GeneratorName = GeneratorDataTable.Rows[j]["Generator Name"].ToString();
-                                        if (string.IsNullOrEmpty(GeneratorName))
-                                        {
-                                            GeneratorName = GeneratorLibraryModel + " " + Generator_SiteName;
-                                        }
-
-                                    // Check if Power Name is Already Exist on This Site..
-
-                                    TLIotherInSite CheckSolarName = _unitOfWork.OtherInSiteRepository
-                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Generator_SiteCodeAfterCheck.ToLower() && x.allOtherInventoryInstId != null ?
-                                                (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.generatorId != null ?
-                                                    (x.allOtherInventoryInst.generator.Name.ToLower() == GeneratorName.ToLower()) : false) : false,
-                                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
-
-                                        if (CheckSolarName != null)
+                                        if (CheckSiteCode == null)
                                         {
                                             GeneratorTransaction.Dispose();
 
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Generator Name) column's value: ({GeneratorName}) is already exist on this site: ({Generator_SiteCodeAfterCheck})",
+                                                ErrMsg = $"(Site Name) coulumn's value: ({Generator_SiteName}) doesn't exist in TLIS",
                                                 IsDeleted = false,
                                                 IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIotherInSite.ToString(),
+                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                 SheetName = "Generator",
                                                 UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
                                             };
@@ -21301,180 +21148,19 @@ namespace TLIS_Service.Services
                                             continue;
                                         }
 
-                                        TLIgenerator NewGeneratorEntity = new TLIgenerator()
-                                        {
-                                            Name = GeneratorName,
-                                            NumberOfFuelTanks = GeneratorNumberoffeultank,
-                                            GeneratorLibraryId= GeneratorLibraryModelId
-
-                                        };
-
-                                        _unitOfWork.GeneratorRepository.Add(NewGeneratorEntity);
-                                        _unitOfWork.SaveChanges();
-
-
-                                        //
-                                        // Dynamic Attributes..
-                                        //
-
-                                        List<TLIdynamicAttInstValue> GeneratorDynamicValues = new List<TLIdynamicAttInstValue>();
-
-                                        foreach (TLIdynamicAtt MissedAttribute in GeneratorMissedAttributes)
-                                        {
-                                            if (!string.IsNullOrEmpty(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString()))
-                                            {
-                                                TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
-                                                {
-                                                    tablesNamesId = GeneratorTableNameId,
-                                                    disable = false,
-                                                    DynamicAttId = MissedAttribute.Id,
-                                                    InventoryId = NewGeneratorEntity.Id
-                                                };
-
-                                                if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
-                                                    MissedAttributeValue.ValueString = GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString();
-                                                else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
-                                                    MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
-                                                {
-                                                    double DoubleParser = 0;
-
-                                                    CheckParser = double.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
-
-                                                    if (CheckParser)
-                                                        MissedAttributeValue.ValueDouble = DoubleParser;
-
-                                                    else
-                                                    {
-                                                        GeneratorTransaction.Dispose();
-
-                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                        {
-                                                            CreatedAt = DateTime.Now,
-                                                            ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
-                                                            IsDeleted = false,
-                                                            IsLib = false,
-                                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                                                            SheetName = "Generator",
-                                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                        };
-
-                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                        _unitOfWork.SaveChanges();
-
-                                                        continue;
-                                                    }
-                                                }
-                                                else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
-                                                {
-                                                    bool BooleanParser = false;
-
-                                                    CheckParser = bool.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
-
-                                                    if (CheckParser)
-                                                        MissedAttributeValue.ValueBoolean = BooleanParser;
-
-                                                    else
-                                                    {
-                                                        GeneratorTransaction.Dispose();
-
-                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                        {
-                                                            CreatedAt = DateTime.Now,
-                                                            ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
-                                                            IsDeleted = false,
-                                                            IsLib = false,
-                                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                                                            SheetName = "Generator",
-                                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                        };
-
-                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                        _unitOfWork.SaveChanges();
-
-                                                        continue;
-                                                    }
-                                                }
-                                                else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
-                                                {
-                                                    DateTime DateTimeParser = DateTime.Now;
-
-                                                    CheckParser = DateTime.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
-
-                                                    if (CheckParser)
-                                                        MissedAttributeValue.ValueDateTime = DateTimeParser;
-
-                                                    else
-                                                    {
-                                                       GeneratorTransaction.Dispose();
-
-                                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                        {
-                                                            CreatedAt = DateTime.Now,
-                                                            ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be date",
-                                                            IsDeleted = false,
-                                                            IsLib = false,
-                                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                                                            SheetName = "Generator",
-                                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
-                                                        };
-
-                                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                        _unitOfWork.SaveChanges();
-
-                                                        continue;
-                                                    }
-                                                }
-
-                                              GeneratorDynamicValues.Add(MissedAttributeValue);
-                                            }
-                                        }
-                                        if (GeneratorDynamicValues.Count() > 0)
-                                        {
-                                            _unitOfWork.DynamicAttInstValueRepository.AddRange(GeneratorDynamicValues);
-                                            _unitOfWork.SaveChanges();
-                                        }
-
-                                        //
-                                        // All Load Installation Information..
-                                        //
-
-                                        TLIallOtherInventoryInst NewGeneratorllOtherInventoryEntity = new TLIallOtherInventoryInst()
-                                        {
-                                            generatorId = NewGeneratorEntity.Id,
-                                            Draft = false
-                                        };
-
-                                        _unitOfWork.AllOtherInventoryInstRepository.Add(NewGeneratorllOtherInventoryEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        //
-                                        // OtherInSite Information..
-                                        //
-                                        TLIotherInSite tLIotherInSite = new TLIotherInSite()
-                                        {
-                                            InstallationDate = DateTime.Now,
-                                            SiteCode = Generator_SiteCode,
-                                            allOtherInventoryInstId = NewGeneratorllOtherInventoryEntity.Id,
-                                            ReservedSpace = true,
-                                            Dismantle = false
-
-                                        };
-                                        _unitOfWork.OtherInSiteRepository.Add(tLIotherInSite);
-                                        _unitOfWork.SaveChanges();
-
-                                        GeneratorTransaction.Complete();
+                                        Generator_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
                                     }
-                                    catch (Exception err)
+                                    else
                                     {
                                         GeneratorTransaction.Dispose();
 
                                         TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                         {
                                             CreatedAt = DateTime.Now,
-                                            ErrMsg = err.Message,
+                                            ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
                                             IsDeleted = false,
                                             IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                            RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                             SheetName = "Generator",
                                             UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
                                         };
@@ -21484,8 +21170,321 @@ namespace TLIS_Service.Services
 
                                         continue;
                                     }
+                                    int IntPareser = 0;
+                                    string GeneratorSerialnumberString = GeneratorDataTable.Rows[j]["Serial number"].ToString();
+                                    string GeneratorNumberoffeultankString = GeneratorDataTable.Rows[j]["Number of feul tank"].ToString();
+                                    int GeneratorNumberoffeultank = 0;
+                                    if (!string.IsNullOrEmpty(GeneratorNumberoffeultankString))
+                                    {
+                                        CheckParser = int.TryParse(GeneratorNumberoffeultankString, out IntPareser);
+
+                                        if (CheckParser)
+                                            GeneratorNumberoffeultank = IntPareser;
+
+                                        else
+                                        {
+                                            GeneratorTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Number of feul tank) coulumn's value: ({GeneratorNumberoffeultankString}) must be a number",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                SheetName = "Generator",
+                                                UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+                                    }
+
+                                    string GeneratorHeightString = GeneratorDataTable.Rows[j]["Height (Cm)"].ToString();
+                                    float GeneratorHeight = 0;
+                                    if (!string.IsNullOrEmpty(GeneratorHeightString))
+                                    {
+                                        CheckParser = float.TryParse(GeneratorHeightString, out FloatParser);
+
+                                        if (CheckParser)
+                                            GeneratorHeight = FloatParser;
+
+                                        else
+                                        {
+                                            GeneratorTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(Height (Cm)) coulumn's value: ({GeneratorHeightString}) must be a number",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                SheetName = "Generator",
+                                                UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+                                    }
+
+                                    string GeneratoribraryModelI = GeneratorDataTable.Rows[j]["Type1"].ToString();
+                                    int GeneratorLibraryModelId = 0;
+                                    if (!string.IsNullOrEmpty(GeneratoribraryModelI))
+                                    {
+                                        TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
+                                            .GetWhereFirst(x => x.Model.ToLower() == GeneratoribraryModelI.ToLower() && !x.Deleted);
+
+                                        if (CheckGeneratorLibraryModel == null)
+                                        {
+                                            GeneratorTransaction.Dispose();
+
+                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            {
+                                                CreatedAt = DateTime.Now,
+                                                ErrMsg = $"(SolarLibraryModel) coulumn's value: ({GeneratoribraryModelI}) doesn't exist in TLIS",
+                                                IsDeleted = false,
+                                                IsLib = false,
+                                                RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
+                                                SheetName = "Generator",
+                                                UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                            };
+
+                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            continue;
+                                        }
+
+                                        GeneratorLibraryModelId = CheckGeneratorLibraryModel.Id;
+                                    }
+
+                                    string GeneratorName = GeneratorDataTable.Rows[j]["Generator Name"].ToString();
+                                    if (string.IsNullOrEmpty(GeneratorName))
+                                    {
+                                        GeneratorName = GeneratorLibraryModel + " " + Generator_SiteName;
+                                    }
+
+                                    // Check if Power Name is Already Exist on This Site..
+
+                                    TLIotherInSite CheckSolarName = _unitOfWork.OtherInSiteRepository
+                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Generator_SiteCodeAfterCheck.ToLower() && x.allOtherInventoryInstId != null ?
+                                                (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.generatorId != null ?
+                                                    (x.allOtherInventoryInst.generator.Name.ToLower() == GeneratorName.ToLower()) : false) : false,
+                                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
+
+                                    if (CheckSolarName != null)
+                                    {
+                                        GeneratorTransaction.Dispose();
+
+                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        {
+                                            CreatedAt = DateTime.Now,
+                                            ErrMsg = $"(Generator Name) column's value: ({GeneratorName}) is already exist on this site: ({Generator_SiteCodeAfterCheck})",
+                                            IsDeleted = false,
+                                            IsLib = false,
+                                            RefTable = Helpers.Constants.TablesNames.TLIotherInSite.ToString(),
+                                            SheetName = "Generator",
+                                            UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                        };
+
+                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        _unitOfWork.SaveChanges();
+
+                                        continue;
+                                    }
+
+                                    TLIgenerator NewGeneratorEntity = new TLIgenerator()
+                                    {
+                                        Name = GeneratorName,
+                                        NumberOfFuelTanks = GeneratorNumberoffeultank,
+                                        GeneratorLibraryId = GeneratorLibraryModelId
+
+                                    };
+
+                                    _unitOfWork.GeneratorRepository.Add(NewGeneratorEntity);
+                                    _unitOfWork.SaveChanges();
+
+
+                                    //
+                                    // Dynamic Attributes..
+                                    //
+
+                                    List<TLIdynamicAttInstValue> GeneratorDynamicValues = new List<TLIdynamicAttInstValue>();
+
+                                    foreach (TLIdynamicAtt MissedAttribute in GeneratorMissedAttributes)
+                                    {
+                                        if (!string.IsNullOrEmpty(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString()))
+                                        {
+                                            TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
+                                            {
+                                                tablesNamesId = GeneratorTableNameId,
+                                                disable = false,
+                                                DynamicAttId = MissedAttribute.Id,
+                                                InventoryId = NewGeneratorEntity.Id
+                                            };
+
+                                            if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
+                                                MissedAttributeValue.ValueString = GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString();
+                                            else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
+                                                MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
+                                            {
+                                                double DoubleParser = 0;
+
+                                                CheckParser = double.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
+
+                                                if (CheckParser)
+                                                    MissedAttributeValue.ValueDouble = DoubleParser;
+
+                                                else
+                                                {
+                                                    GeneratorTransaction.Dispose();
+
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                        SheetName = "Generator",
+                                                        UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                    };
+
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+                                            }
+                                            else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
+                                            {
+                                                bool BooleanParser = false;
+
+                                                CheckParser = bool.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
+
+                                                if (CheckParser)
+                                                    MissedAttributeValue.ValueBoolean = BooleanParser;
+
+                                                else
+                                                {
+                                                    GeneratorTransaction.Dispose();
+
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                        SheetName = "Generator",
+                                                        UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                    };
+
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+                                            }
+                                            else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
+                                            {
+                                                DateTime DateTimeParser = DateTime.Now;
+
+                                                CheckParser = DateTime.TryParse(GeneratorDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
+
+                                                if (CheckParser)
+                                                    MissedAttributeValue.ValueDateTime = DateTimeParser;
+
+                                                else
+                                                {
+                                                    GeneratorTransaction.Dispose();
+
+                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                                    {
+                                                        CreatedAt = DateTime.Now,
+                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({GeneratorDataTable.Rows[j][MissedAttribute.Key]}) must be date",
+                                                        IsDeleted = false,
+                                                        IsLib = false,
+                                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                                        SheetName = "Generator",
+                                                        UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                                    };
+
+                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    continue;
+                                                }
+                                            }
+
+                                            GeneratorDynamicValues.Add(MissedAttributeValue);
+                                        }
+                                    }
+                                    if (GeneratorDynamicValues.Count() > 0)
+                                    {
+                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(GeneratorDynamicValues);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                    //
+                                    // All Load Installation Information..
+                                    //
+
+                                    TLIallOtherInventoryInst NewGeneratorllOtherInventoryEntity = new TLIallOtherInventoryInst()
+                                    {
+                                        generatorId = NewGeneratorEntity.Id,
+                                        Draft = false
+                                    };
+
+                                    _unitOfWork.AllOtherInventoryInstRepository.Add(NewGeneratorllOtherInventoryEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    //
+                                    // OtherInSite Information..
+                                    //
+                                    TLIotherInSite tLIotherInSite = new TLIotherInSite()
+                                    {
+                                        InstallationDate = DateTime.Now,
+                                        SiteCode = Generator_SiteCode,
+                                        allOtherInventoryInstId = NewGeneratorllOtherInventoryEntity.Id,
+                                        ReservedSpace = true,
+                                        Dismantle = false
+
+                                    };
+                                    _unitOfWork.OtherInSiteRepository.Add(tLIotherInSite);
+                                    _unitOfWork.SaveChanges();
+
+                                    GeneratorTransaction.Complete();
+                                }
+                                catch (Exception err)
+                                {
+                                    GeneratorTransaction.Dispose();
+
+                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        ErrMsg = err.Message,
+                                        IsDeleted = false,
+                                        IsLib = false,
+                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                        SheetName = "Generator",
+                                        UniqueName = $"(Generator Name) : {GeneratorDataTable.Rows[j]["Generator Name"]}"
+                                    };
+
+                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    _unitOfWork.SaveChanges();
+
+                                    continue;
                                 }
                             }
+                        }
                     ////////////////////////////////////////////////////////////
                     /////////////////// CivilWithLegAttachFile //////////////////////////////////
                     ////////////////////////////////////////////////////////////
@@ -21555,7 +21554,7 @@ namespace TLIS_Service.Services
                                         TabelNameId = TabelNames.Id;
                                     }
                                     string Path = AttachDataTable.Rows[j]["Path"].ToString();
-                                    List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };                    
+                                    List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
                                     var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
                                     string[] full = System.IO.Directory.GetFiles(filePaths);
 
@@ -21577,12 +21576,12 @@ namespace TLIS_Service.Services
 
                                         OracleCommand cmd = connectionString.CreateCommand();
 
-                                       
-                                           
+
+
                                         cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
                                          " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
 
-                                          
+
                                         connectionString.Open();
                                         cmd.ExecuteNonQuery();
                                         connectionString.Close();
@@ -21611,1223 +21610,1223 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// CivilWithoutLegAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //CivilWithoutLegAttachFile:
-
-                    //    ExcelWorksheet AttachCivilWithoutLegAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilWithoutLegAttachFile".ToLower());
-                    //    int AttacCivilWithoutLegAttachFilehRows = 0;
-                    //    try
-                    //    {
-                    //        AttachRows = AttachCivilWithoutLegAttachFileSheet.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto CivilNonSteelAttachFile;
-                    //    }
-                    //    int AttachCivilWithoutLegAttachFileColumns = AttachCivilWithoutLegAttachFileSheet.Dimension.End.Column;
-
-                    //    DataTable AttachCivilWithoutLegAttachFileDataTable = new DataTable();
-                    //    List<string> AttachCivilWithoutLegAttachFileSheetColumn = new List<string>();
-
-                    //    for (int i = 1; i <= AttachCivilWithoutLegAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = AttachCivilWithoutLegAttachFileSheet.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        AttachCivilWithoutLegAttachFileSheetColumn.Add(ColName);
-                    //        AttachCivilWithoutLegAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= AttachRows; i++)
-                    //    {
-                    //        DataRow AttachCivilWithoutLegAttachFileDataRow = AttachCivilWithoutLegAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= AttachCivilWithoutLegAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = AttachCivilWithoutLegAttachFileSheet.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = AttachCivilWithoutLegAttachFileSheet.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                AttachCivilWithoutLegAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                AttachCivilWithoutLegAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        AttachCivilWithoutLegAttachFileDataTable.Rows.Add(AttachCivilWithoutLegAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithoutLeg.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithoutLeg");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                       
-                    //                }
-                    //                AttachTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                AttachTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "CivilWithoutLegAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// CivilNonSteelAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //CivilNonSteelAttachFile:
-
-                    //    ExcelWorksheet AttachCivilNonSteelAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilNonSteelAttachFile".ToLower());
-                    //    int AttachCivilNonSteelAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        AttachCivilNonSteelAttachFileRows = AttachCivilNonSteelAttachFileSheet.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto SideArmAttachFile;
-                    //    }
-                    //    int AttachCivilNonSteelAttachFileColumns = AttachCivilNonSteelAttachFileSheet.Dimension.End.Column;
-
-                    //    DataTable AttachCivilNonSteelAttachFileDataTable = new DataTable();
-                    //    List<string> AttachCivilNonSteelAttachFileSheetColumn = new List<string>();
-
-                    //    for (int i = 1; i <= AttachCivilNonSteelAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = AttachCivilNonSteelAttachFileSheet.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        AttachCivilNonSteelAttachFileSheetColumn.Add(ColName);
-                    //        AttachCivilNonSteelAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= AttachRows; i++)
-                    //    {
-                    //        DataRow AttachCivilNonSteelAttachFileDataRow = AttachCivilNonSteelAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= AttachCivilNonSteelAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = AttachCivilNonSteelAttachFileSheet.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = AttachCivilNonSteelAttachFileSheet.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                AttachCivilNonSteelAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                AttachCivilNonSteelAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        AttachCivilNonSteelAttachFileDataTable.Rows.Add(AttachCivilNonSteelAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = AttachCivilNonSteelAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilNonSteel.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilNonSteel");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = AttachCivilNonSteelAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                  
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                       
-                    //                }
-                    //                AttachTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                AttachTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "CivilNonSteelAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// SideArmAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //SideArmAttachFile:
-
-                    //    ExcelWorksheet AttachSideArmAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "SideArmAttachFile".ToLower());
-                    //    int AttachSideArmAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        AttachSideArmAttachFileRows = AttachSideArmAttachFileSheet.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto MWODUAttachFileFile;
-                    //    }
-                    //    int AttachSideArmAttachFileColumns = AttachSideArmAttachFileSheet.Dimension.End.Column;
-
-                    //    DataTable AttachSideArmAttachFileDataTable = new DataTable();
-                    //    List<string> AttachSideArmAttachFileSheetColumn = new List<string>();
-
-                    //    for (int i = 1; i <= AttachSideArmAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = AttachSideArmAttachFileSheet.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        AttachSideArmAttachFileSheetColumn.Add(ColName);
-                    //        AttachSideArmAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= AttachRows; i++)
-                    //    {
-                    //        DataRow AttachSideArmAttachFileDataRow = AttachSideArmAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= AttachSideArmAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = AttachSideArmAttachFileSheet.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = AttachSideArmAttachFileSheet.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                AttachSideArmAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                AttachSideArmAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        AttachSideArmAttachFileDataTable.Rows.Add(AttachSideArmAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = AttachSideArmAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = AttachSideArmAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilNonSteel.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsideArm");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = AttachSideArmAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                  
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                      
-                    //                }
-                    //                AttachTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                AttachTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "SideArmAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {AttachSideArmAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// MWODUAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //MWODUAttachFileFile:
-
-                    //    ExcelWorksheet MWODUAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MWODUAttachFileFile".ToLower());
-                    //    int MWODUAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        MWODUAttachFileRows = MWODUAttachFileSheet.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto MWDishAttachFile;
-                    //    }
-                    //    int MWODUAttachFileColumns = MWODUAttachFileSheet.Dimension.End.Column;
-
-                    //    DataTable MWODUAttachFileDataTable = new DataTable();
-                    //    List<string> MWODUAttachFileSheetColumn = new List<string>();
-
-                    //    for (int i = 1; i <= MWODUAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = MWODUAttachFileSheet.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        MWODUAttachFileSheetColumn.Add(ColName);
-                    //        MWODUAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= MWODUAttachFileRows; i++)
-                    //    {
-                    //        DataRow MWODUAttachFileDataRow = MWODUAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= MWODUAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = MWODUAttachFileSheet.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = MWODUAttachFileSheet.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                MWODUAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                MWODUAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        MWODUAttachFileDataTable.Rows.Add(MWODUAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope MWODUAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = MWODUAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = MWODUAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwODU");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = MWODUAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                   
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIMWODUAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnMWODUAttachFileed\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                      
-                    //                }
-                    //                MWODUAttachFileTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                MWODUAttachFileTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "MWODUAttachFileFile",
-                    //                    UniqueName = $"(Civil Name) : {MWODUAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    } 
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// MWDishAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //MWDishAttachFile:
-
-                    //    ExcelWorksheet MWDishAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MWDishAttachFile".ToLower());
-                    //    int MWDishAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        MWDishAttachFileRows = MWDishAttachFileSheet.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto RadioAntennaAttachFile;
-                    //    }
-                    //    int MWDishAttachFileColumns = MWDishAttachFileSheet.Dimension.End.Column;
-
-                    //    DataTable MWDishAttachFileDataTable = new DataTable();
-                    //    List<string> MWDishAttachFileSheetColumn = new List<string>();
-
-                    //    for (int i = 1; i <= MWDishAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = MWDishAttachFileSheet.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        MWDishAttachFileSheetColumn.Add(ColName);
-                    //        MWDishAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= MWDishAttachFileRows; i++)
-                    //    {
-                    //        DataRow MWDishAttachFileDataRow = MWDishAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= MWDishAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = MWDishAttachFileSheet.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = MWDishAttachFileSheet.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                MWDishAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                MWDishAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        MWDishAttachFileDataTable.Rows.Add(MWDishAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope MWDishAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = MWDishAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = MWDishAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwDish");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = MWDishAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                    
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIMWDishAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnMWDishAttachFileed\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-
-                    //                }
-                    //                MWDishAttachFileTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                MWDishAttachFileTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "MWDishAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {MWDishAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// RadioAntennaAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //RadioAntennaAttachFile:
-
-                    //    ExcelWorksheet RadioAntennaAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "RadioAntennaAttachFile".ToLower());
-                    //    int RadioAntennaAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        RadioAntennaAttachFileRows = RadioAntennaAttachFile.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto RadioRRUAttachFile;
-                    //    }
-                    //    int RadioAntennaAttachFileColumns = RadioAntennaAttachFile.Dimension.End.Column;
-
-                    //    DataTable RadioAntennaAttachFileDataTable = new DataTable();
-                    //    List<string> RadioAntennaAttachFileColumn = new List<string>();
-
-                    //    for (int i = 1; i <= RadioAntennaAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = RadioAntennaAttachFile.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        RadioAntennaAttachFileColumn.Add(ColName);
-                    //        RadioAntennaAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= RadioAntennaAttachFileRows; i++)
-                    //    {
-                    //        DataRow RadioAntennaAttachFileDataRow = RadioAntennaAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= RadioAntennaAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = RadioAntennaAttachFile.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = RadioAntennaAttachFile.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                RadioAntennaAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                RadioAntennaAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        RadioAntennaAttachFileDataTable.Rows.Add(RadioAntennaAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope RadioAntennaAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = RadioAntennaAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = RadioAntennaAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                             
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIradioAntenna");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = RadioAntennaAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                    
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIRadioAntennaAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnRadioAntennaAttachFileed\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                       
-                    //                }
-                    //                RadioAntennaAttachFileTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                RadioAntennaAttachFileTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "RadioAntennaAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {RadioAntennaAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// RadioRRUAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //RadioRRUAttachFile:
-
-                    //    ExcelWorksheet RadioRRUAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "RadioRRUAttachFile".ToLower());
-                    //    int RadioRRUAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        RadioRRUAttachFileRows = RadioRRUAttachFile.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto SolarAttachFile;
-                    //    }
-                    //    int RadioRRUAttachFileColumns = RadioRRUAttachFile.Dimension.End.Column;
-
-                    //    DataTable RadioRRUAttachFileDataTable = new DataTable();
-                    //    List<string> RadioRRUAttachFileColumn = new List<string>();
-
-                    //    for (int i = 1; i <= RadioRRUAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = RadioRRUAttachFile.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        RadioRRUAttachFileColumn.Add(ColName);
-                    //        RadioRRUAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= RadioRRUAttachFileRows; i++)
-                    //    {
-                    //        DataRow RadioRRUAttachFileDataRow = RadioRRUAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= RadioRRUAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = RadioRRUAttachFile.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = RadioRRUAttachFile.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                RadioRRUAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                RadioRRUAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        RadioRRUAttachFileDataTable.Rows.Add(RadioRRUAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope RadioRRUAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = RadioRRUAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = RadioRRUAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                                
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIradioRRU");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = RadioRRUAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                    
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIRadioRRUAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnRadioRRUAttachFileed\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                        
-                    //                }
-                    //                RadioRRUAttachFileTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                RadioRRUAttachFileTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "RadioRRUAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {RadioRRUAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// SolarAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //SolarAttachFile:
-
-                    //    ExcelWorksheet SolarAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "SolarAttachFile".ToLower());
-                    //    int SolarAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        SolarAttachFileRows = SolarAttachFile.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        goto GeneratorAttachFile;
-                    //    }
-                    //    int SolarAttachFileColumns = SolarAttachFile.Dimension.End.Column;
-
-                    //    DataTable SolarAttachFileDataTable = new DataTable();
-                    //    List<string> SolarAttachFileColumn = new List<string>();
-
-                    //    for (int i = 1; i <= SolarAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = SolarAttachFile.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        SolarAttachFileColumn.Add(ColName);
-                    //        SolarAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= SolarAttachFileRows; i++)
-                    //    {
-                    //        DataRow SolarAttachFileDataRow = SolarAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= SolarAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = SolarAttachFile.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = SolarAttachFile.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                SolarAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                SolarAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        SolarAttachFileDataTable.Rows.Add(SolarAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope SolarAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = SolarAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = SolarAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                                
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsolar");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = SolarAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                    
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLISolarAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnSolarAttachFileed\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                       
-                    //                }
-                    //                SolarAttachFileTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                SolarAttachFileTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "SolarAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {SolarAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //////////////////////////////////////////////////////////////
-                    ///////////////////// GeneratorAttachFile //////////////////////////////////
-                    //////////////////////////////////////////////////////////////
-                    //GeneratorAttachFile:
-
-                    //    ExcelWorksheet GeneratorAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "GeneratorAttachFile".ToLower());
-                    //    int GeneratorAttachFileRows = 0;
-                    //    try
-                    //    {
-                    //        GeneratorAttachFileRows = GeneratorAttachFile.Dimension.End.Row;
-                    //    }
-                    //    catch (NullReferenceException)
-                    //    {
-                    //        System.IO.File.Delete(FilePath);
-                    //        return new Response<string>("Succeed");
-                    //    }
-                    //    int GeneratorAttachFileColumns = GeneratorAttachFile.Dimension.End.Column;
-
-                    //    DataTable GeneratorAttachFileDataTable = new DataTable();
-                    //    List<string> GeneratorAttachFileColumn = new List<string>();
-
-                    //    for (int i = 1; i <= GeneratorAttachFileColumns; i++)
-                    //    {
-                    //        string ColName = GeneratorAttachFile.Cells[1, i].Value.ToString().Trim();
-                    //        ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //        GeneratorAttachFileColumn.Add(ColName);
-                    //        GeneratorAttachFileDataTable.Columns.Add(ColName);
-                    //    }
-
-                    //    for (int i = 2; i <= GeneratorAttachFileRows; i++)
-                    //    {
-                    //        DataRow GeneratorAttachFileDataRow = GeneratorAttachFileDataTable.NewRow();
-                    //        for (int j = 1; j <= GeneratorAttachFileColumns; j++)
-                    //        {
-                    //            string ColName = GeneratorAttachFile.Cells[1, j].Value.ToString().Trim();
-                    //            ColName = Regex.Replace(ColName, @"\s+", " ");
-
-                    //            object Value = GeneratorAttachFile.Cells[i, j].Value;
-                    //            if (Value != null)
-                    //            {
-                    //                string ValueAsString = Value.ToString().Trim();
-                    //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-
-                    //                Value = ValueAsString;
-                    //                GeneratorAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //            else
-                    //            {
-                    //                GeneratorAttachFileDataRow[ColName] = Value;
-                    //            }
-                    //        }
-                    //        GeneratorAttachFileDataTable.Rows.Add(GeneratorAttachFileDataRow);
-                    //    }
-                    //    for (int j = 0; j < 1; j++)
-                    //    {
-                    //        using (TransactionScope GeneratorAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
-                    //            new System.TimeSpan(0, 15, 0)))
-                    //        {
-                    //            try
-                    //            {
-                    //                int RecordId = 0;
-                    //                int TabelNameId = 0;
-                    //                string SiteCode = GeneratorAttachFileDataTable.Rows[j]["SITECODE"].ToString();
-                    //                string RecordName = GeneratorAttachFileDataTable.Rows[j]["Name"].ToString();
-
-                    //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
-                    //                if (Record != null)
-                    //                {
-                    //                    RecordId = Record.Id;
-                    //                }
-                                   
-                    //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIgenerator");
-                    //                if (TabelNames != null)
-                    //                {
-                    //                    TabelNameId = TabelNames.Id;
-                    //                }
-                    //                string Path = GeneratorAttachFileDataTable.Rows[j]["Path"].ToString();
-                    //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                   
-                    //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
-                    //                string[] full = System.IO.Directory.GetFiles(filePaths);
-
-
-                    //                foreach (var filePath in full)
-                    //                {
-                    //                    FileInfo fileInfo = new FileInfo(filePath);
-
-                    //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
-                    //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
-                    //                                                                                                // Calculate file size in megabytes
-                    //                    long fileSizeBytes = fileInfo.Length;
-                    //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
-
-                    //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                    //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                    //                    var connectionString = new OracleConnection(connectiont);
-                    //                    var IsImage = IsImg == false ? 0 : 1;
-
-                    //                    OracleCommand cmd = connectionString.CreateCommand();
-
-
-
-                    //                    cmd.CommandText = "INSERT INTO \"TLIGeneratorAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnGeneratorAttachFileed\")" +
-                    //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-
-                    //                    connectionString.Open();
-                    //                    cmd.ExecuteNonQuery();
-                    //                    connectionString.Close();
-                                        
-                    //                }
-                    //                GeneratorAttachFileTransaction.Complete();
-                    //            }
-                    //            catch (Exception err)
-                    //            {
-                    //                GeneratorAttachFileTransaction.Dispose();
-
-                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                    //                {
-                    //                    CreatedAt = DateTime.Now,
-                    //                    ErrMsg = err.Message,
-                    //                    IsDeleted = false,
-                    //                    IsLib = false,
-                    //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
-                    //                    SheetName = "GeneratorAttachFile",
-                    //                    UniqueName = $"(Civil Name) : {GeneratorAttachFileDataTable.Rows[j]["Name"]}"
-                    //                };
-
-                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                    //                _unitOfWork.SaveChanges();
-
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// CivilWithoutLegAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //CivilWithoutLegAttachFile:
+
+                        //    ExcelWorksheet AttachCivilWithoutLegAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilWithoutLegAttachFile".ToLower());
+                        //    int AttacCivilWithoutLegAttachFilehRows = 0;
+                        //    try
+                        //    {
+                        //        AttachRows = AttachCivilWithoutLegAttachFileSheet.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto CivilNonSteelAttachFile;
+                        //    }
+                        //    int AttachCivilWithoutLegAttachFileColumns = AttachCivilWithoutLegAttachFileSheet.Dimension.End.Column;
+
+                        //    DataTable AttachCivilWithoutLegAttachFileDataTable = new DataTable();
+                        //    List<string> AttachCivilWithoutLegAttachFileSheetColumn = new List<string>();
+
+                        //    for (int i = 1; i <= AttachCivilWithoutLegAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = AttachCivilWithoutLegAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        AttachCivilWithoutLegAttachFileSheetColumn.Add(ColName);
+                        //        AttachCivilWithoutLegAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= AttachRows; i++)
+                        //    {
+                        //        DataRow AttachCivilWithoutLegAttachFileDataRow = AttachCivilWithoutLegAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= AttachCivilWithoutLegAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = AttachCivilWithoutLegAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = AttachCivilWithoutLegAttachFileSheet.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                AttachCivilWithoutLegAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                AttachCivilWithoutLegAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        AttachCivilWithoutLegAttachFileDataTable.Rows.Add(AttachCivilWithoutLegAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithoutLeg.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithoutLeg");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                AttachTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                AttachTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "CivilWithoutLegAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {AttachCivilWithoutLegAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// CivilNonSteelAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //CivilNonSteelAttachFile:
+
+                        //    ExcelWorksheet AttachCivilNonSteelAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "CivilNonSteelAttachFile".ToLower());
+                        //    int AttachCivilNonSteelAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        AttachCivilNonSteelAttachFileRows = AttachCivilNonSteelAttachFileSheet.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto SideArmAttachFile;
+                        //    }
+                        //    int AttachCivilNonSteelAttachFileColumns = AttachCivilNonSteelAttachFileSheet.Dimension.End.Column;
+
+                        //    DataTable AttachCivilNonSteelAttachFileDataTable = new DataTable();
+                        //    List<string> AttachCivilNonSteelAttachFileSheetColumn = new List<string>();
+
+                        //    for (int i = 1; i <= AttachCivilNonSteelAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = AttachCivilNonSteelAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        AttachCivilNonSteelAttachFileSheetColumn.Add(ColName);
+                        //        AttachCivilNonSteelAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= AttachRows; i++)
+                        //    {
+                        //        DataRow AttachCivilNonSteelAttachFileDataRow = AttachCivilNonSteelAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= AttachCivilNonSteelAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = AttachCivilNonSteelAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = AttachCivilNonSteelAttachFileSheet.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                AttachCivilNonSteelAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                AttachCivilNonSteelAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        AttachCivilNonSteelAttachFileDataTable.Rows.Add(AttachCivilNonSteelAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = AttachCivilNonSteelAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilNonSteel.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilNonSteel");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = AttachCivilNonSteelAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                AttachTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                AttachTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "CivilNonSteelAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {AttachCivilNonSteelAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// SideArmAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //SideArmAttachFile:
+
+                        //    ExcelWorksheet AttachSideArmAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "SideArmAttachFile".ToLower());
+                        //    int AttachSideArmAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        AttachSideArmAttachFileRows = AttachSideArmAttachFileSheet.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto MWODUAttachFileFile;
+                        //    }
+                        //    int AttachSideArmAttachFileColumns = AttachSideArmAttachFileSheet.Dimension.End.Column;
+
+                        //    DataTable AttachSideArmAttachFileDataTable = new DataTable();
+                        //    List<string> AttachSideArmAttachFileSheetColumn = new List<string>();
+
+                        //    for (int i = 1; i <= AttachSideArmAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = AttachSideArmAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        AttachSideArmAttachFileSheetColumn.Add(ColName);
+                        //        AttachSideArmAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= AttachRows; i++)
+                        //    {
+                        //        DataRow AttachSideArmAttachFileDataRow = AttachSideArmAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= AttachSideArmAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = AttachSideArmAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = AttachSideArmAttachFileSheet.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                AttachSideArmAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                AttachSideArmAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        AttachSideArmAttachFileDataTable.Rows.Add(AttachSideArmAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = AttachSideArmAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = AttachSideArmAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilNonSteel.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsideArm");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = AttachSideArmAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                AttachTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                AttachTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "SideArmAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {AttachSideArmAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// MWODUAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //MWODUAttachFileFile:
+
+                        //    ExcelWorksheet MWODUAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MWODUAttachFileFile".ToLower());
+                        //    int MWODUAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        MWODUAttachFileRows = MWODUAttachFileSheet.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto MWDishAttachFile;
+                        //    }
+                        //    int MWODUAttachFileColumns = MWODUAttachFileSheet.Dimension.End.Column;
+
+                        //    DataTable MWODUAttachFileDataTable = new DataTable();
+                        //    List<string> MWODUAttachFileSheetColumn = new List<string>();
+
+                        //    for (int i = 1; i <= MWODUAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = MWODUAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        MWODUAttachFileSheetColumn.Add(ColName);
+                        //        MWODUAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= MWODUAttachFileRows; i++)
+                        //    {
+                        //        DataRow MWODUAttachFileDataRow = MWODUAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= MWODUAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = MWODUAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = MWODUAttachFileSheet.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                MWODUAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                MWODUAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        MWODUAttachFileDataTable.Rows.Add(MWODUAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope MWODUAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = MWODUAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = MWODUAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwODU");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = MWODUAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIMWODUAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnMWODUAttachFileed\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                MWODUAttachFileTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                MWODUAttachFileTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "MWODUAttachFileFile",
+                        //                    UniqueName = $"(Civil Name) : {MWODUAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    } 
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// MWDishAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //MWDishAttachFile:
+
+                        //    ExcelWorksheet MWDishAttachFileSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MWDishAttachFile".ToLower());
+                        //    int MWDishAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        MWDishAttachFileRows = MWDishAttachFileSheet.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto RadioAntennaAttachFile;
+                        //    }
+                        //    int MWDishAttachFileColumns = MWDishAttachFileSheet.Dimension.End.Column;
+
+                        //    DataTable MWDishAttachFileDataTable = new DataTable();
+                        //    List<string> MWDishAttachFileSheetColumn = new List<string>();
+
+                        //    for (int i = 1; i <= MWDishAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = MWDishAttachFileSheet.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        MWDishAttachFileSheetColumn.Add(ColName);
+                        //        MWDishAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= MWDishAttachFileRows; i++)
+                        //    {
+                        //        DataRow MWDishAttachFileDataRow = MWDishAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= MWDishAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = MWDishAttachFileSheet.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = MWDishAttachFileSheet.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                MWDishAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                MWDishAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        MWDishAttachFileDataTable.Rows.Add(MWDishAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope MWDishAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = MWDishAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = MWDishAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwDish");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = MWDishAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIMWDishAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnMWDishAttachFileed\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                MWDishAttachFileTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                MWDishAttachFileTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "MWDishAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {MWDishAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// RadioAntennaAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //RadioAntennaAttachFile:
+
+                        //    ExcelWorksheet RadioAntennaAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "RadioAntennaAttachFile".ToLower());
+                        //    int RadioAntennaAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        RadioAntennaAttachFileRows = RadioAntennaAttachFile.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto RadioRRUAttachFile;
+                        //    }
+                        //    int RadioAntennaAttachFileColumns = RadioAntennaAttachFile.Dimension.End.Column;
+
+                        //    DataTable RadioAntennaAttachFileDataTable = new DataTable();
+                        //    List<string> RadioAntennaAttachFileColumn = new List<string>();
+
+                        //    for (int i = 1; i <= RadioAntennaAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = RadioAntennaAttachFile.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        RadioAntennaAttachFileColumn.Add(ColName);
+                        //        RadioAntennaAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= RadioAntennaAttachFileRows; i++)
+                        //    {
+                        //        DataRow RadioAntennaAttachFileDataRow = RadioAntennaAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= RadioAntennaAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = RadioAntennaAttachFile.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = RadioAntennaAttachFile.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                RadioAntennaAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                RadioAntennaAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        RadioAntennaAttachFileDataTable.Rows.Add(RadioAntennaAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope RadioAntennaAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = RadioAntennaAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = RadioAntennaAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIradioAntenna");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = RadioAntennaAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIRadioAntennaAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnRadioAntennaAttachFileed\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                RadioAntennaAttachFileTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                RadioAntennaAttachFileTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "RadioAntennaAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {RadioAntennaAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// RadioRRUAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //RadioRRUAttachFile:
+
+                        //    ExcelWorksheet RadioRRUAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "RadioRRUAttachFile".ToLower());
+                        //    int RadioRRUAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        RadioRRUAttachFileRows = RadioRRUAttachFile.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto SolarAttachFile;
+                        //    }
+                        //    int RadioRRUAttachFileColumns = RadioRRUAttachFile.Dimension.End.Column;
+
+                        //    DataTable RadioRRUAttachFileDataTable = new DataTable();
+                        //    List<string> RadioRRUAttachFileColumn = new List<string>();
+
+                        //    for (int i = 1; i <= RadioRRUAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = RadioRRUAttachFile.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        RadioRRUAttachFileColumn.Add(ColName);
+                        //        RadioRRUAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= RadioRRUAttachFileRows; i++)
+                        //    {
+                        //        DataRow RadioRRUAttachFileDataRow = RadioRRUAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= RadioRRUAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = RadioRRUAttachFile.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = RadioRRUAttachFile.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                RadioRRUAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                RadioRRUAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        RadioRRUAttachFileDataTable.Rows.Add(RadioRRUAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope RadioRRUAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = RadioRRUAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = RadioRRUAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIradioRRU");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = RadioRRUAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIRadioRRUAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnRadioRRUAttachFileed\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                RadioRRUAttachFileTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                RadioRRUAttachFileTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "RadioRRUAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {RadioRRUAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// SolarAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //SolarAttachFile:
+
+                        //    ExcelWorksheet SolarAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "SolarAttachFile".ToLower());
+                        //    int SolarAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        SolarAttachFileRows = SolarAttachFile.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        goto GeneratorAttachFile;
+                        //    }
+                        //    int SolarAttachFileColumns = SolarAttachFile.Dimension.End.Column;
+
+                        //    DataTable SolarAttachFileDataTable = new DataTable();
+                        //    List<string> SolarAttachFileColumn = new List<string>();
+
+                        //    for (int i = 1; i <= SolarAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = SolarAttachFile.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        SolarAttachFileColumn.Add(ColName);
+                        //        SolarAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= SolarAttachFileRows; i++)
+                        //    {
+                        //        DataRow SolarAttachFileDataRow = SolarAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= SolarAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = SolarAttachFile.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = SolarAttachFile.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                SolarAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                SolarAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        SolarAttachFileDataTable.Rows.Add(SolarAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope SolarAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = SolarAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = SolarAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsolar");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = SolarAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLISolarAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnSolarAttachFileed\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                SolarAttachFileTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                SolarAttachFileTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "SolarAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {SolarAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
+                        //////////////////////////////////////////////////////////////
+                        ///////////////////// GeneratorAttachFile //////////////////////////////////
+                        //////////////////////////////////////////////////////////////
+                        //GeneratorAttachFile:
+
+                        //    ExcelWorksheet GeneratorAttachFile = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "GeneratorAttachFile".ToLower());
+                        //    int GeneratorAttachFileRows = 0;
+                        //    try
+                        //    {
+                        //        GeneratorAttachFileRows = GeneratorAttachFile.Dimension.End.Row;
+                        //    }
+                        //    catch (NullReferenceException)
+                        //    {
+                        //        System.IO.File.Delete(FilePath);
+                        //        return new Response<string>("Succeed");
+                        //    }
+                        //    int GeneratorAttachFileColumns = GeneratorAttachFile.Dimension.End.Column;
+
+                        //    DataTable GeneratorAttachFileDataTable = new DataTable();
+                        //    List<string> GeneratorAttachFileColumn = new List<string>();
+
+                        //    for (int i = 1; i <= GeneratorAttachFileColumns; i++)
+                        //    {
+                        //        string ColName = GeneratorAttachFile.Cells[1, i].Value.ToString().Trim();
+                        //        ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //        GeneratorAttachFileColumn.Add(ColName);
+                        //        GeneratorAttachFileDataTable.Columns.Add(ColName);
+                        //    }
+
+                        //    for (int i = 2; i <= GeneratorAttachFileRows; i++)
+                        //    {
+                        //        DataRow GeneratorAttachFileDataRow = GeneratorAttachFileDataTable.NewRow();
+                        //        for (int j = 1; j <= GeneratorAttachFileColumns; j++)
+                        //        {
+                        //            string ColName = GeneratorAttachFile.Cells[1, j].Value.ToString().Trim();
+                        //            ColName = Regex.Replace(ColName, @"\s+", " ");
+
+                        //            object Value = GeneratorAttachFile.Cells[i, j].Value;
+                        //            if (Value != null)
+                        //            {
+                        //                string ValueAsString = Value.ToString().Trim();
+                        //                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+
+                        //                Value = ValueAsString;
+                        //                GeneratorAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //            else
+                        //            {
+                        //                GeneratorAttachFileDataRow[ColName] = Value;
+                        //            }
+                        //        }
+                        //        GeneratorAttachFileDataTable.Rows.Add(GeneratorAttachFileDataRow);
+                        //    }
+                        //    for (int j = 0; j < 1; j++)
+                        //    {
+                        //        using (TransactionScope GeneratorAttachFileTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //            new System.TimeSpan(0, 15, 0)))
+                        //        {
+                        //            try
+                        //            {
+                        //                int RecordId = 0;
+                        //                int TabelNameId = 0;
+                        //                string SiteCode = GeneratorAttachFileDataTable.Rows[j]["SITECODE"].ToString();
+                        //                string RecordName = GeneratorAttachFileDataTable.Rows[j]["Name"].ToString();
+
+                        //                var Record = db.TLIcivilWithLegs.FirstOrDefault(x => x.Name == RecordName);
+                        //                if (Record != null)
+                        //                {
+                        //                    RecordId = Record.Id;
+                        //                }
+
+                        //                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIgenerator");
+                        //                if (TabelNames != null)
+                        //                {
+                        //                    TabelNameId = TabelNames.Id;
+                        //                }
+                        //                string Path = GeneratorAttachFileDataTable.Rows[j]["Path"].ToString();
+                        //                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+
+                        //                var filePaths = System.IO.Path.Combine(_Config["StoreFiles"], Path);
+                        //                string[] full = System.IO.Directory.GetFiles(filePaths);
+
+
+                        //                foreach (var filePath in full)
+                        //                {
+                        //                    FileInfo fileInfo = new FileInfo(filePath);
+
+                        //                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath); // Extract file name without extension
+                        //                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper(); // Get file extension from FileInfo object and convert to uppercase
+                        //                                                                                                // Calculate file size in megabytes
+                        //                    long fileSizeBytes = fileInfo.Length;
+                        //                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024); // Convert bytes to megabytes
+
+                        //                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                        //                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                        //                    var connectionString = new OracleConnection(connectiont);
+                        //                    var IsImage = IsImg == false ? 0 : 1;
+
+                        //                    OracleCommand cmd = connectionString.CreateCommand();
+
+
+
+                        //                    cmd.CommandText = "INSERT INTO \"TLIGeneratorAttachFileedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnGeneratorAttachFileed\")" +
+                        //                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+
+                        //                    connectionString.Open();
+                        //                    cmd.ExecuteNonQuery();
+                        //                    connectionString.Close();
+
+                        //                }
+                        //                GeneratorAttachFileTransaction.Complete();
+                        //            }
+                        //            catch (Exception err)
+                        //            {
+                        //                GeneratorAttachFileTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = err.Message,
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                        //                    SheetName = "GeneratorAttachFile",
+                        //                    UniqueName = $"(Civil Name) : {GeneratorAttachFileDataTable.Rows[j]["Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //        }
+                        //    }
                         System.IO.File.Delete(FilePath);
                         return new Response<string>("Succeed");
 
-                        
-                    }  
+
+                    }
 
                 }
                 catch (Exception err)
@@ -23136,6 +23135,157 @@ namespace TLIS_Service.Services
             {
                 // Define a hash function here based on the properties you want to consider
                 return (obj.Key + obj.DataTypeId.ToString()).GetHashCode();
+            }
+        }
+        public Response<string> MigrationFiles(IFormFile File, string ConnectionString)
+        {
+            List<KeyValuePair<int, string>> UnsavedRows = new List<KeyValuePair<int, string>>();
+            var FilePath = SaveFileAndGetFilePath(File);
+            try
+            {
+                FileInfo existingFile = new FileInfo(FilePath);
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                int TabelNameId = 0;
+                using (ExcelPackage package = new ExcelPackage(existingFile))
+                {
+                    ExcelWorksheet TypeOfSupportInfoSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MigrationFiles".ToLower());
+                    int TypeOfSupportInfoRows = 0;
+                    try
+                    {
+                        TypeOfSupportInfoRows = TypeOfSupportInfoSheet.Dimension.End.Row;
+                    }
+                    catch (NullReferenceException)
+                    {
+                        System.IO.File.Delete(FilePath);
+                        return new Response<string>("Succeed");
+                    }
+                    int TypeOfSupportInfoColumns = TypeOfSupportInfoSheet.Dimension.End.Column;
+
+                    DataTable TypeOfSupportInfoDataTable = new DataTable();
+
+                    for (int i = 1; i <= TypeOfSupportInfoColumns; i++)
+                    {
+                        var ColName = TypeOfSupportInfoSheet.Cells[1, i].Value.ToString().Trim();
+                        ColName = Regex.Replace(ColName, @"\s+", " ");
+                        TypeOfSupportInfoDataTable.Columns.Add(ColName);
+                    }
+                    for (int i = 2; i <= TypeOfSupportInfoRows; i++)
+                    {
+                        DataRow TypeOfSupportInfoDataRow = TypeOfSupportInfoDataTable.NewRow();
+                        for (int j = 1; j <= TypeOfSupportInfoColumns; j++)
+                        {
+                            string ColName = TypeOfSupportInfoSheet.Cells[1, j].Value.ToString().Trim();
+                            ColName = Regex.Replace(ColName, @"\s+", " ");
+                            if (TypeOfSupportInfoSheet.Cells[i, j].Value != null)
+                            {
+                                string ValueAsString = TypeOfSupportInfoSheet.Cells[i, j].Value.ToString().Trim();
+                                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+                                object Value = ValueAsString;
+                                TypeOfSupportInfoDataRow[ColName] = Value;
+                            }
+                            else
+                                TypeOfSupportInfoDataRow[ColName] = TypeOfSupportInfoSheet.Cells[i, j].Value;
+                        }
+                        TypeOfSupportInfoDataTable.Rows.Add(TypeOfSupportInfoDataRow);
+                    }
+
+                    for (int j = 0; j <= TypeOfSupportInfoDataTable.Rows.Count - 1; j++)
+                    {
+                        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+                          new System.TimeSpan(0, 15, 0)))
+                        {
+                            try
+                            {
+                                string Site_Code = TypeOfSupportInfoDataTable.Rows[j]["Site_Code"].ToString();
+                                var split_Site_Code = Site_Code.Split('#');
+                                var SiteCode = split_Site_Code.Length > 1 ? split_Site_Code[1] : "";
+                                string Paths = TypeOfSupportInfoDataTable.Rows[j]["Path"].ToString();
+                                string FileName = TypeOfSupportInfoDataTable.Rows[j]["Name"].ToString();
+                                string FolderName = Site_Code;
+                                var FileDirectory = _Config["CSVFiles"];
+                                var FileDirect = Path.Combine(FileDirectory, SiteCode);
+                                string SourceFile = Path.Combine(FileDirectory, Paths);
+                                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite");
+                                if (TabelNames != null)
+                                {
+                                    TabelNameId = TabelNames.Id;
+                                }
+                                if (!Directory.Exists(FileDirect))
+                                {
+                                    Directory.CreateDirectory(FileDirect);
+                                }
+                                string destinationFilePath = Path.Combine(FileDirect, FileName);
+                                string SourceFilePath = Path.Combine(SourceFile, FileName);
+                                if (Directory.Exists(SourceFilePath))
+                                {  
+
+                                    Directory.Move(SourceFilePath, destinationFilePath);
+                                    System.IO.File.Delete(SourceFilePath);
+                                }
+
+                                List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+                                string[] full = System.IO.Directory.GetFiles(FileDirect);
+                                foreach (var filePath in full)
+                                {
+                                    FileInfo fileInfo = new FileInfo(filePath);
+
+                                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper();
+
+                                    long fileSizeBytes = fileInfo.Length;
+                                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024);
+
+                                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+                                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+                                    var connectionString = new OracleConnection(connectiont);
+                                    var IsImage = IsImg == false ? 0 : 1;
+
+                                    OracleCommand cmd = connectionString.CreateCommand();
+
+                                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
+                                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+                                    connectionString.Open();
+                                    cmd.ExecuteNonQuery();
+                                    connectionString.Close();
+
+                                }
+                            }
+                            catch (Exception err)
+                            {
+
+                                AttachTransaction.Dispose();
+
+                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                {
+                                    CreatedAt = DateTime.Now,
+                                    ErrMsg = err.Message,
+                                    IsDeleted = false,
+                                    IsLib = false,
+                                    RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                    SheetName = "SiteAttachFile",
+                                    UniqueName = $"(SiteCode) : {TypeOfSupportInfoDataTable.Rows[j]["Site_Code"]}"
+                                };
+
+                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                _unitOfWork.SaveChanges();
+
+                                continue;
+                            }
+                            AttachTransaction.Complete();
+                        }
+
+                    }
+
+                }
+
+                return new Response<string>("Sucess");
+            }
+            catch (Exception err)
+            {
+                 System.IO.File.Delete(FilePath);
+                return new Response<string>(err.Message);
+
             }
         }
     }

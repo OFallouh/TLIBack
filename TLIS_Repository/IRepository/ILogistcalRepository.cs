@@ -14,5 +14,6 @@ namespace TLIS_Repository.IRepository
         IEnumerable<BaseAttView> GetLogistical(string Part, string TableName, int RecordId);
         IEnumerable<BaseAttView> GetLogistical(string Part);
         IEnumerable<BaseAttViews> GetLogisticals(string Part);
+        IEnumerable<BaseAttViews> GetLogisticalLibrary(string Part);
     }
 }

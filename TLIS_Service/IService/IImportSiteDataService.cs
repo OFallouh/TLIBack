@@ -20,5 +20,6 @@ namespace TLIS_Service.IService
         Response<List<ImportSheetViewModel>> GetAllWarningData(ClxFilter f);
         Response<string> ExportErrorDataTable(string ErrorType, string FileDirectory);
         Response<string> ImportInstallationFileDataTower(IFormFile File, string ConnectionString);
+        Response<string> MigrationFiles(IFormFile File, string ConnectionString);
     }
 }

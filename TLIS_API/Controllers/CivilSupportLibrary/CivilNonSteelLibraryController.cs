@@ -13,6 +13,7 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_Service.Helpers;
@@ -56,10 +57,10 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddCivilNonSteelLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryViewModel))]
-        public IActionResult AddCivilNonSteelLibrary([FromBody]AddCivilNonSteelLibraryViewModel addCivilNonSteelLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
+        public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryObject addCivilNonSteelLibraryViewModel)
         {
-            if(TryValidateModel(addCivilNonSteelLibraryViewModel, nameof(AddCivilNonSteelLibraryViewModel)))
+            if(TryValidateModel(addCivilNonSteelLibraryViewModel, nameof(AddCivilNonSteelLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.CivilLibraryService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, ConnectionString);
@@ -70,7 +71,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                   from error in state.Errors
                                    select error.ErrorMessage;
-              return Ok(new Response<AddCivilNonSteelLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+              return Ok(new Response<AddCivilNonSteelLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         //[HttpPost("EditCivilNonSteelLibrary")]
