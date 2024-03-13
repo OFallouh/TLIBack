@@ -88,7 +88,7 @@ namespace TLIS_API.Controllers
         public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.SiteService.GetAllSites(ConnectionString, parameterPagination, filters);
+            var response = _unitOfWorkService.SiteService.GetSites(ConnectionString, parameterPagination, filters);
             return Ok(response);
         }
         [HttpPost("GetSiteMainSpaces")]
