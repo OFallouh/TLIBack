@@ -11,6 +11,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.PowerDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
@@ -44,9 +45,9 @@ namespace TLIS_API.Controllers.Load
             var response = _unitOfWorkService.PowerLibraryService.GetPowerLibrariesWithEnableAttributes(CombineFilters, parameterPagination);
             return Ok(response);
         }
-        [HttpPost("GetForAdd")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAdd()
+        [HttpGet("GetForAddPowerLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddPowerLibrary()
         {
             var response = _unitOfWorkService.PowerLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString());
             return Ok(response);

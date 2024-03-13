@@ -10,6 +10,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
@@ -97,9 +98,9 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
 
-        [HttpGet("GetForAdd")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAdd()
+        [HttpGet("GetForAddMWDishLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWDishLibrary()
         {
             var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString());
             return Ok(response);

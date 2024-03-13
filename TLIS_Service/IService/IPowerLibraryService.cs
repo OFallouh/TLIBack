@@ -7,6 +7,7 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.PowerDTOs;
 
 namespace TLIS_Service.IService
@@ -19,7 +20,7 @@ namespace TLIS_Service.IService
         //Task<Response<AllItemAttributes>> EditPowerLibrary(string TableName, EditPowerLibraryViewModel PowerLibraryViewModel);
         Task<Response<AllItemAttributes>> DisablePowerLibrary(string TableName, int Id);
         Task<Response<AllItemAttributes>> DeletePowerLibrary(string TableName, int Id);
-        Response<AllItemAttributes> GetForAdd(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetPowerLibrariesWithEnableAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }
 }

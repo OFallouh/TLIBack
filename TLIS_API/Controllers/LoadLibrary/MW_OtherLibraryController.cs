@@ -10,6 +10,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
@@ -89,9 +90,9 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
 
-        [HttpGet("GetForAdd")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAdd()
+        [HttpGet("GetForAddMWOtherLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWOtherLibrary()
         {
             var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString());
             return Ok(response);

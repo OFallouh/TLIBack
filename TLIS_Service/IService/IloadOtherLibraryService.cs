@@ -6,6 +6,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.LoadOtherLibraryDTOs;
 
 namespace TLIS_Service.IService
@@ -18,7 +19,7 @@ namespace TLIS_Service.IService
        // Task<Response<AllItemAttributes>> EditLoadOtherLibrary(EditLoadOtherLibraryViewModel LoadOtherLibraryViewModel);
         Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id);
         Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id);
-        Response<AllItemAttributes> GetForAdd();
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetLoadOtherLibrariesWithEnableAtt(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }
 }

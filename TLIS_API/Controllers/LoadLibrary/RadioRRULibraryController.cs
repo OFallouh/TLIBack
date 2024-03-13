@@ -10,6 +10,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
@@ -30,10 +31,17 @@ namespace TLIS_API.Controllers.LoadLibrary
             _configuration = configuration;
         }
         [HttpPost("GetRadioRRULibraries")]
-        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioRRULibraryViewModel>))]
+        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<GetForAddCivilLibrarybject>))]
         public IActionResult GetRadioRRULibraries([FromQueryAttribute]ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters = null)
         {
             var response = _unitOfWorkService.RadioLibraryService.GetRadioRRULibraries(parameterPagination, filters);
+            return Ok(response);
+        }
+        [HttpGet("GetForAddRadioRRULibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddRadioRRULibrary()
+        {
+            var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString());
             return Ok(response);
         }
         [HttpPost("GetRadioRRULibrariesWithEnabledAttribute")]

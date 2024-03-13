@@ -34,6 +34,15 @@ using TLIS_Service.IService;
 using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using TLIS_DAL.ViewModels.SectionsLegTypeDTOs;
+using TLIS_DAL.ViewModels.StructureTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeDesignedDTOs;
+using TLIS_DAL.ViewModels.DiversityTypeDTOs;
+using TLIS_DAL.ViewModels.PolarityTypeDTOs;
+using TLIS_DAL.ViewModels.AsTypeDTOs;
+using TLIS_DAL.ViewModels.ParityDTOs;
+using TLIS_DAL.ViewModels.BoardTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -5969,58 +5978,142 @@ namespace TLIS_Service.Services
         //specify the table i deal with
         //get activate attributes depened on TableName
         //get dynamic attributes depened on TableNameId
-        public Response<AllItemAttributes> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                 if (LoadSubType.TLImwBULibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TablesNames.TLImwBULibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwBULibrary.ToString(), null, null)
+                     .Select(FKitem =>
+                     {
+                         if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                         {
+                             switch (FKitem.Desc.ToLower())
+                             {
+                                 case "tlidiversitytype":
+                                     FKitem.Options = _unitOfWork.DiversityTypeRepository
+                                         .GetWhere(x => !x.Deleted && !x.Disable)
+                                         .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
+                                         .ToList();
+                                     break;
+                             }
+                         }
+                         return FKitem;
+                     }).ToList();
+
+                    var LogisticalItems=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                
                 }
                 else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TablesNames.TLImwDishLibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwDishLibrary.ToString(), null, null)
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                        {
+                            switch (FKitem.Desc.ToLower())
+                            {
+                                case "tlipolaritytype":
+                                    FKitem.Options = _unitOfWork.PolarityTypeRepository
+                                        .GetWhere(x => !x.Delete && !x.Disable)
+                                        .Select(x => _mapper.Map<PolarityTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                                case "tliastype":
+                                    FKitem.Options = _unitOfWork.AsTypeRepository
+                                        .GetWhere(x => !x.Delete && !x.Disable)
+                                        .Select(x => _mapper.Map<AsTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                            }
+                        }
+                        return FKitem;
+                    }).ToList();
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                    
                 }
                 else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TablesNames.TLImwODULibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwODULibrary.ToString(), null, null)
+                         .Select(FKitem =>
+                         {
+                             if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                             {
+                                 switch (FKitem.Desc.ToLower())
+                                 {
+                                     case "tliparity":
+                                         FKitem.Options = _unitOfWork.ParityRepository
+                                             .GetWhere(x => !x.Delete && !x.Disable)
+                                             .Select(x => _mapper.Map<ParityViewModel>(x))
+                                             .ToList();
+                                         break;
+                                 }
+                             }
+                             return FKitem;
+                         }).ToList();
+
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                  
                 }
                 else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TablesNames.TLImwRFULibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwRFULibrary.ToString(), null, null)
+                        .Select(FKitem =>
+                    {
+                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                        {
+                            switch (FKitem.Desc.ToLower())
+                            {
+                                case "tlidiversitytype":
+                                    FKitem.Options = _unitOfWork.DiversityTypeRepository
+                                        .GetWhere(x => !x.Deleted && !x.Disable)
+                                        .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                                case "tliboardtype":
+                                    FKitem.Options = _unitOfWork.BoardTypeRepository
+                                        .GetWhere(x => !x.Deleted && !x.Disable)
+                                        .Select(x => _mapper.Map<BoardTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                            }
+                        }
+                        return FKitem;
+                    }).ToList();
+
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                 
                 }
                 else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(LoadSubType.TLImwOtherLibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(LoadSubType.TLImwOtherLibrary.ToString(), null, null).ToList();
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                  
                 }
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
 
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         //Function take 2 parameters Id, TableName

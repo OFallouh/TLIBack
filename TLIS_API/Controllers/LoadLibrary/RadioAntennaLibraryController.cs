@@ -10,6 +10,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
@@ -90,6 +91,13 @@ namespace TLIS_API.Controllers.LoadLibrary
         public async Task<IActionResult> DisableRadioAntennaLibrary(int Id)
         {
             var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id);
+            return Ok(response);
+        }
+        [HttpGet("GetForAddRadioAntennLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddRadioAntennLibrary()
+        {
+            var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString());
             return Ok(response);
         }
         [HttpPost("DeleteRadioAntennaLibrary")]

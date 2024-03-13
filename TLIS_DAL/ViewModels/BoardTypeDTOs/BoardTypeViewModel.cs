@@ -11,6 +11,5 @@ namespace TLIS_DAL.ViewModels.BoardTypeDTOs
 
         public string Name { get; set; }
 
-        public IEnumerable<MW_RFULibraryViewModel> MW_RFU { get; set; }
     }
 }

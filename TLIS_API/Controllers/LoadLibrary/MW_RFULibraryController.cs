@@ -12,6 +12,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
@@ -100,9 +101,9 @@ namespace TLIS_API.Controllers.Load
             return Ok(response);
         }
 
-        [HttpGet("GetForAdd")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAdd()
+        [HttpGet("GetForAddMWRFULibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWRFULibrary()
         {
             var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
             return Ok(response);

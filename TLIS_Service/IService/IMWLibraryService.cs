@@ -6,6 +6,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
@@ -31,7 +32,7 @@ namespace TLIS_Service.IService
         //Task<Response<AllItemAttributes>> EditMWLibrary(string TableName, object LoadLibraryViewModel);
         Task<Response<AllItemAttributes>> Disable(int Id, string TableName);
         Task<Response<AllItemAttributes>> Delete(int Id, string TableName);
-        Response<AllItemAttributes> GetForAdd(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetMW_BULibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetMW_DishLibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetMW_ODULibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);

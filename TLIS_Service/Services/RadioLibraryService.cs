@@ -33,6 +33,8 @@ using static TLIS_Repository.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.PowerDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace TLIS_Service.Services
 {
@@ -3535,42 +3537,43 @@ namespace TLIS_Service.Services
         //specify the table i deal with
         //get activated attributes
         //get dynamic attributes
-        public Response<AllItemAttributes> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                 if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("Radio"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(), null, null).ToList();
+                    var LogisticalItem=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio");
+                    attributes.LogisticalItems = LogisticalItem;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("Radio"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(), null, null).ToList();
+                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio"));
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                   
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(Helpers.Constants.TablesNames.TLIradioOther.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("Radio"));
-                    attributes.AttributesActivated = ListAttributesActivated;
-                    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                    attributes.DynamicAttInst = null;
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIradioOther.ToString(), null, null).ToList();
+                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio"));
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                  
                 }
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
 
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         //Function take 2 parameters

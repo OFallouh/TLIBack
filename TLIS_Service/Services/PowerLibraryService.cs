@@ -30,6 +30,7 @@ using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1621,23 +1622,23 @@ namespace TLIS_Service.Services
         //get table name Entity
         //get activated attributes
         //get dynamic attributes
-        public Response<AllItemAttributes> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(Helpers.Constants.TablesNames.TLImwBULibrary.ToString(), null, null).ToList();
-                ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("Power"));
-                attributes.AttributesActivated = ListAttributesActivated;
-                attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                attributes.DynamicAttInst = null;
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLImwBULibrary.ToString(), null, null).ToList();
+                var logisticalItem=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Power");
+                attributes.LogisticalItems = logisticalItem;
+                attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
 
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         //Function take 2 parameters

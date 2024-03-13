@@ -30,6 +30,7 @@ using TLIS_Service.IService;
 using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1081,23 +1082,24 @@ namespace TLIS_Service.Services
             }
         }
 
-        public Response<AllItemAttributes> GetForAdd()
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
-                var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString());
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString(), null, null).ToList();
-                ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("Other"));
-                attributes.AttributesActivated = ListAttributesActivated;
-                attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                attributes.DynamicAttInst = null;
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)ApiReturnCode.success);
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
+                var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString(), null, null).ToList();
+                var LogisticalItem=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Other");
+                attributes.LogisticalItems = LogisticalItem;
+                attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+              
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)ApiReturnCode.success);
             }
             catch (Exception err)
             {
 
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
 

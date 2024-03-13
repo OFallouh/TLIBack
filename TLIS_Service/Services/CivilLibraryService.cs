@@ -2203,7 +2203,8 @@ namespace TLIS_Service.Services
                     })
                     .ToList();
 
-                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
+                var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport");
+                Attributes.LogisticalItems = LogisticalAttributes;
                 Attributes.AttributesActivatedLibrary = ListOfAttributesActivated;
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2291,7 +2292,8 @@ namespace TLIS_Service.Services
                     })
                     .ToList();
 
-                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
+                var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport");
+                Attributes.LogisticalItems = LogisticalAttributes;
                 Attributes.AttributesActivatedLibrary = ListOfAttributesActivated;
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2378,8 +2380,8 @@ namespace TLIS_Service.Services
                         return item;
                     })
                     .ToList();
-
-                ListOfAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
+                var LogisticalAttributes= _unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport");
+                Attributes.LogisticalItems = LogisticalAttributes;
                 Attributes.AttributesActivatedLibrary = ListOfAttributesActivated;
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2446,7 +2448,7 @@ namespace TLIS_Service.Services
                 if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                 {
                     List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                    .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs")
+                    .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs", "Model")
                     .Select(FKitem =>
                     {
                         if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
@@ -2476,7 +2478,8 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
 
-                    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.CivilSupport.ToString()));
+                    var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.CivilSupport.ToString());
+                    Attributes.LogisticalItems = LogisticalAttributes;
                     Attributes.AttributesActivatedLibrary = listofAttributesActivated;
 
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -2521,7 +2524,8 @@ namespace TLIS_Service.Services
                         return item;
                     })
                     .ToList();
-                    activatedAttributes.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport"));
+                    var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport");
+                    Attributes.LogisticalItems = LogisticalAttributes;
                     Attributes.AttributesActivatedLibrary = activatedAttributes;
 
                     Attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository

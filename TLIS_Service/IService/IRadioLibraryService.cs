@@ -6,6 +6,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.LoadOtherLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
@@ -23,7 +24,7 @@ namespace TLIS_Service.IService
        // Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);
         Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id);
         Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id);
-        Response<AllItemAttributes> GetForAdd(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetRadioRRULibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetRadioOtherLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);

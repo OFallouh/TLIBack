@@ -10,6 +10,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
@@ -60,6 +61,13 @@ namespace TLIS_API.Controllers.LoadLibrary
                                     select error.ErrorMessage;
                 return Ok(new Response<AddRadioOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
+        }
+        [HttpGet("GetForAddRadioOtherLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddRadioOtherLibrary()
+        {
+            var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString());
+            return Ok(response);
         }
         //[HttpPost("UpdateRadioOtherLibrary")]
         //[ProducesResponseType(200, Type = typeof(EditRadioOtherLibraryViewModel))]
