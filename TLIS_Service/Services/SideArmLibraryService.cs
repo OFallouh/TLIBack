@@ -30,6 +30,8 @@ using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -128,7 +130,7 @@ namespace TLIS_Service.Services
                 throw;
             }
         }
-        public Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryViewModel addSideArmLibraryViewModel, string connectionString)
+        public Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -141,58 +143,35 @@ namespace TLIS_Service.Services
                         {
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower());
-                            TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(addSideArmLibraryViewModel);
-                            bool test = true;
+                            TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(addSideArmLibraryViewModel.LibraryAttribute);
 
                             string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArmLibraryViewModel);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                 return new Response<SideArmLibraryViewModel>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                            string CheckGeneralValidation = CheckGeneralValidationFunction(addSideArmLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.TableName);
+                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.TableName);
 
                             if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                 return new Response<SideArmLibraryViewModel>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                            if (test == true)
+                            var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && !x.Deleted);
+                            if (CheckModel != null)
                             {
-                                var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && !x.Deleted);
-                                if (CheckModel != null)
-                                {
-                                    return new Response<SideArmLibraryViewModel>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                //else if (tLIsideArmLibrary.Width <= 0)
-                                //{
-                                //    return new Response<SideArmLibraryViewModel>(true, null, null, "Width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (tLIsideArmLibrary.Length <= 0)
-                                //{
-                                //    return new Response<SideArmLibraryViewModel>(true, null, null, "Width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (tLIsideArmLibrary.Height <= 0)
-                                //{
-                                //    return new Response<SideArmLibraryViewModel>(true, null, null, "Height Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (tLIsideArmLibrary.SpaceLibrary <= 0)
-                                //{
-                                //    return new Response<SideArmLibraryViewModel>(true, null, null, "SpaceLibrary Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                _unitOfWork.SideArmLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, tLIsideArmLibrary);
-                                _unitOfWork.SaveChanges();
-
-                                dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = addSideArmLibraryViewModel;
-
-                                AddLogisticalItemWithSideArm(LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id);
-
-                                if (addSideArmLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(addSideArmLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, tLIsideArmLibrary.Id);
-                                }
+                                return new Response<SideArmLibraryViewModel>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            else
+
+                            _unitOfWork.SideArmLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, tLIsideArmLibrary);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = addSideArmLibraryViewModel.LogisticalItems;
+
+                            AddLogisticalItemWithSideArm(LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id);
+
+                            if (addSideArmLibraryViewModel.dynamicAttribute.Count > 0)
                             {
-                                return new Response<SideArmLibraryViewModel>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
                             }
                             transaction.Complete();
                             tran.Commit();
@@ -432,6 +411,56 @@ namespace TLIS_Service.Services
             }
 
             return string.Empty;
+        }
+        public string CheckGeneralValidationFunctionLib(List<AddDdynamicAttributeInstallationValueViewModel> TLIdynamicAttLibValue, string TableName)
+        {
+            List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable
+                    , x => x.tablesNames).ToList());
+
+            var invalidValidation = DynamicAttributes.Select(DynamicAttributeEntity =>
+            {
+                var Validation = _unitOfWork.ValidationRepository
+                    .GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttributeEntity.Id, x => x.Operation, x => x.DynamicAtt);
+
+                if (Validation != null)
+                {
+                    var DynmaicAttributeValue = TLIdynamicAttLibValue.FirstOrDefault(x => x.id == DynamicAttributeEntity.Id);
+
+                    if (DynmaicAttributeValue == null)
+                        return $"({Validation.DynamicAtt.Key}) value can't be null and must be inserted";
+
+                    var OperationName = Validation.Operation.Name;
+
+                    var InputDynamicValue = DynmaicAttributeValue.value;
+                    var ValidationValue = Validation.ValueBoolean ?? Validation.ValueDateTime ?? Validation.ValueDouble ?? (object)Validation.ValueString;
+
+                    if (!(OperationName == "==" ? InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower() :
+                        OperationName == "!=" ? InputDynamicValue.ToString().ToLower() != ValidationValue.ToString().ToLower() :
+                        OperationName == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 :
+                        OperationName == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) :
+                        OperationName == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 :
+                        OperationName == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) : false))
+                    {
+                        var DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                            .GetWhereFirst(x => x.Id == Validation.DynamicAttId).Key;
+
+                        var ReturnOperation = (OperationName == "==" ? "equal to" :
+                            (OperationName == "!=" ? "not equal to" :
+                            (OperationName == ">" ? "bigger than" :
+                            (OperationName == ">=" ? "bigger than or equal to" :
+                            (OperationName == "<" ? "smaller than" :
+                            (OperationName == "<=" ? "smaller than or equal to" : ""))))));
+
+                        return $"({DynamicAttributeName}) value must be {ReturnOperation} {ValidationValue}";
+                    }
+                }
+                return null;
+            }).FirstOrDefault(invalidValidation => invalidValidation != null);
+
+            return invalidValidation ?? string.Empty;
         }
         public void AddLogisticalItemWithSideArm(dynamic LogisticalItemIds, dynamic SideArmEntity, int TableNameEntityId)
         {
@@ -1708,22 +1737,22 @@ namespace TLIS_Service.Services
         //get table name Entity by table name
         //get activated attributes 
         //get dynamic attributes
-        public Response<AllItemAttributes> GetForAdd()
+        public Response<GetForAddCivilLibrarybject> GetForAdd()
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArmLibrary.ToString());
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TablesNames.TLIsideArmLibrary.ToString(), null, null).ToList();
-                ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("SideArm"));
-                attributes.AttributesActivated = ListAttributesActivated;
-                attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                attributes.DynamicAttInst = null;
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), null, null).ToList();
+                var Logistical=_unitOfWork.LogistcalRepository.GetLogistical("SideArm");
+                attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+              
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 

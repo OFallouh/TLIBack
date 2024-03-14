@@ -46,10 +46,10 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
         [HttpPost("AddMW_OtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_OtherLibraryViewModel))]
-        public IActionResult AddMW_OtherLibrary([FromBody]AddMW_OtherLibraryViewModel addMW_OtherLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
+        public IActionResult AddMW_OtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
         {
-            if (TryValidateModel(addMW_OtherLibraryViewModel, nameof(AddMW_OtherLibraryViewModel)))
+            if (TryValidateModel(addMW_OtherLibraryViewModel, nameof(AddMWOtherLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, ConnectionString);

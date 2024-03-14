@@ -22,12 +22,12 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
             public float SpaceLibrary { get; set; } = 0;
             public bool Active { get; set; } = true;
             public bool Deleted { get; set; } = false;
-            public int? supportTypeDesignedId { get; set; }
-            public int? sectionsLegTypeId { get; set; }
+            public int supportTypeDesignedId { get; set; }
+            public int sectionsLegTypeId { get; set; }
             public int structureTypeId { get; set; }
-            public int? civilSteelSupportCategoryId { get; set; }
+            public int? civilSteelSupportCategoryId { get; set; } = 1;
             public float Manufactured_Max_Load { get; set; } = 0;
-            public int NumberOfLegs { get; set; } = 0;
+            public string? WidthVariation { get; set; }
         }
     }
 

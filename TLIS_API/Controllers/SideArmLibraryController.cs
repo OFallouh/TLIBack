@@ -60,10 +60,10 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddSideArmLibrary")]
-        [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
-        public IActionResult AddSideArmLibrary([FromBody] AddSideArmLibraryViewModel addSideArmLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddSideArmLibraryObject))]
+        public IActionResult AddSideArmLibrary([FromBody] AddSideArmLibraryObject addSideArmLibraryViewModel)
         {
-            if (TryValidateModel(addSideArmLibraryViewModel, nameof(AddSideArmLibraryViewModel)))
+            if (TryValidateModel(addSideArmLibraryViewModel, nameof(AddSideArmLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.SideArmLibraryService.AddSideArmLibrary(addSideArmLibraryViewModel, ConnectionString);

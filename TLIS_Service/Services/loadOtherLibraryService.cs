@@ -31,6 +31,7 @@ using static TLIS_Service.Helpers.Constants;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -46,7 +47,7 @@ namespace TLIS_Service.Services
             ServiceProvider serviceProvider = _services.BuildServiceProvider();
             _mapper = mapper;
         }
-        public Response<AllItemAttributes> AddLoadOtherLibrary(AddLoadOtherLibraryViewModel LoadOtherLibraryViewModel, string connectionString)
+        public Response<AllItemAttributes> AddLoadOtherLibrary(AddLoadOtherLibraryObject LoadOtherLibraryViewModel, string connectionString)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -61,8 +62,8 @@ namespace TLIS_Service.Services
                         {
                             string ErrorMessage = string.Empty;
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == LoadSubType.TLIloadOtherLibrary.ToString().ToLower());
-                            TLIloadOtherLibrary loadOtherLibrary = _mapper.Map<TLIloadOtherLibrary>(LoadOtherLibraryViewModel);
-                            var test = false;
+                            TLIloadOtherLibrary loadOtherLibrary = _mapper.Map<TLIloadOtherLibrary>(LoadOtherLibraryViewModel.LibraryAttribute);
+                          
                             string CheckDependencyValidation = CheckDependencyValidationForLoadOther(LoadOtherLibraryViewModel);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -72,52 +73,31 @@ namespace TLIS_Service.Services
                                 return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
                             }
 
-                            string CheckGeneralValidation = CheckGeneralValidationFunction(LoadOtherLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.TableName);
+                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(LoadOtherLibraryViewModel.dynamicAttribute, TableNameEntity.TableName);
                             if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                 return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                            test = true;
-                            if (test == true)
+
+                            var CheckModel = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Model == loadOtherLibrary.Model && !x.Deleted);
+                            if (CheckModel != null)
                             {
-                                var CheckModel = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Model == loadOtherLibrary.Model && !x.Deleted);
-                                if (CheckModel != null)
-                                {
-                                    return new Response<AllItemAttributes>(true, null, null, $"This Model {loadOtherLibrary.Model} is already exists", (int)ApiReturnCode.fail);
-                                }
-                                //else if (loadOtherLibrary.Length <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "Length Should be bigger than zero", (int)ApiReturnCode.fail);
-                                //}
-                                //else if (loadOtherLibrary.Width <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "Width Should be bigger than zero", (int)ApiReturnCode.fail);
-                                //}
-                                //else if (loadOtherLibrary.Height <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "Height Should be bigger than zero", (int)ApiReturnCode.fail);
-                                //}
-                                //else if (loadOtherLibrary.SpaceLibrary <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "SpaceLibrary Should be bigger than zero", (int)ApiReturnCode.fail);
-                                //}
-                                _unitOfWork.LoadOtherLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, loadOtherLibrary);
-                                _unitOfWork.SaveChanges();
-
-                                dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = LoadOtherLibraryViewModel;
-
-                                AddLogisticalItem(LogisticalItemIds, loadOtherLibrary, TableNameEntity.Id);
-
-                                if (LoadOtherLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(LoadOtherLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, loadOtherLibrary.Id);
-                                }
-                                //    AddHistory(loadOtherLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLIloadOtherLibrary");
+                                return new Response<AllItemAttributes>(true, null, null, $"This Model {loadOtherLibrary.Model} is already exists", (int)ApiReturnCode.fail);
                             }
-                            else
+                               
+                            _unitOfWork.LoadOtherLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, loadOtherLibrary);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = LoadOtherLibraryViewModel.LogisticalItems;
+
+                            AddLogisticalItem(LogisticalItemIds, loadOtherLibrary, TableNameEntity.Id);
+
+                            if (LoadOtherLibraryViewModel.dynamicAttribute.Count > 0)
                             {
-                                return new Response<AllItemAttributes>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(LoadOtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, loadOtherLibrary.Id);
                             }
+                            //    AddHistory(loadOtherLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLIloadOtherLibrary");
+                          
                             transaction.Complete();
                             tran.Commit();
                             return new Response<AllItemAttributes>();
@@ -428,7 +408,56 @@ namespace TLIS_Service.Services
 
             return string.Empty;
         }
+        public string CheckGeneralValidationFunctionLib(List<AddDdynamicAttributeInstallationValueViewModel> TLIdynamicAttLibValue, string TableName)
+        {
+            List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable
+                    , x => x.tablesNames).ToList());
 
+            var invalidValidation = DynamicAttributes.Select(DynamicAttributeEntity =>
+            {
+                var Validation = _unitOfWork.ValidationRepository
+                    .GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttributeEntity.Id, x => x.Operation, x => x.DynamicAtt);
+
+                if (Validation != null)
+                {
+                    var DynmaicAttributeValue = TLIdynamicAttLibValue.FirstOrDefault(x => x.id == DynamicAttributeEntity.Id);
+
+                    if (DynmaicAttributeValue == null)
+                        return $"({Validation.DynamicAtt.Key}) value can't be null and must be inserted";
+
+                    var OperationName = Validation.Operation.Name;
+
+                    var InputDynamicValue = DynmaicAttributeValue.value;
+                    var ValidationValue = Validation.ValueBoolean ?? Validation.ValueDateTime ?? Validation.ValueDouble ?? (object)Validation.ValueString;
+
+                    if (!(OperationName == "==" ? InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower() :
+                        OperationName == "!=" ? InputDynamicValue.ToString().ToLower() != ValidationValue.ToString().ToLower() :
+                        OperationName == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 :
+                        OperationName == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) :
+                        OperationName == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 :
+                        OperationName == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) : false))
+                    {
+                        var DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                            .GetWhereFirst(x => x.Id == Validation.DynamicAttId).Key;
+
+                        var ReturnOperation = (OperationName == "==" ? "equal to" :
+                            (OperationName == "!=" ? "not equal to" :
+                            (OperationName == ">" ? "bigger than" :
+                            (OperationName == ">=" ? "bigger than or equal to" :
+                            (OperationName == "<" ? "smaller than" :
+                            (OperationName == "<=" ? "smaller than or equal to" : ""))))));
+
+                        return $"({DynamicAttributeName}) value must be {ReturnOperation} {ValidationValue}";
+                    }
+                }
+                return null;
+            }).FirstOrDefault(invalidValidation => invalidValidation != null);
+
+            return invalidValidation ?? string.Empty;
+        }
         #endregion
         public async Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id)
         {

@@ -45,10 +45,10 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
         [HttpPost("AddRadioOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioOtherLibraryViewModel))]
-        public IActionResult AddRadioOtherLibrary(AddRadioOtherLibraryViewModel addRadioOther)
+        [ProducesResponseType(200, Type = typeof(AddRadioOtherLibraryObject))]
+        public IActionResult AddRadioOtherLibrary(AddRadioOtherLibraryObject addRadioOther)
         {
-            if (TryValidateModel(addRadioOther, nameof(AddRadioOtherLibraryViewModel)))
+            if (TryValidateModel(addRadioOther, nameof(AddRadioOtherLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.RadioLibraryService.AddRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), addRadioOther, ConnectionString);

@@ -54,10 +54,10 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
 
         [HttpPost("AddMW_DishLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_DishLibraryViewModel))]
-        public IActionResult AddMW_DishLibrary([FromBody]AddMW_DishLibraryViewModel addMW_BULibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
+        public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
         {
-            if(TryValidateModel(addMW_BULibraryViewModel, nameof(AddMW_DishLibraryViewModel)))
+            if(TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWDishLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);

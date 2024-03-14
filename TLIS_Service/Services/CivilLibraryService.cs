@@ -104,12 +104,21 @@ namespace TLIS_Service.Services
                                 var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegEntites.structureTypeId);
                                 var structureTypeName = structureType?.Name;
 
-                                var modelParts = new List<string> { CivilWithLegEntites.Prefix, CivilWithLegEntites.Height_Designed.ToString() };
-                                if (vendor != null) modelParts.Insert(0, vendor);
-                                if (structureTypeName != null) modelParts.Insert(1, structureTypeName);
+                                if(structureTypeName != null)
+                                {
+                                    return new Response<AllItemAttributes>(true, null, null, $"{CivilWithLegEntites.structureTypeId} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                if(vendor == null)
+                                {
+                                    return new Response<AllItemAttributes>(true, null, null, $"{civilWithLegLibraryViewModel.LogisticalItems.VendorId} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                var model = string.Join(" ", modelParts);
+                                }
+                                if (CivilWithLegEntites.Prefix == null)
+                                {
+                                    return new Response<AllItemAttributes>(true, null, null, $"{CivilWithLegEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                                var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + CivilWithLegEntites.Height_Designed;
                                 if (_unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Model == model && !x.Deleted) != null)
                                 {
                                     return new Response<AllItemAttributes>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -129,7 +138,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = CivilLibraryViewModel;
+                                LogisticalItemIds = civilWithLegLibraryViewModel.LogisticalItems;
                                 AddLogisticalItemWithCivil(LogisticalItemIds, CivilWithLegEntites, TableNameEntity.Id);
 
                                 if (civilWithLegLibraryViewModel.dynamicAttribute != null ? civilWithLegLibraryViewModel.dynamicAttribute.Count > 0 : false)
@@ -173,7 +182,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = CivilLibraryViewModel;
+                                LogisticalItemIds = cwithoutLegLibraryViewModel.LogisticalItems;
 
                                 AddLogisticalItemWithCivil(LogisticalItemIds, CivilWithoutLegEntites, TableNameEntity.Id);
                                 if (cwithoutLegLibraryViewModel.dynamicAttribute.Count > 0)
@@ -215,9 +224,9 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = CivilLibraryViewModel;
+                                LogisticalItemIds = nonSteelLibraryViewModel.LogisticalItems;
 
-                                 AddLogisticalItemWithCivil(LogisticalItemIds, civilNonSteelLibraryEntity, TableNameEntity.Id);
+                                AddLogisticalItemWithCivil(LogisticalItemIds, civilNonSteelLibraryEntity, TableNameEntity.Id);
                                 if (nonSteelLibraryViewModel.dynamicAttribute.Count > 0)
                                 {
                                     _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(nonSteelLibraryViewModel.dynamicAttribute, TableNameEntity.Id, civilNonSteelLibraryEntity.Id);
@@ -2448,37 +2457,37 @@ namespace TLIS_Service.Services
                 if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                 {
                     List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                    .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs", "Model")
-                    .Select(FKitem =>
-                    {
-                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                        {
-                            switch (FKitem.Desc.ToLower())
-                            {
-                                case "tlisectionslegtype":
-                                    FKitem.Options = _unitOfWork.SectionsLegTypeRepository
-                                        .GetWhere(x => !x.Deleted && !x.Disable)
-                                        .Select(x => _mapper.Map<SectionsLegTypeViewModel>(x))
-                                        .ToList();
-                                    break;
-                                case "tlistructuretype":
-                                    FKitem.Options = _unitOfWork.StructureTypeRepository
-                                        .GetWhere(x => !x.Deleted && !x.Disable)
-                                        .Select(x => _mapper.Map<StructureTypeViewModel>(x))
-                                        .ToList();
-                                    break;
-                                case "tlisupporttypedesigned":
-                                    FKitem.Options = _unitOfWork.SupportTypeDesignedRepository
-                                        .GetWhere(x => !x.Deleted && !x.Disable)
-                                        .Select(x => _mapper.Map<SupportTypeDesignedViewModel>(x))
-                                        .ToList();
-                                    break;
-                            }
-                        }
-                        return FKitem;
-                    }).ToList();
+                     .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs")
+                     .Select(FKitem =>
+                     {
+                         if (FKitem.DataType != null && FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                         {
+                             switch (FKitem.Desc.ToLower())
+                             {
+                                 case "tlisectionslegtype":
+                                     FKitem.Options = _unitOfWork.SectionsLegTypeRepository
+                                         .GetWhere(x => !x.Deleted && !x.Disable)
+                                         .Select(x => _mapper.Map<SectionsLegTypeViewModel>(x))
+                                         .ToList();
+                                     break;
+                                 case "tlistructuretype":
+                                     FKitem.Options = _unitOfWork.StructureTypeRepository
+                                         .GetWhere(x => !x.Deleted && !x.Disable)
+                                         .Select(x => _mapper.Map<StructureTypeViewModel>(x))
+                                         .ToList();
+                                     break;
+                                 case "tlisupporttypedesigned":
+                                     FKitem.Options = _unitOfWork.SupportTypeDesignedRepository
+                                         .GetWhere(x => !x.Deleted && !x.Disable)
+                                         .Select(x => _mapper.Map<SupportTypeDesignedViewModel>(x))
+                                         .ToList();
+                                     break;
+                             }
+                         }
+                         return FKitem;
+                     }).ToList();
 
-                    var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.CivilSupport.ToString());
+                    var LogisticalAttributes =_unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.CivilSupport.ToString());
                     Attributes.LogisticalItems = LogisticalAttributes;
                     Attributes.AttributesActivatedLibrary = listofAttributesActivated;
 

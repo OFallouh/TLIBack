@@ -780,46 +780,7 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
-                {
-                    var supportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
-
-                    if (supportTypeDesigned != null)
-                    {
-                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
-
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                        if (CivilWithLegLibrary.Count != 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support With Legs Library",
-                                isLibrary = true,
-                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
-                        else
-                        {
-                            supportTypeDesigned.Deleted = (true);
-                        }
-                        await _unitOfWork.SupportTypeDesignedRepository.UpdateItem(supportTypeDesigned);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
+             
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
                     var supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
@@ -6467,47 +6428,7 @@ namespace TLIS_Service.Services
                     {
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                }
-                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
-                {
-                    var supportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
-
-                    if (supportTypeDesigned != null)
-                    {
-                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.supportTypeDesignedId == Id && !x.Deleted).ToList();
-
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                        if (CivilWithLegLibrary.Count != 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support With Legs Library",
-                                isLibrary = true,
-                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
-
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
-                        else
-                        {
-                            supportTypeDesigned.Disable = !(supportTypeDesigned.Disable);
-                        }
-                        await _unitOfWork.SupportTypeDesignedRepository.UpdateItem(supportTypeDesigned);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
+                }    
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
                     var supportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
@@ -6575,27 +6496,11 @@ namespace TLIS_Service.Services
 
                     if (structureType != null)
                     {
-                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
-
                         List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
                             .GetWhere(x => x.structureTypeId == Id && !x.Deleted).ToList();
 
                         List<TableAffected> ListOfResponse = new List<TableAffected>();
-
-                        if (CivilWithLegLibrary.Count != 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support With Legs Library",
-                                isLibrary = true,
-                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
+                       
                         if (CivilWithoutLegLibrary.Count != 0)
                         {
                             ListOfResponse.Add(new TableAffected()
@@ -6625,47 +6530,47 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
-                {
-                    var sectionsLegType = _unitOfWork.SectionsLegTypeRepository.GetByID(Id);
+                //else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
+                //{
+                //    var sectionsLegType = _unitOfWork.SectionsLegTypeRepository.GetByID(Id);
 
-                    if (sectionsLegType != null)
-                    {
-                        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
-                            .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
+                //    if (sectionsLegType != null)
+                //    {
+                //        List<TLIcivilWithLegLibrary> CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository
+                //            .GetWhere(x => x.sectionsLegTypeId == Id && !x.Deleted).ToList();
 
-                        List<TableAffected> ListOfResponse = new List<TableAffected>();
+                //        List<TableAffected> ListOfResponse = new List<TableAffected>();
 
-                        if (CivilWithLegLibrary.Count != 0)
-                        {
-                            ListOfResponse.Add(new TableAffected()
-                            {
-                                TableName = "Civil Steel Support With Legs Library",
-                                isLibrary = true,
-                                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
-                                {
-                                    RecordName = x.Model,
-                                    SiteCode = null
-                                }).ToList()
-                            });
-                        }
+                //        if (CivilWithLegLibrary.Count != 0)
+                //        {
+                //            ListOfResponse.Add(new TableAffected()
+                //            {
+                //                TableName = "Civil Steel Support With Legs Library",
+                //                isLibrary = true,
+                //                RecordsAffected = CivilWithLegLibrary.Select(x => new RecordAffected
+                //                {
+                //                    RecordName = x.Model,
+                //                    SiteCode = null
+                //                }).ToList()
+                //            });
+                //        }
 
-                        if (ListOfResponse.Count != 0)
-                            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                //        if (ListOfResponse.Count != 0)
+                //            return new Response<List<TableAffected>>(true, ListOfResponse, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
-                        else
-                        {
+                //        else
+                //        {
 
-                            sectionsLegType.Disable = !(sectionsLegType.Disable);
-                        }
-                        await _unitOfWork.SectionsLegTypeRepository.UpdateItem(sectionsLegType);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
+                //            sectionsLegType.Disable = !(sectionsLegType.Disable);
+                //        }
+                //        await _unitOfWork.SectionsLegTypeRepository.UpdateItem(sectionsLegType);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
                 //else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
                 //{
                 //    var logisticalType = _unitOfWork.logisticalTypeRepository.GetByID(Id);
@@ -12364,11 +12269,7 @@ namespace TLIS_Service.Services
                     var polarityOnLocation = _unitOfWork.PolarityOnLocationRepository.GetByID(Id);
                     ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(polarityOnLocation);
                 }
-                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
-                {
-                    var TLIsupportTypeDesigned = _unitOfWork.SupportTypeDesignedRepository.GetByID(Id);
-                    ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIsupportTypeDesigned);
-                }
+                
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
                     var TLIsupportTypeImplemented = _unitOfWork.SupportTypeImplementedRepository.GetByID(Id);
@@ -12631,26 +12532,26 @@ namespace TLIS_Service.Services
                         return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Repeater Type Name {viewModel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
-                {
-                    TLIsupportTypeDesigned CheckName = _unitOfWork.SupportTypeDesignedRepository
-                        .GetWhereFirst(x => x.Name.ToLower() == viewModel.Name.ToLower() && x.Id != viewModel.Id && !x.Deleted);
+                //else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
+                //{
+                //    TLIsupportTypeDesigned CheckName = _unitOfWork.SupportTypeDesignedRepository
+                //        .GetWhereFirst(x => x.Name.ToLower() == viewModel.Name.ToLower() && x.Id != viewModel.Id && !x.Deleted);
 
-                    if (CheckName == null)
-                    {
-                        TLIsupportTypeDesigned OldEntity = _unitOfWork.SupportTypeDesignedRepository
-                            .GetWhereFirst(x => x.Id == viewModel.Id);
+                //    if (CheckName == null)
+                //    {
+                //        TLIsupportTypeDesigned OldEntity = _unitOfWork.SupportTypeDesignedRepository
+                //            .GetWhereFirst(x => x.Id == viewModel.Id);
 
-                        OldEntity.Name = viewModel.Name;
+                //        OldEntity.Name = viewModel.Name;
 
-                        _unitOfWork.SupportTypeDesignedRepository.Update(OldEntity);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Support Type Designed Name {viewModel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
+                //        _unitOfWork.SupportTypeDesignedRepository.Update(OldEntity);
+                //        await _unitOfWork.SaveChangesAsync();
+                //    }
+                //    else
+                //    {
+                //        return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Support Type Designed Name {viewModel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
                     TLIsupportTypeImplemented CheckName = _unitOfWork.SupportTypeImplementedRepository

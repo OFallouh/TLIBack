@@ -16,6 +16,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
@@ -57,10 +58,10 @@ namespace TLIS_API.Controllers.Load
             return Ok(response);
         }
         [HttpPost("AddMW_RFULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_RFULibraryViewModel))]
-        public IActionResult AddMW_RFULibrary([FromBody]AddMW_RFULibraryViewModel addMW_RFULibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWRFULibraryObject))]
+        public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
         {
-            if(TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMW_RFULibraryViewModel)))
+            if(TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMWRFULibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);

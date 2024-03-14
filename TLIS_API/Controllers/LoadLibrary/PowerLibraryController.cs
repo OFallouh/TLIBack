@@ -13,6 +13,7 @@ using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.PowerDTOs;
+using TLIS_DAL.ViewModels.PowerLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
@@ -63,9 +64,9 @@ namespace TLIS_API.Controllers.Load
 
         [HttpPost("AddPowerLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AddPowerLibrary([FromBody]AddPowerLibraryViewModel addPowerLibraryViewModel)
+        public IActionResult AddPowerLibrary([FromBody]AddPowerLibraryObject addPowerLibraryViewModel)
         {
-            if(TryValidateModel(addPowerLibraryViewModel, nameof(AddPowerLibraryViewModel)))
+            if(TryValidateModel(addPowerLibraryViewModel, nameof(AddPowerLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.PowerLibraryService.AddPowerLibrary(addPowerLibraryViewModel, ConnectionString);

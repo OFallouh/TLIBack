@@ -59,10 +59,10 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
         [HttpPost("AddLoadOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddLoadOtherLibraryViewModel))]
-        public IActionResult AddLoadOtherLibrary(AddLoadOtherLibraryViewModel addLoadOtherLibrary)
+        [ProducesResponseType(200, Type = typeof(AddLoadOtherLibraryObject))]
+        public IActionResult AddLoadOtherLibrary(AddLoadOtherLibraryObject addLoadOtherLibrary)
         {
-            if (TryValidateModel(addLoadOtherLibrary, nameof(AddLoadOtherLibraryViewModel)))
+            if (TryValidateModel(addLoadOtherLibrary, nameof(AddLoadOtherLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.LoadOtherLibraryService.AddLoadOtherLibrary(addLoadOtherLibrary, ConnectionString);

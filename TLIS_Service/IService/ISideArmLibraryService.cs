@@ -7,6 +7,7 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
 
 namespace TLIS_Service.IService
@@ -16,12 +17,12 @@ namespace TLIS_Service.IService
         void SeedDataForTest();
         Task<Response<IEnumerable<SideArmLibraryViewModel>>> GetSideArmLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<List<KeyValuePair<string, int>>> GetSideArmLibs();
-        Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryViewModel addSideArmLibraryViewModel, string connectionString);
+        Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString);
        // Task<Response<SideArmLibraryViewModel>> EditSideArmLibrary(EditSideArmLibraryViewModel editSideArmLibraryViewModel);
         Response<AllItemAttributes> GetSideArmLibraryById(int id);
         Task<Response<SideArmLibraryViewModel>> Disable(int id);
         Task<Response<SideArmLibraryViewModel>> Delete(int id);
-        Response<AllItemAttributes> GetForAdd();
+        Response<GetForAddCivilLibrarybject> GetForAdd();
         Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }
 }

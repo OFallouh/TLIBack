@@ -16,6 +16,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
+using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
@@ -57,10 +58,10 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
         [HttpPost("AddMW_ODULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_ODULibraryViewModel))]
-        public IActionResult AddMW_ODULibrary([FromBody]AddMW_ODULibraryViewModel addMW_ODULibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
+        public IActionResult AddMW_ODULibrary([FromBody] AddMWOtherLibraryObject addMW_ODULibraryViewModel)
         {
-            if(TryValidateModel(addMW_ODULibraryViewModel, nameof(AddMW_ODULibraryViewModel)))
+            if(TryValidateModel(addMW_ODULibraryViewModel, nameof(AddMWOtherLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, ConnectionString);

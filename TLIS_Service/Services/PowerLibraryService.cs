@@ -31,6 +31,8 @@ using TLIS_DAL.ViewModels.LogisticalDTOs;
 using AutoMapper;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using TLIS_DAL.ViewModels.PowerLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -662,7 +664,7 @@ namespace TLIS_Service.Services
         //Check validation
         //Add Entity
         //Add dynamic attributes
-        public Response<AllItemAttributes> AddPowerLibrary(AddPowerLibraryViewModel PowerLibraryViewModel, string connectionString)
+        public Response<AllItemAttributes> AddPowerLibrary(AddPowerLibraryObject PowerLibraryViewModel, string connectionString)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -674,64 +676,38 @@ namespace TLIS_Service.Services
                         try
                         {
                             string ErrorMessage = string.Empty;
-                            //   var TableNameEntity = _unitOfWork.TablesNamesRepository.GetAllAsQueryable().AsNoTracking().Where(l => l.TableName == Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString().ToLower()).FirstOrDefault();
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == LoadSubType.TLIpowerLibrary.ToString().ToLower());
-                            TLIpowerLibrary PowerLibrary = _mapper.Map<TLIpowerLibrary>(PowerLibraryViewModel);
-                            bool test = true;
-
+                            TLIpowerLibrary PowerLibrary = _mapper.Map<TLIpowerLibrary>(PowerLibraryViewModel.LibraryAttribute);
+                           
                             string CheckDependencyValidation = CheckDependencyValidationForPower(PowerLibraryViewModel);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                 return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                            string CheckGeneralValidation = CheckGeneralValidationFunction(PowerLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.TableName);
+                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(PowerLibraryViewModel.dynamicAttribute, TableNameEntity.TableName);
 
                             if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                 return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-                            if (test == true)
+                          
+                            var CheckModel = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Model == PowerLibrary.Model && !x.Deleted);
+                            if (CheckModel != null)
                             {
-                                var CheckModel = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Model == PowerLibrary.Model && !x.Deleted);
-                                if (CheckModel != null)
-                                {
-                                    return new Response<AllItemAttributes>(true, null, null, $"This model {PowerLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                //else if (PowerLibrary.Weight <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "Weight Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (PowerLibrary.width <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (PowerLibrary.Length <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "Length Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (PowerLibrary.Depth <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "Depth Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                //else if (PowerLibrary.SpaceLibrary <= 0)
-                                //{
-                                //    return new Response<AllItemAttributes>(true, null, null, "SpaceLibrary Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                //}
-                                _unitOfWork.PowerLibraryRepository.AddAsyncWithHistory(Helpers.LogFilterAttribute.UserId, PowerLibrary);
-                                _unitOfWork.SaveChanges();
-
-                                dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = PowerLibraryViewModel;
-
-                                AddLogisticalItemWithPower(LogisticalItemIds, PowerLibrary, TableNameEntity.Id);
-
-                                if (PowerLibraryViewModel.TLIdynamicAttLibValue.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtts(PowerLibraryViewModel.TLIdynamicAttLibValue, TableNameEntity.Id, PowerLibrary.Id);
-                                }
+                                return new Response<AllItemAttributes>(true, null, null, $"This model {PowerLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            else
+                          
+                            _unitOfWork.PowerLibraryRepository.AddAsyncWithHistory(Helpers.LogFilterAttribute.UserId, PowerLibrary);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = PowerLibraryViewModel.LogisticalItems;
+
+                            AddLogisticalItemWithPower(LogisticalItemIds, PowerLibrary, TableNameEntity.Id);
+
+                            if (PowerLibraryViewModel.dynamicAttribute.Count > 0)
                             {
-                                return new Response<AllItemAttributes>(true, null, null, ErrorMessage, (int)Helpers.Constants.ApiReturnCode.fail);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(PowerLibraryViewModel.dynamicAttribute, TableNameEntity.Id, PowerLibrary.Id);
                             }
+                            
                             transaction.Complete();
                             tran.Commit();
                             return new Response<AllItemAttributes>();
@@ -968,6 +944,57 @@ namespace TLIS_Service.Services
             }
 
             return string.Empty;
+        }
+        public string CheckGeneralValidationFunctionLib(List<AddDdynamicAttributeInstallationValueViewModel> TLIdynamicAttLibValue, string TableName)
+        {
+            List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable
+                    , x => x.tablesNames).ToList());
+
+
+            var invalidValidation = DynamicAttributes.Select(DynamicAttributeEntity =>
+            {
+                var Validation = _unitOfWork.ValidationRepository
+                    .GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttributeEntity.Id, x => x.Operation, x => x.DynamicAtt);
+
+                if (Validation != null)
+                {
+                    var DynmaicAttributeValue = TLIdynamicAttLibValue.FirstOrDefault(x => x.id == DynamicAttributeEntity.Id);
+
+                    if (DynmaicAttributeValue == null)
+                        return $"({Validation.DynamicAtt.Key}) value can't be null and must be inserted";
+
+                    var OperationName = Validation.Operation.Name;
+
+                    var InputDynamicValue = DynmaicAttributeValue.value;
+                    var ValidationValue = Validation.ValueBoolean ?? Validation.ValueDateTime ?? Validation.ValueDouble ?? (object)Validation.ValueString;
+
+                    if (!(OperationName == "==" ? InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower() :
+                        OperationName == "!=" ? InputDynamicValue.ToString().ToLower() != ValidationValue.ToString().ToLower() :
+                        OperationName == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 :
+                        OperationName == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) :
+                        OperationName == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 :
+                        OperationName == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) : false))
+                    {
+                        var DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                            .GetWhereFirst(x => x.Id == Validation.DynamicAttId).Key;
+
+                        var ReturnOperation = (OperationName == "==" ? "equal to" :
+                            (OperationName == "!=" ? "not equal to" :
+                            (OperationName == ">" ? "bigger than" :
+                            (OperationName == ">=" ? "bigger than or equal to" :
+                            (OperationName == "<" ? "smaller than" :
+                            (OperationName == "<=" ? "smaller than or equal to" : ""))))));
+
+                        return $"({DynamicAttributeName}) value must be {ReturnOperation} {ValidationValue}";
+                    }
+                }
+                return null;
+            }).FirstOrDefault(invalidValidation => invalidValidation != null);
+
+            return invalidValidation ?? string.Empty;
         }
         public void AddLogisticalItemWithPower(dynamic LogisticalItemIds, dynamic PowerEntity, int TableNameEntityId)
         {
