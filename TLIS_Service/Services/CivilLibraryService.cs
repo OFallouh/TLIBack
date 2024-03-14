@@ -103,7 +103,10 @@ namespace TLIS_Service.Services
 
                                 var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegEntites.structureTypeId);
                                 var structureTypeName = structureType?.Name;
-
+                                if (CivilWithLegEntites.SpaceLibrary == 0)
+                                {
+                                    return new Response<AllItemAttributes>(true, null, null, $"{CivilWithLegEntites.SpaceLibrary} It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                                 if(structureTypeName != null)
                                 {
                                     return new Response<AllItemAttributes>(true, null, null, $"{CivilWithLegEntites.structureTypeId} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
