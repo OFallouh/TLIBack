@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
 
 namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
 {
     public class AddCivilWithLegsLibraryObject
     {
-        public CivilWihtLegsLibraryAttributes LibraryAttribute { get; set; }
-        public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
+        public CivilWihtLegsLibraryAttributes attributesActivatedLibrary { get; set; }
+        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
+        public AddLogisticalViewModel logisticalItems { get; set; }
+
+
+
+
         public class CivilWihtLegsLibraryAttributes
         {
             public string? Note { get; set; }

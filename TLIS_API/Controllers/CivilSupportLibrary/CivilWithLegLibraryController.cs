@@ -60,11 +60,11 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddCivilWithLegLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
-        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithoutLegsLibraryObject CivilWithLegLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsLibraryObject))]
+        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithLegsLibraryObject CivilWithLegLibraryViewModel)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithoutLegsLibraryObject)))
+            if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithLegsLibraryObject)))
             {
                 var response = _unitOfWorkService.CivilLibraryService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString);
                 return Ok(response);

@@ -56,24 +56,24 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
-        [HttpPost("AddCivilNonSteelLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
-        public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryObject addCivilNonSteelLibraryViewModel)
-        {
-            if(TryValidateModel(addCivilNonSteelLibraryViewModel, nameof(AddCivilNonSteelLibraryObject)))
-            {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilLibraryService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, ConnectionString);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                  from error in state.Errors
-                                   select error.ErrorMessage;
-              return Ok(new Response<AddCivilNonSteelLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("AddCivilNonSteelLibrary")]
+        //[ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
+        //public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryObject addCivilNonSteelLibraryViewModel)
+        //{
+        //    if(TryValidateModel(addCivilNonSteelLibraryViewModel, nameof(AddCivilNonSteelLibraryObject)))
+        //    {
+        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //        var response = _unitOfWorkService.CivilLibraryService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, ConnectionString);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                          from error in state.Errors
+        //                           select error.ErrorMessage;
+        //      return Ok(new Response<AddCivilNonSteelLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         //[HttpPost("EditCivilNonSteelLibrary")]
         //[ProducesResponseType(200, Type = typeof(EditCivilNonSteelLibraryViewModel))]
         //public async Task<IActionResult> EditCivilNonSteelLibrary([FromBody]EditCivilNonSteelLibraryViewModel editCivilNonSteelLibraryViewModel)

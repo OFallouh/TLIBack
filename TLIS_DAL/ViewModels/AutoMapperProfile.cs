@@ -138,6 +138,7 @@ using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.AreaDTOs;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
+using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.AddCivilWithLegsLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -151,6 +152,7 @@ namespace TLIS_DAL.ViewModels
            // ---------------------------------------------------------------------------------------
 
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
+            CreateMap<TLIcivilWithLegLibrary, CivilWihtLegsLibraryAttributes>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIInstCivilwithoutLegsType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIcivilWithoutLegCategory>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIsectionsLegType>().ReverseMap();
