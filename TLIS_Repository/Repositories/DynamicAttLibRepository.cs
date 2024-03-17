@@ -78,14 +78,16 @@ namespace TLIS_Repository.Repositories
                     .Where(x => x.Id == DynamicLibAttValue.id)
                     .Include(x => x.DataType)
                     .FirstOrDefault();
-
-                var dynamicAttLibValueEntity = _mapper.Map<TLIdynamicAttLibValue>(DynamicLibAttValue);
+                TLIdynamicAttLibValue dynamicAttLibValueEntity = new TLIdynamicAttLibValue();
                 dynamicAttLibValueEntity.InventoryId = Id;
                 dynamicAttLibValueEntity.tablesNamesId = TableNameId;
                 dynamicAttLibValueEntity.DynamicAttId = dynamicAttEntity.Id;
                 dynamic value = DynamicLibAttValue.value;
                 switch (value)
                 {
+                    case int NumberValue:
+                        dynamicAttLibValueEntity.ValueDouble = NumberValue;
+                        break;
                     case string stringValue:
                         dynamicAttLibValueEntity.ValueString = stringValue;
                         break;
