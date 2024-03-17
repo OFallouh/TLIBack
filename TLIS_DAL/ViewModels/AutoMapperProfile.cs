@@ -152,6 +152,7 @@ namespace TLIS_DAL.ViewModels
            // ---------------------------------------------------------------------------------------
 
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
+            CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAttLibValue>().ReverseMap();
             CreateMap<TLIcivilWithLegLibrary, CivilWihtLegsLibraryAttributes>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIInstCivilwithoutLegsType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIcivilWithoutLegCategory>().ReverseMap();

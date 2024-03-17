@@ -21,6 +21,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
 
         public class CivilWihtLegsLibraryAttributes
         {
+            public string Model { get; set; }
             public string? Note { get; set; }
             public string Prefix { get; set; }
             public float Height_Designed { get; set; } = 0;
@@ -34,6 +35,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
             public int? civilSteelSupportCategoryId { get; set; } = 1;
             public float Manufactured_Max_Load { get; set; } = 0;
             public string? WidthVariation { get; set; }
+            public int NumberOfLegs { get; set; }
         }
     }
 

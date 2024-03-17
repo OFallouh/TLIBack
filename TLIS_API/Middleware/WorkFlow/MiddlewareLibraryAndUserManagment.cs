@@ -62,7 +62,7 @@ namespace TLIS_API.Middleware.WorkFlow
                     context.Result = new UnauthorizedObjectResult("401 Unauthorized");
                     return;
                 }
-                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) && x.IP == clientIPAddress && x.LoginDate < DateTime.Now);
+                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) /*&& x.IP == clientIPAddress*/ && x.LoginDate < DateTime.Now);
                 var userIdInt64 = Convert.ToInt32(userId);
                 if (session != null)
                 {

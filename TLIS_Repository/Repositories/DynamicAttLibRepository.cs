@@ -72,44 +72,41 @@ namespace TLIS_Repository.Repositories
         }
         public void AddDynamicLibAtt(List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id)
         {
-            var dynamicAttInstValues = addDynamicLibAttValues.Select(DynamicLibAttValue =>
+            var dynamicAttLibValueEntities = addDynamicLibAttValues.Select(DynamicLibAttValue =>
             {
-                var DynamicAttEntity = _context.TLIdynamicAtt
+                var dynamicAttEntity = _context.TLIdynamicAtt
                     .Where(x => x.Id == DynamicLibAttValue.id)
                     .Include(x => x.DataType)
                     .FirstOrDefault();
 
-                var dynamicAttLibValueEntites = _mapper.Map<TLIdynamicAttLibValue>(DynamicLibAttValue);
-                dynamicAttLibValueEntites.InventoryId = Id;
-                dynamicAttLibValueEntites.tablesNamesId = TableNameId;
-
+                var dynamicAttLibValueEntity = _mapper.Map<TLIdynamicAttLibValue>(DynamicLibAttValue);
+                dynamicAttLibValueEntity.InventoryId = Id;
+                dynamicAttLibValueEntity.tablesNamesId = TableNameId;
+                dynamicAttLibValueEntity.DynamicAttId = dynamicAttEntity.Id;
                 dynamic value = DynamicLibAttValue.value;
                 switch (value)
                 {
                     case string stringValue:
-                        dynamicAttLibValueEntites.ValueString = stringValue;
+                        dynamicAttLibValueEntity.ValueString = stringValue;
                         break;
                     case double doubleValue:
-                        dynamicAttLibValueEntites.ValueDouble = doubleValue;
+                        dynamicAttLibValueEntity.ValueDouble = doubleValue;
                         break;
                     case DateTime dateTimeValue:
-                        dynamicAttLibValueEntites.ValueDateTime = dateTimeValue;
+                        dynamicAttLibValueEntity.ValueDateTime = dateTimeValue;
                         break;
                     case bool booleanValue:
-                        dynamicAttLibValueEntites.ValueBoolean = booleanValue;
+                        dynamicAttLibValueEntity.ValueBoolean = booleanValue;
                         break;
-                       
                 }
 
-                dynamicAttLibValueEntites.disable = false;
-                return dynamicAttLibValueEntites;
-            });
+                dynamicAttLibValueEntity.disable = false;
+                return dynamicAttLibValueEntity;
+            }).ToList(); 
 
-            _context.TLIdynamicAttLibValue.AddRange(dynamicAttInstValues);
+            _context.TLIdynamicAttLibValue.AddRange(dynamicAttLibValueEntities);
             _context.SaveChanges();
         }
-
-
         public void DisableDynamicAttLibValues(int TableNameId, int Id)
         {
             var DynamiAttLibValues = _context.TLIdynamicAttLibValue

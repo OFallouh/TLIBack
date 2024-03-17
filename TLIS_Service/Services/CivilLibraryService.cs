@@ -76,7 +76,7 @@ namespace TLIS_Service.Services
         //Function accept 2 parameters
         //First TableName to specify the table i deal with
         //Second CivilLibraryViewModel object have data to add
-        public Response<AddCivilWithLegsLibraryObject> AddCivilLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString)
+        public Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString, int UserId)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -96,7 +96,7 @@ namespace TLIS_Service.Services
                                 TLIcivilWithLegLibrary CivilWithLegEntites = _mapper.Map<TLIcivilWithLegLibrary>(AddCivilWithLegsLibraryObject.attributesActivatedLibrary);
 
 
-                                var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(AddCivilWithLegsLibraryObject.logisticalItems.VendorId);
+                                var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(AddCivilWithLegsLibraryObject.logisticalItems.Vendor);
                                 var vendor = logisticalObject?.Name;
 
                                 var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegEntites.structureTypeId);
@@ -105,7 +105,7 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
-                                if(structureTypeName != null)
+                                if(structureTypeName == null)
                                 {
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, "structureType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
@@ -124,6 +124,14 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
+                                AddCivilWithLegsLibraryObject.attributesActivatedLibrary.Model = model;
+                                if(structureTypeName!=null && structureTypeName .ToLower()== "triangular")
+                                    CivilWithLegEntites.NumberOfLegs = 3;
+
+                                else if (structureTypeName != null && structureTypeName.ToLower() == "square")
+                                    CivilWithLegEntites.NumberOfLegs = 4;
+
+                                CivilWithLegEntites.Model = model;
                                 string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
 
                                 if (!string.IsNullOrEmpty(CheckGeneralValidation))
@@ -134,7 +142,7 @@ namespace TLIS_Service.Services
                                 if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                        
-                              //  _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegEntites);
+                                _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(UserId, CivilWithLegEntites);
                                     
                                 _unitOfWork.SaveChanges();
 
@@ -252,121 +260,80 @@ namespace TLIS_Service.Services
             if (CivilType.Equals(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), StringComparison.OrdinalIgnoreCase))
             {
                 AddCivilWithLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithLegsLibraryObject>(Input);
-
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
-                    .GetIncludeWhere(x => x.tablesNames.TableName.Equals(CivilType, StringComparison.OrdinalIgnoreCase) && !x.disable
-                        , x => x.tablesNames).ToList());
-
-                DynamicAttributes.Select(DynamicAttribute =>
+                        .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
+                            , x => x.tablesNames).ToList());
+                if (DynamicAttributes.Any())
                 {
-                    TLIdependency Dependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
-                        x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
-                            x => x.Operation, x => x.DynamicAtt);
+                    var dependencies = DynamicAttributes
+                        .Select(DynamicAttribute => _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+                            x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
+                                x => x.Operation, x => x.DynamicAtt))
+                        .Where(dependency => dependency != null);
 
-                    if (Dependency == null)
-                        return null;
-
-                    var InsertedDynamicAttributeValue = AddCivilLibraryViewModel.dynamicAttributes
-                        .FirstOrDefault(x => x.id == DynamicAttribute.Id);
-
-                    if (InsertedDynamicAttributeValue == null)
-                        return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
-
-                    var RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null)
-                                                                     .Select(x => x.RowId.Value)
-                                                                     .Distinct()
-                                                                     .ToList();
-
-                    RowsIds.Select(RowId =>
-                    {
-                        var Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == RowId, x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated
-                            , x => x.Rule.dynamicAtt).Select(x => x.Rule).Distinct().ToList();
-
-                        int Succed = Rules.Count(rule =>
+                    var invalidValues = dependencies
+                        .SelectMany(Dependency => AddCivilLibraryViewModel.dynamicAttributes
+                            .Where(x => x.id == Dependency.DynamicAttId)
+                            .Select(insertedDynamicAttribute => new
+                            {
+                                Dependency,
+                                InsertedDynamicAttribute = insertedDynamicAttribute,
+                                RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null)
+                                    .Select(x => x.RowId.Value).Distinct().ToList(),
+                                Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == Dependency.Id,
+                                    x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated, x => x.Rule.dynamicAtt)
+                                    .Select(x => x.Rule).Distinct()
+                            }))
+                        .Where(item =>
                         {
-                            var RuleOperation = rule.Operation.Name;
-                            var RuleValue = rule.OperationValueBoolean ?? rule.OperationValueDateTime ?? (object)rule.OperationValueDouble ?? rule.OperationValueString;
-
-                            object InsertedValue = null;
-
-                            if (rule.attributeActivatedId != null)
+                            foreach (var Rule in item.Rules)
                             {
-                                string AttributeName = rule.attributeActivated.Key;
-                                InsertedValue = AddCivilLibraryViewModel.GetType().GetProperty(AttributeName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.GetValue(AddCivilLibraryViewModel, null);
-                            }
-                            else if (rule.dynamicAttId != null)
-                            {
-                                var DynamicObject = AddCivilLibraryViewModel.dynamicAttributes
-                                    .FirstOrDefault(x => x.id == rule.dynamicAttId.Value);
+                                string RuleOperation = Rule.Operation.Name;
+                                object RuleValue = Rule.OperationValueBoolean ?? Rule.OperationValueDateTime ?? Rule.OperationValueDouble ?? (object)Rule.OperationValueString;
 
-                                if (DynamicObject != null)
+                                object InsertedValue = Rule.attributeActivatedId != null
+                                    ? AddCivilLibraryViewModel.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == Rule.attributeActivated.Key.ToLower())?.GetValue(AddCivilLibraryViewModel, null)
+                                    : Rule.dynamicAttId != null
+                                        ? AddCivilLibraryViewModel.dynamicAttributes.FirstOrDefault(x => x.id == Rule.dynamicAttId.Value)?.value
+                                        : null;
+
+                                if (InsertedValue == null)
+                                    return false;
+
+                                if (!(RuleOperation == "==" ? InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower() :
+                                    RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
+                                    RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
+                                    RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 || InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
+                                    RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
+                                    RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 || InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false))
                                 {
-                                    InsertedValue = DynamicObject.value;
+                                    string ReturnOperation = RuleOperation switch
+                                    {
+                                        "==" => "Equal To",
+                                        "!=" => "not equal to",
+                                        ">" => "bigger than",
+                                        ">=" => "bigger than or equal to",
+                                        "<" => "smaller than",
+                                        "<=" => "smaller than or equal to",
+                                        _ => ""
+                                    };
+
+                                    Console.WriteLine($"({item.Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {RuleValue}");
+                                    return true;
                                 }
                             }
-
-                            if (InsertedValue == null)
-                                return false;
-
-                            return RuleOperation switch
-                            {
-                                "==" => InsertedValue.ToString().Equals(RuleValue?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                "!=" => !InsertedValue.ToString().Equals(RuleValue?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                ">" => Comparer.Default.Compare(InsertedValue, RuleValue) == 1,
-                                ">=" => Comparer.Default.Compare(InsertedValue, RuleValue) == 1 || Comparer.Default.Compare(InsertedValue, RuleValue) == 0,
-                                "<" => Comparer.Default.Compare(InsertedValue, RuleValue) == -1,
-                                "<=" => Comparer.Default.Compare(InsertedValue, RuleValue) == -1 || Comparer.Default.Compare(InsertedValue, RuleValue) == 0,
-                                _ => false,
-                            };
+                            return false;
                         });
 
-                        if (Rules.Count == Succed)
-                        {
-                            var DependencyValidationOperation = Dependency.Operation.Name;
-                            var DependencyValdiationValue = Dependency.ValueBoolean ?? Dependency.ValueDateTime ?? (object)Dependency.ValueDouble ?? Dependency.ValueString;
-                            var InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValue.value;
+                    if (invalidValues.Any())
+                    {
+                        var firstInvalid = invalidValues.First();
+                        return $"({firstInvalid.Dependency.DynamicAtt.Key}) value can't be null and must be inserted";
+                    }
+                }
 
-                            if (InsertedDynamicAttributeValue.value is DateTime dateTimeValue)
-                            {
-                                DateTime DependencyValidationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
-                                    Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
-
-                                DependencyValdiationValue = DependencyValidationValueConverter;
-
-                                DateTime InsertedDynamicAttributeValueAsDateTime = (DateTime)InsertedDynamicAttributeValue.value;
-                                DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(InsertedDynamicAttributeValueAsDateTime.Year,
-                                    InsertedDynamicAttributeValueAsDateTime.Month, InsertedDynamicAttributeValueAsDateTime.Day);
-
-                                InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
-                            }
-
-                            if (InsertedDynamicAttributeValueAsObject != null && DependencyValdiationValue != null)
-                            {
-                                if (!(DependencyValidationOperation == "==" ? InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) :
-                                     DependencyValidationOperation == "!=" ? !InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) :
-                                     DependencyValidationOperation == ">" ? Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1 :
-                                     DependencyValidationOperation == ">=" ? (InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) || Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1) :
-                                     DependencyValidationOperation == "<" ? Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1 :
-                                     DependencyValidationOperation == "<=" ? (InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) || Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1) : false))
-                                {
-                                    string ReturnOperation = (DependencyValidationOperation == "==" ? "Equal To" :
-                                        (DependencyValidationOperation == "!=" ? "not equal to" :
-                                        (DependencyValidationOperation == ">" ? "bigger than" :
-                                        (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
-                                        (DependencyValidationOperation == "<" ? "smaller than" :
-                                        (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
-
-                                    return $"({Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {DependencyValdiationValue}";
-                                }
-                            }
-                        }
-
-                        return null;
-                    }).FirstOrDefault(result => result != null);
-
-                    return null;
-                }).FirstOrDefault(result => result != null);
-            }
+        }
             else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
             {
                 AddCivilWithoutLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegsLibraryObject>(Input);
@@ -674,23 +641,54 @@ namespace TLIS_Service.Services
                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable
                        , x => x.tablesNames).ToList());
             }
-
-            var invalidValidation = DynamicAttributes.Select(DynamicAttributeEntity =>
+            foreach (DynamicAttViewModel DynamicAttributeEntity in DynamicAttributes)
             {
-                var Validation = _unitOfWork.ValidationRepository
+                TLIvalidation Validation = _unitOfWork.ValidationRepository
                     .GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttributeEntity.Id, x => x.Operation, x => x.DynamicAtt);
 
                 if (Validation != null)
                 {
-                    var DynmaicAttributeValue = TLIdynamicAttLibValue.FirstOrDefault(x => x.id == DynamicAttributeEntity.Id);
+                    AddDdynamicAttributeInstallationValueViewModel DynmaicAttributeValue = TLIdynamicAttLibValue.FirstOrDefault(x => x.id == DynamicAttributeEntity.Id);
 
                     if (DynmaicAttributeValue == null)
                         return $"({Validation.DynamicAtt.Key}) value can't be null and must be inserted";
 
-                    var OperationName = Validation.Operation.Name;
+                    string OperationName = Validation.Operation.Name;
 
-                    var InputDynamicValue = DynmaicAttributeValue.value;
-                    var ValidationValue = Validation.ValueBoolean ?? Validation.ValueDateTime ?? Validation.ValueDouble ?? (object)Validation.ValueString;
+                    object InputDynamicValue = new object();
+
+                    if (DynmaicAttributeValue.value != null)
+                    {
+                        if (DynmaicAttributeValue.value is bool)
+                        {
+                            InputDynamicValue = (bool)DynmaicAttributeValue.value;
+                        }
+                        else if (DynmaicAttributeValue.value is DateTime)
+                        {
+                            InputDynamicValue = (DateTime)DynmaicAttributeValue.value;
+                        }
+                        else if (DynmaicAttributeValue.value is double)
+                        {
+                            InputDynamicValue = (double)DynmaicAttributeValue.value;
+                        }
+                        else if (DynmaicAttributeValue.value is string)
+                        {
+                            InputDynamicValue = (string)DynmaicAttributeValue.value;
+                        }
+                    }
+                    object ValidationValue = new object();
+
+                    if (Validation.ValueDouble != null)
+                        ValidationValue = Validation.ValueBoolean;
+
+                    else if (Validation.ValueDateTime != null)
+                        ValidationValue = Validation.ValueDateTime;
+
+                    else if (Validation.ValueDouble != null)
+                        ValidationValue = Validation.ValueDouble;
+
+                    else if (!string.IsNullOrEmpty(Validation.ValueString))
+                        ValidationValue = Validation.ValueString;
 
                     if (!(OperationName == "==" ? InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower() :
                         OperationName == "!=" ? InputDynamicValue.ToString().ToLower() != ValidationValue.ToString().ToLower() :
@@ -701,10 +699,10 @@ namespace TLIS_Service.Services
                         OperationName == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 ||
                             InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) : false))
                     {
-                        var DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                        string DynamicAttributeName = _unitOfWork.DynamicAttRepository
                             .GetWhereFirst(x => x.Id == Validation.DynamicAttId).Key;
 
-                        var ReturnOperation = (OperationName == "==" ? "equal to" :
+                        string ReturnOperation = (OperationName == "==" ? "equal to" :
                             (OperationName == "!=" ? "not equal to" :
                             (OperationName == ">" ? "bigger than" :
                             (OperationName == ">=" ? "bigger than or equal to" :
@@ -714,10 +712,9 @@ namespace TLIS_Service.Services
                         return $"({DynamicAttributeName}) value must be {ReturnOperation} {ValidationValue}";
                     }
                 }
-                return null;
-            }).FirstOrDefault(invalidValidation => invalidValidation != null);
+            }
 
-            return invalidValidation ?? string.Empty;
+            return string.Empty;
         }
 
         public void AddLogisticalItemWithCivil(dynamic LogisticalItemIds, dynamic CivilEntity, int TableNameEntityId)
@@ -726,63 +723,75 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    if (LogisticalItemIds.LogisticalItems != null)
+                    if (LogisticalItemIds != null)
                     {
-                        if (LogisticalItemIds.LogisticalItems.VendorId != null && LogisticalItemIds.LogisticalItems.VendorId != 0)
+                        if (LogisticalItemIds.Vendor != null && LogisticalItemIds.Vendor != 0)
                         {
-                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.LogisticalItems.VendorId);
-                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Vendor);
+                            if (LogisticalObject != null)
                             {
-                                Name = "",
-                                IsLib = true,
-                                logisticalId = LogisticalObject.Id,
-                                RecordId = CivilEntity.Id,
-                                tablesNamesId = TableNameEntityId
-                            };
-                            _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                            _unitOfWork.SaveChangesAsync();
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
                         }
-                        if (LogisticalItemIds.LogisticalItems.SupplierId != null && LogisticalItemIds.LogisticalItems.SupplierId != 0)
+                        if (LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0)
                         {
-                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.LogisticalItems.SupplierId);
-                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Supplier);
+                            if (LogisticalObject != null)
                             {
-                                Name = "",
-                                IsLib = true,
-                                logisticalId = LogisticalObject.Id,
-                                RecordId = CivilEntity.Id,
-                                tablesNamesId = TableNameEntityId
-                            };
-                            _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                            _unitOfWork.SaveChangesAsync();
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
                         }
-                        if (LogisticalItemIds.LogisticalItems.DesignerId != null && LogisticalItemIds.LogisticalItems.DesignerId != 0)
+                        if (LogisticalItemIds.Designer != null && LogisticalItemIds.Designer != 0)
                         {
-                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.LogisticalItems.DesignerId);
-                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Designer);
+                            if (LogisticalObject != null)
                             {
-                                Name = "",
-                                IsLib = true,
-                                logisticalId = LogisticalObject.Id,
-                                RecordId = CivilEntity.Id,
-                                tablesNamesId = TableNameEntityId
-                            };
-                            _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                            _unitOfWork.SaveChangesAsync();
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
                         }
-                        if (LogisticalItemIds.LogisticalItems.ManufacturerId != null && LogisticalItemIds.LogisticalItems.ManufacturerId != 0)
+                        if (LogisticalItemIds.Manufacturer != null && LogisticalItemIds.Manufacturer != 0)
                         {
-                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.LogisticalItems.ManufacturerId);
-                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Manufacturer);
+                            if (LogisticalObject != null)
                             {
-                                Name = "",
-                                IsLib = true,
-                                logisticalId = LogisticalObject.Id,
-                                RecordId = CivilEntity.Id,
-                                tablesNamesId = TableNameEntityId
-                            };
-                            _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                            _unitOfWork.SaveChangesAsync();
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
                         }
                     }
 
@@ -2373,15 +2382,15 @@ namespace TLIS_Service.Services
                         {
                             switch (item.Desc.ToLower())
                             {
-                                case "tlistructuretype":
+                                case "structuretype_name":
                                     item.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
-                                case "tliInstCivilwithoutLegsType":
+                                case "installationcivilwithoutlegstype_name":
                                     item.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
-                                case "tlicivilwithoutlegcategory":
+                                case "civilwithoutlegcategory_name":
                                     item.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository
                                         .GetWhere(x => !x.disable).ToList());
                                     break;
@@ -2450,44 +2459,29 @@ namespace TLIS_Service.Services
         public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
         {
             try
-            {
+           {
                 GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
 
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
 
                 if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                 {
-                    List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                     .GetAttributeActivatedGetForAdd(TableName, null, null, "Model", "civilSteelSupportCategoryId", "NumberOfLegs")
-                     .Select(FKitem =>
-                     {
-                         if (FKitem.DataType != null && FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                         {
-                             switch (FKitem.Desc.ToLower())
-                             {
-                                 case "tlisectionslegtype":
-                                     FKitem.Options = _unitOfWork.SectionsLegTypeRepository
-                                         .GetWhere(x => !x.Deleted && !x.Disable)
-                                         .Select(x => _mapper.Map<SectionsLegTypeViewModel>(x))
-                                         .ToList();
-                                     break;
-                                 case "tlistructuretype":
-                                     FKitem.Options = _unitOfWork.StructureTypeRepository
-                                         .GetWhere(x => !x.Deleted && !x.Disable)
-                                         .Select(x => _mapper.Map<StructureTypeViewModel>(x))
-                                         .ToList();
-                                     break;
-                                 case "tlisupporttypedesigned":
-                                     FKitem.Options = _unitOfWork.SupportTypeDesignedRepository
-                                         .GetWhere(x => !x.Deleted && !x.Disable)
-                                         .Select(x => _mapper.Map<SupportTypeDesignedViewModel>(x))
-                                         .ToList();
-                                     break;
-                             }
-                         }
-                         return FKitem;
-                     }).ToList();
+                    List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null).ToList();
+                    listofAttributesActivated
+                      .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                      .ToList()
+                      .Select(FKitem =>
+                      {
+                          if (FKitem.Desc.ToLower() == "sectionslegtype_name")
+                              FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                          else if (FKitem.Desc.ToLower() == "structuretype_name")
+                              FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                          else if (FKitem.Desc.ToLower() == "supporttypedesigned_name")
+                              FKitem.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
+                          return FKitem;
+                      })
+                      .ToList();
                     var LogisticalAttributes =_unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.CivilSupport.ToString());
                     Attributes.LogisticalItems = LogisticalAttributes;
                     Attributes.AttributesActivatedLibrary = listofAttributesActivated;
@@ -2528,7 +2522,7 @@ namespace TLIS_Service.Services
                     .GetAttributeActivatedGetForAdd(TableName, null, null)
                     .Select(item =>
                     {
-                        if (item.DataType.ToLower() == "list" && item.Desc?.ToLower() == "tlicivilnonsteeltype")
+                        if (item.DataType.ToLower() == "list" && item.Desc?.ToLower() == "civilNonsteeltype_name")
                             item.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(
                                 db.TLIcivilNonSteelType.Where(x => !x.Disable).ToList());
                         return item;

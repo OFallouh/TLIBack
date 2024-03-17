@@ -26,7 +26,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<CivilWithoutLegLibraryViewModel>> getCivilWithoutLegLibraries(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<CivilNonSteelLibraryViewModel>> getCivilNonSteelLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<AllItemAttributes> GetById(int Id,string CivilType);
-        Response<AddCivilWithLegsLibraryObject> AddCivilLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString);
+        Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString,int UserId);
        // Task<Response<AllItemAttributes>> EditCivilLibrary(object CivilLibraryViewModel,string CivilType);
         Task<Response<AllItemAttributes>> Disable(int Id,string CivilType);
         Task<Response<AllItemAttributes>> Delete(int Id, string CivilType);

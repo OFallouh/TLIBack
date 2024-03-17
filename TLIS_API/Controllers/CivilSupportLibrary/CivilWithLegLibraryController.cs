@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using TLIS_API.Helpers;
@@ -61,21 +63,36 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithLegLibrary")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsLibraryObject))]
-        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithLegsLibraryObject CivilWithLegLibraryViewModel)
+        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithLegsLibraryObject CivilWithLegLibraryViewModel, [FromServices] IConfiguration configuration)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithLegsLibraryObject)))
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var response = _unitOfWorkService.CivilLibraryService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString);
-                return Ok(response);
+                return Unauthorized();
             }
-            else
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
             {
-                var ErrorMessages = from state in ModelState.Values
-                            from error in state.Errors
-                            select error.ErrorMessage;
-                return Ok(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Unauthorized();
             }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId= Convert.ToInt32(userInfo);
+            var ConnectionString = configuration["ConnectionStrings:ActiveConnection"];
+
+            if (!ModelState.IsValid)
+            {
+                var ErrorMessages = ModelState.Values.SelectMany(state => state.Errors.Select(error => error.ErrorMessage));
+                return BadRequest(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+
+            var response = _unitOfWorkService.CivilLibraryService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString,userId);
+            return Ok(response);
         }
         //[HttpPost("EditCivilWithLegLibrary")]
         //[ProducesResponseType(200, Type = typeof(EditCivilWithLegLibraryViewModels))]

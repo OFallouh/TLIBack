@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Threading.Tasks;
 using TLIS_DAL.Helper;
@@ -131,7 +132,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
-        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int TaskId)
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg,[Parameter] string SiteCode,  int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             if (addCivilWithLeg.civilSiteDate.ReservedSpace == true)

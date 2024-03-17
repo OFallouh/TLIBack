@@ -89,70 +89,72 @@ namespace TLIS_API.Middleware.WorkFlow
             
             
                 string actionName = context.RouteData.Values["action"].ToString();
-                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId)/*&& x.IP == clientIPAddress*/ && x.LoginDate<DateTime.Now);
+                var session = db.TLIsession.FirstOrDefault(x => x.UserId == Convert.ToInt64(userId) /*&& x.IP == clientIPAddress*/ && x.LoginDate<DateTime.Now);
                 var userIdInt64 = Convert.ToInt32(userId);
                 if (session != null)
                 {
                     var WorkFlowMode = _configuration["WorkFlowMode"];
                     if (WorkFlowMode.ToLower() == "true")
                     {
-                        if (!actionName.ToLower().StartsWith("get")) 
+                        if (!actionName.ToLower().StartsWith("get"))
                         {
-                            var query = context.HttpContext.Request.Query;
-                            bool containsTaskId = query.ContainsKey("TaskId");
-                            string taskId = containsTaskId ? query["TaskId"].ToString() : null;
-                            if (!string.IsNullOrEmpty(taskId))
+                            if (context.HttpContext.Request.Query.ContainsKey("TaskId"))
                             {
-                                if (int.TryParse(taskId, out int taskIdInt))
+                                var taskId = context.HttpContext.Request.Query["TaskId"];
+
+                                if (!string.IsNullOrEmpty(taskId))
                                 {
-                                    var TaskInfo = GetTaskById(taskIdInt);
-                                    if (TaskInfo.Result!= null)
+                                    if (int.TryParse(taskId, out int taskIdInt))
                                     {
-                                        if (TaskInfo.Result.result != null)
+                                        var TaskInfo = GetTaskById(taskIdInt);
+                                        if (TaskInfo.Result != null)
                                         {
-                                            if (TaskInfo.Result.result.MetaLink.Api != null && TaskInfo.Result.result.AssignToUserId != 0 && TaskInfo.Result.result.Status != null)
+                                            if (TaskInfo.Result.result != null)
                                             {
-                                                string[] ApiParts = TaskInfo.Result.result.MetaLink.Api.Split('/');
-                                                string[] apiPathParts = apiPath.Split('/');
-
-                                                // Convert the first three parts of apiPath to lowercase
-                                                for (int i = 0; i < 3 && i < apiPathParts.Length; i++)
+                                                if (TaskInfo.Result.result.MetaLink.Api != null && TaskInfo.Result.result.AssignToUserId != 0 && TaskInfo.Result.result.Status != null)
                                                 {
-                                                    apiPathParts[i] = apiPathParts[i].ToLower();
-                                                }
+                                                    string[] ApiParts = TaskInfo.Result.result.MetaLink.Api.Split('/');
+                                                    string[] apiPathParts = apiPath.Split('/');
 
-                                                string lowerCaseApiPath = string.Join("/", apiPathParts.Take(4));
+                                                    // Convert the first three parts of apiPath to lowercase
+                                                    for (int i = 0; i < 3 && i < apiPathParts.Length; i++)
+                                                    {
+                                                        apiPathParts[i] = apiPathParts[i].ToLower();
+                                                    }
 
-                                                // Check equality
-                                                bool result = TaskInfo.Result.result.MetaLink.Api.ToLower() == lowerCaseApiPath.ToLower();
+                                                    string lowerCaseApiPath = string.Join("/", apiPathParts.Take(4));
 
-                                                if (result == true && TaskInfo.Result.result.AssignToUserId == userIdInt64 && TaskInfo.Result.result.Status == Task_Status_Enum.Open)
-                                                {
-                                                    context.Result = context.Result;
-                                                    return;
+                                                    // Check equality
+                                                    bool result = TaskInfo.Result.result.MetaLink.Api.ToLower() == lowerCaseApiPath.ToLower();
 
-                                                }
-                                                else
-                                                {
-                                                    context.Result = new UnauthorizedObjectResult("401 Unauthorized");
-                                                    return;
+                                                    if (result == true && TaskInfo.Result.result.AssignToUserId == userIdInt64 && TaskInfo.Result.result.Status == Task_Status_Enum.Open)
+                                                    {
+                                                        context.Result = context.Result;
+                                                        return;
+
+                                                    }
+                                                    else
+                                                    {
+                                                        context.Result = new UnauthorizedObjectResult("401 Unauthorized");
+                                                        return;
+                                                    }
                                                 }
                                             }
+                                            else
+                                            {
+                                                context.Result = new UnauthorizedObjectResult(TaskInfo.Result.errorMessage);
+                                                return;
+                                            }
+
                                         }
                                         else
                                         {
-                                            context.Result = new UnauthorizedObjectResult(TaskInfo.Result.errorMessage);
+                                            context.Result = new UnauthorizedObjectResult(TaskInfo.Exception);
                                             return;
                                         }
 
-                                    }
-                                    else
-                                    {
-                                        context.Result = new UnauthorizedObjectResult(TaskInfo.Exception);
-                                        return;
-                                    }
 
-
+                                    }
                                 }
                             }
                             else
@@ -190,6 +192,7 @@ namespace TLIS_API.Middleware.WorkFlow
 
             }
         }
+
         public class TaskInfo
         {
             public int Id { get; set; }
