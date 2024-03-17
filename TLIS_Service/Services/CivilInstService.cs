@@ -36,6 +36,7 @@ using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.DynamicAttLibValueDTOs;
 using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
 using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
+using TLIS_DAL.ViewModels.HistoryDetails;
 using TLIS_DAL.ViewModels.LoadOtherDTOs;
 using TLIS_DAL.ViewModels.LocationTypeDTOs;
 using TLIS_DAL.ViewModels.LogicalOperationDTOs;
@@ -2190,7 +2191,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString,int? TaskId)
+        public Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString,int? TaskId,int UserId)
         {
             //using (TransactionScope transaction = new TransactionScope())
             //{
@@ -2221,7 +2222,7 @@ namespace TLIS_Service.Services
                                 return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
-                        //Check Validations
+                   
                         string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilWithLegs.dynamicAttribute, TableName);
 
                         if (!string.IsNullOrEmpty(CheckGeneralValidation))
@@ -2242,7 +2243,7 @@ namespace TLIS_Service.Services
                          Model = civilwithleglibrary.Model;
                         
                         civilWithLegs.Name = sitename +"" + Model +""+ ownername +""+ addCivilWithLegs.installationAttributes.HeightImplemented;
-                        //Check name if already exists in database then return message that the name is already exists
+
                         TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
                             (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegs.Name.ToLower() : false &&
                                 x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
@@ -2251,11 +2252,9 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(true, null, null, $"The name {civilWithLegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         civilWithLegs.CivilWithLegsLibId = addCivilWithLegs.civilType.civilWithLegsLibId;
-                        //_unitOfWork.CivilWithLegsRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, civilWithLegs);
-                        _unitOfWork.CivilWithLegsRepository.Add(civilWithLegs);
+                        _unitOfWork.CivilWithLegsRepository.AddWithHistory(UserId, civilWithLegs);
                         _unitOfWork.SaveChanges();
 
-                        //Add to Civil_Site_Date if there is free space
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
                         allCivilInst.civilWithLegsId = civilWithLegs.Id;
                         allCivilInst.Draft = false;
@@ -2263,7 +2262,6 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         allCivilInstId = allCivilInst.Id;
 
-                        //Check if Site object not null and SiteCode not null or empty then add civilSiteDate
                         if (addCivilWithLegs.civilSiteDate != null && string.IsNullOrEmpty(SiteCode) == false)
                         {
                             TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
@@ -2328,8 +2326,6 @@ namespace TLIS_Service.Services
                             }
                         }
                         var CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetByID(CivilWithoutLeg.CivilWithoutlegsLibId);
-
-                        //Check Validations
                         string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(CivilInstallationViewModel, TableName, SiteCode, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
 
                         if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -2430,7 +2426,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.CivilSiteDateRepository.Add(civilSiteDate);
                                 _unitOfWork.SaveChanges();
                             }
-                            //Check if there are other civils in that site
+                          
                             var SiteCivils = _unitOfWork.CivilSiteDateRepository.GetWhere(x => x.SiteCode == SiteCode && x.allCivilInst.civilWithLegsId == null && x.allCivilInst.civilWithoutLegId != null && x.allCivilInst.civilNonSteelId == null).ToList();
                          
                             if (AddCivilWithoutLeg.civilSupportDistance != null)
@@ -2452,7 +2448,7 @@ namespace TLIS_Service.Services
                                     _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(addDynamicAttsInstValue, TableNameEntity.Id, CivilWithoutLeg.Id);
                                 }
                             }
-                            //AddCivilHistory(AddCivilWithoutLeg.ticketAtt, allCivilInstId, "Insert");
+                        
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == TableName)
                     {
@@ -9194,26 +9190,26 @@ namespace TLIS_Service.Services
                         x => x.structureType, x => x.supportTypeDesigned));
 
                 List<BaseAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary, null).ToList();
+                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), null, null).ToList();
 
                 Dictionary<string, Func<IEnumerable<object>>> repository = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "tlicivilsteelsupportcategory", () =>
+                    { "civilsteelsupportcategory_name", () =>
                         _unitOfWork.CivilSteelSupportCategoryRepository != null && CivilWithLegLibrary.civilSteelSupportCategoryId != null ?
                         new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.civilSteelSupportCategoryId)) } :
                         Enumerable.Empty<object>()
                     },
-                    { "tlisectionslegtype", () =>
+                    { "sectionslegtype_name", () =>
                         _unitOfWork.SectionsLegTypeRepository != null && CivilWithLegLibrary.sectionsLegTypeId != null ?
                         new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.sectionsLegTypeId)) } :
                         Enumerable.Empty<object>()
                     },
-                    { "tlisupporttypedesigned", () =>
+                    { "supporttypdesigned_name", () =>
                         _unitOfWork.SupportTypeDesignedRepository != null && CivilWithLegLibrary.supportTypeDesignedId != null ?
                         new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.supportTypeDesignedId)) } :
                         Enumerable.Empty<object>()
                     },
-                    { "tlistructuretype", () =>
+                    { "structuretype_name", () =>
                         _unitOfWork.StructureTypeRepository != null && CivilWithLegLibrary.structureTypeId != null ?
                         new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.structureTypeId)) } :
                         Enumerable.Empty<object>()
@@ -9256,13 +9252,13 @@ namespace TLIS_Service.Services
                 }
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "tlilocationtype", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlibasetype", () => _mapper.Map<List<BaseTypeViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "basetype_name", () => _mapper.Map<List<BaseTypeViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlibasecivilwithlegstype", () => _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tliguylinetype", () => _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlisupporttypeimplemented", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlienforcmentcategory", () => _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "basecivilwithlegtype_name", () => _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "guylinetype_name", () => _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "supporttypeimplemented_name", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "enforcmentcategory_name", () => _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "structuretype", () => {
                         List<EnumOutPut> structureTypeCompatibleWithDesigns = new List<EnumOutPut>
                         {
@@ -9284,7 +9280,7 @@ namespace TLIS_Service.Services
                 ListAttributesActivated = ListAttributesActivated
                     .Select(FKitem =>
                     {
-                        if (repositoryMethods.ContainsKey(FKitem.Desc.ToLower()))
+                        if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
                         {
                             FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
                         }
@@ -9625,7 +9621,7 @@ namespace TLIS_Service.Services
                         x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                 List<BaseAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary, null).ToList();
+                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), null, null).ToList();
                 if (CivilWithoutLegLibrary.structureTypeId != null || CivilWithoutLegLibrary.structureTypeId != 0)
                 {
                     structureType = _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.structureTypeId);
