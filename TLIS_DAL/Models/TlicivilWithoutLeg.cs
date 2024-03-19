@@ -94,7 +94,7 @@ namespace TLIS_DAL.Models
         public TLIowner Owner { get; set; }
         public TLIsubType subType { get; set; }
         public int ? subTypeId { get; set; }
-
+      
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }

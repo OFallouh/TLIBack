@@ -57,6 +57,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using System.Numerics;
 using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 
 namespace TLIS_Service.Services
 {
@@ -103,20 +104,20 @@ namespace TLIS_Service.Services
                                 var structureTypeName = structureType?.Name;
                                 if (CivilWithLegEntites.SpaceLibrary == 0)
                                 {
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                                 if(structureTypeName == null)
                                 {
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, "structureType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, "structureType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                                 if(vendor == null)
                                 {
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, "Vendor It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, "Vendor It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 }
                                 if (CivilWithLegEntites.Prefix == null)
                                 {
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, $"{CivilWithLegEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, $"{CivilWithLegEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 }
                                 var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + CivilWithLegEntites.Height_Designed;
@@ -243,11 +244,11 @@ namespace TLIS_Service.Services
                             //}
                             transaction.Complete();
                             tran.Commit();
-                            return new Response<AddCivilWithLegsLibraryObject>();
+                            return new Response<AddCivilWithLegsLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
                         catch (Exception err)
                         {
-                            return new Response<AddCivilWithLegsLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AddCivilWithLegsLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                 }

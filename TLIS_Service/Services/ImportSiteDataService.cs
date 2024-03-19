@@ -6441,7 +6441,7 @@ namespace TLIS_Service.Services
                                             NewCivilWithLegsEntity.DiagonalMemberPrefix = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member Prefix"].ToString();
                                             NewCivilWithLegsEntity.DiagonalMemberDimensions = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member Dimensions(mm)"].ToString();
                                             NewCivilWithLegsEntity.DiagonalMemberSection = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member section"].ToString();
-                                            NewCivilWithLegsEntity.BasePlateShape = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Shape"].ToString();
+                                            //NewCivilWithLegsEntity.BasePlateShape = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Shape"].ToString();
                                             NewCivilWithLegsEntity.BasePlateDimensions = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Dimentions(mm)"].ToString();
                                             NewCivilWithLegsEntity.BasePlatethickness = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Thickness(mm)"].ToString();
                                             NewCivilWithLegsEntity.SteelCrossSection = TypeOfSupportInfoDataTable.Rows[j]["Steel Cross Section"].ToString();
@@ -8055,7 +8055,7 @@ namespace TLIS_Service.Services
                                         NewCivilWithLegsEntity.DiagonalMemberPrefix = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member Prefix"].ToString();
                                         NewCivilWithLegsEntity.DiagonalMemberDimensions = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member Dimensions(mm)"].ToString();
                                         NewCivilWithLegsEntity.DiagonalMemberSection = TypeOfSupportInfoDataTable.Rows[j]["Diagonal Member section"].ToString();
-                                        NewCivilWithLegsEntity.BasePlateShape = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Shape"].ToString();
+                                        //NewCivilWithLegsEntity.BasePlateShape = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Shape"].ToString();
                                         NewCivilWithLegsEntity.BasePlateDimensions = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Dimentions(mm)"].ToString();
                                         NewCivilWithLegsEntity.BasePlatethickness = TypeOfSupportInfoDataTable.Rows[j]["Base Plate Thickness(mm)"].ToString();
                                         NewCivilWithLegsEntity.SteelCrossSection = TypeOfSupportInfoDataTable.Rows[j]["Steel Cross Section"].ToString();

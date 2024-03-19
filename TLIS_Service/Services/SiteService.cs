@@ -483,103 +483,241 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModel>> GetSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
-        {
-            List<TLIlocationType> Locations = _context.TLIlocationType.ToList();
+        //public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
+        //{
+        //    string[] ErrorMessagesWhenReturning = null;
 
-            if (filters != null ? filters.Count() > 0 : false)
-            {
-                IEnumerable<SiteViewModel> SitesViewModels;
+        //StartAgainWithRefresh:
+        //    try
+        //    {
+        //        List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
 
-                try
-                {
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
-                }
-                catch (ArgumentNullException Ex)
-                {
-                    _MySites = _context.TLIsite.Include(x => x.Area).Include(x => x.Region)
-                        .Include(x => x.siteStatus).ToList();
+        //        List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
+        //            .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+        //            .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites);
-                }
+        //        List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
+        //            .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+        //            .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
-                foreach (FilterObjectList filter in filters)
-                {
-                    PropertyInfo Property = typeof(SiteViewModel).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
+        //        UsedSitesInCivils.AddRange(UsedSitesInLoads);
 
-                    if (Property.PropertyType == typeof(string))
-                    {
-                        foreach (object FilterValues in filter.value)
-                        {
-                            if (Property.Name.ToLower() == "LocationType".ToLower())
-                            {
-                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
-                                        Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower().StartsWith(FilterValues.ToString().ToLower()) : false) : false);
-                            }
-                            else
-                            {
-                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    Property.GetValue(x).ToString().ToLower().StartsWith(FilterValues.ToString().ToLower()) : false).ToList();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (object FilterValues in filter.value)
-                        {
-                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                Property.GetValue(x).ToString().ToLower() == FilterValues.ToString().ToLower() : false).ToList();
-                        }
-                    }
-                }
+        //        List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
+        //            .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+        //            .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
-                int Count = SitesViewModels.Count();
+        //        UsedSitesInOtherInventories.AddRange(UsedSitesInCivils);
 
-                SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                    .Take(parameterPagination.PageSize);
+        //        List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
 
-                foreach (SiteViewModel SitesViewModel in SitesViewModels)
-                {
-                    string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
-                        .LocationType;
+        //        if (filters != null ? filters.Count() > 0 : false)
+        //        {
+        //            IEnumerable<SiteViewModelForGetAll> SitesViewModels;
 
-                    if (!string.IsNullOrEmpty(LocationTypeInModel))
-                        SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
-                }
+                    
+        //                _MySites.Count();
+        //                SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
+                    
 
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
-            }
-            else
-            {
-                IEnumerable<SiteViewModel> SitesViewModels;
+        //            foreach (FilterObjectList filter in filters)
+        //            {
+        //                if (filter.key != "isUsed")
+        //                {
+        //                    PropertyInfo Property = typeof(SiteViewModelForGetAll).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
 
-                try
-                {
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                        .Take(parameterPagination.PageSize));
-                }
-                catch (ArgumentNullException Ex)
-                {
-                    _MySites = _context.TLIsite.Include(x => x.Area).Include(x => x.Region)
-                        .Include(x => x.siteStatus).ToList();
+        //                    if (Property.PropertyType == typeof(string))
+        //                    {
+        //                        if (Property.Name.ToLower() == "LocationType".ToLower())
+        //                        {
+        //                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+        //                                (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
+        //                                    filter.value.Select(z => z.ToString().ToLower()).Any(z => Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower()
+        //                                        .StartsWith(z)) : false) : false);
+        //                        }
+        //                        else
+        //                        {
+        //                            SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+        //                                filter.value.Select(z => z.ToString().ToLower()).Any(z => Property.GetValue(x).ToString().ToLower().StartsWith(z)) : false).ToList();
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
+        //                            filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
+        //                    }
+        //                }
 
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                        .Take(parameterPagination.PageSize));
-                }
+        //            }
 
-                foreach (SiteViewModel SitesViewModel in SitesViewModels)
-                {
-                    string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
-                        .LocationType;
+        //            var UsedFilter = filters.FirstOrDefault(x => x.key == "isUsed");
+        //            int Count = 0;
+        //            if (UsedFilter != null)
+        //            {
+        //                SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower());
+        //                Count = SitesViewModels.Count();
+        //                SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+        //                .Take(parameterPagination.PageSize);
+        //            }
+        //            else
+        //            {
+        //                SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+        //                                        .Take(parameterPagination.PageSize);
+        //                Count = SitesViewModels.Count();
+        //            }
 
-                    if (!string.IsNullOrEmpty(LocationTypeInModel))
-                        SitesViewModel.LocationType = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel).Name;
-                }
+        //            List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
-                return new Response<IEnumerable<SiteViewModel>>(true, SitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
-            }
-        }
+        //            foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
+        //            {
+        //                string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
+        //                    .LocationType;
+
+        //                if (!string.IsNullOrEmpty(LocationTypeInModel))
+        //                {
+        //                    TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+
+        //                    ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+        //                    {
+        //                        SiteCode = SitesViewModel.SiteCode,
+        //                        LocationType = CheckLocation != null ? CheckLocation.Name : "NA",
+        //                        SiteName = SitesViewModel.SiteName,
+        //                        Area = SitesViewModel.Area,
+        //                        CityName = SitesViewModel.CityName,
+        //                        Latitude = SitesViewModel.Latitude,
+        //                        LocationHieght = SitesViewModel.LocationHieght,
+        //                        Longitude = SitesViewModel.Longitude,
+        //                        Region = SitesViewModel.Region,
+        //                        RentedSpace = SitesViewModel.RentedSpace,
+        //                        ReservedSpace = SitesViewModel.ReservedSpace,
+        //                        Status = SitesViewModel.Status,
+        //                        isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+        //                        ItemsOnSite = GetItemsCountOnEachSite != null ?
+        //                            (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+        //                    });
+        //                }
+        //                else
+        //                {
+        //                    ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+        //                    {
+        //                        SiteCode = SitesViewModel.SiteCode,
+        //                        LocationType = "NA",
+        //                        SiteName = SitesViewModel.SiteName,
+        //                        Area = SitesViewModel.Area,
+        //                        CityName = SitesViewModel.CityName,
+        //                        Latitude = SitesViewModel.Latitude,
+        //                        LocationHieght = SitesViewModel.LocationHieght,
+        //                        Longitude = SitesViewModel.Longitude,
+        //                        Region = SitesViewModel.Region,
+        //                        RentedSpace = SitesViewModel.RentedSpace,
+        //                        ReservedSpace = SitesViewModel.ReservedSpace,
+        //                        Status = SitesViewModel.Status,
+        //                        isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+        //                        ItemsOnSite = GetItemsCountOnEachSite != null ?
+        //                            (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+        //                    });
+        //                }
+        //            }
+
+        //            return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+        //        }
+        //        else
+        //        {
+        //            IEnumerable<SiteViewModelForGetAll> SitesViewModels;
+
+        //            if (isRefresh != null ? isRefresh.Value : false)
+        //            {
+        //                _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+        //                        .Include(x => x.siteStatus).ToList();
+
+        //                SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
+        //            }
+        //            else
+        //            {
+        //                _MySites.Count();
+        //                SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
+        //            }
+
+
+
+        //            int Count = SitesViewModels.Count();
+        //            SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+        //                                        .Take(parameterPagination.PageSize));
+
+
+
+
+
+        //            List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
+
+        //            foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
+        //            {
+        //                string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
+        //                    .LocationType;
+
+        //                if (!string.IsNullOrEmpty(LocationTypeInModel))
+        //                {
+        //                    TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+
+        //                    ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+        //                    {
+        //                        SiteCode = SitesViewModel.SiteCode,
+        //                        LocationType = CheckLocation != null ? CheckLocation.Name : "NA",
+        //                        SiteName = SitesViewModel.SiteName,
+        //                        Area = SitesViewModel.Area,
+        //                        CityName = SitesViewModel.CityName,
+        //                        Latitude = SitesViewModel.Latitude,
+        //                        LocationHieght = SitesViewModel.LocationHieght,
+        //                        Longitude = SitesViewModel.Longitude,
+        //                        Region = SitesViewModel.Region,
+        //                        RentedSpace = SitesViewModel.RentedSpace,
+        //                        ReservedSpace = SitesViewModel.ReservedSpace,
+        //                        Status = SitesViewModel.Status,
+        //                        isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+        //                        ItemsOnSite = GetItemsCountOnEachSite != null ?
+        //                            (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+        //                    });
+        //                }
+        //                else
+        //                {
+        //                    ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+        //                    {
+        //                        SiteCode = SitesViewModel.SiteCode,
+        //                        LocationType = "NA",
+        //                        SiteName = SitesViewModel.SiteName,
+        //                        Area = SitesViewModel.Area,
+        //                        CityName = SitesViewModel.CityName,
+        //                        Latitude = SitesViewModel.Latitude,
+        //                        LocationHieght = SitesViewModel.LocationHieght,
+        //                        Longitude = SitesViewModel.Longitude,
+        //                        Region = SitesViewModel.Region,
+        //                        RentedSpace = SitesViewModel.RentedSpace,
+        //                        ReservedSpace = SitesViewModel.ReservedSpace,
+        //                        Status = SitesViewModel.Status,
+        //                        isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+        //                        ItemsOnSite = GetItemsCountOnEachSite != null ?
+        //                            (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+        //                    });
+        //                }
+        //            }
+
+        //            return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        isRefresh = true;
+        //        if (ErrorMessagesWhenReturning == null)
+        //        {
+        //            ErrorMessagesWhenReturning = new string[]
+        //            {
+        //                "After Caching"
+        //            };
+        //            goto StartAgainWithRefresh;
+        //        }
+
+        //        return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
+        //    }
+        //}
         public Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null)
         {
             try
@@ -592,19 +730,22 @@ namespace TLIS_Service.Services
                     {
                         PropertyInfo? FilterKeyProperty = typeof(SiteViewModel).GetProperty(filter.key);
 
-                        if (FilterKeyProperty != null && FilterKeyProperty.PropertyType == typeof(string) || FilterKeyProperty.PropertyType == typeof(bool))
+                        if (FilterKeyProperty != null && (FilterKeyProperty.PropertyType == typeof(string) || FilterKeyProperty.PropertyType == typeof(bool)))
                         {
-                            foreach (string FilterValue in filter.value)
+                            foreach (var filterValue in filter.value)
                             {
-                                sitesQuery = sitesQuery.Where(x => FilterKeyProperty.GetValue(x).ToString().ToLower().Contains(FilterValue.ToLower()));
+                                string filterStringValue = filterValue.ToString().ToLower(); // Convert to lower case here
+                                sitesQuery = sitesQuery.Where(x => EF.Property<string>(x, FilterKeyProperty.Name).ToLower().Contains(filterStringValue));
                             }
                         }
-
                         else
                         {
-                            sitesQuery = sitesQuery.Where(x => filter.value.Contains(FilterKeyProperty.GetValue(x).ToString()));
+                            foreach (var filterValue in filter.value)
+                            {
+                                string filterStringValue = filterValue.ToString(); // Ensure conversion to string
+                                sitesQuery = sitesQuery.Where(x => filterStringValue.Contains(EF.Property<string>(x, FilterKeyProperty.Name)));
+                            }
                         }
-
                     }
                 }
                 totalCount = sitesQuery.Count();
