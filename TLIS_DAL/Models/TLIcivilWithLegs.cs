@@ -95,7 +95,7 @@ namespace TLIS_DAL.Models
         public float HieghFromLand { get; set; } = 0;
         public float EquivalentSpace { get; set; } = 0;
         public string? SpecialEnforcementCategory { get; set; }
-        public string? Remarks { get; set; }
+        public string? Remark { get; set; }
         public float Support_Limited_Load { get; set; } = 0;
         public TLIenforcmentCategory? enforcmentCategory { get; set; }
         public IEnumerable<TLIallCivilInst> allCivilInsts { get; set; }
