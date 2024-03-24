@@ -23,8 +23,12 @@ using MailKit.Net.Smtp;
 using static TLIS_Repository.Helpers.Constants;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Text.Json;
+
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using Newtonsoft.Json;
+
 
 namespace TLIS_Repository.Repositories
 {
@@ -410,9 +414,19 @@ namespace TLIS_Repository.Repositories
 
 
         }
-            private static readonly HttpClient _httpClient = new HttpClient();
+        public class EditTicketInfoBinding
+        {
+            public int? TaskId { get; set; }
+            public string? SiteCode { get; set; }
+            public string? RegionName { get; set; }
+            public string? AreaName { get; set; }
+            public string? CityName { get; set; }
+
+        }
+        private static readonly HttpClient _httpClient = new HttpClient();
         public async Task<SumbitsTaskByTLI> SubmitTaskByTLI(int? TaskId)
         {
+
             var ExternalApi = _configuration["ExternalApi"];
             using (var scope = Services.CreateScope())
             {
@@ -434,7 +448,7 @@ namespace TLIS_Repository.Repositories
 
                             if (responseBody != null)
                             {
-                                var siteInfoObject = JsonSerializer.Deserialize<SumbitsTaskByTLI>(responseBody);
+                                var siteInfoObject = System.Text.Json.JsonSerializer.Deserialize<SumbitsTaskByTLI>(responseBody);
                                 return siteInfoObject;
                             }
                         }
@@ -457,6 +471,54 @@ namespace TLIS_Repository.Repositories
                 throw new Exception("All retries failed for SubmitTaskByTLI");
             }
         }
+        public async Task<SumbitsTaskByTLI> EditTicketInfoByTLI(EditTicketInfoBinding editTicketInfoBinding)
+        {
+            var ExternalApi = _configuration["ExternalApi"];
+            using (var scope = Services.CreateScope())
+            {
+                IMapper _Mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+                string apiUrl = $"{ExternalApi}/api/TicketManagement/EditTicketInfo";
+
+                int maxRetries = 1;
+                int retryDelayMilliseconds = 180000; // 3 minutes in milliseconds
+
+                for (int retryCount = 0; retryCount < maxRetries; retryCount++)
+                {
+                    try
+                    {
+                        var jsonContent = JsonConvert.SerializeObject(editTicketInfoBinding);
+                        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                        HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string responseBody = await response.Content.ReadAsStringAsync();
+
+                            if (responseBody != null)
+                            {
+                                var siteInfoObject = System.Text.Json.JsonSerializer.Deserialize<SumbitsTaskByTLI>(responseBody);
+                                return siteInfoObject;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"API request failed with status code: {response.StatusCode}");
+                            throw new Exception($"API request failed with status code: {response.StatusCode}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw; 
+                    }
+
+                    await Task.Delay(retryDelayMilliseconds);
+                }
+
+                throw new Exception("All retries failed for SubmitTaskByTLI");
+            }
+        }
+
 
     }
 }

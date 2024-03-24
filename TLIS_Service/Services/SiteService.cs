@@ -96,22 +96,12 @@ namespace TLIS_Service.Services
             _mapper = mapper;
             Services = service;
         }
-        public class SiteInfoResponse
-        {
-            public bool data { get; set; }
-            public bool succeeded { get; set; }
-            public object errors { get; set; }
-            public object message { get; set; }
-            public int code { get; set; }
-            public int count { get; set; }
-        }
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
-                    // Check Site Code If It's Already Exist in DB or Not..
                     TLIsite CheckSiteCode = _unitOfWork.SiteRepository
                         .GetWhereFirst(x => x.SiteCode.ToLower() == AddSiteViewModel.SiteCode.ToLower());
 
@@ -127,17 +117,29 @@ namespace TLIS_Service.Services
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
                     _unitOfWork.SiteRepository.Add(NewSiteEntity);
-                    _unitOfWork.SaveChanges();
-
-                    _MySites.Add(NewSiteEntity);
+                    
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
                         var result = Submit.Result;
                         if (result.result == true && result.errorMessage == null)
                         {
-                            _unitOfWork.SaveChanges();
-                            transaction.Complete();
+                            var AreaName = _context.TLIarea.FirstOrDefault(x => x.Id == NewSiteEntity.AreaId)?.AreaName;
+                            EditTicketInfoBinding editTicketInfoBinding = new EditTicketInfoBinding()
+                            {
+                                TaskId= TaskId,
+                                SiteCode= NewSiteEntity.SiteCode,
+                                RegionName= NewSiteEntity.RegionCode,
+                                CityName= NewSiteEntity.Zone,
+                                AreaName= AreaName
+
+                            };
+                            var SubmitTicketInfo = _unitOfWork.SiteRepository.EditTicketInfoByTLI(editTicketInfoBinding);
+                            if (SubmitTicketInfo.Result.result == true && SubmitTicketInfo.Result.errorMessage == null)
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
                         }
                         else
                         {
@@ -977,34 +979,34 @@ namespace TLIS_Service.Services
             try
             {
                 SiteViewModel siteViewModel = new SiteViewModel();
-                var siteInfo = _context.TLIsite.Include(x => x.Area).Include(x => x.Region).Include(x => x.siteStatus).
-                    Where(x => x.SiteCode == SiteCode).FirstOrDefault();
+                var siteInfo = _context.TLIsite.Include(x => x.Area)
+                                                .Include(x => x.Region)
+                                                .Include(x => x.siteStatus)
+                                                .FirstOrDefault(x => x.SiteCode == SiteCode);
 
-                siteViewModel = new SiteViewModel()
+                if (siteInfo != null)
                 {
-                    SiteCode = siteInfo.SiteCode,
-                    SiteName = siteInfo.SiteName,
-                    Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId).Name,
-                    LocationHieght = siteInfo.LocationHieght,
-                    Longitude = siteInfo.Longitude,
-                    LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id == Convert.ToInt64(siteInfo.LocationType)).Name,
-                    Latitude = siteInfo.Latitude,
-                    CityName = siteInfo.Zone,
-                    Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId).AreaName,
-                    Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode).RegionName,
-                    ReservedSpace = siteInfo.ReservedSpace,
-                    RentedSpace = siteInfo.RentedSpace,
-
-                };
-                if (siteInfo.SiteName == null)
-                {
-                    siteInfo.SiteName = "";
+                    siteViewModel = new SiteViewModel()
+                    {
+                        SiteCode = siteInfo.SiteCode,
+                        SiteName = siteInfo.SiteName ?? "", 
+                        Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId)?.Name ?? "", 
+                        LocationHieght = siteInfo.LocationHieght,
+                        Longitude = siteInfo.Longitude,
+                        LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id == Convert.ToInt64(siteInfo.LocationType))?.Name ?? "", 
+                        Latitude = siteInfo.Latitude,
+                        CityName = siteInfo.Zone,
+                        Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId)?.AreaName ?? "", 
+                        Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionName ?? "", 
+                        ReservedSpace = siteInfo.ReservedSpace,
+                        RentedSpace = siteInfo.RentedSpace,
+                    };
                 }
+
                 return new Response<SiteViewModel>(true, siteViewModel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-
                 return new Response<SiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }

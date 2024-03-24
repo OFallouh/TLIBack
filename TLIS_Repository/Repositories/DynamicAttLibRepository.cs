@@ -179,6 +179,64 @@ namespace TLIS_Repository.Repositories
             }
             return dynamicAttLibViewModels;
         }
+        public List<BaseInstAttViewDynamic> GetDynamicLibAtt(int TableNameId, int Id, int? CategoryId)
+        {
+
+            List<TLIdynamicAtt> DynamicAtts = new List<TLIdynamicAtt>();
+            List<BaseInstAttViewDynamic> dynamicAttLibViewModels = new List<BaseInstAttViewDynamic>();
+            if (CategoryId == null)
+            {
+                DynamicAtts = _context.TLIdynamicAtt
+                    .Where(d => d.LibraryAtt == true && d.tablesNamesId == TableNameId && !d.disable)
+                    .Include(x => x.DataType)
+                    .ToList();
+            }
+            else
+            {
+                DynamicAtts = _context.TLIdynamicAtt
+                    .Where(d => !d.disable && d.LibraryAtt == true && d.tablesNamesId == TableNameId && d.CivilWithoutLegCategoryId == CategoryId)
+                    .Include(x => x.DataType)
+                    .ToList();
+            }
+            List<int> ids = DynamicAtts.Select(x => x.Id).ToList();
+            foreach (var DynamicAtt in DynamicAtts)
+            {
+                TLIdynamicAttLibValue DynamicAttValue = _context.TLIdynamicAttLibValue.FirstOrDefault(d =>
+                    d.DynamicAttId == DynamicAtt.Id && d.InventoryId == Id && d.tablesNamesId == TableNameId && !d.disable);
+
+                BaseInstAttViewDynamic NewDynamicLibraryValue = new BaseInstAttViewDynamic
+                {
+                    Id = DynamicAtt.Id,
+                    Key = DynamicAtt.Key,
+                    DataTypeId = DynamicAtt.DataTypeId,
+                    DataType = DynamicAtt.DataType.Name,
+                    Required = DynamicAtt.Required,
+                    enable =  !DynamicAtt.disable
+                };
+
+                if (DynamicAttValue != null)
+                {
+                    if (!string.IsNullOrEmpty(DynamicAttValue.ValueString))
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueString;
+
+                    else if (DynamicAttValue.ValueDateTime != null)
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueDateTime.ToString();
+
+                    else if (DynamicAttValue.ValueDouble != null)
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueDouble.ToString();
+
+                    else if (DynamicAttValue.ValueBoolean != null)
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueBoolean.ToString().ToLower();
+                }
+                else
+                {
+                    NewDynamicLibraryValue.Value = null;
+                }
+
+                dynamicAttLibViewModels.Add(NewDynamicLibraryValue);
+            }
+            return dynamicAttLibViewModels;
+        }
         //public void UpdateDynamicLibAtts(List<DynamicAttLibViewModel> DynamicLibAttValues, int TablesNameId, int LibId )
         //{
 
@@ -549,6 +607,266 @@ namespace TLIS_Repository.Repositories
 
                                 TLIhistoryDetails historyDetails = new TLIhistoryDetails();
                                 AttName = _context.TLIdynamicAtt.Where(x => x.Id == DynamicLibAttValue.Id).Select(x => x.Key).FirstOrDefault();
+                                historyDetails.AttName = AttName;
+                                historyDetails.TablesHistoryId = TableHistoryId;
+                                historyDetails.OldValue = null;
+                                historyDetails.NewValue = New.ToString();
+                                historyDetails.AttributeType = AttributeType.Dynamic;
+                                _context.TLIhistoryDetails.Add(historyDetails);
+                                _context.SaveChanges();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public void UpdateDynamicLibAttsWithHistorys(List<AddDdynamicAttributeInstallationValueViewModel> DynamicLibAttValues, int TablesNameId, int LibId, int? UserId, int? TableHistoryId = null, int EntitesId = 0)
+        {
+            string AttName = "";
+            string test;
+            foreach (var DynamicLibAttValue in DynamicLibAttValues)
+            {
+
+                TLIdynamicAtt dynamicatt = _context.TLIdynamicAtt.FirstOrDefault(x => x.Id == DynamicLibAttValue.id);
+                /* dynamicatt.Key = DynamicLibAttValue.Key;
+                 dynamicatt.DataTypeId = DynamicLibAttValue.DataTypeId;
+                 dynamicatt.Required = DynamicLibAttValue.Required;
+                 dynamicatt.disable = DynamicLibAttValue.disable;
+                 _context.TLIdynamicAtt.Update(dynamicatt);*/
+
+
+                TLIdynamicAttLibValue dynamicAttLibValue = _context.TLIdynamicAttLibValue
+                    .Where(d => d.DynamicAttId == DynamicLibAttValue.id && d.tablesNamesId == TablesNameId && d.InventoryId == LibId)
+                    .FirstOrDefault();
+
+                if (dynamicAttLibValue != null)
+                {
+                    if (DynamicLibAttValue.value == null)
+                    {
+                        continue;
+                    }
+                    var OldValue = dynamicAttLibValue.Value;
+
+                    var NewValue = DynamicLibAttValue.value;
+                    if (OldValue != NewValue)
+                    {
+                        if (TableHistoryId == null || TableHistoryId == 0)
+                        {
+                            TLItablesHistory tablesHistory = new TLItablesHistory();
+                            int? TablehistoryId = null;
+                            tablesHistory.TablesNameId = TablesNameId;
+                            string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
+                            tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
+
+                            tablesHistory.RecordId = EntitesId;
+                            tablesHistory.UserId = UserId.Value;
+                            tablesHistory.Date = DateTime.Now;
+                            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId);
+                            if (CheckTableHistory)
+                            {
+                                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
+
+                                TablehistoryId = TableHistory;
+                                if (TablehistoryId != null)
+                                {
+                                    tablesHistory.PreviousHistoryId = TablehistoryId;
+                                }
+
+                            }
+                            _context.TLItablesHistory.Add(tablesHistory);
+                            _context.SaveChanges();
+
+                            dynamicAttLibValue.Value = NewValue.ToString();
+                            if (dynamicAttLibValue.ValueString != null && dynamicAttLibValue.ValueString != "")
+                            {
+                                string tests = NewValue.ToString().Trim().ToString();
+                                dynamicAttLibValue.ValueString = tests;
+                                dynamicAttLibValue.Value = tests;
+                            }
+                            else if (dynamicAttLibValue.ValueDouble != null)
+                            {
+                                dynamicAttLibValue.ValueDouble = double.Parse(NewValue.ToString());
+                            }
+                            else if (dynamicAttLibValue.ValueDateTime != null)
+                            {
+                                dynamicAttLibValue.ValueDateTime = DateTime.Parse(NewValue.ToString());
+                            }
+                            else if (dynamicAttLibValue.ValueBoolean != null)
+                            {
+                                dynamicAttLibValue.ValueBoolean = bool.Parse(NewValue.ToString());
+                            }
+
+                            _context.TLIdynamicAttLibValue.Update(dynamicAttLibValue);
+                            var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId).Select(x => x.Id).ToList();
+                            int? tablehistoryid = null;
+                            if (CheckTableHistoryForEdit.Count != 0)
+                            {
+                                if (CheckTableHistoryForEdit.Count != 0)
+                                {
+                                    tablehistoryid = CheckTableHistoryForEdit.Max();
+                                }
+
+                                TLIhistoryDetails historyDetails = new TLIhistoryDetails();
+                                AttName = _context.TLIdynamicAtt.Where(x => x.Id == dynamicAttLibValue.DynamicAttId).Select(x => x.Key).FirstOrDefault();
+                                historyDetails.AttName = AttName;
+                                historyDetails.TablesHistoryId = tablehistoryid;
+                                if (OldValue == null)
+                                {
+                                    historyDetails.OldValue = null;
+                                }
+                                else
+                                {
+                                    historyDetails.OldValue = OldValue;
+                                }
+                                historyDetails.NewValue = NewValue.ToString();
+                                historyDetails.AttributeType = AttributeType.Dynamic;
+                                _context.TLIhistoryDetails.Add(historyDetails);
+                                _context.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            var Old = dynamicAttLibValue.Value;
+
+                            var New = DynamicLibAttValue.value;
+
+
+                            if (Old != New)
+                            {
+                                dynamicAttLibValue.Value = DynamicLibAttValue.value.ToString();
+                                if (dynamicAttLibValue.ValueString != null && dynamicAttLibValue.ValueString != "")
+                                {
+                                    string test1 = New.ToString().Trim().ToString();
+                                    dynamicAttLibValue.ValueString = test1;
+                                    dynamicAttLibValue.Value = test1;
+                                }
+                                else if (dynamicAttLibValue.ValueDouble != null)
+                                {
+                                    dynamicAttLibValue.ValueDouble = double.Parse(New.ToString());
+                                }
+                                else if (dynamicAttLibValue.ValueDateTime != null)
+                                {
+                                    dynamicAttLibValue.ValueDateTime = DateTime.Parse(New.ToString());
+                                }
+                                else if (dynamicAttLibValue.ValueBoolean != null)
+                                {
+                                    dynamicAttLibValue.ValueBoolean = bool.Parse(New.ToString());
+                                }
+                                _context.TLIdynamicAttLibValue.Update(dynamicAttLibValue);
+                                var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId).Select(x => x.Id).ToList();
+                                int? tablehistoryid = null;
+                                if (CheckTableHistoryForEdit.Count != 0)
+                                {
+                                    if (CheckTableHistoryForEdit.Count != 0)
+                                    {
+                                        tablehistoryid = CheckTableHistoryForEdit.Max();
+                                    }
+
+                                    TLIhistoryDetails historyDetails = new TLIhistoryDetails();
+                                    AttName = _context.TLIdynamicAtt.Where(x => x.Id == dynamicAttLibValue.DynamicAttId).Select(x => x.Key).FirstOrDefault();
+                                    historyDetails.AttName = AttName;
+                                    historyDetails.TablesHistoryId = TableHistoryId;
+                                    historyDetails.OldValue = Old;
+                                    historyDetails.NewValue = New.ToString();
+                                    historyDetails.AttributeType = AttributeType.Dynamic;
+                                    _context.TLIhistoryDetails.Add(historyDetails);
+                                    _context.SaveChanges();
+                                }
+
+                            }
+                        }
+                    }
+                }
+                // _context.SaveChanges();
+                else
+                {
+                    if (DynamicLibAttValue.value == null)
+                    {
+                        continue;
+                    }
+                    var Check = _context.TLIdynamicAtt.Where(x => x.Id == DynamicLibAttValue.id).FirstOrDefault();
+                    if (Check != null)
+                    {
+                        if (Check.tablesNamesId == TablesNameId && Check.LibraryAtt == true && Check.Id == DynamicLibAttValue.id)
+                        {
+                            TLIdynamicAttLibValue dynamicAttLibValuenew = new TLIdynamicAttLibValue();
+                            dynamicAttLibValuenew.InventoryId = LibId;
+                            dynamicAttLibValuenew.DynamicAttId = DynamicLibAttValue.id;
+                            dynamicAttLibValuenew.tablesNamesId = TablesNameId;
+                            dynamicAttLibValuenew.Value = DynamicLibAttValue.value.ToString();
+                            dynamic value = DynamicLibAttValue.value;
+                            switch (value)
+                            {
+                                case int NumberValue:
+                                    dynamicAttLibValuenew.ValueDouble = NumberValue;
+                                    break;
+                                case string stringValue:
+                                    dynamicAttLibValuenew.ValueString = stringValue;
+                                    break;
+                                case double doubleValue:
+                                    dynamicAttLibValuenew.ValueDouble = doubleValue;
+                                    break;
+                                case DateTime dateTimeValue:
+                                    dynamicAttLibValuenew.ValueDateTime = dateTimeValue;
+                                    break;
+                                case bool booleanValue:
+                                    dynamicAttLibValuenew.ValueBoolean = booleanValue;
+                                    break;
+                            }
+
+                        _context.TLIdynamicAttLibValue.Add(dynamicAttLibValuenew);
+                            _context.SaveChanges();
+                            if (TableHistoryId == null || TableHistoryId == 0)
+                            {
+                                TLItablesHistory tablesHistory = new TLItablesHistory();
+                                int? TablehistoryId = null;
+                                tablesHistory.TablesNameId = TablesNameId;
+                                string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
+                                tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
+
+                                tablesHistory.RecordId = EntitesId;
+                                tablesHistory.UserId = UserId.Value;
+                                tablesHistory.Date = DateTime.Now;
+                                var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId);
+                                if (CheckTableHistory)
+                                {
+                                    var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
+                                    if (TableHistory != null)
+                                    {
+                                        TablehistoryId = TableHistory;
+                                        if (TablehistoryId != null)
+                                        {
+                                            tablesHistory.PreviousHistoryId = TablehistoryId;
+                                        }
+                                    }
+                                }
+                                _context.TLItablesHistory.Add(tablesHistory);
+                                _context.SaveChanges();
+                                var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId && x.RecordId == EntitesId).Select(x => x.Id).ToList();
+                                int? tablehistoryid = null;
+
+
+                                if (CheckTableHistoryForEdit.Count != 0)
+                                {
+                                    tablehistoryid = CheckTableHistoryForEdit.Max();
+                                }
+
+                                TLIhistoryDetails historyDetails = new TLIhistoryDetails();
+                                AttName = _context.TLIdynamicAtt.Where(x => x.Id == dynamicAttLibValuenew.DynamicAttId).Select(x => x.Key).FirstOrDefault();
+                                historyDetails.AttName = AttName;
+                                historyDetails.TablesHistoryId = tablehistoryid;
+                                historyDetails.OldValue = null;
+                                historyDetails.NewValue = DynamicLibAttValue.value.ToString();
+                                historyDetails.AttributeType = AttributeType.Dynamic;
+                                _context.TLIhistoryDetails.Add(historyDetails);
+                                _context.SaveChanges();
+                            }
+                            else
+                            {
+                                var New = DynamicLibAttValue.value;
+
+                                TLIhistoryDetails historyDetails = new TLIhistoryDetails();
+                                AttName = _context.TLIdynamicAtt.Where(x => x.Id == DynamicLibAttValue.id).Select(x => x.Key).FirstOrDefault();
                                 historyDetails.AttName = AttName;
                                 historyDetails.TablesHistoryId = TableHistoryId;
                                 historyDetails.OldValue = null;

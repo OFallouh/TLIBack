@@ -25,7 +25,6 @@ using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-   [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -38,6 +37,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_BU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMW_BU(int LibId, string SiteCode)
@@ -45,6 +45,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_ODU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMW_ODU(int LibId, string SiteCode, int AllCivilInstId)
@@ -52,6 +53,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetAttForAddForMW_ODUOnly(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, AllCivilInstId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_Dish")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMW_Dish(int LibId, string SiteCode)
@@ -59,6 +61,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_RFU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMW_RFU(int LibId, string SiteCode)
@@ -66,6 +69,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_Other")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMW_Other(int LibId, string SiteCode)
@@ -73,7 +77,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode);
             return Ok(response);
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
 
         [HttpPost("AddMW_BU")]
         [ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
@@ -95,6 +99,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_ODU")]
         [ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
         public IActionResult AddMW_ODU([FromBody]AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int TaskId)
@@ -115,6 +120,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_Dish")]
         [ProducesResponseType(200, Type = typeof(AddMW_DishViewModel))]
         public IActionResult AddMW_Dish([FromBody]AddMW_DishViewModel AddMW_DishViewModel, string SiteCode, int TaskId)
@@ -135,6 +141,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_RFU")]
         [ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
         public IActionResult AddMW_RFU([FromBody]AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int TaskId)
@@ -157,7 +164,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_Other")]
         [ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
         public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int TaskId)
@@ -179,7 +186,7 @@ namespace TLIS_API.Controllers
             }
         }
 
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
 
         [HttpPost("EditMW_BU")]
         [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
@@ -198,6 +205,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_Dish")]
         [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
         public async Task<IActionResult> EditMW_Dish([FromBody]EditMW_DishViewModel MW_Dish,int TaskId)
@@ -215,6 +223,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_ODU")]
         [ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
         public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int TaskId)
@@ -232,6 +241,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_RFU")]
         [ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
         public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int TaskId)
@@ -249,6 +259,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMw_Other")]
         [ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
         public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int TaskId)
@@ -266,20 +277,21 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMw_OtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_BU")]
-
         public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_ODU")]
-
         public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_RFU")]
 
         public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int TaskId)
@@ -287,6 +299,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Dish")]
 
         public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int TaskId)
@@ -294,6 +307,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Other")]
 
         public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int TaskId)
@@ -301,6 +315,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_BUById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_BUById(int MW_BU)
@@ -308,6 +323,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_ODUById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_ODUById(int MW_ODU)
@@ -315,6 +331,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_DishById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_DishById(int MW_Dish)
@@ -322,6 +339,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_RFUById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_RFUById(int MW_RFU)
@@ -329,6 +347,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_OtherById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMWOtherId(int mwOther)
@@ -336,13 +355,16 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getMW_BU")]
         [ProducesResponseType(200, Type = typeof(List<MW_BUViewModel>))]
         public IActionResult GetMW_BU([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
         {
             var response = _unitOfWorkService.MWInstService.getMW_BU(filters, WithFilterData, parameters);
             return Ok(response);
+
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getMW_ODU")]
         [ProducesResponseType(200, Type = typeof(List<MW_ODUViewModel>))]
         public IActionResult GetMW_ODU([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
@@ -350,6 +372,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.getMW_ODU(filters, WithFilterData, parameters);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getMW_Dish")]
         [ProducesResponseType(200, Type = typeof(List<MW_DishViewModel>))]
         public IActionResult GetMW_Dish([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
@@ -357,13 +380,16 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.getMW_Dish(filters, WithFilterData, parameters);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getMW_RFU")]
         [ProducesResponseType(200, Type = typeof(List<MW_RFUViewModel>))]
         public IActionResult GetMW_RFU([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
         {
             var response = _unitOfWorkService.MWInstService.getMW_RFU(filters, WithFilterData, parameters);
             return Ok(response);
+
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetInstallationPlaces")]
         [ProducesResponseType(200, Type = typeof(List<InstallationPlaceViewModel>))]
         public IActionResult GetInstallationPlaces(string TableName, string? LoadType)
@@ -371,6 +397,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetInstallationPlaces(TableName, LoadType);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetInstallationType")]
         [ProducesResponseType(200, Type = typeof(List<InstallationPlaceViewModel>))]
         public IActionResult GetInstallationType(string TableName)
@@ -378,6 +405,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetInstallationType(TableName);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_PortsForMW_RFUInstallation")]
         [ProducesResponseType(200, Type = typeof(List<MW_PortViewModel>))]
         public IActionResult GetMW_PortsForMW_RFUInstallation(int AllCivilInstId)
@@ -385,7 +413,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetMW_PortsForMW_RFUInstallation(AllCivilInstId);
             return Ok(response);
         }
-
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_BULibrariesForMW_BUInstallation")]
         [ProducesResponseType(200, Type = typeof(List<MW_BULibraryViewModel>))]
         public IActionResult GetMW_BULibrariesForMW_BUInstallation()
@@ -394,7 +422,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
 
-
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMW_BU_Available")]
         [ProducesResponseType(200, Type = typeof(List<MW_Free_BUInstDto>))]
         public IActionResult GetMW_BU_Available(int AllCivilInstId)
@@ -403,7 +431,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
 
-
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetFreePortOnBU")]
         [ProducesResponseType(200, Type = typeof(List<MW_PortViewModel>))]
         public IActionResult GetFreePortOnBU(int BUid)
@@ -411,7 +439,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetFreePortOnBU(BUid);
             return Ok(response);
         }
-
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
 
         [HttpGet("GetFreeCascadeBU")]
         [ProducesResponseType(200, Type = typeof(List<MW_Free_BUInstDto>))]
@@ -419,7 +447,9 @@ namespace TLIS_API.Controllers
         {
             var response = _unitOfWorkService.MWInstService.GetMw_Free_Cascade_BuInst(AllCivilInstId);
             return Ok(response);
+
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetFreeDishesForMW_ODU")]
         [ProducesResponseType(200, Type = typeof(List<MW_DishGetForAddViewModel>))]
         public IActionResult GetFreeDishesForMW_ODU(int AllCivilInstId)
@@ -427,6 +457,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetFreeDishesForMW_ODU(AllCivilInstId);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetPortCascadedByBUId")]
         [ProducesResponseType(200, Type = typeof(List<MW_PortViewModel>))]
         public IActionResult GetPortCascadedByBUId(int BUId, int? MainBUId)

@@ -11,8 +11,8 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs
     public class AddCivilWithoutLegsLibraryObject
     {
         public CivilWihtoutLegsLibraryAttributes attributesActivatedLibrary { get; set; }
-        public AddLogisticalViewModel logisticalItems { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
+        public AddLogisticalViewModel logisticalItems { get; set; }
         public class CivilWihtoutLegsLibraryAttributes
         {
             public string? Note { get; set; }

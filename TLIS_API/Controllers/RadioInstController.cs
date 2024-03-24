@@ -20,7 +20,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -33,6 +32,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAdd")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(string RadioInstType, int LibId, string SiteCode)
@@ -40,6 +40,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioInstService.GetAttForAdd(RadioInstType, LibId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddRadioAntennaInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioAntennaViewModel))]
         public IActionResult AddRadioAntennaInstallation([FromBody]AddRadioAntennaViewModel addRadioAntenna, string SiteCode, int TaskId)
@@ -60,6 +61,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddRadioRRUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioRRUViewModel))]
         public IActionResult AddRadioRRUInstallation([FromBody]AddRadioRRUViewModel addRadioRRU, string SiteCode, int TaskId)
@@ -80,6 +82,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddRadioOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioOtherViewModel))]
         public IActionResult AddRadioOtherInstallation([FromBody]AddRadioOtherViewModel addRadioOther, string SiteCode, int TaskId)
@@ -100,6 +103,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddRadioOtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetById(int Id, string RadioType)
@@ -107,6 +111,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioInstService.GetById(Id, RadioType);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleRadioRRU")]
 
         public IActionResult DismantleRadioRRU(string sitecode, int LoadId, string LoadName, int TaskId)
@@ -115,6 +120,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleRadioOther")]
 
         public IActionResult DismantleRadioOther(string sitecode, int LoadId, string LoadName,int TaskId)
@@ -123,6 +129,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismatleRadioAntenna")]
 
         public IActionResult DismatleRadioAntenna(string sitecode, int LoadId, string LoadName,int TaskId)
@@ -131,7 +138,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditRadioAntennaInstallation")]
         [ProducesResponseType(200, Type = typeof(EditRadioAntennaViewModel))]
         public async Task<IActionResult> EditRadioAntennaInstallation([FromBody]EditRadioAntennaViewModel editRadioAntenna,int TaskId)
@@ -149,6 +156,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditRadioRRUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditRadioRRUViewModel))]
         public async Task<IActionResult> EditRadioRRUInstallation([FromBody]EditRadioRRUViewModel editRadioRRU,int TaskId)
@@ -166,6 +174,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditRadioOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(EditRadioOtherViewModel))]
         public async Task<IActionResult> EditRadioRRUInstallation([FromBody] EditRadioOtherViewModel editRadioOther,int TaskId)
@@ -183,6 +192,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetRadioRRUsList")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioRRUViewModel>))]
         public IActionResult GetRadioRRUsList([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
@@ -190,6 +200,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioInstService.GetRadioRRUsList(filters, WithFilterData, parameters);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetRadioAntennasList")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioAntennaViewModel>))]
         public IActionResult GetRadioAntennasList([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
@@ -197,6 +208,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioInstService.GetRadioAntennasList(filters, WithFilterData, parameters);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetRadioOtherList")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioOtherViewModel>))]
         public IActionResult GetRadioOtherList([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)

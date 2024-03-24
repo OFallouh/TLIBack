@@ -72,6 +72,55 @@ namespace TLIS_Repository.Repositories
 
             return result;
         }
+        public IEnumerable<BaseAttViews> GetLogisticals(string Part, string TableName, int RecordId)
+        {
+            List<BaseAttViews> result = new List<BaseAttViews>();
+
+            int TableNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+            int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
+
+            List<TLIlogisticalType> LogistaclTypes = _context.TLIlogisticalType.Where(x => !x.Deleted && !x.Disable).ToList();
+
+            foreach (TLIlogisticalType LogisticalType in LogistaclTypes)
+            {
+                TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical)
+                    .FirstOrDefault(x => x.tablesNamesId == TableNameId && x.RecordId == RecordId &&
+                        x.logistical.tablePartNameId == TablePartNameId && x.logistical.logisticalTypeId == LogisticalType.Id);
+
+                if (LogisticalItem != null)
+                {
+                    result.Add(new BaseAttViews
+                    {
+                        Key = LogisticalType.Name,
+                        Label = LogisticalType.Name,
+                        enable = true,
+                        DataType = "List",
+                        AutoFill = false,
+                        Desc = LogisticalType.Name,
+                        Manage = false,
+                        Required = false,
+                        Value = LogisticalItem.logistical.Name
+                    });
+                }
+                else
+                {
+                    result.Add(new BaseAttViews
+                    {
+                        Key = LogisticalType.Name,
+                        Label = LogisticalType.Name,
+                        enable = true,
+                        DataType = "List",
+                        AutoFill = false,
+                        Desc = LogisticalType.Name,
+                        Manage = false,
+                        Required = false,
+                        Value = "NA"
+                    });
+                }
+            }
+
+            return result;
+        }
         public IEnumerable<BaseAttView> GetLogistical(string Part)
         {
             List<BaseAttView> result = new List<BaseAttView>();
@@ -128,7 +177,7 @@ namespace TLIS_Repository.Repositories
                     DataType = "List",
                     Desc = LogisticalType.Name,
                     Manage = false,
-                    Value = Logisticals
+                    Options = Logisticals
                 };
                 if (!result.Exists(x => x.Key == BaseAtt.Key))
                     result.Add(BaseAtt);

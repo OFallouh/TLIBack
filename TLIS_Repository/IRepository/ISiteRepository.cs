@@ -18,5 +18,6 @@ namespace TLIS_Repository.IRepository
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
         Response<string> CheckSpace(string SiteCode, string TableName, int LibraryId, float SpaceInstallation, string Cabinet);
         Task<SumbitsTaskByTLI> SubmitTaskByTLI(int? TaskId);
+        Task<SumbitsTaskByTLI> EditTicketInfoByTLI(EditTicketInfoBinding editTicketInfoBinding);
     }
 }

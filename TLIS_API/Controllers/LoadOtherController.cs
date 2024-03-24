@@ -20,7 +20,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -33,6 +32,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAdd")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibId, string SiteCode)
@@ -40,6 +40,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.LoadOtherService.GetAttForAdd(LibId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddLoadOther")]
         [ProducesResponseType(200, Type = typeof(AddLoadOtherViewModel))]
         public IActionResult AddLoadOther([FromBody] AddLoadOtherViewModel addLoadOther, string SiteCode, int TaskId)
@@ -60,6 +61,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddLoadOtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditLoadOther")]
         [ProducesResponseType(200, Type = typeof(EditLoadOtherViewModel))]
         public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherViewModel LoadOtherViewModel, int TaskId)
@@ -77,6 +79,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditLoadOtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleLoadOther")]
 
         public IActionResult DismantleLoadOther(string sitecode, int LoadId, string LoadName, int TaskId)
@@ -85,6 +88,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetById(int Id)
@@ -92,6 +96,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.LoadOtherService.GetById(Id);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetLoadOtherList")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<LoadOtherViewModel>))]
         public IActionResult GetLoadOtherList([FromBody] List<FilterObjectList> filters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
@@ -106,6 +111,7 @@ namespace TLIS_API.Controllers
         //    var response = _unitOfWorkService.LoadOtherService.GetLoadsOtherBySite(filters, WithFilterData, ObjectAttributeFilters, parameters);
         //    return Ok(response);
         //}
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetLoadOtherOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<object>))]
         public IActionResult GetLoadOtherOnSiteWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] LoadsOnSiteFilter filters, bool WithFilterData, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameters)

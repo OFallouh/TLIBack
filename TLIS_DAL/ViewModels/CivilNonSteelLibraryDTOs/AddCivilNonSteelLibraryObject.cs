@@ -10,9 +10,9 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs
 {
     public class AddCivilNonSteelLibraryObject
     {
-        public CivilNonSteelLibraryAttributes LibraryAttribute { get; set; }
-        public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
+        public CivilNonSteelLibraryAttributes attributesActivatedLibrary { get; set; }
+        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
+        public AddLogisticalViewModel logisticalItems { get; set; }
         public class CivilNonSteelLibraryAttributes
         {
             public string Note { get; set; }

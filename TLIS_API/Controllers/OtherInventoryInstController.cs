@@ -23,7 +23,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -36,6 +35,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddCabinet")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCabinet(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
@@ -43,6 +43,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAdd(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddSolar")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddSolar(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
@@ -50,6 +51,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAdd(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddGenerator")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddGenerator(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
@@ -57,6 +59,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAdd(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddCabinet")]
         [ProducesResponseType(200, Type = typeof(AddCabinetViewModel))]
         public IActionResult AddCabinet([FromBody] AddCabinetViewModel addCabinetViewModel, string SiteCode, int TaskId)
@@ -99,6 +102,7 @@ namespace TLIS_API.Controllers
             return Ok(new Response<AddCabinetViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
 
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddSolar")]
         [ProducesResponseType(200, Type = typeof(AddSolarViewModel))]
         public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode, int TaskId)
@@ -141,6 +145,7 @@ namespace TLIS_API.Controllers
             return Ok(new Response<AddSolarViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
 
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddGenerator")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
         public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode, int TaskId)
@@ -182,6 +187,7 @@ namespace TLIS_API.Controllers
             }
             return Ok(new Response<AddGeneratorViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCabinetById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCabinetById(int OtherInventoryInstId)
@@ -189,6 +195,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetSolarById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetSolarById(int OtherInventoryInstId)
@@ -196,6 +203,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetGeneratorById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetGeneratorById(int OtherInventoryInstId)
@@ -203,7 +211,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
             return Ok(response);
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCabinet")]
         [ProducesResponseType(200, Type = typeof(EditCabinetViewModel))]
         public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel,int TaskId)
@@ -221,7 +229,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditSolar")]
         [ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
         public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int TaskId)
@@ -239,7 +247,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditGenerator")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
         public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int TaskId)
@@ -257,6 +265,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleOtherInventory")]
 
         public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
@@ -265,6 +274,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCabinetBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCabinetBySiteWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
@@ -272,6 +282,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetBySiteWithEnabledAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, LibraryType);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetSolarBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetSolarBySiteWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -279,6 +290,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetSolarBySiteWithEnabledAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetGeneratorBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetGeneratorBySiteWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)

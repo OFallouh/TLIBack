@@ -18,7 +18,6 @@ using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -31,6 +30,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAdd")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibraryId, string SiteCode)
@@ -38,7 +38,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.PowerService.GetAttForAdd(LibraryId, SiteCode);
             return Ok(response);
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddPower")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult AddPower([FromBody] AddPowerViewModel Power, string SiteCode, int TaskId)
@@ -59,6 +59,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<ObjectInstAtts>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantlePower")]
 
         public IActionResult DismantlePower(string sitecode, int LoadId, string LoadName, int TaskId)
@@ -67,6 +68,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditPower")]
         [ProducesResponseType(200, Type = typeof(EditPowerViewModel))]
         public async Task<IActionResult> EditPower([FromBody] EditPowerViewModel Power,int TaskId)
@@ -84,6 +86,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditPowerViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetById/{Id}")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetById(int Id)
@@ -91,6 +94,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.PowerService.GetById(Id);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetList")]
         [ProducesResponseType(200, Type = typeof(List<PowerViewModel>))]
         public IActionResult GetList([FromBody] List<FilterObjectList> filters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
@@ -98,6 +102,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.PowerService.GetList(filters, WithFilterData, parameters);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetPowerTypes")]
         [ProducesResponseType(200, Type = typeof(List<PowerTypeViewModel>))]
         public IActionResult GetPowerTypes()
