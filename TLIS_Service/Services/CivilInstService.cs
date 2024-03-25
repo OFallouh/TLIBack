@@ -9233,8 +9233,10 @@ namespace TLIS_Service.Services
                         _unitOfWork.StructureTypeRepository != null && CivilWithLegLibrary.structureTypeId != null ?
                         new List<object> { _mapper.Map<LocationTypeViewModel>(_unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.structureTypeId)) } :
                         Enumerable.Empty<object>()
-                    }
+                    },
                 };
+
+           
                 LibraryAttributes = LibraryAttributes
                    .Select(FKitem =>
                    {
@@ -9274,7 +9276,7 @@ namespace TLIS_Service.Services
                 {
                     { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "basetype_name", () => _mapper.Map<List<BaseTypeViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "basecivilwithlegtype_name", () => _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "guylinetype_name", () => _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "supporttypeimplemented_name", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
@@ -9296,17 +9298,44 @@ namespace TLIS_Service.Services
                         return sectionsLegType;
                     }}
                 };
-
+              
                 ListAttributesActivated = ListAttributesActivated
                     .Select(FKitem =>
                     {
                         if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
                         {
-                            FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
+                            FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
                         }
                         else
                         {
                             FKitem.Options = new object[0];
+                        }
+                        if (FKitem.Key.ToLower() == "BasePlateShape".ToLower())
+                        {
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.Circular,
+                                Name = BasePlateShape.Circular.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.Rectangular,
+                                Name = BasePlateShape.Rectangular.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.Square,
+                                Name = BasePlateShape.Square.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.NotMeasurable,
+                                Name = BasePlateShape.NotMeasurable.ToString()
+                            });
+
+                            FKitem.Options= BasePlateShapes;
+                           
                         }
                         return FKitem;
                     })

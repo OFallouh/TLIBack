@@ -364,7 +364,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetPowerOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("DisplaySiteDetailsBySiteCode")]
         [ProducesResponseType(200, Type = typeof(SiteViewModel))]
         public IActionResult DisplaySiteDetailsBySiteCode(string SiteCode)

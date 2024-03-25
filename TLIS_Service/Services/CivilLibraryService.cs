@@ -96,7 +96,7 @@ namespace TLIS_Service.Services
                             {
                                 TLIcivilWithLegLibrary CivilWithLegEntites = _mapper.Map<TLIcivilWithLegLibrary>(AddCivilWithLegsLibraryObject.attributesActivatedLibrary);
 
-
+                                
                                 var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(AddCivilWithLegsLibraryObject.logisticalItems.Vendor);
                                 var vendor = logisticalObject?.Name;
 
@@ -2551,32 +2551,43 @@ namespace TLIS_Service.Services
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c =>
                     c.TableName == TableName);
 
-                List<BaseAttViews> ListAttributesActivated = new List<BaseAttViews>();
-                int CatId = 0;
+                TLIcivilWithLegLibrary CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhereFirst(x =>
+                    x.Id == Id, x => x.sectionsLegType, x => x.supportTypeDesigned, x => x.structureType, x => x.civilSteelSupportCategory);
 
-                if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
+                object FK_CivilSteelSupportCategory_Name = CivilWithLegLibrary.civilSteelSupportCategory != null ? CivilWithLegLibrary.civilSteelSupportCategory.Name : null;
+                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null, "Model").ToList();
+                listofAttributesActivated
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "sectionslegtype_name")
+                            FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(CivilWithLegLibrary.sectionsLegType);
+                        else if (FKitem.Label.ToLower() == "structuretype_name")
+                            FKitem.Options = _mapper.Map<StructureTypeViewModel>(CivilWithLegLibrary.structureType);
+                        else if (FKitem.Label.ToLower() == "supporttypedesigned_name")
+                            FKitem.Options = _mapper.Map<SupportTypeDesignedViewModel>(CivilWithLegLibrary.supportTypeDesigned);
+
+                        return FKitem;
+                    })
+                    .ToList();
+                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), TableName, Id);
+                attributes.LogisticalItems = LogisticalItems;
+                attributes.AttributesActivatedLibrary = listofAttributesActivated;
+
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+
+                List<BaseAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                if (NameAttribute != null)
                 {
-                    TLIcivilWithLegLibrary CivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id, x => x.sectionsLegType, x => x.supportTypeDesigned, x => x.structureType, x => x.civilSteelSupportCategory);
-
-                    object FK_CivilSteelSupportCategory_Name = CivilWithLegLibrary.civilSteelSupportCategory != null ? CivilWithLegLibrary.civilSteelSupportCategory.Name : null;
-                    List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null, "Model").ToList();
-                    listofAttributesActivated
-                        .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                        .ToList()
-                        .Select(FKitem =>
-                        {
-                            if (FKitem.Label.ToLower() == "sectionslegtype_name")
-                                FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(CivilWithLegLibrary.sectionsLegType);
-                            else if (FKitem.Label.ToLower() == "structuretype_name")
-                                FKitem.Options = _mapper.Map<StructureTypeViewModel>(CivilWithLegLibrary.structureType);
-                            else if (FKitem.Label.ToLower() == "supporttypedesigned_name")
-                                FKitem.Options = _mapper.Map<SupportTypeDesignedViewModel>(CivilWithLegLibrary.supportTypeDesigned);
-
-                            return FKitem;
-                        })
-                        .ToList();
+                    BaseAttViews Swap = Test.ToList()[0];
+                    Test[Test.IndexOf(NameAttribute)] = Swap;
+                    Test[0] = NameAttribute;
+                    attributes.AttributesActivatedLibrary = Test;
                 }
+
+                attributes.DynamicAttributes = null;
 
                 //else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                 //{
@@ -2652,28 +2663,7 @@ namespace TLIS_Service.Services
                 //    }
                 //}
 
-                ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), TableName, Id));
-                attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                if (TableName == "TLIcivilWithoutLegLibrary")
-                {
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, CatId);
-                }
-                else
-                {
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
-                }
 
-                List<BaseAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
-                if (NameAttribute != null)
-                {
-                    BaseAttViews Swap = Test.ToList()[0];
-                    Test[Test.IndexOf(NameAttribute)] = Swap;
-                    Test[0] = NameAttribute;
-                    attributes.AttributesActivatedLibrary = Test;
-                }
-
-                attributes.DynamicAttributes = null;
 
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

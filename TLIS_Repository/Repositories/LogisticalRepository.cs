@@ -86,6 +86,10 @@ namespace TLIS_Repository.Repositories
                 TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical)
                     .FirstOrDefault(x => x.tablesNamesId == TableNameId && x.RecordId == RecordId &&
                         x.logistical.tablePartNameId == TablePartNameId && x.logistical.logisticalTypeId == LogisticalType.Id);
+                List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical
+                   .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
+                       x.Active && !x.Deleted).ToList());
+
 
                 if (LogisticalItem != null)
                 {
@@ -99,7 +103,8 @@ namespace TLIS_Repository.Repositories
                         Desc = LogisticalType.Name,
                         Manage = false,
                         Required = false,
-                        Value = LogisticalItem.logistical.Name
+                        Value = LogisticalItem.logistical.Name,
+                        Options= Logisticals
                     });
                 }
                 else
@@ -114,7 +119,9 @@ namespace TLIS_Repository.Repositories
                         Desc = LogisticalType.Name,
                         Manage = false,
                         Required = false,
-                        Value = "NA"
+                        Value = "NA",
+                        Options = Logisticals
+
                     });
                 }
             }

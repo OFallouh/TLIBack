@@ -6653,67 +6653,67 @@ namespace TLIS_Service.Services
                                                 }
                                             }
 
-                                            string TowerStructureType = TypeOfSupportInfoDataTable.Rows[j]["Structure Type Compatible With Design"].ToString();
-                                            if (!string.IsNullOrEmpty(TowerStructureType))
-                                            {
-                                                if (TowerStructureType.ToLower() == "Yes".ToLower())
-                                                    NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.Yes;
+                                            //string TowerStructureType = TypeOfSupportInfoDataTable.Rows[j]["Structure Type Compatible With Design"].ToString();
+                                            //if (!string.IsNullOrEmpty(TowerStructureType))
+                                            //{
+                                            //    if (TowerStructureType.ToLower() == "Yes".ToLower())
+                                            //        NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.Yes;
 
-                                                else if (TowerStructureType.ToLower() == "No".ToLower())
-                                                    NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.No;
+                                            //    else if (TowerStructureType.ToLower() == "No".ToLower())
+                                            //        NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.No;
 
-                                                else
-                                                {
-                                                    TowerTransaction.Dispose();
+                                            //    else
+                                            //    {
+                                            //        TowerTransaction.Dispose();
 
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"(Structure Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                        SheetName = "Type of support info",
-                                                        UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                    };
+                                            //        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            //        {
+                                            //            CreatedAt = DateTime.Now,
+                                            //            ErrMsg = $"(Structure Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
+                                            //            IsDeleted = false,
+                                            //            IsLib = false,
+                                            //            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                            //            SheetName = "Type of support info",
+                                            //            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                            //        };
 
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
+                                            //        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            //        _unitOfWork.SaveChanges();
 
-                                                    continue;
-                                                }
-                                            }
+                                            //        continue;
+                                            //    }
+                                            //}
 
-                                            string TowerSectionsLegType = TypeOfSupportInfoDataTable.Rows[j]["Sections(Leg) Type Compatible With Design"].ToString();
-                                            if (!string.IsNullOrEmpty(TowerSectionsLegType))
-                                            {
-                                                if (TowerSectionsLegType.ToLower() == "Yes".ToLower())
-                                                    NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.Yes;
+                                            //string TowerSectionsLegType = TypeOfSupportInfoDataTable.Rows[j]["Sections(Leg) Type Compatible With Design"].ToString();
+                                            //if (!string.IsNullOrEmpty(TowerSectionsLegType))
+                                            //{
+                                            //    if (TowerSectionsLegType.ToLower() == "Yes".ToLower())
+                                            //        NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.Yes;
 
-                                                else if (TowerSectionsLegType.ToLower() == "No".ToLower())
-                                                    NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.No;
+                                            //    else if (TowerSectionsLegType.ToLower() == "No".ToLower())
+                                            //        NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.No;
 
-                                                else
-                                                {
-                                                    TowerTransaction.Dispose();
+                                            //    else
+                                            //    {
+                                            //        TowerTransaction.Dispose();
 
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"(Sections(Leg) Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                        SheetName = "Type of support info",
-                                                        UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                    };
+                                            //        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                            //        {
+                                            //            CreatedAt = DateTime.Now,
+                                            //            ErrMsg = $"(Sections(Leg) Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
+                                            //            IsDeleted = false,
+                                            //            IsLib = false,
+                                            //            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                            //            SheetName = "Type of support info",
+                                            //            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                            //        };
 
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
+                                            //        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                            //        _unitOfWork.SaveChanges();
 
-                                                    continue;
-                                                }
-                                            }
+                                            //        continue;
+                                            //    }
+                                            //}
 
                                             string CivilWithLegsEnforcement = TypeOfSupportInfoDataTable.Rows[j]["Tower enforcement"].ToString();
                                             NewCivilWithLegsEntity.IsEnforeced = false;
@@ -8267,67 +8267,67 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        string TowerStructureType = TypeOfSupportInfoDataTable.Rows[j]["Structure Type Compatible With Design"].ToString();
-                                        if (!string.IsNullOrEmpty(TowerStructureType))
-                                        {
-                                            if (TowerStructureType.ToLower() == "Yes".ToLower())
-                                                NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.Yes;
+                                        //string TowerStructureType = TypeOfSupportInfoDataTable.Rows[j]["Structure Type Compatible With Design"].ToString();
+                                        //if (!string.IsNullOrEmpty(TowerStructureType))
+                                        //{
+                                        //    if (TowerStructureType.ToLower() == "Yes".ToLower())
+                                        //        NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.Yes;
 
-                                            else if (TowerStructureType.ToLower() == "No".ToLower())
-                                                NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.No;
+                                        //    else if (TowerStructureType.ToLower() == "No".ToLower())
+                                        //        NewCivilWithLegsEntity.StructureType = StructureTypeCompatibleWithDesign.No;
 
-                                            else
-                                            {
-                                                TowerTransaction.Dispose();
+                                        //    else
+                                        //    {
+                                        //        TowerTransaction.Dispose();
 
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Structure Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                    SheetName = "Type of support info",
-                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                };
+                                        //        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        //        {
+                                        //            CreatedAt = DateTime.Now,
+                                        //            ErrMsg = $"(Structure Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
+                                        //            IsDeleted = false,
+                                        //            IsLib = false,
+                                        //            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                        //            SheetName = "Type of support info",
+                                        //            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                        //        };
 
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
+                                        //        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        //        _unitOfWork.SaveChanges();
 
-                                                continue;
-                                            }
-                                        }
+                                        //        continue;
+                                        //    }
+                                        //}
 
-                                        string TowerSectionsLegType = TypeOfSupportInfoDataTable.Rows[j]["Sections(Leg) Type Compatible With Design"].ToString();
-                                        if (!string.IsNullOrEmpty(TowerSectionsLegType))
-                                        {
-                                            if (TowerSectionsLegType.ToLower() == "Yes".ToLower())
-                                                NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.Yes;
+                                        //string TowerSectionsLegType = TypeOfSupportInfoDataTable.Rows[j]["Sections(Leg) Type Compatible With Design"].ToString();
+                                        //if (!string.IsNullOrEmpty(TowerSectionsLegType))
+                                        //{
+                                        //    if (TowerSectionsLegType.ToLower() == "Yes".ToLower())
+                                        //        NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.Yes;
 
-                                            else if (TowerSectionsLegType.ToLower() == "No".ToLower())
-                                                NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.No;
+                                        //    else if (TowerSectionsLegType.ToLower() == "No".ToLower())
+                                        //        NewCivilWithLegsEntity.SectionsLegType = SectionsLegTypeCompatibleWithDesign.No;
 
-                                            else
-                                            {
-                                                TowerTransaction.Dispose();
+                                        //    else
+                                        //    {
+                                        //        TowerTransaction.Dispose();
 
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Sections(Leg) Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
-                                                    SheetName = "Type of support info",
-                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                };
+                                        //        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        //        {
+                                        //            CreatedAt = DateTime.Now,
+                                        //            ErrMsg = $"(Sections(Leg) Type Compatible With Design) coulumn's value must be boolean (Yes/No)",
+                                        //            IsDeleted = false,
+                                        //            IsLib = false,
+                                        //            RefTable = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(),
+                                        //            SheetName = "Type of support info",
+                                        //            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                        //        };
 
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
+                                        //        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        //        _unitOfWork.SaveChanges();
 
-                                                continue;
-                                            }
-                                        }
+                                        //        continue;
+                                        //    }
+                                        //}
 
                                         string CivilWithLegsEnforcement = TypeOfSupportInfoDataTable.Rows[j]["Tower enforcement"].ToString();
                                         NewCivilWithLegsEntity.IsEnforeced = false;

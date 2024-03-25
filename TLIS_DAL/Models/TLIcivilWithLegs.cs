@@ -75,8 +75,8 @@ namespace TLIS_DAL.Models
         public string? DiagonalMemberPrefix { get; set; }
         public float EnforcementHeightBase { get; set; } = 0;
         public float Enforcementlevel { get; set; } = 0;
-        public StructureTypeCompatibleWithDesign? StructureType { get; set; }
-        public SectionsLegTypeCompatibleWithDesign? SectionsLegType { get; set; }
+        public bool StructureType { get; set; }
+        public bool SectionsLegType { get; set; }
         public float TotalHeight { get; set; } = 0;
         public float SpaceInstallation { get; set; } = 0;
         public int OwnerId { get; set; }

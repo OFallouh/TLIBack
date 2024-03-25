@@ -12,7 +12,6 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -23,6 +22,7 @@ namespace TLIS_API.Controllers
         {
             _unitOfWorkService = unitOfWorkService;
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("getAll")]
         [ProducesResponseType(200, Type = typeof(List<CivilWithoutLegCategoryViewModel>))]
         public async Task<IActionResult> GetList()
@@ -30,7 +30,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.CivilWithoutLegCategoryService.GetList();
             return Ok(response);
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddCivilWithoutLegCategory")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegCategoryViewModel))]
         public async Task<IActionResult> AddCivilWithoutLegCategory([FromBody]AddCivilWithoutLegCategoryViewModel categoryViewModel)
@@ -48,6 +48,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<CivilWithoutLegCategoryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilWithoutLegCategory")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegCategoryViewModel))]
         public async Task<IActionResult> EditCategoury([FromBody]CivilWithoutLegCategoryViewModel EditCategory)
@@ -65,6 +66,7 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<CivilWithoutLegCategoryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("getById/{id}")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegCategoryViewModel))]
         public async Task<IActionResult> GetCategoury(int id)
@@ -72,13 +74,16 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.CivilWithoutLegCategoryService.GetCivilWithoutLegCategory(id);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetByName")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegCategoryViewModel))]
         public IActionResult GetByName(string CategoryName)
         {
             var response = _unitOfWorkService.CivilWithoutLegCategoryService.GetCivilWithoutLegCategoryByName(CategoryName);
             return Ok(response);
+
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DisableCivilWithoutLegCategory")]
         [ProducesResponseType(200, Type = typeof(List<CivilWithoutLegCategoryViewModel>))]
         public async Task<IActionResult> DisableCivilWithoutLegCategory(int Id,bool disable )

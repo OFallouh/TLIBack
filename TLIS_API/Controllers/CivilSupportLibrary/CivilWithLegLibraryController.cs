@@ -53,7 +53,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegLibrariesEnabledAtt(CombineOutPut, WithFilterData, parameters);
             return Ok(response);
         }
-        [HttpGet("getById/{id}")]
+        [HttpGet("getCivilWithLegsLibraryById")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public  IActionResult GetCivilWithLegLibrary(int id)
         {
