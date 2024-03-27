@@ -2555,19 +2555,27 @@ namespace TLIS_Service.Services
                     x.Id == Id, x => x.sectionsLegType, x => x.supportTypeDesigned, x => x.structureType, x => x.civilSteelSupportCategory);
 
                 object FK_CivilSteelSupportCategory_Name = CivilWithLegLibrary.civilSteelSupportCategory != null ? CivilWithLegLibrary.civilSteelSupportCategory.Name : null;
-                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null, "Model").ToList();
+                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CivilWithLegLibrary, null).ToList();
                 listofAttributesActivated
                     .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                     .ToList()
                     .Select(FKitem =>
                     {
                         if (FKitem.Label.ToLower() == "sectionslegtype_name")
-                            FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(CivilWithLegLibrary.sectionsLegType);
+                        {
+                            FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(CivilWithLegLibrary.sectionsLegType);
+                        }
                         else if (FKitem.Label.ToLower() == "structuretype_name")
-                            FKitem.Options = _mapper.Map<StructureTypeViewModel>(CivilWithLegLibrary.structureType);
+                        {
+                            FKitem.Options = _mapper.Map < List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithLegLibrary.structureType);
+                        }
                         else if (FKitem.Label.ToLower() == "supporttypedesigned_name")
-                            FKitem.Options = _mapper.Map<SupportTypeDesignedViewModel>(CivilWithLegLibrary.supportTypeDesigned);
-
+                        {
+                            FKitem.Options = _mapper.Map < List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            FKitem.Value = _mapper.Map<SupportTypeDesignedViewModel>(CivilWithLegLibrary.supportTypeDesigned);
+                        }
                         return FKitem;
                     })
                     .ToList();
@@ -2587,7 +2595,6 @@ namespace TLIS_Service.Services
                     attributes.AttributesActivatedLibrary = Test;
                 }
 
-                attributes.DynamicAttributes = null;
 
                 //else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                 //{

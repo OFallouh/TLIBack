@@ -1077,6 +1077,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIlogistical, AddLogisticalViewModel>().ReverseMap();
             CreateMap<TLIlogistical, EditLogisticalViewModel>().ReverseMap();
             CreateMap<TLIlogistical, LogisticalViewModel>().ReverseMap();
+            CreateMap<TLIlogisticalitem, LogisticalViewModel>().ReverseMap();
             CreateMap<TLIlogistical, MainLogisticalViewModel>()
                 .ForMember(c => c.logisticalType_Name, c => c.MapFrom(s => s.logisticalType.Name))
                 .ForMember(c => c.tablePartName_Name, c => c.MapFrom(s => s.tablePartName.PartName));

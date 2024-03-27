@@ -103,7 +103,7 @@ namespace TLIS_Repository.Repositories
                         Desc = LogisticalType.Name,
                         Manage = false,
                         Required = false,
-                        Value = LogisticalItem.logistical.Name,
+                        Value =_mapper.Map<LogisticalViewModel>(LogisticalItem.logistical),
                         Options= Logisticals
                     });
                 }
