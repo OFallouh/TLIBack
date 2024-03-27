@@ -15,7 +15,7 @@ namespace TLIS_Repository.IRepository
         List<BaseInstAttView> GetInstAttributeActivatedForCivilWithoutLeg(int? CategoryId, object Installation = null, params string[] ExceptAtrributes);
         IEnumerable<BaseInstAttView> GetInstAttributeActivated(string Type, Object Installation = null, params string[] ExceptAtrributes);
         IEnumerable<BaseInstAttViews> GetInstAttributeActivatedGetForAdd(string Type, object Installation = null, params string[] ExceptAtrributes);
-        IEnumerable<BaseAttViews> GetAttributeActivatedGetForAdd(string Type, object Library = null, int? CategoryId = null, params string[] ExceptAtrributes);
+        IEnumerable<BaseInstAttViews> GetAttributeActivatedGetForAdd(string Type, object Library = null, int? CategoryId = null, params string[] ExceptAtrributes);
         List<BaseInstAttViews> GetInstAttributeActivatedForCivilWithoutLegGetForAdd(int? CategoryId, object Installation = null, params string[] ExceptAtrributes);
     }
 }

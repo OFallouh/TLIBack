@@ -72,9 +72,9 @@ namespace TLIS_Repository.Repositories
 
             return result;
         }
-        public IEnumerable<BaseAttViews> GetLogisticals(string Part, string TableName, int RecordId)
+        public IEnumerable<BaseInstAttViews> GetLogisticals(string Part, string TableName, int RecordId)
         {
-            List<BaseAttViews> result = new List<BaseAttViews>();
+            List<BaseInstAttViews> result = new List<BaseInstAttViews>();
 
             int TableNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
             int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
@@ -93,7 +93,7 @@ namespace TLIS_Repository.Repositories
 
                 if (LogisticalItem != null)
                 {
-                    result.Add(new BaseAttViews
+                    result.Add(new BaseInstAttViews
                     {
                         Key = LogisticalType.Name,
                         Label = LogisticalType.Name,
@@ -109,7 +109,7 @@ namespace TLIS_Repository.Repositories
                 }
                 else
                 {
-                    result.Add(new BaseAttViews
+                    result.Add(new BaseInstAttViews
                     {
                         Key = LogisticalType.Name,
                         Label = LogisticalType.Name,
@@ -160,9 +160,9 @@ namespace TLIS_Repository.Repositories
             
             return result;
         }
-        public IEnumerable<BaseAttViews> GetLogisticals(string Part)
+        public IEnumerable<BaseInstAttViews> GetLogisticals(string Part)
         {
-            List<BaseAttViews> result = new List<BaseAttViews>();
+            List<BaseInstAttViews> result = new List<BaseInstAttViews>();
 
             int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
 
@@ -174,7 +174,7 @@ namespace TLIS_Repository.Repositories
                     .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
                         x.Active && !x.Deleted).ToList());
 
-                BaseAttViews BaseAtt = new BaseAttViews
+                BaseInstAttViews BaseAtt = new BaseInstAttViews
                 {
                     Key = LogisticalType.Name,
                     Label = LogisticalType.Name,
@@ -192,9 +192,9 @@ namespace TLIS_Repository.Repositories
 
             return result;
         }
-        public IEnumerable<BaseAttViews> GetLogisticalLibrary(string Part)
+        public IEnumerable<BaseInstAttViews> GetLogisticalLibrary(string Part)
         {
-            List<BaseAttViews> result = new List<BaseAttViews>();
+            List<BaseInstAttViews> result = new List<BaseInstAttViews>();
 
             int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
 
@@ -206,7 +206,7 @@ namespace TLIS_Repository.Repositories
                     .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
                         x.Active && !x.Deleted).ToList());
 
-                BaseAttViews BaseAtt = new BaseAttViews
+                BaseInstAttViews BaseAtt = new BaseInstAttViews
                 {
                     Key = LogisticalType.Name,
                     Label = LogisticalType.Name,

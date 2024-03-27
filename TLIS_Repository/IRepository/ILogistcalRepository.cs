@@ -13,8 +13,8 @@ namespace TLIS_Repository.IRepository
     {
         IEnumerable<BaseAttView> GetLogistical(string Part, string TableName, int RecordId);
         IEnumerable<BaseAttView> GetLogistical(string Part);
-        IEnumerable<BaseAttViews> GetLogisticals(string Part);
-        IEnumerable<BaseAttViews> GetLogisticalLibrary(string Part);
-        IEnumerable<BaseAttViews> GetLogisticals(string Part, string TableName, int RecordId);
+        IEnumerable<BaseInstAttViews> GetLogisticals(string Part);
+        IEnumerable<BaseInstAttViews> GetLogisticalLibrary(string Part);
+        IEnumerable<BaseInstAttViews> GetLogisticals(string Part, string TableName, int RecordId);
     }
 }

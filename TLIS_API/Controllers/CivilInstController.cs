@@ -144,7 +144,7 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddCivilWithLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
-        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg,[Parameter] string SiteCode,  int TaskId)
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg,[Parameter] string SiteCode,  int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -205,7 +205,7 @@ namespace TLIS_API.Controllers
 
         //[HttpPost("AddCivilWithoutLegs/{SiteCode}")]
         //[ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        //public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId )
+        //public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId )
         //{
         //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
         //    if (addCivilWithoutLeg.civilSiteDate.ReservedSpace == true)
@@ -248,7 +248,7 @@ namespace TLIS_API.Controllers
 
         //[HttpPost("AddCivilNonSteel/{SiteCode}")]
         //[ProducesResponseType(200, Type = typeof(AddCivilNonSteelViewModel))]
-        //public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode, int TaskId)
+        //public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode, int? TaskId)
         //{
         //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
         //    if (addCivilNonSteel.civilSiteDate.ReservedSpace == true)
@@ -287,7 +287,7 @@ namespace TLIS_API.Controllers
         //    }
         //    return Ok(new Response<AddCivilNonSteelViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
         //}
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //s[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilWithLegsById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilWithLegsById(int CivilId)
@@ -322,7 +322,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(CivilWithLegsViewModel))]
-        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModel CivilWithLeg, int TaskId)
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModel CivilWithLeg, int? TaskId)
         {
             if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsViewModel)))
             {
@@ -340,7 +340,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilWithoutLegs")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg, int TaskId)
+        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg, int? TaskId)
         {
             if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
             {
@@ -358,7 +358,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilNonSteel")]
         [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel, int TaskId)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel, int? TaskId)
         {
             if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
             {
@@ -395,7 +395,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleCivil")]
 
-        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName, int TaskId)
+        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName, int? TaskId)
         {
             var response = _unitOfWorkService.CivilInstService.DismantleCivil(SiteCode, CivilId, CivilName, TaskId);
             return Ok(response);

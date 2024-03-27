@@ -478,7 +478,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<ConfigurationAttsViewModel, TLIdocumentType>().ReverseMap();
 
 
-            CreateMap<BaseAttViews, BaseAttView>().ReverseMap();
+            CreateMap<BaseInstAttViews, BaseAttView>().ReverseMap();
+            CreateMap<BaseInstAttViews, TLIlogistical>().ReverseMap();
 
             CreateMap<TLIradioOther, RadioOtherViewModel>()
                 .ForMember(x => x.installationPlace_Name, x => x.MapFrom(f => f.installationPlace.Name))
@@ -519,6 +520,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<SubOptionViewModel, TLIsuboption>();
 
             CreateMap<TLIitemStatus, ItemStatusViewModel>().ReverseMap();
+            CreateMap<TLIcivilWithLegs, SupportTypeImplementedViewModel>().ReverseMap();
+            CreateMap<TLIcivilWithoutLeg, SupportTypeImplementedViewModel>().ReverseMap();
+            CreateMap<TLIcivilNonSteel, SupportTypeImplementedViewModel>().ReverseMap();
+            CreateMap<SupportTypeImplementedViewModel, TLIcivilSiteDate>().ReverseMap();
             CreateMap<ListConditionActionViewModel, ActionListViewModel>()
                 .ForMember(x => x.Proposal, x => x.Ignore())
                 .ForMember(x => x.Type, x => x.Ignore())

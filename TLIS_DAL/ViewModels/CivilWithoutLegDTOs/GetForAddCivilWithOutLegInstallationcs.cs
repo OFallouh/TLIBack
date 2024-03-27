@@ -9,7 +9,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
 {
     public class GetForAddCivilWithOutLegInstallationcs
     {
-        public IEnumerable<BaseAttViews> LibraryAttribute { get; set; } = new List<BaseAttViews>();
+        public IEnumerable<BaseInstAttViews> LibraryAttribute { get; set; } = new List<BaseInstAttViews>();
 
         public IEnumerable<BaseInstAttViews> InstallationAttributes { get; set; } = new List<BaseInstAttViews>();
 

@@ -160,6 +160,68 @@ namespace TLIS_Repository.Repositories
             }
             return dynamicAttInstViewModels;
         }
+        public List<BaseInstAttViewDynamic> GetDynamicInstAtt(int TableNameId, int Id, int? CategoryId = null)
+        {
+            List<BaseInstAttViewDynamic> dynamicAttInstViewModels = new List<BaseInstAttViewDynamic>();
+            List<TLIdynamicAtt> DynamicAtts = new List<TLIdynamicAtt>();
+
+            if (CategoryId == null)
+            {
+                DynamicAtts = _context.TLIdynamicAtt.Include(x => x.DataType)
+                    .Where(x => !x.LibraryAtt && x.tablesNamesId == TableNameId && !x.disable).ToList();
+            }
+            else
+            {
+                DynamicAtts = _context.TLIdynamicAtt.Include(x => x.tablesNames).Include(x => x.DataType)
+                    .Where(x => x.CivilWithoutLegCategoryId == CategoryId && !x.LibraryAtt &&
+                        x.tablesNames.TableName.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower() &&
+                        !x.disable).ToList();
+            }
+            foreach (TLIdynamicAtt DynamicAtt in DynamicAtts)
+            {
+                TLIdynamicAttInstValue DynamicInstAtt = _context.TLIdynamicAttInstValue
+                    .FirstOrDefault(x => x.DynamicAttId == DynamicAtt.Id &&
+                        x.tablesNamesId == TableNameId && x.InventoryId == Id);
+
+                if (DynamicAtt != null)
+                {
+                    if (DynamicInstAtt == null)
+                    {
+                        DynamicInstAtt = new TLIdynamicAttInstValue();
+                    }
+
+                    dynamic value = null; 
+                    if (DynamicInstAtt.ValueString != null)
+                    {
+                        value = DynamicInstAtt.ValueString;
+                    }
+                    else if (DynamicInstAtt.ValueBoolean != null)
+                    {
+                        value = DynamicInstAtt.ValueBoolean;
+                    }
+                    else if (DynamicInstAtt.ValueDateTime != null)
+                    {
+                        value = DynamicInstAtt.ValueDateTime;
+                    }
+                    else if (DynamicInstAtt.ValueDouble != null)
+                    {
+                        value = DynamicInstAtt.ValueDouble;
+                    }
+
+                    dynamicAttInstViewModels.Add(new BaseInstAttViewDynamic
+                    {
+                        Id = DynamicAtt.Id,
+                        Key = DynamicAtt.Key,
+                        DataTypeId = DynamicAtt.DataTypeId,
+                        DataType = DynamicAtt.DataType.Name,
+                        Value = value, 
+                        Required = DynamicAtt.Required
+                    });
+                }
+
+            }
+            return dynamicAttInstViewModels;
+        }
         public void UpdateDynamicValue(List<BaseInstAttView> DynamicInstAttsValue, int TableNameId, int InstId )
         {
             foreach (var DynamicIns in DynamicInstAttsValue)

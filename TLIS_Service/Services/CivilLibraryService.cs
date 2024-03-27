@@ -2555,7 +2555,7 @@ namespace TLIS_Service.Services
                     x.Id == Id, x => x.sectionsLegType, x => x.supportTypeDesigned, x => x.structureType, x => x.civilSteelSupportCategory);
 
                 object FK_CivilSteelSupportCategory_Name = CivilWithLegLibrary.civilSteelSupportCategory != null ? CivilWithLegLibrary.civilSteelSupportCategory.Name : null;
-                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CivilWithLegLibrary, null).ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CivilWithLegLibrary, null).ToList();
                 listofAttributesActivated
                     .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                     .ToList()
@@ -2585,11 +2585,11 @@ namespace TLIS_Service.Services
 
                 attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
 
-                List<BaseAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseAttViews Swap = Test.ToList()[0];
+                    BaseInstAttViews Swap = Test.ToList()[0];
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     attributes.AttributesActivatedLibrary = Test;
@@ -2810,7 +2810,7 @@ namespace TLIS_Service.Services
             {
                 GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
-                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 1, "Model", "CivilSteelSupportCategoryId").ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 1, "Model", "CivilSteelSupportCategoryId").ToList();
                 listofAttributesActivated
                   .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                   .ToList()
@@ -2862,11 +2862,11 @@ namespace TLIS_Service.Services
 
                 Attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
-                List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
-                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                List<BaseInstAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseAttViews Swap = Test.ToList()[0];
+                    BaseInstAttViews Swap = Test.ToList()[0];
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
@@ -2886,7 +2886,7 @@ namespace TLIS_Service.Services
             {
                 GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
-                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 3, "Model", "CivilSteelSupportCategoryId").ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 3, "Model", "CivilSteelSupportCategoryId").ToList();
                 listofAttributesActivated
                   .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                   .ToList()
@@ -2942,11 +2942,11 @@ namespace TLIS_Service.Services
 
                 Attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
-                List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
-                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                List<BaseInstAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseAttViews Swap = Test.ToList()[0];
+                    BaseInstAttViews Swap = Test.ToList()[0];
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
@@ -2966,7 +2966,7 @@ namespace TLIS_Service.Services
             {
                 GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
-                List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 2, "Model", "CivilSteelSupportCategoryId").ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 2, "Model", "CivilSteelSupportCategoryId").ToList();
                 listofAttributesActivated
                   .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                   .ToList()
@@ -3022,11 +3022,11 @@ namespace TLIS_Service.Services
 
                 Attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
-                List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
-                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                List<BaseInstAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseAttViews Swap = Test.ToList()[0];
+                    BaseInstAttViews Swap = Test.ToList()[0];
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
@@ -3050,7 +3050,7 @@ namespace TLIS_Service.Services
 
                 if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                 {
-                    List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null, "Model").ToList();
+                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null, "Model").ToList();
                     listofAttributesActivated
                       .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
                       .ToList()
@@ -3824,11 +3824,11 @@ namespace TLIS_Service.Services
                 //    Attributes.DynamicAttInst = null;
                 //}
 
-                List<BaseAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
-                BaseAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                List<BaseInstAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseAttViews Swap = Test.ToList()[0];
+                    BaseInstAttViews Swap = Test.ToList()[0];
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;

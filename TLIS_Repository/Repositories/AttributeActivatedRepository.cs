@@ -293,7 +293,7 @@ namespace TLIS_Repository.Repositories
             return BaseAttsView;
         }
 
-        public IEnumerable<BaseAttViews> GetAttributeActivatedGetForAdd(string Type, object Library = null, int? CategoryId = null, params string[] ExceptAtrributes)
+        public IEnumerable<BaseInstAttViews> GetAttributeActivatedGetForAdd(string Type, object Library = null, int? CategoryId = null, params string[] ExceptAtrributes)
         {
             if (CategoryId != null)
             {
@@ -304,7 +304,7 @@ namespace TLIS_Repository.Repositories
                     .Include(a => a.attributeActivated)
                     .AsEnumerable().Except(Excepted).ToList();
 
-                List<BaseAttViews> BaseAttsView = new List<BaseAttViews>();
+                List<BaseInstAttViews> BaseAttsView = new List<BaseInstAttViews>();
                 object value = null;
                 foreach (var AttributeActivated in AttActivatedCategoryStatus)
                 {
@@ -313,10 +313,10 @@ namespace TLIS_Repository.Repositories
                     {
                         value = Library.GetType().GetProperty(AttributeActivated.attributeActivated.Key).GetValue(Library);
                     }
-                    BaseAttsView.Add(new BaseAttViews { Key = AttributeActivated.attributeActivated.Key, Label = AttributeActivated.attributeActivated.Label, Desc = AttributeActivated.attributeActivated.Description, Value = value, enable = AttributeActivated.attributeActivated.enable, AutoFill = AttributeActivated.attributeActivated.AutoFill, Manage = AttributeActivated.attributeActivated.Manage, Required = AttributeActivated.attributeActivated.Required, DataType = AttributeActivated.attributeActivated.DataType });
+                    BaseAttsView.Add(new BaseInstAttViews { Key = AttributeActivated.attributeActivated.Key, Label = AttributeActivated.attributeActivated.Label, Desc = AttributeActivated.attributeActivated.Description, Value = value, enable = AttributeActivated.attributeActivated.enable, AutoFill = AttributeActivated.attributeActivated.AutoFill, Manage = AttributeActivated.attributeActivated.Manage, Required = AttributeActivated.attributeActivated.Required, DataType = AttributeActivated.attributeActivated.DataType });
                 }
 
-                foreach (BaseAttViews item in BaseAttsView)
+                foreach (BaseInstAttViews item in BaseAttsView)
                 {
                     TLIattActivatedCategory Test = AttActivatedCategoryStatus.FirstOrDefault(x =>
                         x.civilWithoutLegCategoryId == CategoryId && x.attributeActivated.Key.ToLower() == item.Key.ToLower());
@@ -339,7 +339,7 @@ namespace TLIS_Repository.Repositories
                     x.enable && x.Tabel == Type && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" &&
                     x.Key.ToLower() != "deleted").ToList().Except(Excepted).ToList();
 
-                List<BaseAttViews> BaseAttsView = new List<BaseAttViews>();
+                List<BaseInstAttViews> BaseAttsView = new List<BaseInstAttViews>();
                 object value = null;
                 foreach (var AttributeActivated in AttributesActivated)
                 {
@@ -348,7 +348,7 @@ namespace TLIS_Repository.Repositories
                     {
                         value = Library.GetType().GetProperty(AttributeActivated.Key).GetValue(Library);
                     }
-                    BaseAttsView.Add(new BaseAttViews { Key = AttributeActivated.Key, Label = AttributeActivated.Label, Desc = AttributeActivated.Description, Value = value, enable = AttributeActivated.enable, AutoFill = AttributeActivated.AutoFill, Manage = AttributeActivated.Manage, Required = AttributeActivated.Required, DataType = AttributeActivated.DataType });
+                    BaseAttsView.Add(new BaseInstAttViews { Key = AttributeActivated.Key, Label = AttributeActivated.Label, Desc = AttributeActivated.Description, Value = value, enable = AttributeActivated.enable, AutoFill = AttributeActivated.AutoFill, Manage = AttributeActivated.Manage, Required = AttributeActivated.Required, DataType = AttributeActivated.DataType });
                 }
                 return BaseAttsView;
             }
