@@ -52,8 +52,11 @@ using TLIS_DAL.ViewModels.RadioAntennaDTOs;
 using TLIS_DAL.ViewModels.RadioOtherDTOs;
 using TLIS_DAL.ViewModels.RadioRRUDTOs;
 using TLIS_DAL.ViewModels.RuleDTOs;
+using TLIS_DAL.ViewModels.SectionsLegTypeDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
+using TLIS_DAL.ViewModels.StructureTypeDTOs;
 using TLIS_DAL.ViewModels.SubTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeDesignedDTOs;
 using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 using TLIS_Repository.Base;
 using TLIS_Service.IService;
@@ -2306,26 +2309,90 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSupportDistanceRepository.Add(civilSupportDistance);
                             _unitOfWork.SaveChanges();
                         }
-
-                        if (AddCivilWithLegsViewModel.legsInfo != null)
+                        var structureType = _dbContext.TLIstructureType.FirstOrDefault(x => x.Id == civilwithleglibrary.structureTypeId);
+                        if (structureType != null && structureType.Name.ToLower() == "square")
                         {
-                            var legsToAdd = AddCivilWithLegsViewModel.legsInfo
-                                .Where(item => item != null) 
-                                .Select(item => new TLIleg
-                                {
-                                    CiviLegName = civilWithLegs.Name + item.LegLetter,
-                                    LegLetter = item.LegLetter,
-                                    CivilWithLegInstId = civilWithLegs.Id,
-                                    Notes = item.Notes,
-                                    LegAzimuth = item.LegAzimuth
-                                }).ToList();
+                            string legLetter = null;
+                            float legAzimuth = 0;
 
-                            if (legsToAdd.Any())
+                            for (int i = 0; i < civilwithleglibrary.NumberOfLegs; i++)
                             {
-                                _unitOfWork.LegRepository.AddRange(legsToAdd);
-                                _unitOfWork.SaveChanges();
+                                switch (i)
+                                {
+                                    case 0:
+                                        legLetter = "A";
+                                        legAzimuth = 0;
+                                        break;
+                                    case 1:
+                                        legLetter = "B";
+                                        legAzimuth = 90;
+                                        break;
+                                    case 2:
+                                        legLetter = "C";
+                                        legAzimuth = 180;
+                                        break;
+                                    case 3:
+                                        legLetter = "D";
+                                        legAzimuth = 270;
+                                        break;
+                                    default:
+                                       
+                                        break;
+                                }
+
+                                TLIleg tliLeg = new TLIleg
+                                {
+                                    CiviLegName = civilWithLegs.Name + legLetter,
+                                    LegAzimuth = legAzimuth,
+                                    LegLetter = legLetter,
+                                    CivilWithLegInstId = civilWithLegs.Id
+                                };
+
+                                _unitOfWork.LegRepository.Add(tliLeg);
                             }
+
+                            _unitOfWork.SaveChanges(); 
                         }
+                        if (structureType != null && structureType.Name.ToLower() == "triangular")
+                        {
+                            string legLetter = null;
+                            float legAzimuth = 0;
+
+                            for (int i = 0; i < civilwithleglibrary.NumberOfLegs; i++)
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                        legLetter = "A";
+                                        legAzimuth = 0;
+                                        break;
+                                    case 1:
+                                        legLetter = "B";
+                                        legAzimuth = 120;
+                                        break;
+                                    case 2:
+                                        legLetter = "C";
+                                        legAzimuth = 240;
+                                        break;
+                                    default:
+                                      
+                                        break;
+                                }
+
+                                TLIleg tliLeg = new TLIleg
+                                {
+                                    CiviLegName = civilWithLegs.Name + legLetter,
+                                    LegAzimuth = legAzimuth,
+                                    LegLetter = legLetter,
+                                    CivilWithLegInstId = civilWithLegs.Id
+                                };
+
+                                _unitOfWork.LegRepository.Add(tliLeg);
+                            }
+
+                            _unitOfWork.SaveChanges(); 
+                        }
+
                         foreach (var addDynamicAttsInstValue in AddCivilWithLegsViewModel.dynamicAttribute)
                         {
                             _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(addDynamicAttsInstValue, TableNameEntity.Id, civilWithLegs.Id);
@@ -9287,22 +9354,31 @@ namespace TLIS_Service.Services
                         Enumerable.Empty<object>()
                     },
                 };
+                foreach (var item in LibraryAttributes)
+                {
+                    if (item.Label.ToLower() == "sectionslegtype_name")
+                    {
+                        item.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        item.Value = _unitOfWork.SectionsLegTypeRepository != null && CivilWithLegLibrary.sectionsLegTypeId != null ?
+                            _mapper.Map<LocationTypeViewModel>(_unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.sectionsLegTypeId)) :
+                            null;
+                    }
+                    else if (item.Label.ToLower() == "structuretype_name")
+                    {
+                        item.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        item.Value = _unitOfWork.StructureTypeRepository != null && CivilWithLegLibrary.structureTypeId != null ?
+                            _mapper.Map<LocationTypeViewModel>(_unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.structureTypeId)) :
+                            null;
+                    }
+                    else if (item.Label.ToLower() == "supporttypedesigned_name")
+                    {
+                        item.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        item.Value = _unitOfWork.SupportTypeDesignedRepository != null && CivilWithLegLibrary.supportTypeDesignedId != null ?
+                            _mapper.Map<LocationTypeViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.supportTypeDesignedId)) :
+                            null;
+                    }
+                }
 
-           
-                LibraryAttributes = LibraryAttributes
-                   .Select(FKitem =>
-                   {
-                       if (repository.ContainsKey(FKitem.Desc.ToLower()))
-                       {
-                           FKitem.Options = repository[FKitem.Desc.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
                 List<BaseInstAttViews> LibraryLogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                     .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary.Id).ToList());
 
