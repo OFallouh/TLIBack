@@ -139,6 +139,8 @@ using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.AreaDTOs;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.AddCivilWithLegsLibraryObject;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.EditCivilWithLegsLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -450,6 +452,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<AddCivilNonSteelViewModel, TLIcivilNonSteel>().ReverseMap();
 
             CreateMap<EditCivilNonSteelViewModel, TLIcivilNonSteel>().ReverseMap();
+            CreateMap<EditCivilWithLegsLibraryObject, TLIcivilWithLegLibrary>().ReverseMap();
+            CreateMap<EditCivilWihtLegsLibraryAttributes, TLIcivilWithLegLibrary>().ReverseMap();
 
             CreateMap<TLIradioRRULibrary, RadioRRULibraryViewModel>().ReverseMap();
 
