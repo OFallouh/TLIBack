@@ -2317,7 +2317,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    if (LogisticalItemIds.LogisticalItems != null)
+                    if (LogisticalItemIds != null)
                     {
                         if (LogisticalItemIds.LogisticalItems.VendorId != null && LogisticalItemIds.LogisticalItems.VendorId != 0)
                         {

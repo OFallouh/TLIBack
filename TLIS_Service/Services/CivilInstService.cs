@@ -4500,7 +4500,7 @@ namespace TLIS_Service.Services
                             .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && civilSupportDistance != null)
                             .Select(attr =>
                             {
-                                var options = new List<SupportTypeImplementedViewModel>(); // Define options list here
+                                var options = new List<SupportTypeImplementedViewModel>(); 
 
                                 var support = _unitOfWork.CivilSupportDistanceRepository
                                     .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
@@ -9383,11 +9383,9 @@ namespace TLIS_Service.Services
                     .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary.Id).ToList());
 
                 LibraryAttributes.AddRange(LibraryLogisticalAttributes);
-                var NumberOfLeg =LibraryAttributes.FirstOrDefault(x => x.Key == "NumberOfLegs");
-                if(NumberOfLeg != null)
-                {
-                     NumberofNumber =(int) NumberOfLeg.Value;
-                }
+                if(CivilWithLegLibrary.NumberOfLegs !=null)
+                    NumberofNumber = CivilWithLegLibrary.NumberOfLegs;
+               
                 objectInst.LibraryAttribute = LibraryAttributes;
 
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
@@ -9469,33 +9467,46 @@ namespace TLIS_Service.Services
                     })
                     .ToList();
 
+                objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
+                 .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
+
                 objectInst.InstallationAttributes = ListAttributesActivated;
                 objectInst.CivilSiteDate = _unitOfWork.AttributeActivatedRepository
                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(), null, "allCivilInstId", "Dismantle", "SiteCode");
-
-                objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
-                    .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
-                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
+                foreach (var item in objectInst.CivilSupportDistance)
                 {
-                    { "referencecivilid", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithLegs)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithLegs !=null).Select(x=>x.allCivilInst.civilWithLegs).ToList()) }
+                    if (item.Key.ToLower() == "referencecivilid")
+                    {
+                        var allCivil = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x => !x.Dismantle && x.SiteCode == SiteCode,
+                                          x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel).ToList();
+                        var options = new List<SupportTypeImplementedViewModel>();
+                        options = allCivil.SelectMany(item =>
+                        {
+                            var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                };
+                            if (item.allCivilInst.civilWithLegs != null)
+                            {
+                                var civilWithLegsOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithLegs);
+                                innerOptions.Add(civilWithLegsOption);
+                            }
 
-                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
-                   .Select(FKitem =>
-                   {
-                       if (repositoryM.ContainsKey(FKitem.Desc.ToLower()))
-                       {
-                           FKitem.Options = repositoryM[FKitem.Desc.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
+                            if (item.allCivilInst.civilWithoutLeg != null)
+                            {
+                                var civilWithoutLegOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithoutLeg);
+                                innerOptions.Add(civilWithoutLegOption);
+                            }
+
+                            if (item.allCivilInst.civilNonSteel != null)
+                            {
+                                var civilNonSteelOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilNonSteel);
+                                innerOptions.Add(civilNonSteelOption);
+                            }
+
+                            return innerOptions;
+                        }).ToList();
+                        item.Options = options;
+                    }
+                }
 
                 List<List<BaseInstAttViews>> baseInstAttViews = new List<List<BaseInstAttViews>>();
                 List<BaseInstAttViews> baseInstAttView = new List<BaseInstAttViews>();
