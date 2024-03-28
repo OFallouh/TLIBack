@@ -13,5 +13,6 @@ namespace TLIS_DAL.ViewModels.SupportTypeImplementedDTOs
         [Required]
         public string Name { get; set; }
 
+  
     }
 }

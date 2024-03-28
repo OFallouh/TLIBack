@@ -523,7 +523,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIcivilWithLegs, SupportTypeImplementedViewModel>().ReverseMap();
             CreateMap<TLIcivilWithoutLeg, SupportTypeImplementedViewModel>().ReverseMap();
             CreateMap<TLIcivilNonSteel, SupportTypeImplementedViewModel>().ReverseMap();
-            CreateMap<SupportTypeImplementedViewModel, TLIcivilSiteDate>().ReverseMap();
+            CreateMap<TLIcivilSiteDate, SupportTypeImplementedViewModel>().ReverseMap();
+            CreateMap<TLIallCivilInst, SupportTypeImplementedViewModel>().ReverseMap();
             CreateMap<ListConditionActionViewModel, ActionListViewModel>()
                 .ForMember(x => x.Proposal, x => x.Ignore())
                 .ForMember(x => x.Type, x => x.Ignore())

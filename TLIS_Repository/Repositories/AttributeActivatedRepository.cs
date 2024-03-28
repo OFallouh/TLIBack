@@ -336,7 +336,7 @@ namespace TLIS_Repository.Repositories
                     ExceptAtrributes.Contains(x.Key) && x.Tabel == Type && x.enable).ToList();
 
                 List<TLIattributeActivated> AttributesActivated = _context.TLIattributeActivated.Where(x =>
-                    x.enable && x.Tabel == Type && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" &&
+                     x.Tabel == Type && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" &&
                     x.Key.ToLower() != "deleted").ToList().Except(Excepted).ToList();
 
                 List<BaseInstAttViews> BaseAttsView = new List<BaseInstAttViews>();

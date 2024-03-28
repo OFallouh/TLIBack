@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections;
@@ -4240,6 +4241,7 @@ namespace TLIS_Service.Services
         {
             try
             {
+                int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
                     .GetWhereFirst(c => c.TableName.ToLower() == TableName.ToLower());
 
@@ -4365,7 +4367,43 @@ namespace TLIS_Service.Services
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
 
+                    var NumberOfLeg = LibraryAttributes.FirstOrDefault(x => x.Key == "NumberOfLegs");
+                    if (NumberOfLeg != null)
+                    {
+                        NumberofNumber = (int)NumberOfLeg.Value;
+                    }
+                    objectInst.LibraryAttribute = LibraryAttributes;
 
+                    var leg = _unitOfWork.LegRepository
+                        .GetWhere(x => x.CivilWithLegInstId == CivilInsId).ToList();
+
+                    List<List<BaseInstAttViews>> baseInstAttViews = new List<List<BaseInstAttViews>>();
+                    List<BaseInstAttViews> baseInstAttView = new List<BaseInstAttViews>();
+
+                    var legs = _unitOfWork.AttributeActivatedRepository
+                    .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId");
+                    baseInstAttView.AddRange(legs);
+
+                    for (int i = 0; i < NumberofNumber; i++)
+                    {
+
+                        baseInstAttViews.Add(baseInstAttView);
+                    }
+
+                    objectInst.LegsInfo = baseInstAttViews;
+                    foreach (var item in objectInst.LegsInfo)
+                    {
+                        foreach (var item1 in leg)
+                        {
+                            foreach (var item2 in item)
+                            {
+                                item2.Value = item1.CiviLegName;
+
+                            }
+                        }
+                        
+
+                    }
                     TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
                         .GetWhereFirst(x => x.civilWithLegsId == CivilInsId);
 
@@ -4383,61 +4421,77 @@ namespace TLIS_Service.Services
                     List<BaseInstAttViews> CivilsupportAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), civilSupportDistance, null, "CivilInstId", "Id", "SiteCode").ToList();
 
-                    int? ReferenceCivilInstId = null;
-                    string SiteCode = _unitOfWork.CivilSiteDateRepository
-                      .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.Id == CivilInsId && !x.Dismantle && !x.allCivilInst.Draft,
-                           x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).SiteCode;
-                    var supportedAttributes = CivilsupportAttributes
-                      .Where(attribute => attribute.DataType.ToLower() == "list" &&
-                          attribute.Key.ToLower() == "referencecivilid" &&
-                          civilSupportDistance != null);
-                    if (supportedAttributes.Any())
+                    string siteCode = _unitOfWork.CivilSiteDateRepository
+                     .GetIncludeWhereFirst(
+                         x => x.allCivilInst.civilWithLegs.Id == CivilInsId && !x.Dismantle && !x.allCivilInst.Draft,
+                         x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel
+                     )?.SiteCode;
+
+                    if (siteCode != null)
                     {
-                        var support = _unitOfWork.CivilSupportDistanceRepository
-                            .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
-
-                        if (support != null)
-                        {
-                            TLIallCivilInst SupportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
-                                .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId,
-                                                       x => x.civilWithLegs,
-                                                       x => x.civilWithoutLeg,
-                                                       x => x.civilNonSteel);
-
-                            if (SupportReferenceAllCivilInst != null)
+                        var listAttributes = CivilsupportAttributes
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && civilSupportDistance != null)
+                            .Select(attr =>
                             {
-                                var allCivil = _unitOfWork.CivilSiteDateRepository
-                                    .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == SiteCode,
-                                                     x => x.allCivilInst,
-                                                     x => x.allCivilInst.civilWithLegs,
-                                                     x => x.allCivilInst.civilWithoutLeg,
-                                                     x => x.allCivilInst.civilNonSteel)
-                                    .ToList();
+                                var options = new List<SupportTypeImplementedViewModel>(); // Define options list here
 
-                                var allOptions = allCivil.SelectMany(item =>
+                                var support = _unitOfWork.CivilSupportDistanceRepository
+                                    .GetIncludeWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+
+                                if (support != null)
                                 {
-                                    var civilWithLegsOptions = _mapper.Map<List<SupportTypeImplementedViewModel>>(item.allCivilInst.civilWithLegs);
-                                    var civilWithoutLegOptions = _mapper.Map<List<SupportTypeImplementedViewModel>>(item.allCivilInst.civilWithoutLeg);
-                                    var civilNonSteelOptions = _mapper.Map<List<SupportTypeImplementedViewModel>>(item.allCivilInst.civilNonSteel);
+                                    TLIallCivilInst supportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel);
 
-                                    return civilWithLegsOptions.Concat(civilWithoutLegOptions).Concat(civilNonSteelOptions);
-                                }).ToList();
+                                    if (supportReferenceAllCivilInst != null)
+                                    {
+                                        attr.Value = supportReferenceAllCivilInst.civilWithLegsId != null
+                                            ? supportReferenceAllCivilInst.civilWithLegs.Name
+                                            : supportReferenceAllCivilInst.civilWithoutLegId != null
+                                                ? supportReferenceAllCivilInst.civilWithoutLeg.Name
+                                                : supportReferenceAllCivilInst.civilNonSteel.Name;
+                                    }
 
-                                foreach (var attribute in supportedAttributes)
-                                {
-                                    attribute.Value = SupportReferenceAllCivilInst.civilWithLegsId != null ? SupportReferenceAllCivilInst.civilWithLegs.Name :
-                                                      (SupportReferenceAllCivilInst.civilWithoutLegId != null ? SupportReferenceAllCivilInst.civilWithoutLeg.Name :
-                                                      SupportReferenceAllCivilInst.civilNonSteel.Name);
-                                    attribute.Options = allOptions;
+                                    var allCivil = _unitOfWork.CivilSiteDateRepository.GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                        x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel).ToList();
+
+                                    options = allCivil.SelectMany(item =>
+                                    {
+                                        var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                        if (item.allCivilInst.civilWithLegs != null)
+                                        {
+                                            var civilWithLegsOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithLegs);
+                                            innerOptions.Add(civilWithLegsOption);
+                                        }
+
+                                        if (item.allCivilInst.civilWithoutLeg != null)
+                                        {
+                                            var civilWithoutLegOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithoutLeg);
+                                            innerOptions.Add(civilWithoutLegOption);
+                                        }
+
+                                        if (item.allCivilInst.civilNonSteel != null)
+                                        {
+                                            var civilNonSteelOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilNonSteel);
+                                            innerOptions.Add(civilNonSteelOption);
+                                        }
+
+                                        return innerOptions;
+                                    }).ToList();
                                 }
 
-                                ReferenceCivilInstId = support.ReferenceCivilId;
-                            }
-                        }
+                                attr.Options = options; 
+
+                                return attr; 
+                            })
+                            .ToList();
+
+                        objectInst.CivilSupportDistance = _mapper.Map<List<BaseInstAttViews>>(CivilsupportAttributes);
                     }
 
-                    objectInst.CivilSupportDistance = _mapper.Map<List<BaseInstAttViews>>(CivilsupportAttributes);
-                    
+
+
                 }
                 //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
                 //{
@@ -9272,7 +9326,7 @@ namespace TLIS_Service.Services
                 }
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
                     { "basetype_name", () => _mapper.Map<List<BaseTypeViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     { "basecivilwithlegtype_name", () => _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
