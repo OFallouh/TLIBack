@@ -16,6 +16,7 @@ namespace TLIS_Repository.IRepository
         void AddDynamicInstAtts(AddDynamicAttInstValueViewModel addDynamicInstAttValue, int TableNameId, int Id);
         void UpdateDynamicValue(List<BaseInstAttView> DynamicInstAttsValue, int TableNameId, int InstId);
         void AddDdynamicAttributeInstallation(AddDdynamicAttributeInstallationValueViewModel addDynamicInstAttValue, int TableNameId, int Id);
+        void UpdateDynamicValues(List<AddDdynamicAttributeInstallationValueViewModel> DynamicInstAttsValue, int TableNameId, int InstId);
         List<BaseInstAttViewDynamic> GetDynamicInstAtt(int TableNameId, int Id, int? CategoryId = null);
     }
 }

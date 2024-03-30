@@ -18,7 +18,7 @@ using static TLIS_Service.Services.DynamicAttService;
 
 namespace TLIS_API.Controllers.DynamicAtt
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+   
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -51,7 +51,7 @@ namespace TLIS_API.Controllers.DynamicAtt
             }
 
         }
-
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("AddDynamicAttLibValue")]
         [ProducesResponseType(200, Type = typeof(List<AddDynamicLibAttValueViewModel>))]
         public IActionResult AddLibDynamicAttLibValue([FromBody] AddDynamicLibAttValueViewModel addDynamicLibAttValueViewModel)
@@ -69,7 +69,7 @@ namespace TLIS_API.Controllers.DynamicAtt
                 return Ok(new Response<List<AddDynamicLibAttValueViewModel>>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddDynamicAttInst")]
         [ProducesResponseType(200, Type = typeof(List<AddDependencyInstViewModel>))]
         public IActionResult AddLibDynamicAttLIns([FromBody] AddDependencyInstViewModel addDependencyInstViewModel)
@@ -88,7 +88,7 @@ namespace TLIS_API.Controllers.DynamicAtt
                 return Ok(new Response<List<AddDynamicAttInstViewModel>>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetDependencyPropertyLib")]
         [ProducesResponseType(200, Type = typeof(List<DependencyColumnForAdd>))]
         public IActionResult GetDependencyPropertyLib(string tableName, int? CategoryId)

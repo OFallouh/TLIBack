@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Oracle.ManagedDataAccess.Client;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -2660,45 +2661,55 @@ namespace TLIS_Service.Services
         //Function accept two Parameters 
         //First CivilInstallationViewModel object ViewModel of civil type
         //Second CivilType to specify any civil type deal with
-        public async Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType, int? TaskId)
+        public async Task<Response<ObjectInstAtts>> EditCivilInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
 
                 try
                 {
-                    int cid = 0;
-
+         
+                    string ErrorMessage = string.Empty;
+                    string ownername = null;
+                    string sitename = null;
+                    string Model = null;
                     int TableNameId = 0;
                     if (Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == CivilType)
                     {
                         TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithLegs", x => new { x.Id }).Id;
-                        //float SiteCode = 0;
-                        //Map from object to ViewModel
-                        EditCivilWithLegsViewModel civilWithLegs = _mapper.Map<EditCivilWithLegsViewModel>(CivilInstallationViewModel);
-                        //Map from ViewModel to Entity
-                        TLIcivilWithLegs civilWithLegsEntity = _mapper.Map<TLIcivilWithLegs>(civilWithLegs);
-                        //Check if there is any recorde have the same name and different Id
-                        //if yes return true
-                        //else return false
-                        var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == civilWithLegs.Id);
+                        TLIcivilWithLegs civilWithLegsEntity = _mapper.Map<TLIcivilWithLegs>(editCivilWithLegsInstallationObject.installationAttributes);
+             
+                        var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.installationAttributes.Id);
 
                         string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
-                         ((x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == civilWithLegs.Id : false) &&
+                         ((x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == editCivilWithLegsInstallationObject.installationAttributes.Id : false) &&
                              !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
+                        if (editCivilWithLegsInstallationObject.installationAttributes.Name.ToLower() != CivilWithLegInst.Name.ToLower())
+                        {
+                            var civilwithleglibrary = _dbContext.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId);
+                            sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
+                            if (editCivilWithLegsInstallationObject.installationAttributes.OwnerId == 0 || editCivilWithLegsInstallationObject.installationAttributes.OwnerId == null)
+                            {
+                                return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.installationAttributes.OwnerId)?.OwnerName;
+                            if (civilwithleglibrary.Model != null)
+                                Model = civilwithleglibrary.Model;
 
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.Id != civilWithLegsEntity.Id &&
-                        !x.Dismantle && !x.allCivilInst.Draft &&
-                            (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegs.Name.ToLower() : false
-                            &&
-                            x.SiteCode.ToLower() == SiteCode.ToLower()),
-                            x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).FirstOrDefault();
+                            civilWithLegsEntity.Name = sitename + "" + Model + "" + ownername + "" + editCivilWithLegsInstallationObject.installationAttributes.HeightImplemented;
 
-                        //if CheckName is true then return error message that the name is already exists 
-                        if (CheckName != null)
-                            return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilWithLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        if (civilWithLegsEntity.HeightImplemented != CivilWithLegInst.HeightImplemented && civilWithLegs.TLIcivilSiteDate.ReservedSpace == true)
+                            TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.Id != civilWithLegsEntity.Id &&
+                            !x.Dismantle && !x.allCivilInst.Draft &&
+                                (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
+                                &&
+                                x.SiteCode.ToLower() == SiteCode.ToLower()),
+                                x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).FirstOrDefault();
+
+                            if (CheckName != null)
+                                return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilWithLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilWithLegsEntity.HeightBase != CivilWithLegInst.HeightBase)
                         {
                             var allcivilinst = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == civilWithLegsEntity.Id).Select(x => x.Id).FirstOrDefault();
                             var civilloads = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivilinst && x.ReservedSpace == true && x.Dismantle == false).Select(x => x.allLoadInstId).ToList();
@@ -2711,70 +2722,70 @@ namespace TLIS_Service.Services
                                 if (allloadinst.mwBUId != null)
                                 {
                                     TLImwBU tLImwBU = allloadinst.mwBU;
-                                    tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLImwBU.Update(tLImwBU);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
                                 }
                                 if (allloadinst.mwRFUId != null)
                                 {
                                     TLImwRFU tLImwRFU = allloadinst.mwRFU;
-                                    tLImwRFU.EquivalentSpace = tLImwRFU.SpaceInstallation * (tLImwRFU.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLImwRFU.EquivalentSpace = tLImwRFU.SpaceInstallation * (tLImwRFU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLImwRFU.Update(tLImwRFU);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwRFU.EquivalentSpace;
                                 }
                                 if (allloadinst.mwDishId != null)
                                 {
                                     TLImwDish tLImwDish = allloadinst.mwDish;
-                                    tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLImwDish.Update(tLImwDish);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
                                 }
                                 if (allloadinst.mwODUId != null)
                                 {
                                     TLImwODU tLImwODU = allloadinst.mwODU;
-                                    tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLImwODU.Update(tLImwODU);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
                                 }
                                 if (allloadinst.mwOtherId != null)
                                 {
                                     TLImwOther tLImwOther = allloadinst.mwOther;
-                                    tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLImwOther.Update(tLImwOther);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
                                 }
                                 if (allloadinst.radioAntennaId != null)
                                 {
                                     TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
-                                    tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLIradioAntenna.Update(tLIradioAntenna);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
                                 }
                                 if (allloadinst.radioRRUId != null)
                                 {
                                     TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
-                                    tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLIRadioRRU.Update(tLIRadioRRU);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
                                 }
                                 if (allloadinst.radioOtherId != null)
                                 {
                                     TLIradioOther tLIradioOther = allloadinst.radioOther;
-                                    tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLIradioOther.Update(tLIradioOther);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
                                 }
                                 if (allloadinst.powerId != null)
                                 {
                                     TLIpower tLIpower = allloadinst.power;
-                                    tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLIpower.Update(tLIpower);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
                                 }
                                 if (allloadinst.loadOtherId != null)
                                 {
                                     TLIloadOther tLIloadOther = allloadinst.loadOther;
-                                    tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithLegsEntity.HeightImplemented);
+                                    tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
                                     _dbContext.TLIloadOther.Update(tLIloadOther);
                                     civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
                                 }
@@ -2782,7 +2793,7 @@ namespace TLIS_Service.Services
                             }
 
                         }
-                        if (civilWithLegsEntity.SpaceInstallation != CivilWithLegInst.SpaceInstallation && civilWithLegs.TLIcivilSiteDate.ReservedSpace == true)
+                        if (civilWithLegsEntity.SpaceInstallation != CivilWithLegInst.SpaceInstallation && editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
                             var allcivil = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == CivilWithLegInst.Id).Select(x => x.Id).FirstOrDefault();
                             var sitescode = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == allcivil).Select(x => x.SiteCode).FirstOrDefault();
@@ -2791,290 +2802,282 @@ namespace TLIS_Service.Services
                             Site.ReservedSpace = Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
                             _dbContext.SaveChanges();
                         }
-                        string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersion(civilWithLegs.DynamicInstAttsValue, CivilType, null);
+                        string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilWithLegsInstallationObject.dynamicAttribute, CivilType, null);
 
                         if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
                             return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersion(CivilInstallationViewModel, CivilType, SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                        TLIcivilWithLegs civilWithLegsEntity1 = _mapper.Map<TLIcivilWithLegs>(civilWithLegs);
-                        //Check if there is any recorde have the same name and different Id
-                        //if yes return true
-                        //else return false
-                        //if CheckName is false then update civilWithLegsEntity
-                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegInst, civilWithLegsEntity1);
-                        var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId == civilWithLegs.Id);
-                        civilsitedate.LongitudinalSpindleLengthm = civilWithLegs.TLIcivilSiteDate.LongitudinalSpindleLengthm;
-                        civilsitedate.HorizontalSpindleLengthm = civilWithLegs.TLIcivilSiteDate.HorizontalSpindleLengthm;
-                        civilsitedate.ReservedSpace = civilWithLegs.TLIcivilSiteDate.ReservedSpace;
-                        civilsitedate.Dismantle = civilWithLegs.TLIcivilSiteDate.Dismantle;
-                        civilsitedate.InstallationDate = civilWithLegs.TLIcivilSiteDate.InstallationDate;
-                        _unitOfWork.SaveChanges();
-                        var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithLegsId == civilWithLegs.Id).Id;
-                        var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId);
-                        civilsupportdistance.Azimuth = civilWithLegs.TLIcivilSupportDistance.Azimuth;
-                        civilsupportdistance.Distance = civilWithLegs.TLIcivilSupportDistance.Distance;
-                        civilsupportdistance.ReferenceCivilId = civilWithLegs.TLIcivilSupportDistance.ReferenceCivilId;
-                        _unitOfWork.SaveChanges();
-                        if (civilWithLegs.DynamicInstAttsValue.Count > 0)
-                        {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilWithLegs.DynamicInstAttsValue, TableNameId, civilWithLegsEntity.Id);
-                        }
-
-                        //List<TLIleg> Legs = _mapper.Map<List<TLIleg>>(civilWithLegs.Legs);
-                        //_unitOfWork.LegRepository.UpdateRange(Legs);
-                        //_unitOfWork.SaveChanges();
-                        await _unitOfWork.SaveChangesAsync();
-
-                    }
-                    else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == CivilType)
-                    {
-                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithoutLeg", x => new { x.Id }).Id;
-
-                        //Map from object to ViewModel
-                        EditCivilWithoutLegViewModel civilWithoutLegs = _mapper.Map<EditCivilWithoutLegViewModel>(CivilInstallationViewModel);
-                        //Map from ViewModel to Entity
-                        TLIcivilWithoutLeg civilWithoutLegsEntity = _mapper.Map<TLIcivilWithoutLeg>(civilWithoutLegs);
-                        //Check if there is any recorde have the same name and different Id 
-                        //if yes return true
-                        //else return false
-
-                        TLIcivilWithoutLeg CivilWithOutLegInst = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable()
-                            .AsNoTracking().FirstOrDefault(x => x.Id == civilWithoutLegs.Id);
-
-                        TLIcivilWithoutLegLibrary CheckCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
-                            .GetByID(civilWithoutLegs.CivilWithoutlegsLibId);
-
-                        string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
-                            ((x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == civilWithoutLegs.Id : false) &&
-                                !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
-
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.Id != civilWithoutLegsEntity.Id &&
-                        !x.Dismantle && !x.allCivilInst.Draft &&
-                            (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilWithoutLegs.Name.ToLower() : false
-                            &&
-                            x.SiteCode.ToLower() == SiteCode.ToLower()),
-                            x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).FirstOrDefault();
-
-                        //if CheckName is true then return error message that the name is already exists 
-                        if (CheckName != null)
-                        {
-                            if (CheckName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId == CheckCivilWithoutLegLibrary.CivilWithoutLegCategoryId)
-                                return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilWithoutLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.HeightImplemented != CivilWithOutLegInst.HeightImplemented && civilWithoutLegs.TLIcivilSiteDate.ReservedSpace == true)
-                        {
-                            //TLIallCivilInst allcivilinst = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId != null ? 
-                            //    x.civilWithoutLegId.Value == civilWithoutLegsEntity.Id : false);
-
-                            var allcivil = _dbContext.TLIallCivilInst.ToList();
-
-                            foreach (var s in allcivil)
-                            {
-                                if (s.civilWithoutLegId == civilWithoutLegsEntity.Id)
-                                {
-                                    cid = s.Id;
-                                }
-                            }
-
-
-                            var civilloads = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == cid && x.Dismantle == false).Select(x => x.allLoadInstId).ToList();
-                            civilWithoutLegsEntity.CurrentLoads = 0;
-                            foreach (var civilload in civilloads)
-                            {
-                                var allloadinst = _dbContext.TLIallLoadInst.Where(x => x.Id == civilload).Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU).
-                                    Include(x => x.mwOther).Include(x => x.mwRFU).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).
-                                    Include(x => x.power).Include(x => x.loadOther).FirstOrDefault();
-                                if (allloadinst.mwBUId != null)
-                                {
-                                    TLImwBU tLImwBU = allloadinst.mwBU;
-                                    tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLImwBU.Update(tLImwBU);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
-                                }
-                                if (allloadinst.mwRFUId != null)
-                                {
-                                    TLImwRFU tLImwRFU = allloadinst.mwRFU;
-                                    tLImwRFU.EquivalentSpace = tLImwRFU.SpaceInstallation * (tLImwRFU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLImwRFU.Update(tLImwRFU);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwRFU.EquivalentSpace;
-                                }
-                                if (allloadinst.mwDishId != null)
-                                {
-                                    TLImwDish tLImwDish = allloadinst.mwDish;
-                                    tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLImwDish.Update(tLImwDish);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
-                                }
-                                if (allloadinst.mwODUId != null)
-                                {
-                                    TLImwODU tLImwODU = allloadinst.mwODU;
-                                    tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLImwODU.Update(tLImwODU);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
-                                }
-                                if (allloadinst.mwOtherId != null)
-                                {
-                                    TLImwOther tLImwOther = allloadinst.mwOther;
-                                    tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLImwOther.Update(tLImwOther);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
-                                }
-                                if (allloadinst.radioAntennaId != null)
-                                {
-                                    TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
-                                    tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLIradioAntenna.Update(tLIradioAntenna);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
-                                }
-                                if (allloadinst.radioRRUId != null)
-                                {
-                                    TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
-                                    tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLIRadioRRU.Update(tLIRadioRRU);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
-                                }
-                                if (allloadinst.radioOtherId != null)
-                                {
-                                    TLIradioOther tLIradioOther = allloadinst.radioOther;
-                                    tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLIradioOther.Update(tLIradioOther);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
-                                }
-                                if (allloadinst.powerId != null)
-                                {
-                                    TLIpower tLIpower = allloadinst.power;
-                                    tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLIpower.Update(tLIpower);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
-                                }
-                                if (allloadinst.loadOtherId != null)
-                                {
-                                    TLIloadOther tLIloadOther = allloadinst.loadOther;
-                                    tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
-                                    _dbContext.TLIloadOther.Update(tLIloadOther);
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
-                                }
-
-                            }
-
-                        }
-                        if (civilWithoutLegsEntity.SpaceInstallation != CivilWithOutLegInst.SpaceInstallation && civilWithoutLegs.TLIcivilSiteDate.ReservedSpace == true)
-                        {
-                            //var allcivil = _dbContext.TLIallCivilInst.Where(x => x.civilWithoutLegId == cid).Select(x => x.Id).FirstOrDefault();
-                            var allcivil = _dbContext.TLIallCivilInst.ToList();
-
-                            foreach (var s in allcivil)
-                            {
-                                if (s.civilWithoutLegId == civilWithoutLegsEntity.Id)
-                                {
-                                    cid = s.Id;
-                                }
-                            }
-                            var sitescode = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == cid).Select(x => x.SiteCode).FirstOrDefault();
-                            var Site = _dbContext.TLIsite.Where(x => x.SiteCode == sitescode).FirstOrDefault();
-                            Site.ReservedSpace = Site.ReservedSpace - CivilWithOutLegInst.SpaceInstallation;
-                            Site.ReservedSpace = Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
-                            _dbContext.SaveChanges();
-                        }
-                        TLIcivilWithoutLegLibrary CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetByID(civilWithoutLegs.CivilWithoutlegsLibId);
-
-                        string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersion(civilWithoutLegs.DynamicInstAttsValue, CivilType, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersion(CivilInstallationViewModel, CivilType, SiteCode, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
+                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersions(editCivilWithLegsInstallationObject, CivilType, SiteCode, null);
 
                         if (!string.IsNullOrEmpty(CheckDependencyValidation))
                             return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        //if CheckName is false then update civilWithoutLegsEntity
-                        _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithOutLegInst, civilWithoutLegsEntity);
-                        var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegs.Id);
-                        civilsitedate.LongitudinalSpindleLengthm = civilWithoutLegs.TLIcivilSiteDate.LongitudinalSpindleLengthm;
-                        civilsitedate.HorizontalSpindleLengthm = civilWithoutLegs.TLIcivilSiteDate.HorizontalSpindleLengthm;
-                        civilsitedate.ReservedSpace = civilWithoutLegs.TLIcivilSiteDate.ReservedSpace;
-                        civilsitedate.Dismantle = civilWithoutLegs.TLIcivilSiteDate.Dismantle;
-                        civilsitedate.InstallationDate = civilWithoutLegs.TLIcivilSiteDate.InstallationDate;
+                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegInst, civilWithLegsEntity);
+                        var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId == civilWithLegsEntity.Id);
+                        civilsitedate.LongitudinalSpindleLengthm = editCivilWithLegsInstallationObject.civilSiteDate.LongitudinalSpindleLengthm;
+                        civilsitedate.HorizontalSpindleLengthm = editCivilWithLegsInstallationObject.civilSiteDate.HorizontalSpindleLengthm;
+                        civilsitedate.ReservedSpace = editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace;
+                        civilsitedate.Dismantle = editCivilWithLegsInstallationObject.civilSiteDate.Dismantle;
+                        civilsitedate.InstallationDate = editCivilWithLegsInstallationObject.civilSiteDate.InstallationDate;
                         _unitOfWork.SaveChanges();
-                        var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId == civilWithoutLegs.Id).Id;
+                        var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithLegsId == civilWithLegsEntity.Id).Id;
                         var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId);
-                        civilsupportdistance.Azimuth = civilsupportdistance != null ? civilWithoutLegs.TLIcivilSupportDistance.Azimuth : 0;
-                        civilsupportdistance.Distance = civilsupportdistance != null ? civilWithoutLegs.TLIcivilSupportDistance.Distance : 0;
-                        civilsupportdistance.ReferenceCivilId = civilsupportdistance != null ? civilWithoutLegs.TLIcivilSupportDistance.ReferenceCivilId : 0;
+                        civilsupportdistance.Azimuth = editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth;
+                        civilsupportdistance.Distance = editCivilWithLegsInstallationObject.civilSupportDistance.Distance;
+                        civilsupportdistance.ReferenceCivilId = editCivilWithLegsInstallationObject.civilSupportDistance.ReferenceCivilId;
                         _unitOfWork.SaveChanges();
-                        if (civilWithoutLegs.DynamicInstAttsValue.Count > 0)
+                        if (editCivilWithLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilWithoutLegs.DynamicInstAttsValue, TableNameId, civilWithoutLegsEntity.Id);
-                        }
-
-                        await _unitOfWork.SaveChangesAsync();
-                    }
-                    else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == CivilType)
-                    {
-                        TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilNonSteel", x => new { x.Id }).Id;
-
-                        //Map from object to ViewModel
-                        EditCivilNonSteelViewModel civilNonSteel = _mapper.Map<EditCivilNonSteelViewModel>(CivilInstallationViewModel);
-                        //Map from ViewModel to Entity
-                        TLIcivilNonSteel civilNonSteelEntity = _mapper.Map<TLIcivilNonSteel>(civilNonSteel);
-                        //Check if there is any recorde have the same name and different Id 
-                        //if yes return true
-                        //else return false
-                        var CivilNonSteelInst = _unitOfWork.CivilNonSteelRepository
-                            .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == civilNonSteel.Id);
-
-                        string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
-                            ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == civilNonSteel.Id : false) &&
-                                !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
-
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.Id != civilNonSteelEntity.Id &&
-                        !x.Dismantle && !x.allCivilInst.Draft &&
-                            (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteel.Name.ToLower() : false
-                            &&
-                            x.SiteCode.ToLower() == SiteCode.ToLower()),
-                            x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).FirstOrDefault();
-
-                        //if CheckName is true then return error message that the name is already exists
-                        if (CheckName != null)
-                            return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilNonSteelEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersion(civilNonSteel.DynamicInstAttsValue, CivilType, null);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersion(CivilInstallationViewModel, CivilType, SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        //if CheckName is false then update civilNonSteelEntity
-                        _unitOfWork.CivilNonSteelRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilNonSteelInst, civilNonSteelEntity);
-                        var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId == civilNonSteel.Id);
-                        civilsitedate.LongitudinalSpindleLengthm = civilNonSteel.TLIcivilSiteDate.LongitudinalSpindleLengthm;
-                        civilsitedate.HorizontalSpindleLengthm = civilNonSteel.TLIcivilSiteDate.HorizontalSpindleLengthm;
-                        civilsitedate.ReservedSpace = civilNonSteel.TLIcivilSiteDate.ReservedSpace;
-                        civilsitedate.Dismantle = civilNonSteel.TLIcivilSiteDate.Dismantle;
-                        civilsitedate.InstallationDate = civilNonSteel.TLIcivilSiteDate.InstallationDate;
-                        _unitOfWork.SaveChanges();
-                        var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilNonSteelId == civilNonSteel.Id).Id;
-                        var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId);
-                        civilsupportdistance.Azimuth = civilNonSteel.TLIcivilSupportDistance.Azimuth;
-                        civilsupportdistance.Distance = civilNonSteel.TLIcivilSupportDistance.Distance;
-                        civilsupportdistance.ReferenceCivilId = civilNonSteel.TLIcivilSupportDistance.ReferenceCivilId;
-
-                        _unitOfWork.SaveChanges();
-                        if (civilNonSteel.DynamicInstAttsValue.Count > 0)
-                        {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilNonSteel.DynamicInstAttsValue, TableNameId, civilNonSteelEntity.Id);
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(editCivilWithLegsInstallationObject.dynamicAttribute, TableNameId, civilWithLegsEntity.Id);
                         }
                         await _unitOfWork.SaveChangesAsync();
+
                     }
+                    //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == CivilType)
+                    //{
+                    //    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithoutLeg", x => new { x.Id }).Id;
+
+                    //    //Map from object to ViewModel
+                    //    EditCivilWithoutLegViewModel civilWithoutLegs = _mapper.Map<EditCivilWithoutLegViewModel>(CivilInstallationViewModel);
+                    //    //Map from ViewModel to Entity
+                    //    TLIcivilWithoutLeg civilWithoutLegsEntity = _mapper.Map<TLIcivilWithoutLeg>(civilWithoutLegs);
+                    //    //Check if there is any recorde have the same name and different Id 
+                    //    //if yes return true
+                    //    //else return false
+
+                    //    TLIcivilWithoutLeg CivilWithOutLegInst = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable()
+                    //        .AsNoTracking().FirstOrDefault(x => x.Id == civilWithoutLegs.Id);
+
+                    //    TLIcivilWithoutLegLibrary CheckCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository
+                    //        .GetByID(civilWithoutLegs.CivilWithoutlegsLibId);
+
+                    //    string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
+                    //        ((x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == civilWithoutLegs.Id : false) &&
+                    //            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
+
+                    //    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.Id != civilWithoutLegsEntity.Id &&
+                    //    !x.Dismantle && !x.allCivilInst.Draft &&
+                    //        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilWithoutLegs.Name.ToLower() : false
+                    //        &&
+                    //        x.SiteCode.ToLower() == SiteCode.ToLower()),
+                    //        x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).FirstOrDefault();
+
+                    //    //if CheckName is true then return error message that the name is already exists 
+                    //    if (CheckName != null)
+                    //    {
+                    //        if (CheckName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId == CheckCivilWithoutLegLibrary.CivilWithoutLegCategoryId)
+                    //            return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilWithoutLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    //    }
+                    //    if (civilWithoutLegsEntity.HeightImplemented != CivilWithOutLegInst.HeightImplemented && civilWithoutLegs.TLIcivilSiteDate.ReservedSpace == true)
+                    //    {
+                    //        //TLIallCivilInst allcivilinst = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId != null ? 
+                    //        //    x.civilWithoutLegId.Value == civilWithoutLegsEntity.Id : false);
+
+                    //        var allcivil = _dbContext.TLIallCivilInst.ToList();
+
+                    //        foreach (var s in allcivil)
+                    //        {
+                    //            if (s.civilWithoutLegId == civilWithoutLegsEntity.Id)
+                    //            {
+                    //                cid = s.Id;
+                    //            }
+                    //        }
+
+
+                    //        var civilloads = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == cid && x.Dismantle == false).Select(x => x.allLoadInstId).ToList();
+                    //        civilWithoutLegsEntity.CurrentLoads = 0;
+                    //        foreach (var civilload in civilloads)
+                    //        {
+                    //            var allloadinst = _dbContext.TLIallLoadInst.Where(x => x.Id == civilload).Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU).
+                    //                Include(x => x.mwOther).Include(x => x.mwRFU).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).
+                    //                Include(x => x.power).Include(x => x.loadOther).FirstOrDefault();
+                    //            if (allloadinst.mwBUId != null)
+                    //            {
+                    //                TLImwBU tLImwBU = allloadinst.mwBU;
+                    //                tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLImwBU.Update(tLImwBU);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.mwRFUId != null)
+                    //            {
+                    //                TLImwRFU tLImwRFU = allloadinst.mwRFU;
+                    //                tLImwRFU.EquivalentSpace = tLImwRFU.SpaceInstallation * (tLImwRFU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLImwRFU.Update(tLImwRFU);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwRFU.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.mwDishId != null)
+                    //            {
+                    //                TLImwDish tLImwDish = allloadinst.mwDish;
+                    //                tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLImwDish.Update(tLImwDish);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.mwODUId != null)
+                    //            {
+                    //                TLImwODU tLImwODU = allloadinst.mwODU;
+                    //                tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLImwODU.Update(tLImwODU);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.mwOtherId != null)
+                    //            {
+                    //                TLImwOther tLImwOther = allloadinst.mwOther;
+                    //                tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLImwOther.Update(tLImwOther);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.radioAntennaId != null)
+                    //            {
+                    //                TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
+                    //                tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLIradioAntenna.Update(tLIradioAntenna);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.radioRRUId != null)
+                    //            {
+                    //                TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
+                    //                tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLIRadioRRU.Update(tLIRadioRRU);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.radioOtherId != null)
+                    //            {
+                    //                TLIradioOther tLIradioOther = allloadinst.radioOther;
+                    //                tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLIradioOther.Update(tLIradioOther);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.powerId != null)
+                    //            {
+                    //                TLIpower tLIpower = allloadinst.power;
+                    //                tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLIpower.Update(tLIpower);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
+                    //            }
+                    //            if (allloadinst.loadOtherId != null)
+                    //            {
+                    //                TLIloadOther tLIloadOther = allloadinst.loadOther;
+                    //                tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithoutLegsEntity.HeightImplemented);
+                    //                _dbContext.TLIloadOther.Update(tLIloadOther);
+                    //                civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
+                    //            }
+
+                    //        }
+
+                    //    }
+                    //    if (civilWithoutLegsEntity.SpaceInstallation != CivilWithOutLegInst.SpaceInstallation && civilWithoutLegs.TLIcivilSiteDate.ReservedSpace == true)
+                    //    {
+                    //        //var allcivil = _dbContext.TLIallCivilInst.Where(x => x.civilWithoutLegId == cid).Select(x => x.Id).FirstOrDefault();
+                    //        var allcivil = _dbContext.TLIallCivilInst.ToList();
+
+                    //        foreach (var s in allcivil)
+                    //        {
+                    //            if (s.civilWithoutLegId == civilWithoutLegsEntity.Id)
+                    //            {
+                    //                cid = s.Id;
+                    //            }
+                    //        }
+                    //        var sitescode = _dbContext.TLIcivilSiteDate.Where(x => x.allCivilInstId == cid).Select(x => x.SiteCode).FirstOrDefault();
+                    //        var Site = _dbContext.TLIsite.Where(x => x.SiteCode == sitescode).FirstOrDefault();
+                    //        Site.ReservedSpace = Site.ReservedSpace - CivilWithOutLegInst.SpaceInstallation;
+                    //        Site.ReservedSpace = Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
+                    //        _dbContext.SaveChanges();
+                    //    }
+                    //    TLIcivilWithoutLegLibrary CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetByID(civilWithoutLegs.CivilWithoutlegsLibId);
+
+                    //    string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersion(civilWithoutLegs.DynamicInstAttsValue, CivilType, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
+
+                    //    if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
+                    //        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    //    string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersion(CivilInstallationViewModel, CivilType, SiteCode, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
+
+                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    //    //if CheckName is false then update civilWithoutLegsEntity
+                    //    _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithOutLegInst, civilWithoutLegsEntity);
+                    //    var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegs.Id);
+                    //    civilsitedate.LongitudinalSpindleLengthm = civilWithoutLegs.TLIcivilSiteDate.LongitudinalSpindleLengthm;
+                    //    civilsitedate.HorizontalSpindleLengthm = civilWithoutLegs.TLIcivilSiteDate.HorizontalSpindleLengthm;
+                    //    civilsitedate.ReservedSpace = civilWithoutLegs.TLIcivilSiteDate.ReservedSpace;
+                    //    civilsitedate.Dismantle = civilWithoutLegs.TLIcivilSiteDate.Dismantle;
+                    //    civilsitedate.InstallationDate = civilWithoutLegs.TLIcivilSiteDate.InstallationDate;
+                    //    _unitOfWork.SaveChanges();
+                    //    var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId == civilWithoutLegs.Id).Id;
+                    //    var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId);
+                    //    civilsupportdistance.Azimuth = civilsupportdistance != null ? civilWithoutLegs.TLIcivilSupportDistance.Azimuth : 0;
+                    //    civilsupportdistance.Distance = civilsupportdistance != null ? civilWithoutLegs.TLIcivilSupportDistance.Distance : 0;
+                    //    civilsupportdistance.ReferenceCivilId = civilsupportdistance != null ? civilWithoutLegs.TLIcivilSupportDistance.ReferenceCivilId : 0;
+                    //    _unitOfWork.SaveChanges();
+                    //    if (civilWithoutLegs.DynamicInstAttsValue.Count > 0)
+                    //    {
+                    //        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilWithoutLegs.DynamicInstAttsValue, TableNameId, civilWithoutLegsEntity.Id);
+                    //    }
+
+                    //    await _unitOfWork.SaveChangesAsync();
+                    //}
+                    //else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == CivilType)
+                    //{
+                    //    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilNonSteel", x => new { x.Id }).Id;
+
+                    //    //Map from object to ViewModel
+                    //    EditCivilNonSteelViewModel civilNonSteel = _mapper.Map<EditCivilNonSteelViewModel>(CivilInstallationViewModel);
+                    //    //Map from ViewModel to Entity
+                    //    TLIcivilNonSteel civilNonSteelEntity = _mapper.Map<TLIcivilNonSteel>(civilNonSteel);
+                    //    //Check if there is any recorde have the same name and different Id 
+                    //    //if yes return true
+                    //    //else return false
+                    //    var CivilNonSteelInst = _unitOfWork.CivilNonSteelRepository
+                    //        .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == civilNonSteel.Id);
+
+                    //    string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
+                    //        ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == civilNonSteel.Id : false) &&
+                    //            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
+
+                    //    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.Id != civilNonSteelEntity.Id &&
+                    //    !x.Dismantle && !x.allCivilInst.Draft &&
+                    //        (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteel.Name.ToLower() : false
+                    //        &&
+                    //        x.SiteCode.ToLower() == SiteCode.ToLower()),
+                    //        x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).FirstOrDefault();
+
+                    //    //if CheckName is true then return error message that the name is already exists
+                    //    if (CheckName != null)
+                    //        return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilNonSteelEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    //    string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersion(civilNonSteel.DynamicInstAttsValue, CivilType, null);
+
+                    //    if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
+                    //        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    //    string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersion(CivilInstallationViewModel, CivilType, SiteCode, null);
+
+                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    //    //if CheckName is false then update civilNonSteelEntity
+                    //    _unitOfWork.CivilNonSteelRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilNonSteelInst, civilNonSteelEntity);
+                    //    var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId == civilNonSteel.Id);
+                    //    civilsitedate.LongitudinalSpindleLengthm = civilNonSteel.TLIcivilSiteDate.LongitudinalSpindleLengthm;
+                    //    civilsitedate.HorizontalSpindleLengthm = civilNonSteel.TLIcivilSiteDate.HorizontalSpindleLengthm;
+                    //    civilsitedate.ReservedSpace = civilNonSteel.TLIcivilSiteDate.ReservedSpace;
+                    //    civilsitedate.Dismantle = civilNonSteel.TLIcivilSiteDate.Dismantle;
+                    //    civilsitedate.InstallationDate = civilNonSteel.TLIcivilSiteDate.InstallationDate;
+                    //    _unitOfWork.SaveChanges();
+                    //    var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilNonSteelId == civilNonSteel.Id).Id;
+                    //    var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId);
+                    //    civilsupportdistance.Azimuth = civilNonSteel.TLIcivilSupportDistance.Azimuth;
+                    //    civilsupportdistance.Distance = civilNonSteel.TLIcivilSupportDistance.Distance;
+                    //    civilsupportdistance.ReferenceCivilId = civilNonSteel.TLIcivilSupportDistance.ReferenceCivilId;
+
+                    //    _unitOfWork.SaveChanges();
+                    //    if (civilNonSteel.DynamicInstAttsValue.Count > 0)
+                    //    {
+                    //        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(civilNonSteel.DynamicInstAttsValue, TableNameId, civilNonSteelEntity.Id);
+                    //    }
+                    //    await _unitOfWork.SaveChangesAsync();
+                    //}
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -4220,6 +4223,1123 @@ namespace TLIS_Service.Services
             }
             return string.Empty;
         }
+        public string CheckDependencyValidationForCivilTypesEditVersions(object Input, string CivilType, string SiteCode, int? CategoryId)
+        {
+            if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString().ToLower())
+            {
+                string MainTableName = Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString();
+                EditCivilWithLegsInstallationObject EditCivilInstallationViewModel = _mapper.Map<EditCivilWithLegsInstallationObject>(Input);
+
+                List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+                        , x => x.tablesNames).ToList());
+
+                foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+                {
+                    TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+                        (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+                         x.OperationId != null, x => x.Operation);
+
+                    if (DynamicAttributeMainDependency == null)
+                        continue;
+
+                    List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+                        .Select(x => x.RowId.Value).Distinct().ToList();
+
+                    foreach (int RowId in DependencyRows)
+                    {
+                        List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
+                            x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+                        int CheckIfSuccessAllRules = 0;
+
+                        foreach (TLIrule Rule in Rules)
+                        {
+                            string SDTableName = Rule.tablesNames.TableName;
+
+                            string DataType = "";
+
+                            string Operation = Rule.Operation.Name;
+                            object OperationValue = new object();
+
+                            if (Rule.OperationValueBoolean != null)
+                            {
+                                DataType = "Bool";
+                                OperationValue = Rule.OperationValueBoolean;
+                            }
+                            else if (Rule.OperationValueDateTime != null)
+                            {
+                                DataType = "DateTime";
+                                OperationValue = Rule.OperationValueDateTime;
+                            }
+                            else if (Rule.OperationValueDouble != null)
+                            {
+                                DataType = "Double";
+                                OperationValue = Rule.OperationValueDouble;
+                            }
+                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                            {
+                                DataType = "String";
+                                OperationValue = Rule.OperationValueString;
+                            }
+
+                            if (MainTableName.ToLower() == SDTableName.ToLower())
+                            {
+                                object InsertedValue = new object();
+
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    object TestValue = EditCivilInstallationViewModel.installationAttributes.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilInstallationViewModel.installationAttributes, null);
+
+                                    if (TestValue == null)
+                                        break;
+
+                                    if (Rule.OperationValueBoolean != null)
+                                        InsertedValue = bool.Parse(TestValue.ToString());
+
+                                    else if (Rule.OperationValueDateTime != null)
+                                        InsertedValue = DateTime.Parse(TestValue.ToString());
+
+                                    else if (Rule.OperationValueDouble != null)
+                                        InsertedValue = double.Parse(TestValue.ToString());
+
+                                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                                        InsertedValue = TestValue.ToString();
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    AddDdynamicAttributeInstallationValueViewModel DynamicObject = EditCivilInstallationViewModel.dynamicAttribute
+                                        .FirstOrDefault(x => x.id == Rule.dynamicAttId.Value);
+
+                                    if (DynamicObject == null)
+                                        break;
+
+                                    string DynamicAttributeDataType = _unitOfWork.DataTypeRepository.GetByID(DynamicAttribute.DataTypeId.Value).Name;
+
+                                    if (DynamicAttributeDataType.ToLower() == "boolean".ToLower())
+                                        InsertedValue = bool.Parse(DynamicObject.value.ToString());
+
+                                    else if (DynamicAttributeDataType.ToLower() == "string".ToLower())
+                                        InsertedValue = DynamicObject.value.ToString();
+
+                                    else if (DynamicAttributeDataType.ToLower() == "int".ToLower() || DynamicAttributeDataType.ToLower() == "double".ToLower())
+                                        InsertedValue = double.Parse(DynamicObject.value.ToString());
+
+                                    else if (DynamicAttributeDataType.ToLower() == "datetime".ToLower())
+                                        InsertedValue = DateTime.Parse(DynamicObject.value.ToString());
+                                }
+
+                                if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+                                    Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+                                    Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+                                    Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+                                        InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                    Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+                                    Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+                                        InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+                                {
+                                    CheckIfSuccessAllRules++;
+                                }
+                            }
+                            else
+                            {
+                                List<object> TableRecords = new List<object>();
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    if (OperationValue != null)
+                                        TableRecords = _mapper.Map<List<object>>(_dbContext.GetType().GetProperty(SDTableName)
+                                            .GetValue(_dbContext, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+                                               (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+                                            Operation == ">=" ?
+                                                (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+                                            Operation == "<" ?
+                                               (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+                                            Operation == "<=" ?
+                                                (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+                                            Operation == "==" ?
+                                                x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+                                            Operation == "!=" ?
+                                                x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+                                    if (!DynamicAttribute.LibraryAtt)
+                                    {
+                                        DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+                                            .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+                                                (Operation == "==" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == "!=" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == ">" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == ">=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+                                                ).Select(x => x.InventoryId).ToList();
+                                    }
+                                    else
+                                    {
+                                        DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+                                            .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+                                                (Operation == "==" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == "!=" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == ">" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == ">=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+                                                ).Select(x => x.InventoryId).ToList();
+                                    }
+                                    if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+                                    {
+                                        TableRecords = _mapper.Map<List<object>>(_dbContext.GetType()
+                                            .GetProperty(SDTableName).GetValue(_dbContext, null))
+                                                .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+                                    }
+                                }
+
+                                AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+                                if (Rule.dynamicAttId != null)
+                                {
+                                    AddInstRuleViewModel = new AddInstRuleViewModel
+                                    {
+                                        dynamicAttId = Rule.dynamicAttId,
+                                        IsDynamic = true,
+                                        OperationId = Rule.OperationId,
+                                        OperationValueBoolean = Rule.OperationValueBoolean,
+                                        OperationValueDateTime = Rule.OperationValueDateTime,
+                                        OperationValueDouble = Rule.OperationValueDouble,
+                                        OperationValueString = Rule.OperationValueString,
+                                        TableName = Rule.tablesNames.TableName
+                                    };
+                                }
+                                else if (Rule.attributeActivatedId != null)
+                                {
+                                    AddInstRuleViewModel = new AddInstRuleViewModel
+                                    {
+                                        attributeActivatedId = Rule.attributeActivatedId,
+                                        IsDynamic = false,
+                                        OperationId = Rule.OperationId,
+                                        OperationValueBoolean = Rule.OperationValueBoolean,
+                                        OperationValueDateTime = Rule.OperationValueDateTime,
+                                        OperationValueDouble = Rule.OperationValueDouble,
+                                        OperationValueString = Rule.OperationValueString,
+                                        TableName = Rule.tablesNames.TableName
+                                    };
+                                }
+                                List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+                                PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+                                    MainTableName + SDTableName + "Goal");
+
+                                List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+                                object CheckId = new object();
+
+                                if (Path.Count() > 1)
+                                {
+                                    object CivilLoads = EditCivilInstallationViewModel.GetType().GetProperty(Path[0])
+                                        .GetValue(EditCivilInstallationViewModel, null);
+
+                                    CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+                                        (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+                                }
+                                else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+                                {
+                                    CheckId = SiteCode;
+                                }
+                                else if (Path.Count() == 1)
+                                {
+                                    if (EditCivilInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(EditCivilInstallationViewModel, null) != null)
+                                        CheckId = (int)EditCivilInstallationViewModel.GetType().GetProperty(Path[0])
+                                            .GetValue(EditCivilInstallationViewModel, null);
+                                }
+
+                                if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+                                {
+                                    CheckIfSuccessAllRules++;
+                                }
+                            }
+                        }
+
+                        if (Rules.Count() == CheckIfSuccessAllRules)
+                        {
+                            string DynamicAttributeName = "";
+                            int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+                                .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+                            AddDdynamicAttributeInstallationValueViewModel InputDynamicAttribute = EditCivilInstallationViewModel.dynamicAttribute
+                                .FirstOrDefault(x => x.id == DynamicAttributeId);
+
+                            if (InputDynamicAttribute == null)
+                            {
+                                DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                                    .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+                                return $"({DynamicAttributeName}) value can't be null";
+                            }
+                            else
+                            {
+                                object DependencyValidationValue = new object();
+                                object InputDynamicValue = new object();
+
+                                if (DynamicAttributeMainDependency.ValueBoolean != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+                                    InputDynamicValue = bool.Parse(InputDynamicAttribute.value.ToString());
+                                }
+                                else if (DynamicAttributeMainDependency.ValueDateTime != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+                                    InputDynamicValue = DateTime.Parse(InputDynamicAttribute.value.ToString());
+                                }
+                                else if (DynamicAttributeMainDependency.ValueDouble != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+                                    InputDynamicValue = double.Parse(InputDynamicAttribute.value.ToString());
+                                }
+                                else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+                                    InputDynamicValue = InputDynamicAttribute.value.ToString();
+                                }
+
+                                string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+                                if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+                                    DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+                                    DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+                                    DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+                                        InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+                                    DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+                                    DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+                                        InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+                                {
+                                    DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                                        .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+                                    string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+                                        (DependencyValidationOperation == "!=" ? "not equal to" :
+                                        (DependencyValidationOperation == ">" ? "bigger than" :
+                                        (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+                                        (DependencyValidationOperation == "<" ? "smaller than" :
+                                        (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+                                    return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
+            {
+                string MainTableName = Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString();
+                EditCivilWithoutLegViewModel EditCivilInstallationViewModel = _mapper.Map<EditCivilWithoutLegViewModel>(Input);
+
+                List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable &&
+                        ((x.CivilWithoutLegCategoryId != null && CategoryId != null) ? x.CivilWithoutLegCategoryId == CategoryId : false), x => x.tablesNames).ToList());
+
+                foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+                {
+                    TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+                        (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+                            x.OperationId != null, x => x.Operation);
+
+                    if (DynamicAttributeMainDependency == null)
+                        continue;
+
+                    List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+                        .Select(x => x.RowId.Value).Distinct().ToList();
+
+                    foreach (int RowId in DependencyRows)
+                    {
+                        List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId, x => x.Rule, x => x.Rule.tablesNames,
+                            x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+                        int CheckIfSuccessAllRules = 0;
+
+                        foreach (TLIrule Rule in Rules)
+                        {
+                            string SDTableName = Rule.tablesNames.TableName;
+
+                            string DataType = "";
+
+                            string Operation = Rule.Operation.Name;
+                            object OperationValue = new object();
+
+                            if (Rule.OperationValueBoolean != null)
+                            {
+                                DataType = "Bool";
+                                OperationValue = Rule.OperationValueBoolean;
+                            }
+                            else if (Rule.OperationValueDateTime != null)
+                            {
+                                DataType = "DateTime";
+                                OperationValue = Rule.OperationValueDateTime;
+                            }
+                            else if (Rule.OperationValueDouble != null)
+                            {
+                                DataType = "Double";
+                                OperationValue = Rule.OperationValueDouble;
+                            }
+                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                            {
+                                DataType = "String";
+                                OperationValue = Rule.OperationValueString;
+                            }
+
+                            if (MainTableName.ToLower() == SDTableName.ToLower())
+                            {
+                                object InsertedValue = new object();
+
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    object TestValue = EditCivilInstallationViewModel.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilInstallationViewModel, null);
+
+                                    if (TestValue == null)
+                                        break;
+
+                                    if (Rule.OperationValueBoolean != null)
+                                        InsertedValue = bool.Parse(TestValue.ToString());
+
+                                    else if (Rule.OperationValueDateTime != null)
+                                        InsertedValue = DateTime.Parse(TestValue.ToString());
+
+                                    else if (Rule.OperationValueDouble != null)
+                                        InsertedValue = double.Parse(TestValue.ToString());
+
+                                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                                        InsertedValue = TestValue.ToString();
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    BaseInstAttView DynamicObject = EditCivilInstallationViewModel.DynamicInstAttsValue
+                                        .FirstOrDefault(x => x.Id == Rule.dynamicAttId.Value);
+
+                                    if (DynamicObject == null)
+                                        break;
+
+                                    string DynamicAttributeDataType = _unitOfWork.DataTypeRepository.GetByID(DynamicObject.DataTypeId.Value).Name;
+
+                                    if (DynamicAttributeDataType.ToLower() == "boolean".ToLower())
+                                        InsertedValue = bool.Parse(DynamicObject.Value.ToString());
+
+                                    else if (DynamicAttributeDataType.ToLower() == "string".ToLower())
+                                        InsertedValue = DynamicObject.Value.ToString();
+
+                                    else if (DynamicAttributeDataType.ToLower() == "int".ToLower() || DynamicAttributeDataType.ToLower() == "double".ToLower())
+                                        InsertedValue = double.Parse(DynamicObject.Value.ToString());
+
+                                    else if (DynamicAttributeDataType.ToLower() == "datetime".ToLower())
+                                        InsertedValue = DateTime.Parse(DynamicObject.Value.ToString());
+                                }
+
+                                if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+                                    Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+                                    Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+                                    Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+                                        InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                    Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+                                    Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+                                        InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+                                {
+                                    CheckIfSuccessAllRules++;
+                                }
+                            }
+                            else
+                            {
+                                List<object> TableRecords = new List<object>();
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    if (OperationValue != null)
+                                        TableRecords = _mapper.Map<List<object>>(_dbContext.GetType().GetProperty(SDTableName)
+                                            .GetValue(_dbContext, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+                                               (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+                                            Operation == ">=" ?
+                                                (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+                                            Operation == "<" ?
+                                               (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+                                            Operation == "<=" ?
+                                                (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+                                            Operation == "==" ?
+                                                x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+                                            Operation == "!=" ?
+                                                x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+                                    if (!DynamicAttribute.LibraryAtt)
+                                    {
+                                        DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+                                            .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+                                                (Operation == "==" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == "!=" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == ">" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == ">=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+                                                ).Select(x => x.InventoryId).ToList();
+                                    }
+                                    else
+                                    {
+                                        DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+                                            .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+                                                (Operation == "==" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == "!=" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == ">" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == ">=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+                                                ).Select(x => x.InventoryId).ToList();
+                                    }
+                                    if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+                                    {
+                                        TableRecords = _mapper.Map<List<object>>(_dbContext.GetType()
+                                            .GetProperty(SDTableName).GetValue(_dbContext, null))
+                                                .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+                                    }
+                                }
+
+                                AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+                                if (Rule.dynamicAttId != null)
+                                {
+                                    AddInstRuleViewModel = new AddInstRuleViewModel
+                                    {
+                                        dynamicAttId = Rule.dynamicAttId,
+                                        IsDynamic = true,
+                                        OperationId = Rule.OperationId,
+                                        OperationValueBoolean = Rule.OperationValueBoolean,
+                                        OperationValueDateTime = Rule.OperationValueDateTime,
+                                        OperationValueDouble = Rule.OperationValueDouble,
+                                        OperationValueString = Rule.OperationValueString,
+                                        TableName = Rule.tablesNames.TableName
+                                    };
+                                }
+                                else if (Rule.attributeActivatedId != null)
+                                {
+                                    AddInstRuleViewModel = new AddInstRuleViewModel
+                                    {
+                                        attributeActivatedId = Rule.attributeActivatedId,
+                                        IsDynamic = false,
+                                        OperationId = Rule.OperationId,
+                                        OperationValueBoolean = Rule.OperationValueBoolean,
+                                        OperationValueDateTime = Rule.OperationValueDateTime,
+                                        OperationValueDouble = Rule.OperationValueDouble,
+                                        OperationValueString = Rule.OperationValueString,
+                                        TableName = Rule.tablesNames.TableName
+                                    };
+                                }
+                                List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+                                PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+                                    MainTableName + SDTableName + "Goal");
+
+                                List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+                                object CheckId = new object();
+
+                                if (Path.Count() > 1)
+                                {
+                                    object CivilLoads = EditCivilInstallationViewModel.GetType().GetProperty(Path[0])
+                                        .GetValue(EditCivilInstallationViewModel, null);
+
+                                    CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+                                        (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+                                }
+                                else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+                                {
+                                    CheckId = SiteCode;
+                                }
+                                else if (Path.Count() == 1)
+                                {
+                                    if (EditCivilInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(EditCivilInstallationViewModel, null) != null)
+                                        CheckId = (int)EditCivilInstallationViewModel.GetType().GetProperty(Path[0])
+                                            .GetValue(EditCivilInstallationViewModel, null);
+                                }
+
+                                if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+                                {
+                                    CheckIfSuccessAllRules++;
+                                }
+                            }
+                        }
+
+                        if (Rules.Count() == CheckIfSuccessAllRules)
+                        {
+                            string DynamicAttributeName = "";
+                            int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+                                .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+                            BaseInstAttView InputDynamicAttribute = EditCivilInstallationViewModel.DynamicInstAttsValue
+                                .FirstOrDefault(x => x.Id == DynamicAttributeId);
+
+                            if (InputDynamicAttribute == null)
+                            {
+                                DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                                    .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+                                return $"({DynamicAttributeName}) value can't be null";
+                            }
+                            else
+                            {
+                                object DependencyValidationValue = new object();
+                                object InputDynamicValue = new object();
+
+                                if (DynamicAttributeMainDependency.ValueBoolean != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+                                    InputDynamicValue = bool.Parse(InputDynamicAttribute.Value.ToString());
+                                }
+                                else if (DynamicAttributeMainDependency.ValueDateTime != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+                                    InputDynamicValue = DateTime.Parse(InputDynamicAttribute.Value.ToString());
+                                }
+                                else if (DynamicAttributeMainDependency.ValueDouble != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+                                    InputDynamicValue = double.Parse(InputDynamicAttribute.Value.ToString());
+                                }
+                                else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+                                    InputDynamicValue = InputDynamicAttribute.Value.ToString();
+                                }
+
+                                string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+                                if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+                                    DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+                                    DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+                                    DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+                                        InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+                                    DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+                                    DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+                                        InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+                                {
+                                    DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                                        .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+                                    string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+                                        (DependencyValidationOperation == "!=" ? "not equal to" :
+                                        (DependencyValidationOperation == ">" ? "bigger than" :
+                                        (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+                                        (DependencyValidationOperation == "<" ? "smaller than" :
+                                        (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+                                    return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString().ToLower())
+            {
+                string MainTableName = Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString();
+                EditCivilNonSteelViewModel EditCivilInstallationViewModel = _mapper.Map<EditCivilNonSteelViewModel>(Input);
+
+                List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable
+                        , x => x.tablesNames).ToList());
+
+                foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+                {
+                    TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+                        (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
+                            x.OperationId != null, x => x.Operation);
+
+                    if (DynamicAttributeMainDependency == null)
+                        continue;
+
+                    List<int> DependencyRows = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == DynamicAttributeMainDependency.Id)
+                        .Select(x => x.RowId.Value).Distinct().ToList();
+
+                    foreach (int RowId in DependencyRows)
+                    {
+                        List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId, x => x.Rule, x => x.Rule.tablesNames,
+                            x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
+
+                        int CheckIfSuccessAllRules = 0;
+
+                        foreach (TLIrule Rule in Rules)
+                        {
+                            string SDTableName = Rule.tablesNames.TableName;
+
+                            string DataType = "";
+
+                            string Operation = Rule.Operation.Name;
+                            object OperationValue = new object();
+
+                            if (Rule.OperationValueBoolean != null)
+                            {
+                                DataType = "Bool";
+                                OperationValue = Rule.OperationValueBoolean;
+                            }
+                            else if (Rule.OperationValueDateTime != null)
+                            {
+                                DataType = "DateTime";
+                                OperationValue = Rule.OperationValueDateTime;
+                            }
+                            else if (Rule.OperationValueDouble != null)
+                            {
+                                DataType = "Double";
+                                OperationValue = Rule.OperationValueDouble;
+                            }
+                            else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                            {
+                                DataType = "String";
+                                OperationValue = Rule.OperationValueString;
+                            }
+
+                            if (MainTableName.ToLower() == SDTableName.ToLower())
+                            {
+                                object InsertedValue = new object();
+
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    object TestValue = EditCivilInstallationViewModel.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilInstallationViewModel, null);
+
+                                    if (TestValue == null)
+                                        break;
+
+                                    if (Rule.OperationValueBoolean != null)
+                                        InsertedValue = bool.Parse(TestValue.ToString());
+
+                                    else if (Rule.OperationValueDateTime != null)
+                                        InsertedValue = DateTime.Parse(TestValue.ToString());
+
+                                    else if (Rule.OperationValueDouble != null)
+                                        InsertedValue = double.Parse(TestValue.ToString());
+
+                                    else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                                        InsertedValue = TestValue.ToString();
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    BaseInstAttView DynamicObject = EditCivilInstallationViewModel.DynamicInstAttsValue
+                                        .FirstOrDefault(x => x.Id == Rule.dynamicAttId.Value);
+
+                                    if (DynamicObject == null)
+                                        break;
+
+                                    string DynamicAttributeDataType = _unitOfWork.DataTypeRepository.GetByID(DynamicObject.DataTypeId.Value).Name;
+
+                                    if (DynamicAttributeDataType.ToLower() == "boolean".ToLower())
+                                        InsertedValue = bool.Parse(DynamicObject.Value.ToString());
+
+                                    else if (DynamicAttributeDataType.ToLower() == "string".ToLower())
+                                        InsertedValue = DynamicObject.Value.ToString();
+
+                                    else if (DynamicAttributeDataType.ToLower() == "int".ToLower() || DynamicAttributeDataType.ToLower() == "double".ToLower())
+                                        InsertedValue = double.Parse(DynamicObject.Value.ToString());
+
+                                    else if (DynamicAttributeDataType.ToLower() == "datetime".ToLower())
+                                        InsertedValue = DateTime.Parse(DynamicObject.Value.ToString());
+                                }
+
+                                if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
+                                    Operation == "!=" ? InsertedValue.ToString().ToLower() != OperationValue.ToString().ToLower() :
+                                    Operation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 :
+                                    Operation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == 1 ||
+                                        InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                    Operation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 :
+                                    Operation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, OperationValue) == -1 ||
+                                        InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower()) : false)
+                                {
+                                    CheckIfSuccessAllRules++;
+                                }
+                            }
+                            else
+                            {
+                                List<object> TableRecords = new List<object>();
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    if (OperationValue != null)
+                                        TableRecords = _mapper.Map<List<object>>(_dbContext.GetType().GetProperty(SDTableName)
+                                            .GetValue(_dbContext, null)).Where(x => x.GetType().GetProperty(AttributeName).GetValue(x, null) != null ? (Operation == ">" ?
+                                               (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 : false) :
+                                            Operation == ">=" ?
+                                                (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == 1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+                                            Operation == "<" ?
+                                               (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 : false) :
+                                            Operation == "<=" ?
+                                                (DataType.ToLower() == "DateTime".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(DateTime.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) :
+                                                DataType.ToLower() == "Double".ToLower() ?
+                                                    (Comparer.DefaultInvariant.Compare(double.Parse(x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString()), OperationValue) == -1 ||
+                                                     x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower()) : false) :
+                                            Operation == "==" ?
+                                                x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() == OperationValue.ToString().ToLower() :
+                                            Operation == "!=" ?
+                                                x.GetType().GetProperty(AttributeName).GetValue(x, null).ToString().ToLower() != OperationValue.ToString().ToLower() : false) : false).ToList();
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    List<int> DynamicAttValuesInventoryIds = new List<int>();
+
+                                    if (!DynamicAttribute.LibraryAtt)
+                                    {
+                                        DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttInstValueRepository
+                                            .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId.Value && !x.disable) &&
+                                                (Operation == "==" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == "!=" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == ">" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == ">=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+                                                ).Select(x => x.InventoryId).ToList();
+                                    }
+                                    else
+                                    {
+                                        DynamicAttValuesInventoryIds = _unitOfWork.DynamicAttLibRepository
+                                            .GetWhere(x => (x.DynamicAttId == Rule.dynamicAttId && !x.disable) &&
+                                                (Operation == "==" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() == Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() == Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble == Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() == Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == "!=" ?
+                                                    ((Rule.OperationValueBoolean != null ? x.ValueBoolean.ToString().ToLower() != Rule.OperationValueBoolean.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDateTime != null ? x.ValueDateTime.ToString().ToLower() != Rule.OperationValueDateTime.ToString().ToLower() : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble != Rule.OperationValueDouble : false) ||
+                                                    (!string.IsNullOrEmpty(Rule.OperationValueString) ? x.ValueString.ToLower() != Rule.OperationValueString.ToLower() : false)) : false) ||
+
+                                                (Operation == ">" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime > Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble > Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == ">=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime >= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble >= Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime < Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble < Rule.OperationValueDouble : false)) : false) ||
+
+                                                (Operation == "<=" ?
+                                                    ((Rule.OperationValueDateTime != null ? x.ValueDateTime <= Rule.OperationValueDateTime : false) ||
+                                                    (Rule.OperationValueDouble != null ? x.ValueDouble <= Rule.OperationValueDouble : false)) : false)
+
+                                                ).Select(x => x.InventoryId).ToList();
+                                    }
+                                    if (DynamicAttValuesInventoryIds != null ? DynamicAttValuesInventoryIds.Count() != 0 : false)
+                                    {
+                                        TableRecords = _mapper.Map<List<object>>(_dbContext.GetType()
+                                            .GetProperty(SDTableName).GetValue(_dbContext, null))
+                                                .Where(x => DynamicAttValuesInventoryIds.Contains(Convert.ToInt32(x.GetType().GetProperty("Id").GetValue(x, null)))).ToList();
+                                    }
+                                }
+
+                                AddInstRuleViewModel AddInstRuleViewModel = new AddInstRuleViewModel();
+                                if (Rule.dynamicAttId != null)
+                                {
+                                    AddInstRuleViewModel = new AddInstRuleViewModel
+                                    {
+                                        dynamicAttId = Rule.dynamicAttId,
+                                        IsDynamic = true,
+                                        OperationId = Rule.OperationId,
+                                        OperationValueBoolean = Rule.OperationValueBoolean,
+                                        OperationValueDateTime = Rule.OperationValueDateTime,
+                                        OperationValueDouble = Rule.OperationValueDouble,
+                                        OperationValueString = Rule.OperationValueString,
+                                        TableName = Rule.tablesNames.TableName
+                                    };
+                                }
+                                else if (Rule.attributeActivatedId != null)
+                                {
+                                    AddInstRuleViewModel = new AddInstRuleViewModel
+                                    {
+                                        attributeActivatedId = Rule.attributeActivatedId,
+                                        IsDynamic = false,
+                                        OperationId = Rule.OperationId,
+                                        OperationValueBoolean = Rule.OperationValueBoolean,
+                                        OperationValueDateTime = Rule.OperationValueDateTime,
+                                        OperationValueDouble = Rule.OperationValueDouble,
+                                        OperationValueString = Rule.OperationValueString,
+                                        TableName = Rule.tablesNames.TableName
+                                    };
+                                }
+                                List<object> RecordsIds = _mapper.Map<List<object>>(GetRecordsIds(MainTableName, AddInstRuleViewModel));
+
+                                PathToCheckDependencyValidation Item = (PathToCheckDependencyValidation)Enum.Parse(typeof(PathToCheckDependencyValidation),
+                                    MainTableName + SDTableName + "Goal");
+
+                                List<string> Path = GetEnumDescription(Item).Split(" ").ToList();
+
+                                object CheckId = new object();
+
+                                if (Path.Count() > 1)
+                                {
+                                    object CivilLoads = EditCivilInstallationViewModel.GetType().GetProperty(Path[0])
+                                        .GetValue(EditCivilInstallationViewModel, null);
+
+                                    CheckId = CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) != null ?
+                                        (int)CivilLoads.GetType().GetProperty(Path[1]).GetValue(CivilLoads, null) : new object();
+                                }
+                                else if (Path.Count() == 1 && Path[0].ToLower() == "sitecode")
+                                {
+                                    CheckId = SiteCode;
+                                }
+                                else if (Path.Count() == 1)
+                                {
+                                    if (EditCivilInstallationViewModel.GetType().GetProperty(Path[0]).GetValue(EditCivilInstallationViewModel, null) != null)
+                                        CheckId = (int)EditCivilInstallationViewModel.GetType().GetProperty(Path[0])
+                                            .GetValue(EditCivilInstallationViewModel, null);
+                                }
+
+                                if (RecordsIds.Exists(x => x.ToString().ToLower() == CheckId.ToString().ToLower()))
+                                {
+                                    CheckIfSuccessAllRules++;
+                                }
+                            }
+                        }
+
+                        if (Rules.Count() == CheckIfSuccessAllRules)
+                        {
+                            string DynamicAttributeName = "";
+                            int DynamicAttributeId = _unitOfWork.DependencyRowRepository
+                                .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
+
+                            BaseInstAttView InputDynamicAttribute = EditCivilInstallationViewModel.DynamicInstAttsValue
+                                .FirstOrDefault(x => x.Id == DynamicAttributeId);
+
+                            if (InputDynamicAttribute == null)
+                            {
+                                DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                                    .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+                                return $"({DynamicAttributeName}) value can't be null";
+                            }
+                            else
+                            {
+                                object DependencyValidationValue = new object();
+                                object InputDynamicValue = new object();
+
+                                if (DynamicAttributeMainDependency.ValueBoolean != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
+                                    InputDynamicValue = bool.Parse(InputDynamicAttribute.Value.ToString());
+                                }
+                                else if (DynamicAttributeMainDependency.ValueDateTime != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
+                                    InputDynamicValue = DateTime.Parse(InputDynamicAttribute.Value.ToString());
+                                }
+                                else if (DynamicAttributeMainDependency.ValueDouble != null)
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
+                                    InputDynamicValue = double.Parse(InputDynamicAttribute.Value.ToString());
+                                }
+                                else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
+                                {
+                                    DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
+                                    InputDynamicValue = InputDynamicAttribute.Value.ToString();
+                                }
+
+                                string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
+
+                                if (!(DependencyValidationOperation == "==" ? InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower() :
+                                    DependencyValidationOperation == "!=" ? InputDynamicValue.ToString().ToLower() != DependencyValidationValue.ToString().ToLower() :
+                                    DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 :
+                                    DependencyValidationOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == 1 ||
+                                        InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) :
+                                    DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 :
+                                    DependencyValidationOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, DependencyValidationValue) == -1 ||
+                                        InputDynamicValue.ToString().ToLower() == DependencyValidationValue.ToString().ToLower()) : false))
+                                {
+                                    DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                                        .GetWhereFirst(x => x.Id == DynamicAttributeId).Key;
+
+                                    string ReturnOperation = (DependencyValidationOperation == "==" ? "equal to" :
+                                        (DependencyValidationOperation == "!=" ? "not equal to" :
+                                        (DependencyValidationOperation == ">" ? "bigger than" :
+                                        (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+                                        (DependencyValidationOperation == "<" ? "smaller than" :
+                                        (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+                                    return $"({DynamicAttributeName}) value must be {ReturnOperation} {DependencyValidationValue}";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return string.Empty;
+        }
         public string CheckGeneralValidationFunctionEditVersion(List<BaseInstAttView> TLIdynamicAttInstValue, string TableName, int? CivilWithoutLegCategoryId = null)
         {
             List<DynamicAttViewModel> DynamicAttributes = null;
@@ -4271,6 +5391,85 @@ namespace TLIS_Service.Services
                             ValidationValue = "";
                         else
                             InputDynamicValue = DynmaicAttributeValue.Value.ToString();
+                    }
+
+                    if (!(OperationName == "==" ? InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower() :
+                        OperationName == "!=" ? InputDynamicValue.ToString().ToLower() != ValidationValue.ToString().ToLower() :
+                        OperationName == ">" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 :
+                        OperationName == ">=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == 1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) :
+                        OperationName == "<" ? Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 :
+                        OperationName == "<=" ? (Comparer.DefaultInvariant.Compare(InputDynamicValue, ValidationValue) == -1 ||
+                            InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower()) : false))
+                    {
+                        string DynamicAttributeName = _unitOfWork.DynamicAttRepository
+                            .GetWhereFirst(x => x.Id == Validation.DynamicAttId).Key;
+
+                        string ReturnOperation = (OperationName == "==" ? "equal to" :
+                            (OperationName == "!=" ? "not equal to" :
+                            (OperationName == ">" ? "bigger than" :
+                            (OperationName == ">=" ? "bigger than or equal to" :
+                            (OperationName == "<" ? "smaller than" :
+                            (OperationName == "<=" ? "smaller than or equal to" : ""))))));
+
+                        return $"({DynamicAttributeName}) value must be {ReturnOperation} {ValidationValue}";
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+        public string CheckGeneralValidationFunctionEditVersions(List<AddDdynamicAttributeInstallationValueViewModel> TLIdynamicAttInstValue, string TableName, int? CivilWithoutLegCategoryId = null)
+        {
+            List<DynamicAttViewModel> DynamicAttributes = null;
+
+            if (CivilWithoutLegCategoryId != null)
+                DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                   .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable && x.CivilWithoutLegCategoryId == CivilWithoutLegCategoryId, x => x.tablesNames).ToList());
+
+            else
+                DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                   .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable, x => x.tablesNames).ToList());
+
+            foreach (DynamicAttViewModel DynamicAttributeEntity in DynamicAttributes)
+            {
+                TLIvalidation Validation = _unitOfWork.ValidationRepository
+                    .GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttributeEntity.Id, x => x.Operation, x => x.DynamicAtt);
+
+                if (Validation != null)
+                {
+                    AddDdynamicAttributeInstallationValueViewModel DynmaicAttributeValue = TLIdynamicAttInstValue.FirstOrDefault(x => x.id == DynamicAttributeEntity.Id);
+
+                    if (DynmaicAttributeValue == null)
+                        return $"({Validation.DynamicAtt.Key}) value can't be null and must be inserted";
+
+                    string OperationName = Validation.Operation.Name;
+
+                    object InputDynamicValue = new object();
+                    object ValidationValue = new object();
+
+                    if (Validation.ValueBoolean != null)
+                    {
+                        ValidationValue = Validation.ValueBoolean;
+                        InputDynamicValue = bool.Parse(DynmaicAttributeValue.value.ToString());
+                    }
+                    else if (Validation.ValueDateTime != null)
+                    {
+                        ValidationValue = Validation.ValueDateTime;
+                        InputDynamicValue = DateTime.Parse(DynmaicAttributeValue.value.ToString());
+                    }
+                    else if (Validation.ValueDouble != null)
+                    {
+                        ValidationValue = Validation.ValueDouble;
+                        InputDynamicValue = double.Parse(DynmaicAttributeValue.value.ToString());
+                    }
+                    else if (!string.IsNullOrEmpty(Validation.ValueString))
+                    {
+                        ValidationValue = Validation.ValueString;
+                        if (DynmaicAttributeValue.value == null)
+                            ValidationValue = "";
+                        else
+                            InputDynamicValue = DynmaicAttributeValue.value.ToString();
                     }
 
                     if (!(OperationName == "==" ? InputDynamicValue.ToString().ToLower() == ValidationValue.ToString().ToLower() :
@@ -9508,18 +10707,33 @@ namespace TLIS_Service.Services
                     }
                 }
 
-                List<List<BaseInstAttViews>> baseInstAttViews = new List<List<BaseInstAttViews>>();
-                List<BaseInstAttViews> baseInstAttView = new List<BaseInstAttViews>();
+                List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
+                string[] legLetters = { "A", "B", "C", "D" };
+                float[] legAzimuths = { 0, 90, 180, 270 };
 
-                var leg  = _unitOfWork.AttributeActivatedRepository
-                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId");
-                baseInstAttView.AddRange(leg);
-                for (int i = 0; i < NumberofNumber; i++)
+
+                if (NumberofNumber == 3 || NumberofNumber == 4)
                 {
-                    baseInstAttViews.Add(baseInstAttView);
+                    baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
+                        .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
+                            .Select(att => new BaseInstAttViews
+                            {
+                                Key = att.Key,
+                                Desc = att.Desc,
+                                Label = att.Label,
+                                Manage = att.Manage,
+                                Required = att.Required,
+                                enable = att.enable,
+                                AutoFill = att.AutoFill,
+                                DataTypeId = att.DataTypeId,
+                                DataType = att.DataType,
+                                Options = att.Options,
+                                Value = att.Label.ToLower() == "legletter" ? legLetters[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] : null)
+                            }).ToList())
+                        .ToList();
                 }
-                
-                objectInst.LegsInfo = baseInstAttViews;
+
+                objectInst.LegsInfo = baseInstAttViewsList;
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);
 

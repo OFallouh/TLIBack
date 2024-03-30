@@ -210,6 +210,7 @@ namespace TLIS_Repository.Repositories
                     Key = DynamicAtt.Key,
                     DataTypeId = DynamicAtt.DataTypeId,
                     DataType = DynamicAtt.DataType.Name,
+                    Label= DynamicAtt.Key,
                     Required = DynamicAtt.Required,
                     enable =  !DynamicAtt.disable,
                     Options = new object[] { } 

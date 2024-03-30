@@ -1796,8 +1796,8 @@ namespace TLIS_Service.Services
                                 {
                                     string AttributeName = Rule.attributeActivated.Key;
 
-                                    InsertedValue = EditCivilWithLegLibraryViewModels.GetType().GetProperties()
-                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilWithLegLibraryViewModels, null);
+                                    InsertedValue = EditCivilWithLegLibraryViewModels.attributesActivatedLibrary.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilWithLegLibraryViewModels.attributesActivatedLibrary, null);
                                 }
                                 else if (Rule.dynamicAttId != null)
                                 {

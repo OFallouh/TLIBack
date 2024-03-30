@@ -322,9 +322,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(CivilWithLegsViewModel))]
-        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModel CivilWithLeg, int? TaskId)
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg, int? TaskId)
         {
-            if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsViewModel)))
+            if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsInstallationObject)))
             {
                 var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId);
                 return Ok(response);
@@ -337,51 +337,51 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<CivilWithLegsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditCivilWithoutLegs")]
-        [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg, int? TaskId)
-        {
-            if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
-            {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<CivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditCivilNonSteel")]
-        [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel, int? TaskId)
-        {
-            if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
-            {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<CivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetAllCivilWithLoad")]
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditCivilWithoutLegs")]
+        //[ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
+        //public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg, int? TaskId)
+        //{
+        //    if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<CivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditCivilNonSteel")]
+        //[ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
+        //public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel, int? TaskId)
+        //{
+        //    if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<CivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[HttpPost("GetAllCivilWithLoad")]
 
-        public IActionResult GetAllCivilWithLoad(string SearchName, [FromBody] ParameterPagination parameters)
-        {
-            var response = _unitOfWorkService.CivilInstService.GetAllCivilLoad(SearchName, parameters);
-            return Ok(response);
+        //public IActionResult GetAllCivilWithLoad(string SearchName, [FromBody] ParameterPagination parameters)
+        //{
+        //    var response = _unitOfWorkService.CivilInstService.GetAllCivilLoad(SearchName, parameters);
+        //    return Ok(response);
 
-        }
+        //}
 
         //[HttpPost("DismantleCivil")]
 

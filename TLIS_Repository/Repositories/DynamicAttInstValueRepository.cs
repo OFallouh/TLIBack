@@ -292,5 +292,75 @@ namespace TLIS_Repository.Repositories
             }
            
         }
+        public void UpdateDynamicValues(List<AddDdynamicAttributeInstallationValueViewModel> DynamicInstAttsValue, int TableNameId, int InstId)
+        {
+            foreach (var DynamicIns in DynamicInstAttsValue)
+            {
+                if (DynamicIns.value != null)
+                {
+                    var DynamicAttInstValue = _context.TLIdynamicAttInstValue.Where(x => x.DynamicAttId == DynamicIns.id && x.InventoryId == InstId  && x.tablesNamesId == TableNameId).Include(x=>x.DynamicAtt).FirstOrDefault();
+                    if (DynamicAttInstValue != null)
+                    {
+                        if (DynamicAttInstValue.ValueString != null && DynamicAttInstValue.ValueString != "")
+                        {
+                            string tests = DynamicIns.value.ToString().Trim();
+                            if (tests != "")
+                                DynamicAttInstValue.ValueString = tests;
+                        }
+                        else if (DynamicAttInstValue.ValueDouble != null)
+                        {
+                            DynamicAttInstValue.ValueDouble = double.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (DynamicAttInstValue.ValueDateTime != null)
+                        {
+                            DynamicAttInstValue.ValueDateTime = DateTime.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (DynamicAttInstValue.ValueBoolean != null)
+                        {
+                            DynamicAttInstValue.ValueBoolean = bool.Parse(DynamicIns.value.ToString());
+                        }
+                        _context.SaveChanges();
+                    }
+                    else if (DynamicAttInstValue == null)
+                    {
+                        TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
+                        var datatype = _context.TLIdataType.Where(x => x.Id == DynamicAttInstValue.DynamicAtt.DataTypeId).Select(x => x.Name).FirstOrDefault();
+
+                        if (datatype.ToLower() == "string")
+                        {
+                            string test = DynamicIns.value.ToString().Trim();
+                            if (test != "")
+                            {
+                                dynamicAttInstValue.ValueString = test;
+                            }
+                            // test.Trim().ToString();
+                            //dynamicAttInstValue.Value = test.ToString();
+                        }
+                        else if (datatype.ToLower() == "double")
+                        {
+                            dynamicAttInstValue.ValueDouble = double.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (datatype.ToLower() == "int")
+                        {
+                            dynamicAttInstValue.ValueDouble = double.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (datatype.ToLower() == "datetime")
+                        {
+                            dynamicAttInstValue.ValueDateTime = DateTime.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (datatype.ToLower() == "boolean")
+                        {
+                            dynamicAttInstValue.ValueBoolean = bool.Parse(DynamicIns.value.ToString());
+                        }
+                        dynamicAttInstValue.DynamicAttId = DynamicIns.id;
+                        dynamicAttInstValue.tablesNamesId = TableNameId;
+                        dynamicAttInstValue.InventoryId = InstId;
+                        _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+
+        }
     }
 }
