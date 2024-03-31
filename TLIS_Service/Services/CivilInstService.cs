@@ -5628,16 +5628,8 @@ namespace TLIS_Service.Services
                                     FKitem.Options = new List<object>();
                                 }
                                 break;
-                            case "structuretype":
-                                FKitem.Value = CivilWithLegsInst.StructureType.ToString();
-                                FKitem.Options = Enum.GetValues(typeof(StructureTypeCompatibleWithDesign)).Cast<StructureTypeCompatibleWithDesign>()
-                                    .Select(v => new EnumOutPut { Id = (int)v, Name = v.ToString() }).ToList();
-                                break;
-                            case "sectionslegtype":
-                                FKitem.Value = CivilWithLegsInst.SectionsLegType.ToString();
-                                FKitem.Options = Enum.GetValues(typeof(SectionsLegTypeCompatibleWithDesign)).Cast<SectionsLegTypeCompatibleWithDesign>()
-                                    .Select(v => new EnumOutPut { Id = (int)v, Name = v.ToString() }).ToList();
-                                break;
+                           
+                          
                             case "baseplateshape":
                                 List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>
                                 {
@@ -5648,7 +5640,7 @@ namespace TLIS_Service.Services
                                 };
 
                                 FKitem.Options = BasePlateShapes;
-                                FKitem.Value = CivilWithLegsInst.BasePlateShape;
+                                FKitem.Value = BasePlateShapes.FirstOrDefault(shape => shape.Id == (int)CivilWithLegsInst.BasePlateShape);
                                 break;
                             default:
                                 break;

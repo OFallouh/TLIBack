@@ -836,7 +836,7 @@ namespace TLIS_Service.Services
                     }
                     object ValidationValue = new object();
 
-                    if (Validation.ValueDouble != null)
+                    if (Validation.ValueBoolean != null)
                         ValidationValue = Validation.ValueBoolean;
 
                     else if (Validation.ValueDateTime != null)

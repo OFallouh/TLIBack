@@ -25,7 +25,7 @@ using static TLIS_Service.Services.CivilLibraryService;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+   // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilWithLegLibraryController : Controller
