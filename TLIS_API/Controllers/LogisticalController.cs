@@ -12,7 +12,7 @@ using TLIS_API.Middleware.WorkFlow;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+   // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [Route("api/[controller]")]
     [ApiController]
     public class LogisticalController : ControllerBase

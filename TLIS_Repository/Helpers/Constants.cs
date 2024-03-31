@@ -27,7 +27,7 @@ namespace TLIS_Repository.Helpers
         public enum TLIhistoryType
         {
             Add,
-            Update,
+            Edit,
             Delete
         }
         public enum ApiReturnCode

@@ -585,7 +585,7 @@ namespace TLIS_Repository.Base
                 TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == entity.GetType().Name.ToLower());
 
                 int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
-                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Update.ToString().ToLower()).Id;
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Edit.ToString().ToLower()).Id;
                 
                 int entityId = (int)entity.GetType().GetProperty("Id").GetValue(entity, null);
 
