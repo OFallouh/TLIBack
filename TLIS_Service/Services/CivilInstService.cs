@@ -5662,35 +5662,34 @@ namespace TLIS_Service.Services
 
                     var leg = _unitOfWork.LegRepository
                         .GetWhere(x => x.CivilWithLegInstId == CivilInsId).ToList();
+                    List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
+                    string[] legLetters = { "A", "B", "C", "D" };
+                    float[] legAzimuths = { 0, 90, 180, 270 };
 
-                    List<List<BaseInstAttViews>> baseInstAttViews = new List<List<BaseInstAttViews>>();
-                    List<BaseInstAttViews> baseInstAttView = new List<BaseInstAttViews>();
 
-                    var legs = _unitOfWork.AttributeActivatedRepository
-                    .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId");
-                    baseInstAttView.AddRange(legs);
-
-                    for (int i = 0; i < NumberofNumber; i++)
+                    if (NumberofNumber == 3 || NumberofNumber == 4)
                     {
-
-                        baseInstAttViews.Add(baseInstAttView);
+                        baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
+                            .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
+                                .Select(att => new BaseInstAttViews
+                                {
+                                    Key = att.Key,
+                                    Desc = att.Desc,
+                                    Label = att.Label,
+                                    Manage = att.Manage,
+                                    Required = att.Required,
+                                    enable = att.enable,
+                                    AutoFill = att.AutoFill,
+                                    DataTypeId = att.DataTypeId,
+                                    DataType = att.DataType,
+                                    Options = att.Options,
+                                    Value = att.Label.ToLower() == "legletter" ? legLetters[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] : null)
+                                }).ToList())
+                            .ToList();
                     }
 
-                    objectInst.LegsInfo = baseInstAttViews;
-                    foreach (var item in objectInst.LegsInfo)
-                    {
-                        foreach (var item1 in leg)
-                        {
-                            foreach (var item2 in item)
-                            {
-                                item2.Value = item1.CiviLegName;
-
-                            }
-                        }
-                        
-
-                    }
-                    TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
+                    objectInst.LegsInfo = baseInstAttViewsList;
+                      TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
                         .GetWhereFirst(x => x.civilWithLegsId == CivilInsId);
 
                     TLIcivilSiteDate CivilSiteDateInfo = _unitOfWork.CivilSiteDateRepository
