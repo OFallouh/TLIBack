@@ -10579,29 +10579,31 @@ namespace TLIS_Service.Services
                 List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary, null).ToList();
 
-                foreach (var item in LibraryAttributes)
+                var sectionsLegTypeItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "sectionslegtype_name");
+                if (sectionsLegTypeItem != null)
                 {
-                    if (item.Label.ToLower() == "sectionslegtype_name")
-                    {
-                        item.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                        item.Value = _unitOfWork.SectionsLegTypeRepository != null && CivilWithLegLibrary.sectionsLegTypeId != null ?
-                            _mapper.Map<LocationTypeViewModel>(_unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.sectionsLegTypeId)) :
-                            null;
-                    }
-                    else if (item.Label.ToLower() == "structuretype_name")
-                    {
-                        item.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                        item.Value = _unitOfWork.StructureTypeRepository != null && CivilWithLegLibrary.structureTypeId != null ?
-                            _mapper.Map<LocationTypeViewModel>(_unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.structureTypeId)) :
-                            null;
-                    }
-                    else if (item.Label.ToLower() == "supporttypedesigned_name")
-                    {
-                        item.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                        item.Value = _unitOfWork.SupportTypeDesignedRepository != null && CivilWithLegLibrary.supportTypeDesignedId != null ?
-                            _mapper.Map<LocationTypeViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.supportTypeDesignedId)) :
-                            null;
-                    }
+                    sectionsLegTypeItem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                    sectionsLegTypeItem.Value = _unitOfWork.SectionsLegTypeRepository != null && CivilWithLegLibrary.sectionsLegTypeId != null ?
+                        _mapper.Map<LocationTypeViewModel>(_unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.sectionsLegTypeId)) :
+                        null;
+                }
+
+                var structureTypeItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "structuretype_name");
+                if (structureTypeItem != null)
+                {
+                    structureTypeItem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                    structureTypeItem.Value = _unitOfWork.StructureTypeRepository != null && CivilWithLegLibrary.structureTypeId != null ?
+                        _mapper.Map<LocationTypeViewModel>(_unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.structureTypeId)) :
+                        null;
+                }
+
+                var supportTypeDesignedItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "supporttypedesigned_name");
+                if (supportTypeDesignedItem != null)
+                {
+                    supportTypeDesignedItem.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                    supportTypeDesignedItem.Value = _unitOfWork.SupportTypeDesignedRepository != null && CivilWithLegLibrary.supportTypeDesignedId != null ?
+                        _mapper.Map<LocationTypeViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.supportTypeDesignedId)) :
+                        null;
                 }
 
                 List<BaseInstAttViews> LibraryLogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
