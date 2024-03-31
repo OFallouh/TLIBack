@@ -5577,21 +5577,21 @@ namespace TLIS_Service.Services
                         switch (FKitem.Label.ToLower())
                         {
                             case "locationtype_name":
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(CivilWithLegsInst.locationType.Name);
+                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(CivilWithLegsInst.locationType);
                                 FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                             case "basetype_name":
-                                FKitem.Value = _mapper.Map < BaseTypeViewModel>( CivilWithLegsInst.baseType.Name);
+                                FKitem.Value = _mapper.Map <BaseTypeViewModel>( CivilWithLegsInst.baseType);
                                 FKitem.Options = _mapper.Map<List<BaseTypeViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                             case "owner_name":
-                                FKitem.Value = _mapper.Map < OwnerViewModel >( CivilWithLegsInst.Owner.OwnerName);
+                                FKitem.Value = _mapper.Map < OwnerViewModel >( CivilWithLegsInst.Owner);
                                 FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                             case "basecivilwithlegtype_name":
                                 if (CivilWithLegsInst.BaseCivilWithLegType != null)
                                 {
-                                    FKitem.Value = _mapper.Map< BaseCivilWithLegsTypeViewModel >( CivilWithLegsInst.BaseCivilWithLegType.Name);
+                                    FKitem.Value = _mapper.Map<BaseCivilWithLegsTypeViewModel >( CivilWithLegsInst.BaseCivilWithLegType);
                                     FKitem.Options = _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 else
@@ -5603,7 +5603,7 @@ namespace TLIS_Service.Services
                             case "guylinetype_name":
                                 if (CivilWithLegsInst.GuyLineType != null)
                                 {
-                                    FKitem.Value = _mapper.Map< GuyLineTypeViewModel > (CivilWithLegsInst.GuyLineType.Name);
+                                    FKitem.Value = _mapper.Map< GuyLineTypeViewModel > (CivilWithLegsInst.GuyLineType);
                                     FKitem.Options = _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 else
@@ -5613,13 +5613,13 @@ namespace TLIS_Service.Services
                                 }
                                 break;
                             case "supporttypeimplemented_name":
-                                FKitem.Value = CivilWithLegsInst.SupportTypeImplemented.Name;
+                                FKitem.Value = _mapper.Map < SupportTypeImplementedViewModel > (CivilWithLegsInst.SupportTypeImplemented);
                                 FKitem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                             case "enforcmentcategory_name":
                                 if (CivilWithLegsInst.enforcmentCategory != null)
                                 {
-                                    FKitem.Value = _mapper.Map< EnforcmentCategoryViewModel >( CivilWithLegsInst.enforcmentCategory.Name);
+                                    FKitem.Value = _mapper.Map < EnforcmentCategoryViewModel >( CivilWithLegsInst.enforcmentCategory);
                                     FKitem.Options = _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 else

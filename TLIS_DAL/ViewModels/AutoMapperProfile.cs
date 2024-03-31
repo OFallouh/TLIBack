@@ -167,6 +167,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LocationTypeViewModel, TLIcivilSiteDate>().ReverseMap()
                 .ForMember(x => x.Name, x => x.MapFrom(f => f.allCivilInst.civilWithLegs.Name));
 
+   
+
             //---------------------------------------------------------------------------
 
 
