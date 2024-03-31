@@ -5571,20 +5571,44 @@ namespace TLIS_Service.Services
                                 FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                             case "basecivilwithlegtype_name":
-                                FKitem.Value = CivilWithLegsInst.BaseCivilWithLegType.Name;
-                                FKitem.Options = _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                if (CivilWithLegsInst.BaseCivilWithLegType != null)
+                                {
+                                    FKitem.Value = CivilWithLegsInst.BaseCivilWithLegType.Name;
+                                    FKitem.Options = _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                }
+                                else
+                                {
+                                    FKitem.Value = null;
+                                    FKitem.Options = new List<object>();
+                                }
                                 break;
                             case "guylinetype_name":
-                                FKitem.Value = CivilWithLegsInst.GuyLineType.Name;
-                                FKitem.Options = _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                if (CivilWithLegsInst.GuyLineType != null)
+                                {
+                                    FKitem.Value = CivilWithLegsInst.GuyLineType.Name;
+                                    FKitem.Options = _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                }
+                                else
+                                {
+                                    FKitem.Value = null;
+                                    FKitem.Options = new List<object>();
+                                }
                                 break;
                             case "supporttypeimplemented_name":
                                 FKitem.Value = CivilWithLegsInst.SupportTypeImplemented.Name;
                                 FKitem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                             case "enforcmentcategory_name":
-                                FKitem.Value = CivilWithLegsInst.enforcmentCategory.Name;
-                                FKitem.Options = _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                if (CivilWithLegsInst.enforcmentCategory != null)
+                                {
+                                    FKitem.Value = CivilWithLegsInst.enforcmentCategory.Name;
+                                    FKitem.Options = _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                }
+                                else
+                                {
+                                    FKitem.Value = null;
+                                    FKitem.Options = new List<object>();
+                                }
                                 break;
                             case "structuretype":
                                 FKitem.Value = CivilWithLegsInst.StructureType.ToString();
@@ -5597,27 +5621,13 @@ namespace TLIS_Service.Services
                                     .Select(v => new EnumOutPut { Id = (int)v, Name = v.ToString() }).ToList();
                                 break;
                             case "baseplateshape":
-                                List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
-                                BasePlateShapes.Add(new EnumOutPut
+                                List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>
                                 {
-                                    Id = (int)BasePlateShape.Circular,
-                                    Name = BasePlateShape.Circular.ToString()
-                                });
-                                BasePlateShapes.Add(new EnumOutPut
-                                {
-                                    Id = (int)BasePlateShape.Rectangular,
-                                    Name = BasePlateShape.Rectangular.ToString()
-                                });
-                                BasePlateShapes.Add(new EnumOutPut
-                                {
-                                    Id = (int)BasePlateShape.Square,
-                                    Name = BasePlateShape.Square.ToString()
-                                });
-                                BasePlateShapes.Add(new EnumOutPut
-                                {
-                                    Id = (int)BasePlateShape.NotMeasurable,
-                                    Name = BasePlateShape.NotMeasurable.ToString()
-                                });
+                                    new EnumOutPut { Id = (int)BasePlateShape.Circular, Name = BasePlateShape.Circular.ToString() },
+                                    new EnumOutPut { Id = (int)BasePlateShape.Rectangular, Name = BasePlateShape.Rectangular.ToString() },
+                                    new EnumOutPut { Id = (int)BasePlateShape.Square, Name = BasePlateShape.Square.ToString() },
+                                    new EnumOutPut { Id = (int)BasePlateShape.NotMeasurable, Name = BasePlateShape.NotMeasurable.ToString() }
+                                };
 
                                 FKitem.Options = BasePlateShapes;
                                 FKitem.Value = CivilWithLegsInst.BasePlateShape;

@@ -168,6 +168,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
         public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW{ get; set; }
         public virtual DbSet<CivilWithLegView> CIVIL_WITHLEGS_VIEW { get; set; }
+        public virtual DbSet<ViewWithLegsLibrary> CIVIL_WITHLEG_LIBRARY_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -232,6 +233,11 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("CIVIL_WITHLEGS_VIEW");
+            });
+            builder.Entity<ViewWithLegsLibrary>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("CIVIL_WITHLEG_LIBRARY_VIEW");
             });
 
             builder.Entity<TLIsession>();

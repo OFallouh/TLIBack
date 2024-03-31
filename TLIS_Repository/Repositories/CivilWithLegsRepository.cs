@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Transactions;
 using TLIS_DAL;
+using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
@@ -192,7 +194,85 @@ namespace TLIS_Repository.Repositories
                 return new Response<float>(true, 0, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        public bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item)
+        {
+            bool x = true;
+            if (filters != null && filters.Count > 0)
+            {
+                foreach (var filter in filters)
+                {
+                    object value;
+                    if (item.TryGetValue(filter.key, out value))
+                    {
+                        if (value != null)
+                        {
+                            if (filter.value.Count > 1)
+                            {
+                                if (!filter.value.Any(x => x.ToString().ToLower() == value.ToString().ToLower()))
+                                {
+                                    x = false;
+                                    break;
+                                }
+                            }
+                            else if (filter.value.Count == 1)
+                            {
+                                if (int.TryParse(value.ToString(), out int Intres) && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
+                                {
+                                    x = false;
+                                    break;
+                                }
+                                if (DateTime.TryParse(value.ToString(), out DateTime Dateres) && DateTime.TryParse(filter.value[0].ToString(), out DateTime FDateres) && Dateres != FDateres)
+                                {
+                                    x = false;
+                                    break;
+                                }
+                                else if (!value.ToString().ToLower().StartsWith(filter.value[0].ToString().ToLower()))
+                                {
+                                    x = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return x;
+        }
+        public IDictionary<string, object> BuildDynamicSelect(object obj, Dictionary<string, string>? dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
+        {
+            Dictionary<string, object> item = new Dictionary<string, object>();
+            Type type = obj.GetType();
+            foreach (var propertyName in propertyNamesStatic)
+            {
+                string name = propertyName;
+                var property = type.GetProperty(name);
 
+                // Check if the property exists
+                if (property == null)
+                {
+                    name = name.ToUpper();
+                    property = type.GetProperty(name);
+                    if (property == null)
+                    {
+                        throw new ArgumentException($"Property {name} not found in {nameof(obj)}");
+                    }
+                }
+                PropertyInfo propertyInfo = type.GetProperty(propertyName);
+                if (propertyInfo != null)
+                {
+                    var value = propertyInfo.GetValue(obj);
+                    if (value != null)
+                    {
+                        item.Add(name, propertyInfo.GetValue(obj));
+                    }
+                }
+            }
+            foreach (var propertyName in propertyNamesDynamic)
+            {
+                item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
+            }
+            return item;
+        }
         public Response<float> CheckloadsOnCivil(int allcivilinstId,int ? loadid ,float Azimuth, float CenterHigh)
         {
             try
