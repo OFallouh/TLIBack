@@ -20,7 +20,6 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
         public class EditCivilWihtLegsLibraryAttributes
         {   
             public int Id { get; set; }
-            public string Model { get; set; }
             public string? Note { get; set; }
             public string Prefix { get; set; }
             public float Height_Designed { get; set; } = 0;
