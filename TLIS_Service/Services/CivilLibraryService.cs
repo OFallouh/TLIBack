@@ -59,6 +59,7 @@ using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using System.Data;
+using Remotion;
 
 namespace TLIS_Service.Services
 {
@@ -1013,7 +1014,7 @@ namespace TLIS_Service.Services
         //Function take 2 parameters 
         //First CivilLibraryViewModel object contain data to update
         //Second TableName to specify the table i deal with
-        public async Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName)
+        public async Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName,int userId)
         {
             int resultId = 0;
             int civilLibId = 0;
@@ -4007,59 +4008,26 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEGS_VIEW.AsEnumerable()
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
-                        Name = x.Name,
-                        SITECODE = x.SITECODE,
-                        WindMaxLoadm2 = x.WindMaxLoadm2,
-                        LocationHeight = x.LocationHeight,
-                        PoType = x.PoType,
-                        PoNo = x.PoNo,
-                        PoDate = x.PoDate,
-                        HeightImplemented = x.HeightImplemented,
-                        BuildingMaxLoad = x.BuildingMaxLoad,
-                        SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
-                        CurrentLoads = x.CurrentLoads,
-                        warningpercentageloads = x.warningpercentageloads,
-                        VisiableStatus = x.VisiableStatus,
-                        VerticalMeasured = x.VerticalMeasured,
-                        OtherBaseType = x.OtherBaseType,
-                        IsEnforeced = x.IsEnforeced,
-                        H2height = x.H2height,
-                        HeightBase = x.HeightBase,
-                        DimensionsLeg = x.DimensionsLeg,
-                        DiagonalMemberSection = x.DiagonalMemberSection,
-                        DiagonalMemberDimensions = x.DiagonalMemberDimensions,
-                        BoltHoles = x.BoltHoles,
-                        BasePlatethickness = x.BasePlatethickness,
-                        BasePlateShape = x.BasePlateShape,
-                        BasePlateDimensions = x.BasePlateDimensions,
-                        BaseNote = x.BaseNote,
-                        LOCATIONTYPE = x.LOCATIONTYPE,
-                        BASETYPE = x.BASETYPE,
-                        VerticalMeasurement = x.VerticalMeasurement,
-                        SteelCrossSection = x.SteelCrossSection,
-                        DiagonalMemberPrefix = x.DiagonalMemberPrefix,
-                        EnforcementHeightBase = x.EnforcementHeightBase,
-                        Enforcementlevel = x.Enforcementlevel,
-                        StructureType = x.StructureType,
-                        SectionsLegType = x.SectionsLegType,
-                        TotalHeight = x.TotalHeight,
-                        SpaceInstallation = x.SpaceInstallation,
-                        OWNER = x.OWNER,
-                        CIVILWITHLEGSLIB = x.CIVILWITHLEGSLIB,
-                        GUYLINETYPE = x.GUYLINETYPE,
-                        CIVILWITHLEGSTYPE = x.BASECIVILWITHLEGTYPE,
-                        SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
-                        BaseCivilWithLegType = x.BASECIVILWITHLEGTYPE,
-                        CenterHigh = x.CenterHigh,
-                        HBA = x.HBA,
-                        EquivalentSpace = x.EquivalentSpace,
-                        HieghFromLand = x.HieghFromLand,
-                        Support_Limited_Load = x.Support_Limited_Load,
-                        ENFORCMENTCATEGORY = x.ENFORCMENTCATEGORY,
+                        Model=x.Model,
+                        Note=x.Note,
+                        Prefix=x.Prefix,
+                        Height_Designed=x.Height_Designed,
+                        Max_load_M2=x.Max_load_M2,
+                        SpaceLibrary=x.SpaceLibrary,
+                        Active=x.Active,
+                        Deleted=x.Deleted,
+                        SUPPORTTYPEDESIGNED=x.SUPPORTTYPEDESIGNED,
+                        SECTIONSLEGTYPE=x.SECTIONSLEGTYPE,
+                        STRUCTURETYPE=x.STRUCTURETYPE,
+                        CIVILSTEELSUPPORTCATEGORY=x.CIVILSTEELSUPPORTCATEGORY,
+                        Manufactured_Max_Load=x.Manufactured_Max_Load,
+                        WidthVariation=x.WidthVariation,
+                        NumberOfLegs=x.NumberOfLegs
+
                     })
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item =>_unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))

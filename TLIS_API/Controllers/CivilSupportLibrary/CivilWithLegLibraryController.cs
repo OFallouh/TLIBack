@@ -25,7 +25,7 @@ using static TLIS_Service.Services.CivilLibraryService;
 
 namespace TLIS_API.Controllers
 {
-   // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilWithLegLibraryController : Controller
@@ -102,7 +102,25 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(editCivilWithLegLibraryViewModel, nameof(EditCivilWithLegsLibraryObject)))
             {
-                var response = await _unitOfWorkService.CivilLibraryService.EditCivilWithLegsLibrary(editCivilWithLegLibraryViewModel, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString());
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.CivilLibraryService.EditCivilWithLegsLibrary(editCivilWithLegLibraryViewModel, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), userId);
                 return Ok(response);
             }
             else
