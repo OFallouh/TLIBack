@@ -56,7 +56,7 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
         public float SpaceInstallation { get; set; }
         public string? OWNER { get; set; }
         public string CIVILWITHLEGSLIB { get; set; }
-        public string CIVILWITHLEGSTYPE { get; set; }
+        public string BASECIVILWITHLEGTYPE { get; set; }
         public string? GUYLINETYPE { get; set; }
         public string SUPPORTTYPEIMPLEMENTED { get; set; }
         public float? CenterHigh { get; set; }
@@ -116,7 +116,7 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
             outputData.Add("SpaceInstallation", SpaceInstallation);
             outputData.Add("Owner", OWNER);
             outputData.Add("CivilWithLegsLib", CIVILWITHLEGSLIB);
-            outputData.Add("BaseCivilWithLegType", CIVILWITHLEGSTYPE);
+            outputData.Add("BaseCivilWithLegType", BASECIVILWITHLEGTYPE);
             outputData.Add("GuyLineType", GUYLINETYPE);
             outputData.Add("SupportTypeImplemented", SUPPORTTYPEIMPLEMENTED);
             outputData.Add("CenterHigh", CenterHigh);

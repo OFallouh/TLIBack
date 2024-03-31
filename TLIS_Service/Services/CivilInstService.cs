@@ -6105,6 +6105,13 @@ namespace TLIS_Service.Services
             {
                 try
                 {
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
@@ -6137,7 +6144,19 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == BaseFilter.SiteCode.ToLower()).AsEnumerable()
+                    if (propertyNamesDynamic.Count == 0) 
+                    {
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == BaseFilter.SiteCode.ToLower()).AsEnumerable()
+                    .Select(item => BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == BaseFilter.SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -6174,16 +6193,16 @@ namespace TLIS_Service.Services
                         DiagonalMemberPrefix = x.DiagonalMemberPrefix,
                         EnforcementHeightBase = x.EnforcementHeightBase,
                         Enforcementlevel = x.Enforcementlevel,
-                        StructureType=x.StructureType,
-                        SectionsLegType=x.SectionsLegType,
+                        StructureType = x.StructureType,
+                        SectionsLegType = x.SectionsLegType,
                         TotalHeight = x.TotalHeight,
                         SpaceInstallation = x.SpaceInstallation,
                         OWNER = x.OWNER,
-                        CIVILWITHLEGSLIB=x.CIVILWITHLEGSLIB,
+                        CIVILWITHLEGSLIB = x.CIVILWITHLEGSLIB,
                         GUYLINETYPE = x.GUYLINETYPE,
-                        CIVILWITHLEGSTYPE = x.CIVILWITHLEGSTYPE,
+                        CIVILWITHLEGSTYPE = x.BASECIVILWITHLEGTYPE,
                         SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
-                        BaseCivilWithLegType = x.CIVILWITHLEGSTYPE,
+                        BaseCivilWithLegType = x.BASECIVILWITHLEGTYPE,
                         CenterHigh = x.CenterHigh,
                         HBA = x.HBA,
                         EquivalentSpace = x.EquivalentSpace,
@@ -6194,10 +6213,12 @@ namespace TLIS_Service.Services
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item => BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
-                    int count = query.Count();
-                    query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
-                    return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    
                 }
                 catch (Exception err)
                 {
@@ -6589,7 +6610,7 @@ namespace TLIS_Service.Services
             }
             return x;
         }
-        static IDictionary<string, object> BuildDynamicSelect(object obj,Dictionary<string,string> dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
+        static IDictionary<string, object> BuildDynamicSelect(object obj,Dictionary<string,string>? dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
         {
             Dictionary<string, object> item = new Dictionary<string, object>();
             Type type = obj.GetType();
