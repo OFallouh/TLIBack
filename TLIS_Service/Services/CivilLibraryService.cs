@@ -60,6 +60,8 @@ using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using System.Data;
 using Remotion;
+using Newtonsoft.Json;
+using System.Text.Json.Nodes;
 
 namespace TLIS_Service.Services
 {
@@ -791,13 +793,13 @@ namespace TLIS_Service.Services
             {
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable && x.CivilWithoutLegCategoryId == catid
-                       , x => x.tablesNames).ToList());
+                       , x => x.tablesNames,x=>x.DataType).ToList());
             }
             else
             {
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == TableName.ToLower() && !x.disable
-                       , x => x.tablesNames).ToList());
+                       , x => x.tablesNames, x => x.DataType).ToList());
             }
             foreach (DynamicAttViewModel DynamicAttributeEntity in DynamicAttributes)
             {
@@ -810,30 +812,79 @@ namespace TLIS_Service.Services
 
                     if (DynmaicAttributeValue == null)
                         return $"({Validation.DynamicAtt.Key}) value can't be null and must be inserted";
-
+                    var Value = DynmaicAttributeValue.value.ToString();
                     string OperationName = Validation.Operation.Name;
 
-                    object InputDynamicValue = new object();
+                    object InputDynamicValue = null; // Initialize to null
 
-                    if (DynmaicAttributeValue.value != null)
+                    if (Value != null)
                     {
-                        if (DynmaicAttributeValue.value is bool)
+                        string dataType = DynamicAttributeEntity.DataType_Name.ToLower();
+
+                        switch (dataType)
                         {
-                            InputDynamicValue = (bool)DynmaicAttributeValue.value;
-                        }
-                        else if (DynmaicAttributeValue.value is DateTime)
-                        {
-                            InputDynamicValue = (DateTime)DynmaicAttributeValue.value;
-                        }
-                        else if (DynmaicAttributeValue.value is double)
-                        {
-                            InputDynamicValue = (double)DynmaicAttributeValue.value;
-                        }
-                        else if (DynmaicAttributeValue.value is string)
-                        {
-                            InputDynamicValue = (string)DynmaicAttributeValue.value;
+                            case "bool":
+                                bool boolValue;
+                                if (bool.TryParse(Value, out boolValue))
+                                {
+                                    InputDynamicValue = boolValue;
+                                }
+                                else
+                                {
+                                    InputDynamicValue = null; 
+                                                              
+                                    throw new ArgumentException("Invalid boolean value.");
+                                }
+                                break;
+                            case "datetime":
+                                DateTime dateTimeValue;
+                                if (DateTime.TryParse(Value, out dateTimeValue))
+                                {
+                                    InputDynamicValue = dateTimeValue;
+                                }
+                                else
+                                {
+                                    InputDynamicValue = null; 
+                                                            
+                                    throw new ArgumentException("Invalid datetime value.");
+                                }
+                                break;
+                            case "double":
+                                double doubleValue;
+                                if (double.TryParse(Value, out doubleValue))
+                                {
+                                    InputDynamicValue = doubleValue;
+                                }
+                                else
+                                {
+                                    InputDynamicValue = null; 
+                                                             
+                                    throw new ArgumentException("Invalid double value.");
+                                }
+                                break;
+                            case "int":
+                                int intValue;
+                                if (int.TryParse(Value, out intValue))
+                                {
+                                    InputDynamicValue = intValue;
+                                }
+                                else
+                                {
+                                    InputDynamicValue = null; 
+                                                              
+                                    throw new ArgumentException("Invalid int value.");
+                                }
+                                break;
+                            case "string":
+                                InputDynamicValue = Value; 
+                                break;
+                            default:
+                                
+                                break;
                         }
                     }
+
+
                     object ValidationValue = new object();
 
                     if (Validation.ValueBoolean != null)

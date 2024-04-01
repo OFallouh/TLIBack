@@ -82,26 +82,74 @@ namespace TLIS_Repository.Repositories
                 dynamicAttLibValueEntity.InventoryId = Id;
                 dynamicAttLibValueEntity.tablesNamesId = TableNameId;
                 dynamicAttLibValueEntity.DynamicAttId = dynamicAttEntity.Id;
-                dynamic value = DynamicLibAttValue.value;
-                switch (value)
+                dynamic value = DynamicLibAttValue.value.ToString();
+                if (value != null)
                 {
-                    case int NumberValue:
-                        dynamicAttLibValueEntity.ValueDouble = NumberValue;
-                        break;
-                    case string stringValue:
-                        dynamicAttLibValueEntity.ValueString = stringValue;
-                        break;
-                    case double doubleValue:
-                        dynamicAttLibValueEntity.ValueDouble = doubleValue;
-                        break;
-                    case DateTime dateTimeValue:
-                        dynamicAttLibValueEntity.ValueDateTime = dateTimeValue;
-                        break;
-                    case bool booleanValue:
-                        dynamicAttLibValueEntity.ValueBoolean = booleanValue;
-                        break;
-                }
+                    string dataType = dynamicAttEntity.DataType.Name.ToLower();
 
+                    switch (dataType)
+                    {
+                        case "bool":
+                            bool boolValue;
+                            if (bool.TryParse(value, out boolValue))
+                            {
+                                dynamicAttLibValueEntity.ValueBoolean = boolValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid boolean value.");
+                            }
+                            break;
+                        case "datetime":
+                            DateTime dateTimeValue;
+                            if (DateTime.TryParse(value, out dateTimeValue))
+                            {
+                                dynamicAttLibValueEntity.ValueDateTime = dateTimeValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDateTime = null;
+
+                                throw new ArgumentException("Invalid datetime value.");
+                            }
+                            break;
+                        case "double":
+                            double doubleValue;
+                            if (double.TryParse(value, out doubleValue))
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = doubleValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid double value.");
+                            }
+                            break;
+                        case "int":
+                            int intValue;
+                            if (int.TryParse(value, out intValue))
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = intValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid int value.");
+                            }
+                            break;
+                        case "string":
+                            dynamicAttLibValueEntity.ValueString = value;
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+              
                 dynamicAttLibValueEntity.disable = false;
                 return dynamicAttLibValueEntity;
             }).ToList(); 
