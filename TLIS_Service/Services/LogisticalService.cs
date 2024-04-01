@@ -496,6 +496,11 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                         }
                     }
+                    else
+                    {
+                        Logistical.Deleted = (true);
+                        _unitOfWork.SaveChanges();
+                    }
                 }
                 else
                 {
@@ -924,6 +929,11 @@ namespace TLIS_Service.Services
                             Logistical.Active = !Logistical.Active;
                             _unitOfWork.SaveChanges();
                         }
+                    }
+                    else
+                    {
+                        Logistical.Active = !Logistical.Active;
+                        _unitOfWork.SaveChanges();
                     }
                 }
                 else
