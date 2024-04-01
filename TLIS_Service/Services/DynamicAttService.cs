@@ -412,7 +412,8 @@ namespace TLIS_Service.Services
                 if (CategoryId == null)
                 {
                     List<DependencyColumn> Data = _unitOfWork.AttributeActivatedRepository
-                        .GetWhere(x => x.Tabel.ToLower() == TableName.ToLower() && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted")
+                        .GetWhere(x => x.Tabel.ToLower() == TableName.ToLower() && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted" &&
+                        !x.Key.ToLower().Contains("id"))
                         .Select(x => new DependencyColumn(x.Label, x.DataType, false, null, x.Id)).ToList();
 
                     int TableNameId = _unitOfWork.TablesNamesRepository

@@ -2311,88 +2311,22 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                         }
                         var structureType = _dbContext.TLIstructureType.FirstOrDefault(x => x.Id == civilwithleglibrary.structureTypeId);
-                        if (structureType != null && structureType.Name.ToLower() == "square")
+                        if (structureType != null && (structureType.Name.ToLower() == "square" || structureType.Name.ToLower() == "triangular"))
                         {
-                            string legLetter = null;
-                            float legAzimuth = 0;
-
-                            for (int i = 0; i < civilwithleglibrary.NumberOfLegs; i++)
+                            var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
                             {
-                                switch (i)
-                                {
-                                    case 0:
-                                        legLetter = "A";
-                                        legAzimuth = 0;
-                                        break;
-                                    case 1:
-                                        legLetter = "B";
-                                        legAzimuth = 90;
-                                        break;
-                                    case 2:
-                                        legLetter = "C";
-                                        legAzimuth = 180;
-                                        break;
-                                    case 3:
-                                        legLetter = "D";
-                                        legAzimuth = 270;
-                                        break;
-                                    default:
-                                       
-                                        break;
-                                }
+                                CiviLegName = civilWithLegs.Name + item.LegLetter,
+                                LegAzimuth = item.LegAzimuth,
+                                LegLetter = item.LegLetter,
+                                Notes = item.Notes,
+                                CivilWithLegInstId = civilWithLegs.Id
+                            });
 
-                                TLIleg tliLeg = new TLIleg
-                                {
-                                    CiviLegName = civilWithLegs.Name + legLetter,
-                                    LegAzimuth = legAzimuth,
-                                    LegLetter = legLetter,
-                                    CivilWithLegInstId = civilWithLegs.Id
-                                };
+                            _unitOfWork.LegRepository.AddRange(legEntities);
 
-                                _unitOfWork.LegRepository.Add(tliLeg);
-                            }
-
-                            _unitOfWork.SaveChanges(); 
+                            _unitOfWork.SaveChanges();
                         }
-                        if (structureType != null && structureType.Name.ToLower() == "triangular")
-                        {
-                            string legLetter = null;
-                            float legAzimuth = 0;
 
-                            for (int i = 0; i < civilwithleglibrary.NumberOfLegs; i++)
-                            {
-                                switch (i)
-                                {
-                                    case 0:
-                                        legLetter = "A";
-                                        legAzimuth = 0;
-                                        break;
-                                    case 1:
-                                        legLetter = "B";
-                                        legAzimuth = 120;
-                                        break;
-                                    case 2:
-                                        legLetter = "C";
-                                        legAzimuth = 240;
-                                        break;
-                                    default:
-                                      
-                                        break;
-                                }
-
-                                TLIleg tliLeg = new TLIleg
-                                {
-                                    CiviLegName = civilWithLegs.Name + legLetter,
-                                    LegAzimuth = legAzimuth,
-                                    LegLetter = legLetter,
-                                    CivilWithLegInstId = civilWithLegs.Id
-                                };
-
-                                _unitOfWork.LegRepository.Add(tliLeg);
-                            }
-
-                            _unitOfWork.SaveChanges(); 
-                        }
 
                         foreach (var addDynamicAttsInstValue in AddCivilWithLegsViewModel.dynamicAttribute)
                         {
@@ -2826,6 +2760,19 @@ namespace TLIS_Service.Services
                         civilsupportdistance.Distance = editCivilWithLegsInstallationObject.civilSupportDistance.Distance;
                         civilsupportdistance.ReferenceCivilId = editCivilWithLegsInstallationObject.civilSupportDistance.ReferenceCivilId;
                         _unitOfWork.SaveChanges();
+                        var legEntities = editCivilWithLegsInstallationObject.legsInfo.Select(item => new TLIleg
+                        {
+                            CiviLegName = civilWithLegsEntity.Name + item.LegLetter,
+                            LegAzimuth = item.LegAzimuth,
+                            LegLetter = item.LegLetter,
+                            Notes = item.Notes,
+                            CivilWithLegInstId = civilWithLegsEntity.Id
+                        });
+
+                        _unitOfWork.LegRepository.AddRange(legEntities);
+
+                        _unitOfWork.SaveChanges();
+                        
                         if (editCivilWithLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(editCivilWithLegsInstallationObject.dynamicAttribute, TableNameId, civilWithLegsEntity.Id);

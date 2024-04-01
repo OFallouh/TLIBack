@@ -17,6 +17,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public EditinstallationAttributesCivilWithLegs installationAttributes { get; set; }
         public AddCivilSiteDateViewModel civilSiteDate { get; set; }
         public AddCivilSupportDistanceViewModel civilSupportDistance { get; set; }
+        public List<AddLegViewModel> legsInfo { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
     }
     public class EditinstallationAttributesCivilWithLegs

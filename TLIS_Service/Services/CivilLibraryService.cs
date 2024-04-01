@@ -1139,8 +1139,6 @@ namespace TLIS_Service.Services
                         return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    dynamic LogisticalItemIds = new ExpandoObject();
-
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
                     var CheckVendorId = _unitOfWork.LogisticalitemRepository
@@ -1176,7 +1174,7 @@ namespace TLIS_Service.Services
                     if (CheckManufacturerId != null)
                         OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
 
-                    EditLogisticalItem(LogisticalItemIds, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+                    EditLogisticalItem(editCivilWithLegsLibrary.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
 
                     if (editCivilWithLegsLibrary.dynamicAttributes != null ? editCivilWithLegsLibrary.dynamicAttributes.Count > 0 : false)
                     {
@@ -2362,7 +2360,7 @@ namespace TLIS_Service.Services
 
             return string.Empty;
         }
-        public void EditLogisticalItem(dynamic LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, dynamic OldLogisticalItemIds)
+        public void EditLogisticalItem(AddLogisticalViewModel LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, AddLogisticalViewModel OldLogisticalItemIds)
         {
             using (TransactionScope transaction2 =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -2372,12 +2370,12 @@ namespace TLIS_Service.Services
                 {
                     if (LogisticalItemIds != null)
                     {
-                        if (LogisticalItemIds.LogisticalItems.VendorId != null && LogisticalItemIds.LogisticalItems.VendorId != 0)
+                        if (LogisticalItemIds.Vendor != null && LogisticalItemIds.Vendor != 0)
                         {
-                            if (OldLogisticalItemIds.VendorId != null ? OldLogisticalItemIds.VendorId != 0 : false)
+                            if (OldLogisticalItemIds.Vendor != null ? OldLogisticalItemIds.Vendor != 0 : false)
                             {
                                 TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(OldLogisticalItemIds.VendorId);
+                                    .GetByID(OldLogisticalItemIds.Vendor);
 
                                 int CivilId = MainEntity.Id;
                                 
@@ -2387,7 +2385,7 @@ namespace TLIS_Service.Services
 
                                 if (LogisticalItem != null)
                                 {
-                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.VendorId;
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Vendor;
 
                                     _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
                                     _unitOfWork.SaveChangesAsync();
@@ -2397,7 +2395,7 @@ namespace TLIS_Service.Services
                                     TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
                                     {
                                         IsLib = true,
-                                        logisticalId = LogisticalItemIds.LogisticalItems.VendorId,
+                                        logisticalId = LogisticalItemIds.Vendor,
                                         Name = OldLogisticalObject.Name,
                                         RecordId = CivilId,
                                         tablesNamesId = TableNameEntityId
@@ -2410,7 +2408,7 @@ namespace TLIS_Service.Services
                             else
                             {
                                 TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(LogisticalItemIds.LogisticalItems.VendorId);
+                                    .GetByID(LogisticalItemIds.Vendor);
 
                                 TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
                                 {
@@ -2424,12 +2422,12 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChangesAsync();
                             }
                         }
-                        if (LogisticalItemIds.LogisticalItems.SupplierId != null && LogisticalItemIds.LogisticalItems.SupplierId != 0)
+                        if (LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0)
                         {
-                            if (OldLogisticalItemIds.SupplierId != null ? OldLogisticalItemIds.SupplierId != 0 : false)
+                            if (OldLogisticalItemIds.Supplier != null ? OldLogisticalItemIds.Supplier != 0 : false)
                             {
-                                TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(OldLogisticalItemIds.SupplierId);
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Supplier);
 
                                 int CivilId = MainEntity.Id;
 
@@ -2439,7 +2437,7 @@ namespace TLIS_Service.Services
 
                                 if (LogisticalItem != null)
                                 {
-                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.SupplierId;
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Supplier;
 
                                     _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
                                     _unitOfWork.SaveChangesAsync();
@@ -2449,7 +2447,7 @@ namespace TLIS_Service.Services
                                     TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
                                     {
                                         IsLib = true,
-                                        logisticalId = LogisticalItemIds.LogisticalItems.SupplierId,
+                                        logisticalId = LogisticalItemIds.Supplier,
                                         Name = OldLogisticalObject.Name,
                                         RecordId = CivilId,
                                         tablesNamesId = TableNameEntityId
@@ -2461,27 +2459,28 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(LogisticalItemIds.LogisticalItems.SupplierId);
-
-                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Supplier);
+                                if (LogisticalObject != null)
                                 {
-                                    Name = "",
-                                    IsLib = true,
-                                    logisticalId = LogisticalObject.Id,
-                                    RecordId = MainEntity.Id,
-                                    tablesNamesId = TableNameEntityId
-                                };
-                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                         }
-                        if (LogisticalItemIds.LogisticalItems.DesignerId != null && LogisticalItemIds.LogisticalItems.DesignerId != 0)
+                        if (LogisticalItemIds.Designer != null && LogisticalItemIds.Designer != 0)
                         {
-                            if (OldLogisticalItemIds.DesignerId != null ? OldLogisticalItemIds.DesignerId != 0 : false)
+                            if (OldLogisticalItemIds.Designer != null ? OldLogisticalItemIds.Designer != 0 : false)
                             {
-                                TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(OldLogisticalItemIds.DesignerId);
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Designer);
 
                                 int CivilId = MainEntity.Id;
 
@@ -2491,7 +2490,7 @@ namespace TLIS_Service.Services
 
                                 if (LogisticalItem != null)
                                 {
-                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.DesignerId;
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Designer;
 
                                     _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
                                     _unitOfWork.SaveChangesAsync();
@@ -2501,7 +2500,7 @@ namespace TLIS_Service.Services
                                     TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
                                     {
                                         IsLib = true,
-                                        logisticalId = LogisticalItemIds.LogisticalItems.DesignerId,
+                                        logisticalId = LogisticalItemIds.Designer,
                                         Name = OldLogisticalObject.Name,
                                         RecordId = CivilId,
                                         tablesNamesId = TableNameEntityId
@@ -2513,27 +2512,29 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(LogisticalItemIds.LogisticalItems.DesignerId);
-
-                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                TLIlogistical LogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == LogisticalItemIds.Designer);
+                                if (LogisticalObject != null)
                                 {
-                                    Name = "",
-                                    IsLib = true,
-                                    logisticalId = LogisticalObject.Id,
-                                    RecordId = MainEntity.Id,
-                                    tablesNamesId = TableNameEntityId
-                                };
-                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                         }
-                        if (LogisticalItemIds.LogisticalItems.ManufacturerId != null && LogisticalItemIds.LogisticalItems.ManufacturerId != 0)
+                        if (LogisticalItemIds.Manufacturer != null && LogisticalItemIds.Manufacturer != 0)
                         {
-                            if (OldLogisticalItemIds.ManufacturerId != null ? OldLogisticalItemIds.ManufacturerId != 0 : false)
+                            if (OldLogisticalItemIds.Manufacturer != null ? OldLogisticalItemIds.Manufacturer != 0 : false)
                             {
-                                TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(OldLogisticalItemIds.ManufacturerId);
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Manufacturer);
 
                                 int CivilId = MainEntity.Id;
 
@@ -2543,7 +2544,7 @@ namespace TLIS_Service.Services
 
                                 if (LogisticalItem != null)
                                 {
-                                    LogisticalItem.logisticalId = LogisticalItemIds.LogisticalItems.ManufacturerId;
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Manufacturer;
 
                                     _unitOfWork.LogisticalitemRepository.Update(LogisticalItem);
                                     _unitOfWork.SaveChangesAsync();
@@ -2553,7 +2554,7 @@ namespace TLIS_Service.Services
                                     TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
                                     {
                                         IsLib = true,
-                                        logisticalId = LogisticalItemIds.LogisticalItems.ManufacturerId,
+                                        logisticalId = LogisticalItemIds.Manufacturer,
                                         Name = OldLogisticalObject.Name,
                                         RecordId = CivilId,
                                         tablesNamesId = TableNameEntityId
@@ -2565,19 +2566,20 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(LogisticalItemIds.LogisticalItems.ManufacturerId);
-
-                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Manufacturer);
+                                if (LogisticalObject != null)
                                 {
-                                    Name = "",
-                                    IsLib = true,
-                                    logisticalId = LogisticalObject.Id,
-                                    RecordId = MainEntity.Id,
-                                    tablesNamesId = TableNameEntityId
-                                };
-                                _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
-                                _unitOfWork.SaveChangesAsync();
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddAsync(NewLogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
                             }
                         }
                     }

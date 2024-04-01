@@ -706,8 +706,8 @@ namespace TLIS_Repository.Repositories
                             TLItablesHistory tablesHistory = new TLItablesHistory();
                             int? TablehistoryId = null;
                             tablesHistory.TablesNameId = TablesNameId;
-                            string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
-                            tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
+                            string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Edit").Select(x => x.Name).FirstOrDefault();
+                            tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Edit").Select(x => x.Id).FirstOrDefault();
 
                             tablesHistory.RecordId = EntitesId;
                             tablesHistory.UserId = UserId.Value;
