@@ -257,7 +257,7 @@ namespace TLIS_Repository.Repositories
                         throw new ArgumentException($"Property {name} not found in {nameof(obj)}");
                     }
                 }
-                PropertyInfo propertyInfo = type.GetProperty(propertyName);
+                PropertyInfo propertyInfo = type.GetProperty(name);
                 if (propertyInfo != null)
                 {
                     var value = propertyInfo.GetValue(obj);
@@ -269,7 +269,28 @@ namespace TLIS_Repository.Repositories
             }
             foreach (var propertyName in propertyNamesDynamic)
             {
-                item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
+
+                var datatype = _context.CIVIL_WITHLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Key == propertyName);
+                if (datatype != null)
+                {
+                    if (datatype.dataType.ToString().ToLower() == "bool")
+                    {
+                        var types = dynamic.GetValueOrDefault(propertyName);
+                        if (types == "1")
+                        {
+                            item.Add(propertyName, true);
+                        }
+                        if (types == "0")
+                        {
+                            item.Add(propertyName, false);
+                        }
+                    }
+                    else
+                    {
+                        item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
+                    }
+                }
+               
             }
             return item;
         }
