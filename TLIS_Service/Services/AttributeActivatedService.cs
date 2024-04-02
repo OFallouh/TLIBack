@@ -204,15 +204,14 @@ namespace TLIS_Service.Services
                     if (!string.IsNullOrEmpty(AttributeName))
                     {
                         Attributes = _unitOfWork.AttributeActivatedRepository.GetWhere(x =>
-                            x.Key.ToLower().StartsWith(AttributeName.ToLower()) && x.enable && x.Manage&&
-                            x.Tabel.ToLower() == TableName.ToLower() &&
+                            x.Key.ToLower().StartsWith(AttributeName.ToLower()) && (x.enable || x.Manage) && x.Tabel.ToLower() == TableName.ToLower() &&
                             x.DataType != "List" && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted").Distinct().ToList();
                     }
                     else
                     {
                         Attributes = _unitOfWork.AttributeActivatedRepository.GetWhere(x =>
-                            (x.Tabel.ToLower() == TableName.ToLower() && x.enable && x.Manage &&
-                             x.DataType != "List" && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted") ||
+                            (x.Tabel.ToLower() == TableName.ToLower() &&( x.enable || x.Manage)&& x.DataType != "List" && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" 
+                            && x.Key.ToLower() != "deleted") ||
                             (x.Tabel.ToLower() == TableName.ToLower() && x.Key.ToLower() == "model")).Distinct().ToList();
                     }
                 }

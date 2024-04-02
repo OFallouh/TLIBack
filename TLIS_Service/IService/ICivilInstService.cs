@@ -33,10 +33,10 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> AddCivilInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId);
         Task<Response<ObjectInstAtts>> EditCivilInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId, int userId);
         Response<GetForAddCivilWithLegObject> GetById(int CivilInsId, string TableName);
-        Response<object> GetCivilWithLegsWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString);
+        Response<object> GetCivilWithLegsWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
         Response<object> GetCivilNonSteelWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination,string ConnectionString);
-        Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination);
+        Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, string SiteCode);
         Response<List<ListOfCivilLoadDto>> GetAllCivilLoad(string SearchName, ParameterPagination parameters);
         List<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);
         List<LoadOnCivil> GetLoadWithoutSideArm(int civilid);

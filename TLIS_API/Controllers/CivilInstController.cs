@@ -35,7 +35,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithLegInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId,string SiteCode)
@@ -78,10 +78,10 @@ namespace TLIS_API.Controllers
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithLegsWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetCivilWithLegsWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetCivilWithLegsWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -120,9 +120,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllCivils")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetAllCivils([FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetAllCivils([FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination,string SiteCode)
         {
-            var response = _unitOfWorkService.CivilInstService.GetAllCivils(BaseFilter, WithFilterData, parameterPagination);
+            var response = _unitOfWorkService.CivilInstService.GetAllCivils(BaseFilter, WithFilterData, parameterPagination, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -287,7 +287,7 @@ namespace TLIS_API.Controllers
         //    }
         //    return Ok(new Response<AddCivilNonSteelViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
         //}
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilWithLegsById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilWithLegsById(int CivilId)

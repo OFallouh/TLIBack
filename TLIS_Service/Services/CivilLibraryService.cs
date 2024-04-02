@@ -62,6 +62,7 @@ using System.Data;
 using Remotion;
 using Newtonsoft.Json;
 using System.Text.Json.Nodes;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TLIS_Service.Services
 {
@@ -4081,7 +4082,7 @@ namespace TLIS_Service.Services
                         WidthVariation=x.WidthVariation,
                         NumberOfLegs=x.NumberOfLegs
 
-                    })
+                    }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item =>_unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));

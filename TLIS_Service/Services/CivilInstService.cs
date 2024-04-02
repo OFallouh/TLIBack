@@ -6065,7 +6065,7 @@ namespace TLIS_Service.Services
             });
         }
         #region Get Enabled Attributes Only With Dynamic Objects...
-        public Response<object> GetCivilWithLegsWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination,string ConnectionString)
+        public Response<object> GetCivilWithLegsWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination,string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -6112,9 +6112,9 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0) 
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == BaseFilter.SiteCode.ToLower()).AsEnumerable()
-                    .Select(item => BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
@@ -6122,7 +6122,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == BaseFilter.SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -6175,10 +6175,10 @@ namespace TLIS_Service.Services
                         HieghFromLand = x.HieghFromLand,
                         Support_Limited_Load = x.Support_Limited_Load,
                         ENFORCMENTCATEGORY = x.ENFORCMENTCATEGORY,
-                    })
+                    }).OrderBy(x => x.Key.Name)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
@@ -6518,8 +6518,8 @@ namespace TLIS_Service.Services
                         Support_Limited_Load = x.Support_Limited_Load,
                     })
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                     int count = query.Count();
                     query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
@@ -6532,88 +6532,88 @@ namespace TLIS_Service.Services
             }
 
         }
-        static bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item)
-        {
-            bool x = true;
-            if (filters != null && filters.Count > 0)
-            {
-                foreach (var filter in filters)
-                {
-                    object value;
-                    if (item.TryGetValue(filter.key, out value))
-                    {
-                        if (value != null)
-                        {
-                            if (filter.value.Count > 1)
-                            {
-                                if (!filter.value.Any(x => x.ToString().ToLower() == value.ToString().ToLower()))
-                                {
-                                    x = false;
-                                    break;
-                                }
-                            }
-                            else if (filter.value.Count == 1)
-                            {
-                                if (int.TryParse(value.ToString(), out int Intres) && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
-                                {
-                                    x = false;
-                                    break;
-                                }
-                                if (DateTime.TryParse(value.ToString(), out DateTime Dateres) && DateTime.TryParse(filter.value[0].ToString(), out DateTime FDateres) && Dateres != FDateres)
-                                {
-                                    x = false;
-                                    break;
-                                }
-                                else if (!value.ToString().ToLower().StartsWith(filter.value[0].ToString().ToLower()))
-                                {
-                                    x = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return x;
-        }
-        static IDictionary<string, object> BuildDynamicSelect(object obj,Dictionary<string,string>? dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
-        {
-            Dictionary<string, object> item = new Dictionary<string, object>();
-            Type type = obj.GetType();
-            foreach (var propertyName in propertyNamesStatic)
-            {
-                string name = propertyName;
-                var property =type.GetProperty(name);
+        //static bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item)
+        //{
+        //    bool x = true;
+        //    if (filters != null && filters.Count > 0)
+        //    {
+        //        foreach (var filter in filters)
+        //        {
+        //            object value;
+        //            if (item.TryGetValue(filter.key, out value))
+        //            {
+        //                if (value != null)
+        //                {
+        //                    if (filter.value.Count > 1)
+        //                    {
+        //                        if (!filter.value.Any(x => x.ToString().ToLower() == value.ToString().ToLower()))
+        //                        {
+        //                            x = false;
+        //                            break;
+        //                        }
+        //                    }
+        //                    else if (filter.value.Count == 1)
+        //                    {
+        //                        if (int.TryParse(value.ToString(), out int Intres) && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
+        //                        {
+        //                            x = false;
+        //                            break;
+        //                        }
+        //                        if (DateTime.TryParse(value.ToString(), out DateTime Dateres) && DateTime.TryParse(filter.value[0].ToString(), out DateTime FDateres) && Dateres != FDateres)
+        //                        {
+        //                            x = false;
+        //                            break;
+        //                        }
+        //                        else if (!value.ToString().ToLower().StartsWith(filter.value[0].ToString().ToLower()))
+        //                        {
+        //                            x = false;
+        //                            break;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return x;
+        //}
+        //static IDictionary<string, object> BuildDynamicSelect(object obj,Dictionary<string,string>? dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
+        //{
+        //    Dictionary<string, object> item = new Dictionary<string, object>();
+        //    Type type = obj.GetType();
+        //    foreach (var propertyName in propertyNamesStatic)
+        //    {
+        //        string name = propertyName;
+        //        var property =type.GetProperty(name);
 
-                // Check if the property exists
-                if (property == null)
-                {
-                    name = name.ToUpper();
-                    property = type.GetProperty(name);
-                    if (property == null)
-                    {
-                        throw new ArgumentException($"Property {name} not found in {nameof(obj)}");
-                    }
-                }
-                PropertyInfo propertyInfo = type.GetProperty(propertyName);
-                if (propertyInfo != null)
-                {
-                    var value = propertyInfo.GetValue(obj);
-                    if (value != null)
-                    {
-                        item.Add(name, propertyInfo.GetValue(obj));
-                    }
-                }
-            }
-            foreach (var propertyName in propertyNamesDynamic)
-            {
-                item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
-            }
-            return item;
-        }
+        //        // Check if the property exists
+        //        if (property == null)
+        //        {
+        //            name = name.ToUpper();
+        //            property = type.GetProperty(name);
+        //            if (property == null)
+        //            {
+        //                throw new ArgumentException($"Property {name} not found in {nameof(obj)}");
+        //            }
+        //        }
+        //        PropertyInfo propertyInfo = type.GetProperty(propertyName);
+        //        if (propertyInfo != null)
+        //        {
+        //            var value = propertyInfo.GetValue(obj);
+        //            if (value != null)
+        //            {
+        //                item.Add(name, propertyInfo.GetValue(obj));
+        //            }
+        //        }
+        //    }
+        //    foreach (var propertyName in propertyNamesDynamic)
+        //    {
+        //        item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
+        //    }
+        //    return item;
+        //}
         #endregion
         #region Get All Civils Installations And Libraries Enabled Attributes...
-        public Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination)
+        public Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination,string SiteCode)
         {
             try
             {
@@ -6621,7 +6621,7 @@ namespace TLIS_Service.Services
                 int count = 0;
                 string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
 
-                MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, ConnectionString).Data;
+                MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(SiteCode, WithFilterData, null, parameterPagination, ConnectionString).Data;
                 MainOutPut.CivilWithoutLeg = GetCivilWithoutLegWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, 0).Data;
                 MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, ConnectionString).Data;
 

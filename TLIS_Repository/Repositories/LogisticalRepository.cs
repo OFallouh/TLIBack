@@ -83,7 +83,7 @@ namespace TLIS_Repository.Repositories
 
             foreach (TLIlogisticalType LogisticalType in LogistaclTypes)
             {
-                TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical)
+                TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical).ThenInclude(x=>x.logisticalType)
                     .FirstOrDefault(x => x.tablesNamesId == TableNameId && x.RecordId == RecordId &&
                         x.logistical.tablePartNameId == TablePartNameId && x.logistical.logisticalTypeId == LogisticalType.Id);
                 List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical
@@ -126,25 +126,7 @@ namespace TLIS_Repository.Repositories
                 }
                 else
                 {
-                    if (LogisticalItem.logistical.logisticalType.Name.ToLower() == "vendor")
-                    {
-
-                        result.Add(new BaseInstAttViews
-                        {
-                            Key = LogisticalType.Name,
-                            Label = LogisticalType.Name,
-                            enable = true,
-                            DataType = "List",
-                            AutoFill = false,
-                            Desc = LogisticalType.Name,
-                            Manage = false,
-                            Required = true,
-                            Value = "NA",
-                            Options = Logisticals
-
-                        });
-                    }
-
+                  
                     result.Add(new BaseInstAttViews
                     {
                         Key = LogisticalType.Name,
@@ -155,7 +137,7 @@ namespace TLIS_Repository.Repositories
                         Desc = LogisticalType.Name,
                         Manage = false,
                         Required = false,
-                        Value = "NA",
+                        Value = "null",
                         Options = Logisticals
 
                     });
