@@ -14,11 +14,13 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+    
+        public string? Name { get; set; }
         public string? SITECODE { get; set; }
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
-        public int Id { get; set; }
-        public string? Name { get; set; }
+       
         public float? WindMaxLoadm2 { get; set; }
         public double? LocationHeight { get; set; }
         public string? PoType { get; set; }
@@ -50,8 +52,8 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
         public string? DiagonalMemberPrefix { get; set; }
         public float EnforcementHeightBase { get; set; }
         public float Enforcementlevel { get; set; }
-        public StructureTypeCompatibleWithDesign StructureType { get; set; }
-        public SectionsLegTypeCompatibleWithDesign SectionsLegType { get; set; }
+        public bool StructureType { get; set; }
+        public bool SectionsLegType { get; set; }
         public float TotalHeight { get; set; }
         public float SpaceInstallation { get; set; }
         public string? OWNER { get; set; }

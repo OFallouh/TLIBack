@@ -1114,6 +1114,10 @@ namespace TLIS_Service.Services
                     {
                         return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    if(CivilWithLegLib.Model != CivilWithLegLibraryEntites.Model)
+                    {
+                        return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"Can not Edit model", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                     if (structureTypeName != null && structureTypeName.ToLower() == "triangular")
                         CivilWithLegLibraryEntites.NumberOfLegs = 3;
 
@@ -4022,8 +4026,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" &&
-                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" && x.AttributeActivated.Key.ToLower()!="active" &&
+                        x.AttributeActivated.Key.ToLower() != "delete" &&((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -4072,9 +4076,9 @@ namespace TLIS_Service.Services
                         Height_Designed=x.Height_Designed,
                         Max_load_M2=x.Max_load_M2,
                         SpaceLibrary=x.SpaceLibrary,
-                        Active=x.Active,
-                        Deleted=x.Deleted,
-                        SUPPORTTYPEDESIGNED=x.SUPPORTTYPEDESIGNED,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        SUPPORTTYPEDESIGNED =x.SUPPORTTYPEDESIGNED,
                         SECTIONSLEGTYPE=x.SECTIONSLEGTYPE,
                         STRUCTURETYPE=x.STRUCTURETYPE,
                         CIVILSTEELSUPPORTCATEGORY=x.CIVILSTEELSUPPORTCATEGORY,

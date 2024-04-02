@@ -692,7 +692,7 @@ namespace TLIS_Service.Services
             {
                 TLIattributeActivated AttributeActivatedTest = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(x => x.Id == AttributeActivatedId);
 
-                if (AttributeActivatedTest.Manage)
+                if (AttributeActivatedTest.Manage==false)
                     return new Response<AttributeActivatedViewModel>(true, null, null, $"{AttributeActivatedTest.Key} attribute is included in space calculation and can't be disabled", (int)Helpers.Constants.ApiReturnCode.fail);
 
                 if (CivilWithoutLegCategoryId == null)

@@ -2225,6 +2225,10 @@ namespace TLIS_Service.Services
                                 return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
+                        if (civilWithLegs.HeightBase <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                         var civilwithleglibrary = _dbContext.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.civilType.civilWithLegsLibId);
                         sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
                         if (civilWithLegs.OwnerId == 0 || civilWithLegs.OwnerId == null)
@@ -2618,6 +2622,10 @@ namespace TLIS_Service.Services
                         string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
                          ((x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == editCivilWithLegsInstallationObject.installationAttributes.Id : false) &&
                              !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
+                        if (civilWithLegsEntity.HeightBase <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                         if (editCivilWithLegsInstallationObject.installationAttributes.Name.ToLower() != CivilWithLegInst.Name.ToLower())
                         {
                             var civilwithleglibrary = _dbContext.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId);
@@ -6112,7 +6120,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0) 
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -6125,8 +6133,8 @@ namespace TLIS_Service.Services
                         var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
-                        Id = x.Id,
                         Name = x.Name,
+                        Id = x.Id,
                         SITECODE = x.SITECODE,
                         WindMaxLoadm2 = x.WindMaxLoadm2,
                         LocationHeight = x.LocationHeight,
@@ -6141,7 +6149,7 @@ namespace TLIS_Service.Services
                         VisiableStatus = x.VisiableStatus,
                         VerticalMeasured = x.VerticalMeasured,
                         OtherBaseType = x.OtherBaseType,
-                        IsEnforeced = x.IsEnforeced,
+                        IsEnforeced = x.IsEnforeced ,
                         H2height = x.H2height,
                         HeightBase = x.HeightBase,
                         DimensionsLeg = x.DimensionsLeg,
@@ -6180,6 +6188,7 @@ namespace TLIS_Service.Services
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
+
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
 
                         return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
