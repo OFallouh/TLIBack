@@ -93,6 +93,23 @@ namespace TLIS_Repository.Repositories
 
                 if (LogisticalItem != null)
                 {
+                    if (LogisticalItem.logistical.logisticalType.Name.ToLower() == "vendor")
+                    {
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = true,
+                            Value = _mapper.Map<LogisticalViewModel>(LogisticalItem.logistical),
+                            Options = Logisticals
+                        });
+
+                    }
                     result.Add(new BaseInstAttViews
                     {
                         Key = LogisticalType.Name,
@@ -109,6 +126,25 @@ namespace TLIS_Repository.Repositories
                 }
                 else
                 {
+                    if (LogisticalItem.logistical.logisticalType.Name.ToLower() == "vendor")
+                    {
+
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = true,
+                            Value = "NA",
+                            Options = Logisticals
+
+                        });
+                    }
+
                     result.Add(new BaseInstAttViews
                     {
                         Key = LogisticalType.Name,
