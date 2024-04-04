@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -62,130 +63,123 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddCabinet")]
         [ProducesResponseType(200, Type = typeof(AddCabinetViewModel))]
-        public IActionResult AddCabinet([FromBody] AddCabinetViewModel addCabinetViewModel, string SiteCode, int TaskId)
+        public IActionResult AddCabinet([FromBody] AddCabinetViewModel addCabinetViewModel, string SiteCode, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCabinetViewModel.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetViewModel)))
-                    {
-                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                return Unauthorized();
             }
-            else if (addCabinetViewModel.TLIotherInSite.ReservedSpace == false)
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
             {
-                if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetViewModel)))
-                {
-                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                return Unauthorized();
             }
-            return Ok(new Response<AddCabinetViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+            if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetViewModel)))
+            {
+                var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        
+                
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddSolar")]
         [ProducesResponseType(200, Type = typeof(AddSolarViewModel))]
-        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode, int TaskId)
+        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addSolarViewModel.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
-                    {
-                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                return Unauthorized();
             }
-            else if (addSolarViewModel.TLIotherInSite.ReservedSpace == false)
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
             {
-                if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
-                {
-                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                return Unauthorized();
             }
-            return Ok(new Response<AddSolarViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+            if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
+            {
+                var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddGenerator")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
-        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode, int TaskId)
+        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode, int ?TaskId)
         {
+
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addGeneratorViewModel.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
-                    {
-                        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                return Unauthorized();
             }
-            else if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == false)
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
             {
-                if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
-                {
-                    var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                return Unauthorized();
             }
-            return Ok(new Response<AddGeneratorViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
+            {
+                var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+             
+
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCabinetById")]
@@ -214,7 +208,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCabinet")]
         [ProducesResponseType(200, Type = typeof(EditCabinetViewModel))]
-        public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel,int TaskId)
+        public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel,int ?TaskId)
         {
             if (TryValidateModel(editCabinetViewModel, nameof(EditCabinetViewModel)))
             {
@@ -232,7 +226,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditSolar")]
         [ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
-        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int TaskId)
+        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int ?TaskId)
         {
             if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
             {
@@ -250,7 +244,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditGenerator")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int TaskId)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int ?TaskId)
         {
             if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
             {
@@ -268,7 +262,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleOtherInventory")]
 
-        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
+        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int ?TaskId)
         {
             var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(SiteCode, OtherInventoryId , OtherInventoryName, TaskId);
             return Ok(response);

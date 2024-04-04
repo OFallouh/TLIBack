@@ -13,6 +13,9 @@ using TLIS_Repository.IRepository;
 using System.IdentityModel.Tokens.Jwt;
 using TLIS_DAL.Models;
 using System.Reflection;
+using static TLIS_Repository.Helpers.Constants;
+using TLIS_DAL.Helpers;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 
 namespace TLIS_Repository.Base
 {
@@ -314,7 +317,7 @@ namespace TLIS_Repository.Base
                     Date = DateTime.Now,
                     HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x => x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id,
                     PreviousHistoryId = null,
-                    RecordId = entityId,
+                    RecordId = entityId.ToString(),
                     TablesNameId = TableNameModel.Id,
                     UserId = UserId.Value
                 };
@@ -522,7 +525,7 @@ namespace TLIS_Repository.Base
                     Date = DateTime.Now,
                     HistoryTypeId = HistoryTypeId,
                     PreviousHistoryId = null,
-                    RecordId = entityId,
+                    RecordId = entityId.ToString(),
                     TablesNameId = EntityTableNameModel.Id,
                     UserId = UserId.Value
                 };
@@ -548,7 +551,7 @@ namespace TLIS_Repository.Base
                     Date = DateTime.Now,
                     HistoryTypeId = HistoryTypeId,
                     PreviousHistoryId = null,
-                    RecordId = entityId,
+                    RecordId = entityId.ToString(),
                     TablesNameId = EntityTableNameModel.Id,
                     UserId = UserId.Value
                 });
@@ -573,7 +576,533 @@ namespace TLIS_Repository.Base
             }
             await _context.SaveChangesAsync();
         }
-        
+        public Response<string> CheckSpaces(int UserId, string SiteCode, string TableName, int LibraryId, float SpaceInstallation, string Cabinet)
+        {
+            try
+            {
+                TLIsite tLIsite = new TLIsite();
+                TLIsite Site = new TLIsite();
+                TLIsite OldValueSite =new TLIsite();
+                TEntity Oldentity;
+
+                OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                tLIsite = OldValueSite;
+                Oldentity = _mapper.Map<TEntity>(tLIsite);
+                Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                if (SpaceInstallation != 0)
+                {
+                    var space = Site.ReservedSpace + SpaceInstallation;
+                    if (space <= Site.RentedSpace)
+                    {
+                        var NewSite = new TLIsite
+                        {
+                            SiteCode= Site.SiteCode,
+                            SiteName= Site.SiteName,
+                            LocationHieght= Site.LocationHieght,
+                            LocationType= Site.LocationType,
+                            Latitude= Site.Latitude,
+                            Longitude= Site.Longitude,
+                            siteStatusId= Site.siteStatusId,
+                            RentedSpace= Site.RentedSpace,
+                            SiteVisiteDate= Site.SiteVisiteDate,
+                            Zone= Site.Zone,
+                            SubArea = Site.SubArea,
+                            RegionCode= Site.RegionCode,
+                            STATUS_DATE= Site.STATUS_DATE,
+                            CREATE_DATE= Site.CREATE_DATE,
+                            ReservedSpace = space,
+                            AreaId= Site.AreaId,
+                        
+                        };
+
+                        TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                        UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                        _context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
+                    {
+                        var civilWithoutLegSpaceLibrary = _context.TLIcivilWithoutLegLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (civilWithoutLegSpaceLibrary != null)
+                        {
+                           
+                            OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                            tLIsite = OldValueSite;
+                            Oldentity = _mapper.Map<TEntity>(tLIsite);
+                            Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                            var space = Site.ReservedSpace + civilWithoutLegSpaceLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();  
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == TableName)
+                    {
+                        OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                        tLIsite = OldValueSite;
+                        Oldentity = _mapper.Map<TEntity>(tLIsite);
+                        Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                        var civilWithLegSpaceLibrary = _context.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (civilWithLegSpaceLibrary.SpaceLibrary != 0)
+                        {
+                            var space = Site.ReservedSpace + civilWithLegSpaceLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == TableName)
+                    {
+                        OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                        tLIsite = OldValueSite;
+                        Oldentity = _mapper.Map<TEntity>(tLIsite);
+                        Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                        var civilNonSteelLibrary = _context.TLIcivilNonSteelLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (civilNonSteelLibrary.SpaceLibrary != 0)
+                        {
+                            var space = Site.ReservedSpace + civilNonSteelLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else if (OtherInventoryType.TLIcabinet.ToString() == TableName && Cabinet == "Power")
+                    {
+                        OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                        tLIsite = OldValueSite;
+                        Oldentity = _mapper.Map<TEntity>(tLIsite);
+                        Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                        var cabinetPowerLibrarySpaceLibrary = _context.TLIcabinetPowerLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (cabinetPowerLibrarySpaceLibrary.SpaceLibrary != 0)
+                        {
+                            var space = Site.ReservedSpace + cabinetPowerLibrarySpaceLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();
+
+                            }
+
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
+                        else if (cabinetPowerLibrarySpaceLibrary.Depth != 0 && cabinetPowerLibrarySpaceLibrary.Width != 0)
+                        {
+                            OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                            tLIsite = OldValueSite;
+                            Oldentity = _mapper.Map<TEntity>(tLIsite);
+                            Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                            var lengh = cabinetPowerLibrarySpaceLibrary.Depth;
+                            var Width = cabinetPowerLibrarySpaceLibrary.Width;
+                            var result = (lengh * Width) + Site.ReservedSpace;
+                            if (result <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = result,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else if (OtherInventoryType.TLIcabinet.ToString() == TableName && Cabinet == "Telecom")
+                    {
+                        OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                        tLIsite = OldValueSite;
+                        Oldentity = _mapper.Map<TEntity>(tLIsite);
+                        Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                        var cabinetSpaceLibrary = _context.TLIcabinetTelecomLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (cabinetSpaceLibrary.SpaceLibrary != 0)
+                        {
+                            var space = Site.ReservedSpace + cabinetSpaceLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        else if (cabinetSpaceLibrary.Depth != 0 && cabinetSpaceLibrary.Width != 0)
+                        {
+                            OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                            tLIsite = OldValueSite;
+                            Oldentity = _mapper.Map<TEntity>(tLIsite);
+                            Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                            var lengh = cabinetSpaceLibrary.Depth;
+                            var Width = cabinetSpaceLibrary.Width;
+                            var result = (lengh * Width) + Site.ReservedSpace;
+                            if (result <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = result,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges();
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else if (OtherInventoryType.TLIgenerator.ToString() == TableName)
+                    {
+                        OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                        tLIsite = OldValueSite;
+                        Oldentity = _mapper.Map<TEntity>(tLIsite);
+                        Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                        var generatorLibrarySpaceLibrary = _context.TLIgeneratorLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (generatorLibrarySpaceLibrary.SpaceLibrary != 0)
+                        {
+                            var space = Site.ReservedSpace + generatorLibrarySpaceLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges(); 
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+
+                        else if (generatorLibrarySpaceLibrary.Length != 0 && generatorLibrarySpaceLibrary.Width != 0)
+                        {
+                            OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                            tLIsite = OldValueSite;
+                            Oldentity = _mapper.Map<TEntity>(tLIsite);
+                            Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                            var lengh = generatorLibrarySpaceLibrary.Length;
+                            var Width = generatorLibrarySpaceLibrary.Width;
+                            var result = (lengh * Width) + Site.ReservedSpace;
+                            if (result <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = result,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges(); 
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else if (OtherInventoryType.TLIsolar.ToString() == TableName)
+                    {
+                        OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                        tLIsite = OldValueSite;
+                        Oldentity = _mapper.Map<TEntity>(tLIsite);
+                        Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                        var solarLibrarySpaceLibrary = _context.TLIsolarLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (solarLibrarySpaceLibrary.SpaceLibrary != 0)
+                        {
+                            var space = Site.ReservedSpace + solarLibrarySpaceLibrary.SpaceLibrary;
+                            if (space <= Site.RentedSpace)
+                            {
+                                var NewSite = new TLIsite
+                                {
+                                    SiteCode = Site.SiteCode,
+                                    SiteName = Site.SiteName,
+                                    LocationHieght = Site.LocationHieght,
+                                    LocationType = Site.LocationType,
+                                    Latitude = Site.Latitude,
+                                    Longitude = Site.Longitude,
+                                    siteStatusId = Site.siteStatusId,
+                                    RentedSpace = Site.RentedSpace,
+                                    SiteVisiteDate = Site.SiteVisiteDate,
+                                    Zone = Site.Zone,
+                                    SubArea = Site.SubArea,
+                                    RegionCode = Site.RegionCode,
+                                    STATUS_DATE = Site.STATUS_DATE,
+                                    CREATE_DATE = Site.CREATE_DATE,
+                                    ReservedSpace = space,
+                                    AreaId = Site.AreaId,
+
+                                };
+
+                                TEntity Newentity = _mapper.Map<TEntity>(NewSite);
+                                UpdateSiteWithHistory(UserId, Oldentity, Newentity);
+                                _context.SaveChanges(); ;
+
+                            }
+                            else
+                            {
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        else
+                        {
+                            return new Response<string>(true, null, null, "Add spacelibrary or spaceinstallation", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
+
+                return new Response<string>();
+            }
+            catch (Exception err)
+            {
+                return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
         // Update One Item
         public virtual void UpdateWithHistory(int? UserId, TEntity OldObject, TEntity NewObject)
         {
@@ -589,7 +1118,7 @@ namespace TLIS_Repository.Base
                 
                 int entityId = (int)entity.GetType().GetProperty("Id").GetValue(entity, null);
 
-                TLItablesHistory PreviousHistory = _context.TLItablesHistory.OrderBy(x => x.Date).LastOrDefault(x => x.RecordId == entityId &&
+                TLItablesHistory PreviousHistory = _context.TLItablesHistory.OrderBy(x => x.Date).LastOrDefault(x => x.RecordId == entityId.ToString() &&
                     x.TablesNameId == EntityTableNameModel.Id);
 
                 int? PreviousHistoryId = null;
@@ -601,7 +1130,7 @@ namespace TLIS_Repository.Base
                     Date = DateTime.Now,
                     HistoryTypeId = HistoryTypeId,
                     PreviousHistoryId = PreviousHistoryId,
-                    RecordId = entityId,
+                    RecordId = entityId.ToString(),
                     TablesNameId = EntityTableNameModel.Id,
                     UserId = UserId.Value
                 };
@@ -647,7 +1176,79 @@ namespace TLIS_Repository.Base
             dataTable.Update(OldObject);
             _context.SaveChanges();
         }
-        // Remove One Item
+        public virtual void UpdateSiteWithHistory(int? UserId, TEntity OldObject, TEntity NewObject)
+        {
+            //if (UserId == null)
+            //    UserId = _context.TLIuser.FirstOrDefault(x => x.UserName == "AdminSy").Id;
+            TEntity entity = _mapper.Map<TEntity>(NewObject);
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == entity.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Edit.ToString().ToLower()).Id;
+
+                string entityId = (string)entity.GetType().GetProperty("SiteCode").GetValue(entity, null);
+
+                TLItablesHistory PreviousHistory = _context.TLItablesHistory.OrderBy(x => x.Date).LastOrDefault(x => x.RecordId == entityId &&
+                    x.TablesNameId == EntityTableNameModel.Id);
+
+                int? PreviousHistoryId = null;
+                if (PreviousHistory != null)
+                    PreviousHistoryId = PreviousHistory.Id;
+
+                TLItablesHistory AddTablesHistory = new TLItablesHistory
+                {
+                    Date = DateTime.Now,
+                    HistoryTypeId = HistoryTypeId,
+                    PreviousHistoryId = PreviousHistoryId,
+                    RecordId = entityId,
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+                _context.TLItablesHistory.Add(AddTablesHistory);
+                _context.SaveChanges();
+
+                List<PropertyInfo> Attributes = OldObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                     x.PropertyType == typeof(Single))).ToList();
+
+                List<TLIhistoryDetails> ListOfHistoryDetailsToAdd = new List<TLIhistoryDetails>();
+
+                foreach (PropertyInfo Attribute in Attributes)
+                {
+                    object OldAttributeValue = Attribute.GetValue(OldObject, null);
+                    object NewAttributeValue = Attribute.GetValue(NewObject, null);
+
+                    if (((OldAttributeValue != null && NewAttributeValue != null) ? OldAttributeValue.ToString() == NewAttributeValue.ToString() : false) ||
+                        (OldAttributeValue == null && NewAttributeValue == null))
+                        continue;
+
+                    TLIhistoryDetails HistoryDetails = new TLIhistoryDetails
+                    {
+                        TablesHistoryId = AddTablesHistory.Id,
+                        AttName = Attribute.Name,
+                        OldValue = OldAttributeValue != null ? OldAttributeValue.ToString() : null,
+                        NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                        AttributeType = AttributeType.Static
+                    };
+                    ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                }
+                _context.TLIhistoryDetails.AddRange(ListOfHistoryDetailsToAdd);
+                _context.SaveChanges();
+            }
+            OldObject = NewObject;
+            _context.Entry<TEntity>(OldObject).State = EntityState.Detached;
+            dataTable.Update(OldObject);
+            _context.SaveChanges();
+        }
+      
         public virtual void RemoveItemWithHistory(int? UserId, TEntity Entity)
         {
             dataTable.Remove(Entity);
@@ -662,7 +1263,7 @@ namespace TLIS_Repository.Base
 
                 int entityId = (int)Entity.GetType().GetProperty("Id").GetValue(Entity, null);
 
-                TLItablesHistory PreviousHistory = _context.TLItablesHistory.OrderBy(x => x.Id).LastOrDefault(x => x.RecordId == entityId &&
+                TLItablesHistory PreviousHistory = _context.TLItablesHistory.OrderBy(x => x.Id).LastOrDefault(x => x.RecordId == entityId.ToString() &&
                     x.TablesNameId == EntityTableNameModel.Id);
 
                 int? PreviousHistoryId = null;
@@ -674,7 +1275,7 @@ namespace TLIS_Repository.Base
                     Date = DateTime.Now,
                     HistoryTypeId = HistoryTypeId,
                     PreviousHistoryId = PreviousHistoryId,
-                    RecordId = entityId,
+                    RecordId = entityId.ToString(),
                     TablesNameId = EntityTableNameModel.Id,
                     UserId = UserId.Value
                 };

@@ -11,8 +11,8 @@ namespace TLIS_Service.IService
 {
     public interface IAttributeHistoryService
     {
-        Response<ReturnWithFilters<StaticAttsHistoryViewModel>> GetStaticAttributesHistoryByTableName(List<FilterObjectList> ObjectAttributeFilters, string TableName, ParameterPagination parameters);
-        Response<ReturnWithFilters<StaticAttsHistoryViewModel>> GetDynamicAttributesHistoryByTableName(List<FilterObjectList> ObjectAttributeFilters, string TableName, ParameterPagination parameters);
-        Response<List<HistoryViewModel>> GetAttachedFileHistory( string TableName, int RecordId, ParameterPagination parameters);
+        //Response<ReturnWithFilters<StaticAttsHistoryViewModel>> GetStaticAttributesHistoryByTableName(List<FilterObjectList> ObjectAttributeFilters, string TableName, ParameterPagination parameters);
+       // Response<ReturnWithFilters<StaticAttsHistoryViewModel>> GetDynamicAttributesHistoryByTableName(List<FilterObjectList> ObjectAttributeFilters, string TableName, ParameterPagination parameters);
+       // Response<List<HistoryViewModel>> GetAttachedFileHistory( string TableName, int RecordId, ParameterPagination parameters);
     }
 }

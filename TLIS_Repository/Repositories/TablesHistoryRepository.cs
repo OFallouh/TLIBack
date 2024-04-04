@@ -47,12 +47,12 @@ namespace TLIS_Repository.Repositories
                     //var test = _httpContextAccessor.HttpContext.Request.Headers["cookie"].ToString();
                     //TablesHistory.UserId = Int32.Parse(test);
                     //var message = _session.GetString("Test");
-                    tableHistory.RecordId = RecordId;
+                    tableHistory.RecordId = RecordId.ToString();
                     tableHistory.TablesNameId = TableNameId;
                     tableHistory.UserId = UserId;
                     tableHistory.HistoryTypeId = HistoryTypeId;
                     tableHistory.Date = DateTime.Now;
-                    tableHistory.PreviousHistoryId = _context.TLItablesHistory.Where(x => (x.RecordId == RecordId && x.TablesNameId == TableNameId)).OrderByDescending(t => t.Date).Select(x => x.Id).FirstOrDefault();
+                    tableHistory.PreviousHistoryId = _context.TLItablesHistory.Where(x => (x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameId)).OrderByDescending(t => t.Date).Select(x => x.Id).FirstOrDefault();
                     _context.TLItablesHistory.Add(tableHistory);
                     _context.SaveChanges();
                     if(HistoryTypeId == 2)
@@ -162,76 +162,76 @@ namespace TLIS_Repository.Repositories
             }
             return resultId;
         }
-       public List<StaticAttsHistoryViewModel> GetDynamicAttributesHistory(string TableName, ParameterPagination parameterPagination)
-        {
+       //public List<StaticAttsHistoryViewModel> GetDynamicAttributesHistory(string TableName, ParameterPagination parameterPagination)
+       // {
             
-            List<StaticAttsHistoryViewModel> List = (from tablesHistory in _context.TLItablesHistory
-                     join dynamicAtt in _context.TLIdynamicAtt on tablesHistory.RecordId equals dynamicAtt.Id 
+       //     List<StaticAttsHistoryViewModel> List = (from tablesHistory in _context.TLItablesHistory
+       //              join dynamicAtt in _context.TLIdynamicAtt on tablesHistory.RecordId equals dynamicAtt.Id 
                                                      
-                     join Details in _context.TLIhistoryDetails on tablesHistory.Id equals Details.TablesHistoryId into x
-                         from Details in x. DefaultIfEmpty()
-                         where dynamicAtt.tablesNames.TableName == TableName && tablesHistory.TablesName.TableName == TableName
+       //              join Details in _context.TLIhistoryDetails on tablesHistory.Id equals Details.TablesHistoryId into x
+       //                  from Details in x. DefaultIfEmpty()
+       //                  where dynamicAtt.tablesNames.TableName == TableName && tablesHistory.TablesName.TableName == TableName
                                                      
-                     select new StaticAttsHistoryViewModel
-                     {
-                         Key = dynamicAtt.Key,
-                         UpdatedInfo = Details != null ? Details.AttName : null,
-                         User = tablesHistory.User.UserName,
-                         Date = tablesHistory.Date,
-                         Operation = tablesHistory.HistoryType.Name,
-                         OldValue = Details != null ? Details.OldValue : null,
-                         NewValue = Details != null ? Details.NewValue : null,
-                     }
+       //              select new StaticAttsHistoryViewModel
+       //              {
+       //                  Key = dynamicAtt.Key,
+       //                  UpdatedInfo = Details != null ? Details.AttName : null,
+       //                  User = tablesHistory.User.UserName,
+       //                  Date = tablesHistory.Date,
+       //                  Operation = tablesHistory.HistoryType.Name,
+       //                  OldValue = Details != null ? Details.OldValue : null,
+       //                  NewValue = Details != null ? Details.NewValue : null,
+       //              }
                      
-                    ).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                               .Take(parameterPagination.PageSize).ToList();
+       //             ).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+       //                        .Take(parameterPagination.PageSize).ToList();
 
 
-            return List;
-        }
-        public List<StaticAttsHistoryViewModel> GetStaticAttributesHistory(string TableName, ParameterPagination parameterPagination)
-        {
-             var list = (from Details in _context.TLIhistoryDetails
-                     join History in _context.TLItablesHistory on Details.TablesHistoryId equals History.Id
-                     join AttaActivated in _context.TLIattributeActivated on History.RecordId equals AttaActivated.Id
-                     where AttaActivated.Tabel == TableName //&& Details.AttributeType ==AttributeType.Static  //History.TablesName.TableName == "TLIattributeActivated" 
-                         select new StaticAttsHistoryViewModel
-                     {
-                         Key = AttaActivated.Key ,
-                         UpdatedInfo = Details.AttName,
-                         User = History.User.UserName,
-                         Date = History.Date,
-                         Operation = History.HistoryType.Name,
-                         OldValue = Details.OldValue != null ? Details.OldValue : null,
-                         NewValue = Details.NewValue != null? Details.NewValue : null,
-                     }
-                     ).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                               .Take(parameterPagination.PageSize);
-            return list.ToList();
-        }
-        public List<HistoryViewModel> GetAttachedFileHistory( string TableName,int RecordId, ParameterPagination parameterPagination)//, List<FilterObjectList> filter)
-        {
-            List<HistoryViewModel> List = new List<HistoryViewModel>();
-          //  var expression = ExpressionUtils.BuildPredicate<object>(filter);
-           // var test = _context.TLItablesHistory.Where(expression).ToList();
-            List = (from tablesHistory in _context.TLItablesHistory
-                        join attachedFiles in _context.TLIattachedFiles on tablesHistory.RecordId equals attachedFiles.Id
-                        where (attachedFiles.tablesName.TableName == TableName && attachedFiles.RecordId == RecordId)
-                   // where(expression)
-            select new HistoryViewModel
-            {
-               Key = attachedFiles.Name,
-               User = tablesHistory.User.UserName,
-               Date = tablesHistory.Date,
-               Operation = tablesHistory.HistoryType.Name,
-            }
+       //     return List;
+       // }
+        //public List<StaticAttsHistoryViewModel> GetStaticAttributesHistory(string TableName, ParameterPagination parameterPagination)
+        //{
+        //     var list = (from Details in _context.TLIhistoryDetails
+        //             join History in _context.TLItablesHistory on Details.TablesHistoryId equals History.Id
+        //             join AttaActivated in _context.TLIattributeActivated on History.RecordId equals AttaActivated.Id
+        //             where AttaActivated.Tabel == TableName //&& Details.AttributeType ==AttributeType.Static  //History.TablesName.TableName == "TLIattributeActivated" 
+        //                 select new StaticAttsHistoryViewModel
+        //             {
+        //                 Key = AttaActivated.Key ,
+        //                 UpdatedInfo = Details.AttName,
+        //                 User = History.User.UserName,
+        //                 Date = History.Date,
+        //                 Operation = History.HistoryType.Name,
+        //                 OldValue = Details.OldValue != null ? Details.OldValue : null,
+        //                 NewValue = Details.NewValue != null? Details.NewValue : null,
+        //             }
+        //             ).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+        //                       .Take(parameterPagination.PageSize);
+        //    return list.ToList();
+        //}
+        //public List<HistoryViewModel> GetAttachedFileHistory( string TableName,int RecordId, ParameterPagination parameterPagination)//, List<FilterObjectList> filter)
+        //{
+        //    List<HistoryViewModel> List = new List<HistoryViewModel>();
+        //  //  var expression = ExpressionUtils.BuildPredicate<object>(filter);
+        //   // var test = _context.TLItablesHistory.Where(expression).ToList();
+        //    List = (from tablesHistory in _context.TLItablesHistory
+        //                join attachedFiles in _context.TLIattachedFiles on tablesHistory.RecordId equals attachedFiles.Id
+        //                where (attachedFiles.tablesName.TableName == TableName && attachedFiles.RecordId == RecordId)
+        //           // where(expression)
+        //    select new HistoryViewModel
+        //    {
+        //       Key = attachedFiles.Name,
+        //       User = tablesHistory.User.UserName,
+        //       Date = tablesHistory.Date,
+        //       Operation = tablesHistory.HistoryType.Name,
+        //    }
 
-                    ).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                               .Take(parameterPagination.PageSize).ToList();
+        //            ).ToList().Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+        //                       .Take(parameterPagination.PageSize).ToList();
             
            
-            return List;
-        }
+        //    return List;
+        //}
         public EditHistoryDetails CheckUpdateObject(object originalObj, object updateObj)
         {
             EditHistoryDetails result = new EditHistoryDetails();
@@ -302,10 +302,10 @@ namespace TLIS_Repository.Repositories
             history.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == HistoryType).Select(x => x.Id).FirstOrDefault();
             history.UserId = SyUser.Id;
             int? TableHistoryId = null;
-            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId && x.TablesNameId == TableNameid);
+            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameid);
             if (CheckTableHistory)
             {
-                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId && x.TablesNameId == TableNameid).Select(s => s.Id).ToList().Max();//, x => new { x.Id }).ToList().Max(x => x.Id);
+                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameid).Select(s => s.Id).ToList().Max();//, x => new { x.Id }).ToList().Max(x => x.Id);
                 if (TableHistory != null)
                     TableHistoryId = TableHistory;
                 if (TableHistoryId != null)

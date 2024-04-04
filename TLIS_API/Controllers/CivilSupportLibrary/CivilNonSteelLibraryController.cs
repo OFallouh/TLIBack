@@ -49,14 +49,14 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilLibraryService.GetCivilNonSteelLibrariesEnabledAtt(CombineFilters, WithFilterData, parameterPagination);
             return Ok(response);
         }
-        [HttpGet("getById/{id}")]
-        [ProducesResponseType(200, Type = typeof(CivilNonSteelLibraryViewModel))]
-        public IActionResult GetCivilNonSteelLibrary(int id)
-        {
-            var response = _unitOfWorkService.CivilLibraryService.GetById(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
-            return Ok(response);
+        //[HttpGet("getById/{id}")]
+        //[ProducesResponseType(200, Type = typeof(CivilNonSteelLibraryViewModel))]
+        //public IActionResult GetCivilNonSteelLibrary(int id)
+        //{
+        //    var response = _unitOfWorkService.CivilLibraryService.GetById(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
+        //    return Ok(response);
 
-        }
+        //}
         [HttpPost("AddCivilNonSteelLibrary")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
         public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryObject addCivilNonSteelLibraryViewModel)

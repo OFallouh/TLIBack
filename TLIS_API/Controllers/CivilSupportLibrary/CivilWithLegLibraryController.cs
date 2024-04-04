@@ -58,7 +58,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public  IActionResult GetCivilWithLegLibrary(int id)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetById(id, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString());
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegsLibraryById(id, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString());
             return Ok(response);
 
         }

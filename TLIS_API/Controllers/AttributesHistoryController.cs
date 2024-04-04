@@ -23,26 +23,26 @@ namespace TLIS_API.Controllers
         {
             _unitOfWorkService = unitOfWorkService;
         }
-        [HttpPost("GetStaticAttributesHistoryByTableName")]
-        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<StaticAttsHistoryViewModel>))]
-        public IActionResult GetStaticAttributesHistoryByTableName([FromQuery] ParameterPagination parameterPagination, string TableName, [FromBody] List<FilterObjectList> filters = null)
-        { 
-            var response = _unitOfWorkService.AttributeHistoryService.GetStaticAttributesHistoryByTableName(filters, TableName, parameterPagination);
-            return Ok(response);
-        }
-        [HttpPost("GetDynamicAttributesHistoryByTableName")]
-        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<StaticAttsHistoryViewModel>))]
-        public IActionResult GetDynamicAttributesHistoryByTableName([FromQuery] ParameterPagination parameterPagination, string TableName, [FromBody] List<FilterObjectList> filters = null)
-        {
-            var response = _unitOfWorkService.AttributeHistoryService.GetDynamicAttributesHistoryByTableName(filters, TableName, parameterPagination);
-            return Ok(response);
-        }
-        [HttpPost("GetAttachedFileHistory")]
-        [ProducesResponseType(200, Type = typeof(List<HistoryViewModel>))]
-        public IActionResult GetDynamicAttributesHistoryByTableName([FromQuery] ParameterPagination parameterPagination, string TableName,int RecordId, string FileStatus)
-        {
-            var response = _unitOfWorkService.AttributeHistoryService.GetAttachedFileHistory( TableName, RecordId, parameterPagination);
-            return Ok(response);
-        }
+        //[HttpPost("GetStaticAttributesHistoryByTableName")]
+        //[ProducesResponseType(200, Type = typeof(ReturnWithFilters<StaticAttsHistoryViewModel>))]
+        //public IActionResult GetStaticAttributesHistoryByTableName([FromQuery] ParameterPagination parameterPagination, string TableName, [FromBody] List<FilterObjectList> filters = null)
+        //{ 
+        //    var response = _unitOfWorkService.AttributeHistoryService.GetStaticAttributesHistoryByTableName(filters, TableName, parameterPagination);
+        //    return Ok(response);
+        //}
+        //[HttpPost("GetDynamicAttributesHistoryByTableName")]
+        //[ProducesResponseType(200, Type = typeof(ReturnWithFilters<StaticAttsHistoryViewModel>))]
+        //public IActionResult GetDynamicAttributesHistoryByTableName([FromQuery] ParameterPagination parameterPagination, string TableName, [FromBody] List<FilterObjectList> filters = null)
+        //{
+        //    var response = _unitOfWorkService.AttributeHistoryService.GetDynamicAttributesHistoryByTableName(filters, TableName, parameterPagination);
+        //    return Ok(response);
+        //}
+        //[HttpPost("GetAttachedFileHistory")]
+        //[ProducesResponseType(200, Type = typeof(List<HistoryViewModel>))]
+        //public IActionResult GetDynamicAttributesHistoryByTableName([FromQuery] ParameterPagination parameterPagination, string TableName,int RecordId, string FileStatus)
+        //{
+        //    var response = _unitOfWorkService.AttributeHistoryService.GetAttachedFileHistory( TableName, RecordId, parameterPagination);
+        //    return Ok(response);
+        //}
     }
 }

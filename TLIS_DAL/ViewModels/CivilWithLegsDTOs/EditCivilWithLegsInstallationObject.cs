@@ -62,7 +62,6 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public float TotalHeight { get; set; } = 0;
         public float SpaceInstallation { get; set; } = 0;
         public int OwnerId { get; set; }
-        public int CivilWithLegsLibId { get; set; }
         public int? BaseCivilWithLegTypeId { get; set; }
         public int? GuylineTypeId { get; set; }
         public int SupportTypeImplementedId { get; set; }

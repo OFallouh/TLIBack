@@ -636,84 +636,41 @@ namespace TLIS_API.Controllers
         public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
+  
+            if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addSolarViewModel.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
-                    {
-                        var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
             }
-            else if (addSolarViewModel.TLIotherInSite.ReservedSpace == false)
+            else
             {
-                if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
-                {
-                    var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
-            return Ok(new Response<AddSolarViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
-
+           
         }
         [HttpPost("AddGenerator")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
         public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
+    
+            if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addGeneratorViewModel.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
-                    {
-                        var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
             }
-            else if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == false)
+            else
             {
-                if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
-                {
-                    var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
-            return Ok(new Response<AddGeneratorViewModel>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
-        }
+                
+         }
         [HttpGet("GetSolarById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetSolarById(int OtherInventoryInstId)
@@ -1163,42 +1120,20 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModelInternal addCivilWithLeg, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == true)
+            
+            if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModelInternal)))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithLeg.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModelInternal)))
-                    {
-                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddCivilWithLegsViewModelInternal>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
             }
-            else if (addCivilWithLeg.TLIcivilSiteDate.ReservedSpace == false)
+            else
             {
-                if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModelInternal)))
-                {
-                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddCivilWithLegsViewModelInternal>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddCivilWithLegsViewModelInternal>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
-            return Ok(new Response<AddCivilWithLegsViewModelInternal>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
-
+           
         }
 
         [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
@@ -1206,42 +1141,20 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModelIntegration addCivilWithoutLeg, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == true)
+           
+            if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModelIntegration)))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilWithoutLeg.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModelIntegration)))
-                    {
-                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddCivilWithoutLegViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
             }
-            else if (addCivilWithoutLeg.TLIcivilSiteDate.ReservedSpace == false)
+            else
             {
-                if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModelIntegration)))
-                {
-                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddCivilWithoutLegViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddCivilWithoutLegViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
-            return Ok(new Response<AddCivilWithoutLegViewModelIntegration>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
-
+            
         }
 
         [HttpPost("AddCivilNonSteel/{SiteCode}")]
@@ -1249,41 +1162,20 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModelIntegration addCivilNonSteel, string SiteCode,int TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == true)
+
+            if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModelIntegration)))
             {
-                var CheckReservedSapce = _unitOfWorkService.SiteService.CheckRentedSpace(SiteCode, addCivilNonSteel.SpaceInstallation);
-                if (CheckReservedSapce == true)
-                {
-                    if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModelIntegration)))
-                    {
-                        var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        var ErrorMessages = from state in ModelState.Values
-                                            from error in state.Errors
-                                            select error.ErrorMessage;
-                        return Ok(new Response<AddCivilNonSteelViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                    }
-                }
+                var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
             }
-            else if (addCivilNonSteel.TLIcivilSiteDate.ReservedSpace == false)
+            else
             {
-                if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModelIntegration)))
-                {
-                    var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
-                    return Ok(response);
-                }
-                else
-                {
-                    var ErrorMessages = from state in ModelState.Values
-                                        from error in state.Errors
-                                        select error.ErrorMessage;
-                    return Ok(new Response<AddCivilNonSteelViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-                }
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddCivilNonSteelViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+
             }
-            return Ok(new Response<AddCivilNonSteelViewModelIntegration>(true, null, null, "There is no space on the site", (int)Helpers.Constants.ApiReturnCode.fail));
         }
         [HttpGet("GetCivilWithLegsById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]

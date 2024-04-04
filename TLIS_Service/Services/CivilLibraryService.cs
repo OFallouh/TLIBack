@@ -138,16 +138,20 @@ namespace TLIS_Service.Services
                                     CivilWithLegEntites.NumberOfLegs = 4;
 
                                 CivilWithLegEntites.Model = model;
-                                string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
-
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithLegsLibraryObject, TableName);
 
                                 if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                       
+
+
+
+                                string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
+
+                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                               
                                 _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(UserId, CivilWithLegEntites);
                                     
                                 _unitOfWork.SaveChanges();
@@ -418,287 +422,568 @@ namespace TLIS_Service.Services
         public string CheckDependencyValidationForCivilTypes(object Input, string CivilType, int? catid = null)
         {
             List<DynamicAttViewModel> DynamicAttributes = null;
-            if (CivilType.Equals(Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), StringComparison.OrdinalIgnoreCase))
+            if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
             {
                 AddCivilWithLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithLegsLibraryObject>(Input);
-                DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
-                        .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
-                            , x => x.tablesNames).ToList());
-                if (DynamicAttributes.Any())
-                {
-                    var dependencies = DynamicAttributes
-                        .Select(DynamicAttribute => _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
-                            x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
-                                x => x.Operation, x => x.DynamicAtt))
-                        .Where(dependency => dependency != null);
-
-                    var invalidValues = dependencies
-                        .SelectMany(Dependency => AddCivilLibraryViewModel.dynamicAttributes
-                            .Where(x => x.id == Dependency.DynamicAttId)
-                            .Select(insertedDynamicAttribute => new
-                            {
-                                Dependency,
-                                InsertedDynamicAttribute = insertedDynamicAttribute,
-                                RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null)
-                                    .Select(x => x.RowId.Value).Distinct().ToList(),
-                                Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == Dependency.Id,
-                                    x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated, x => x.Rule.dynamicAtt)
-                                    .Select(x => x.Rule).Distinct()
-                            }))
-                        .Where(item =>
-                        {
-                            foreach (var Rule in item.Rules)
-                            {
-                                string RuleOperation = Rule.Operation.Name;
-                                object RuleValue = Rule.OperationValueBoolean ?? Rule.OperationValueDateTime ?? Rule.OperationValueDouble ?? (object)Rule.OperationValueString;
-
-                                object InsertedValue = Rule.attributeActivatedId != null
-                                    ? AddCivilLibraryViewModel.GetType().GetProperties()
-                                        .FirstOrDefault(x => x.Name.ToLower() == Rule.attributeActivated.Key.ToLower())?.GetValue(AddCivilLibraryViewModel, null)
-                                    : Rule.dynamicAttId != null
-                                        ? AddCivilLibraryViewModel.dynamicAttributes.FirstOrDefault(x => x.id == Rule.dynamicAttId.Value)?.value
-                                        : null;
-
-                                if (InsertedValue == null)
-                                    return false;
-
-                                if (!(RuleOperation == "==" ? InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower() :
-                                    RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
-                                    RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
-                                    RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 || InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
-                                    RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
-                                    RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 || InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false))
-                                {
-                                    string ReturnOperation = RuleOperation switch
-                                    {
-                                        "==" => "Equal To",
-                                        "!=" => "not equal to",
-                                        ">" => "bigger than",
-                                        ">=" => "bigger than or equal to",
-                                        "<" => "smaller than",
-                                        "<=" => "smaller than or equal to",
-                                        _ => ""
-                                    };
-
-                                    Console.WriteLine($"({item.Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {RuleValue}");
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-
-                    if (invalidValues.Any())
-                    {
-                        var firstInvalid = invalidValues.First();
-                        return $"({firstInvalid.Dependency.DynamicAtt.Key}) value can't be null and must be inserted";
-                    }
-                }
-
-        }
-            else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
-            {
-                AddCivilWithoutLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegsLibraryObject>(Input);
-                if (catid != null)
-                {
-                    DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
-                        .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable && x.CivilWithoutLegCategoryId == catid
-                            , x => x.tablesNames).ToList());
-                }
-                else
-                {
-                    DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
-                        .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
-                            , x => x.tablesNames).ToList());
-                }
-
-                if (DynamicAttributes.Any())
-                {
-                    var dependencies = DynamicAttributes
-                        .Select(DynamicAttribute => _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
-                            x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
-                                x => x.Operation, x => x.DynamicAtt))
-                        .Where(dependency => dependency != null);
-
-                    var invalidValues = dependencies
-                        .SelectMany(Dependency => AddCivilLibraryViewModel.dynamicAttributes
-                            .Where(x => x.id == Dependency.DynamicAttId)
-                            .Select(insertedDynamicAttribute => new
-                            {
-                                Dependency,
-                                InsertedDynamicAttribute = insertedDynamicAttribute,
-                                RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null)
-                                    .Select(x => x.RowId.Value).Distinct().ToList(),
-                                Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == Dependency.Id,
-                                    x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated, x => x.Rule.dynamicAtt)
-                                    .Select(x => x.Rule).Distinct()
-                            }))
-                        .Where(item =>
-                        {
-                            foreach (var Rule in item.Rules)
-                            {
-                                string RuleOperation = Rule.Operation.Name;
-                                object RuleValue = Rule.OperationValueBoolean ?? Rule.OperationValueDateTime ?? Rule.OperationValueDouble ?? (object)Rule.OperationValueString;
-
-                                object InsertedValue = Rule.attributeActivatedId != null
-                                    ? AddCivilLibraryViewModel.GetType().GetProperties()
-                                        .FirstOrDefault(x => x.Name.ToLower() == Rule.attributeActivated.Key.ToLower())?.GetValue(AddCivilLibraryViewModel, null)
-                                    : Rule.dynamicAttId != null
-                                        ? AddCivilLibraryViewModel.dynamicAttributes.FirstOrDefault(x => x.id == Rule.dynamicAttId.Value)?.value
-                                        : null;
-
-                                if (InsertedValue == null)
-                                    return false;
-
-                                if (!(RuleOperation == "==" ? InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower() :
-                                    RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
-                                    RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
-                                    RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 || InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
-                                    RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
-                                    RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 || InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false))
-                                {
-                                    string ReturnOperation = RuleOperation switch
-                                    {
-                                        "==" => "Equal To",
-                                        "!=" => "not equal to",
-                                        ">" => "bigger than",
-                                        ">=" => "bigger than or equal to",
-                                        "<" => "smaller than",
-                                        "<=" => "smaller than or equal to",
-                                        _ => ""
-                                    };
-
-                                    Console.WriteLine($"({item.Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {RuleValue}");
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-
-                    if (invalidValues.Any())
-                    {
-                        var firstInvalid = invalidValues.First();
-                        return $"({firstInvalid.Dependency.DynamicAtt.Key}) value can't be null and must be inserted";
-                    }
-                }
-            }
-            else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
-            {
-                AddCivilNonSteelLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryObject>(Input);
 
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
                         , x => x.tablesNames).ToList());
-                DynamicAttributes.Select(DynamicAttribute =>
+
+                foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
                 {
                     TLIdependency Dependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
                         x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
                             x => x.Operation, x => x.DynamicAtt);
 
-                    if (Dependency == null)
-                        return null;
-
-                    var InsertedDynamicAttributeValue = AddCivilLibraryViewModel.dynamicAttributes
-                        .FirstOrDefault(x => x.id == DynamicAttribute.Id);
-
-                    if (InsertedDynamicAttributeValue == null)
-                        return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
-
-                    var RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null)
-                                                                     .Select(x => x.RowId.Value)
-                                                                     .Distinct()
-                                                                     .ToList();
-
-                    RowsIds.Select(RowId =>
+                    if (Dependency != null)
                     {
-                        var Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == RowId, x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated
-                            , x => x.Rule.dynamicAtt).Select(x => x.Rule).Distinct().ToList();
+                        AddDdynamicAttributeInstallationValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.dynamicAttributes
+                            .FirstOrDefault(x => x.id == DynamicAttribute.Id);
 
-                        int Succed = Rules.Count(rule =>
+                        if (InsertedDynamicAttributeValue == null)
+                            return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
+
+                        List<int> RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null).Select(x => x.RowId.Value).Distinct().ToList();
+
+                        foreach (int RowId in RowsIds)
                         {
-                            var RuleOperation = rule.Operation.Name;
-                            var RuleValue = rule.OperationValueBoolean ?? rule.OperationValueDateTime ?? (object)rule.OperationValueDouble ?? rule.OperationValueString;
+                            List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == RowId, x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated
+                                , x => x.Rule.dynamicAtt).Select(x => x.Rule).Distinct().ToList();
 
-                            object InsertedValue = null;
+                            int Succed = 0;
 
-                            if (rule.attributeActivatedId != null)
+                            foreach (TLIrule Rule in Rules)
                             {
-                                string AttributeName = rule.attributeActivated.Key;
-                                InsertedValue = AddCivilLibraryViewModel.GetType().GetProperty(AttributeName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.GetValue(AddCivilLibraryViewModel, null);
-                            }
-                            else if (rule.dynamicAttId != null)
-                            {
-                                var DynamicObject = AddCivilLibraryViewModel.dynamicAttributes
-                                    .FirstOrDefault(x => x.id == rule.dynamicAttId.Value);
+                                string RuleOperation = Rule.Operation.Name;
+                                object RuleValue = new object();
 
-                                if (DynamicObject != null)
+                                if (Rule.OperationValueBoolean != null)
+                                    RuleValue = Rule.OperationValueBoolean;
+
+                                else if (Rule.OperationValueDateTime != null)
+                                    RuleValue = Rule.OperationValueDateTime;
+
+                                else if (Rule.OperationValueDouble != null)
+                                    RuleValue = Rule.OperationValueDouble;
+
+                                else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                                    RuleValue = Rule.OperationValueString;
+
+                                object InsertedValue = new object();
+
+                                if (Rule.attributeActivatedId != null)
                                 {
-                                    InsertedValue = DynamicObject.value;
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    InsertedValue = AddCivilLibraryViewModel.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddCivilLibraryViewModel, null);
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    AddDdynamicAttributeInstallationValueViewModel DynamicObject = AddCivilLibraryViewModel.dynamicAttributes
+                                        .FirstOrDefault(x => x.id == Rule.dynamicAttId.Value);
+                                    var Value = DynamicObject.value.ToString();
+                                    if (Value != null)
+                                    {
+                                        string dataType = DynamicAttribute.DataType_Name.ToLower();
+
+                                        switch (dataType)
+                                        {
+                                            case "bool":
+                                                bool boolValue;
+                                                if (bool.TryParse(Value, out boolValue))
+                                                {
+                                                    InsertedValue = boolValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
+
+                                                    throw new ArgumentException("Invalid boolean value.");
+                                                }
+                                                break;
+                                            case "datetime":
+                                                DateTime dateTimeValue;
+                                                if (DateTime.TryParse(Value, out dateTimeValue))
+                                                {
+                                                    InsertedValue = dateTimeValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
+
+                                                    throw new ArgumentException("Invalid datetime value.");
+                                                }
+                                                break;
+                                            case "double":
+                                                double doubleValue;
+                                                if (double.TryParse(Value, out doubleValue))
+                                                {
+                                                    InsertedValue = doubleValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
+
+                                                    throw new ArgumentException("Invalid double value.");
+                                                }
+                                                break;
+                                            case "int":
+                                                int intValue;
+                                                if (int.TryParse(Value, out intValue))
+                                                {
+                                                    InsertedValue = intValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
+
+                                                    throw new ArgumentException("Invalid int value.");
+                                                }
+                                                break;
+                                            case "string":
+                                                InsertedValue = Value;
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                if (InsertedValue == null)
+                                    break;
+
+                                if (RuleOperation == "==" ? InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower() :
+                                    RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
+                                    RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
+                                    RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 ||
+                                        Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 0) :
+                                    RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
+                                    RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 ||
+                                        Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 0) : false)
+                                {
+                                    Succed++;
                                 }
                             }
-
-                            if (InsertedValue == null)
-                                return false;
-
-                            return RuleOperation switch
+                            if (Rules.Count() == Succed)
                             {
-                                "==" => InsertedValue.ToString().Equals(RuleValue?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                "!=" => !InsertedValue.ToString().Equals(RuleValue?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                ">" => Comparer.Default.Compare(InsertedValue, RuleValue) == 1,
-                                ">=" => Comparer.Default.Compare(InsertedValue, RuleValue) == 1 || Comparer.Default.Compare(InsertedValue, RuleValue) == 0,
-                                "<" => Comparer.Default.Compare(InsertedValue, RuleValue) == -1,
-                                "<=" => Comparer.Default.Compare(InsertedValue, RuleValue) == -1 || Comparer.Default.Compare(InsertedValue, RuleValue) == 0,
-                                _ => false,
-                            };
-                        });
+                                string DependencyValidationOperation = Dependency.Operation.Name;
 
-                        if (Rules.Count == Succed)
-                        {
-                            var DependencyValidationOperation = Dependency.Operation.Name;
-                            var DependencyValdiationValue = Dependency.ValueBoolean ?? Dependency.ValueDateTime ?? (object)Dependency.ValueDouble ?? Dependency.ValueString;
-                            var InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValue.value;
-
-                            if (InsertedDynamicAttributeValue.value is DateTime dateTimeValue)
-                            {
-                                DateTime DependencyValidationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
-                                    Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
-
-                                DependencyValdiationValue = DependencyValidationValueConverter;
-
-                                DateTime InsertedDynamicAttributeValueAsDateTime = (DateTime)InsertedDynamicAttributeValue.value;
-                                DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(InsertedDynamicAttributeValueAsDateTime.Year,
-                                    InsertedDynamicAttributeValueAsDateTime.Month, InsertedDynamicAttributeValueAsDateTime.Day);
-
-                                InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
-                            }
-
-                            if (InsertedDynamicAttributeValueAsObject != null && DependencyValdiationValue != null)
-                            {
-                                if (!(DependencyValidationOperation == "==" ? InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) :
-                                     DependencyValidationOperation == "!=" ? !InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) :
-                                     DependencyValidationOperation == ">" ? Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1 :
-                                     DependencyValidationOperation == ">=" ? (InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) || Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1) :
-                                     DependencyValidationOperation == "<" ? Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1 :
-                                     DependencyValidationOperation == "<=" ? (InsertedDynamicAttributeValueAsObject.ToString().Equals(DependencyValdiationValue?.ToString(), StringComparison.OrdinalIgnoreCase) || Comparer.Default.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1) : false))
+                                object DependencyValdiationValue = Dependency.ValueBoolean != null ? Dependency.ValueBoolean :
+                                    Dependency.ValueDateTime != null ? Dependency.ValueDateTime :
+                                    Dependency.ValueDouble != null ? Dependency.ValueDouble :
+                                    !string.IsNullOrEmpty(Dependency.ValueString) ? Dependency.ValueString : null;
+                                object InsertedDynamicAttributeValueAsObject = new object();
+                                var Value = InsertedDynamicAttributeValue.value.ToString();
+                                if (Value != null)
                                 {
-                                    string ReturnOperation = (DependencyValidationOperation == "==" ? "Equal To" :
-                                        (DependencyValidationOperation == "!=" ? "not equal to" :
-                                        (DependencyValidationOperation == ">" ? "bigger than" :
-                                        (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
-                                        (DependencyValidationOperation == "<" ? "smaller than" :
-                                        (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+                                    string dataType = DynamicAttribute.DataType_Name.ToLower();
 
-                                    return $"({Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {DependencyValdiationValue}";
+                                    switch (dataType)
+                                    {
+                                        case "bool":
+                                            bool boolValue;
+                                            if (bool.TryParse(Value, out boolValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = boolValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid boolean value.");
+                                            }
+                                            break;
+                                        case "datetime":
+                                            DateTime dateTimeValue;
+                                            if (DateTime.TryParse(Value, out dateTimeValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = dateTimeValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid datetime value.");
+                                            }
+                                            break;
+                                        case "double":
+                                            double doubleValue;
+                                            if (double.TryParse(Value, out doubleValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = doubleValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid double value.");
+                                            }
+                                            break;
+                                        case "int":
+                                            int intValue;
+                                            if (int.TryParse(Value, out intValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = intValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid int value.");
+                                            }
+                                            break;
+                                        case "string":
+                                            InsertedDynamicAttributeValueAsObject = Value;
+                                            break;
+                                        default:
+
+                                            break;
+                                    }
+                                }
+
+                                if (Dependency.ValueDateTime != null && DynamicAttribute.DataType_Name.ToLower()== "datetime" )
+                                {
+                                    DateTime DependencyValdiationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
+                                        Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
+
+                                    DependencyValdiationValue = DependencyValdiationValueConverter;
+
+                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(((DateTime)InsertedDynamicAttributeValue.value).Year,
+                                   ((DateTime)InsertedDynamicAttributeValue.value).Month, ((DateTime)InsertedDynamicAttributeValue.value).Day);
+
+                                    InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
+                                }
+
+                                if (InsertedDynamicAttributeValueAsObject != null && DependencyValdiationValue != null)
+                                {
+                                    if (!(DependencyValidationOperation == "==" ? InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() :
+                                         DependencyValidationOperation == "!=" ? InsertedDynamicAttributeValueAsObject.ToString().ToLower() != DependencyValdiationValue.ToString().ToLower() :
+                                         DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1 :
+                                         DependencyValidationOperation == ">=" ? (InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() ||
+                                             Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1) :
+                                         DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1 :
+                                         DependencyValidationOperation == "<=" ? (InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() ||
+                                             Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1) : false))
+                                    {
+                                        string ReturnOperation = (DependencyValidationOperation == "==" ? "Equal To" :
+                                            (DependencyValidationOperation == "!=" ? "not equal to" :
+                                            (DependencyValidationOperation == ">" ? "bigger than" :
+                                            (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+                                            (DependencyValidationOperation == "<" ? "smaller than" :
+                                            (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+                                        return $"({Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {DependencyValdiationValue}";
+                                    }
                                 }
                             }
                         }
-
-                        return null;
-                    }).FirstOrDefault(result => result != null);
-
-                    return null;
-                }).FirstOrDefault(result => result != null);
+                    }
+                }
             }
+            else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
+            {
+                AddCivilWithoutLegLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegLibraryViewModel>(Input);
+                if (catid != null)
+                {
+                    DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable && x.CivilWithoutLegCategoryId == catid
+                         , x => x.tablesNames).ToList());
+                }
+                else
+                {
+                    DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
+                    , x => x.tablesNames).ToList());
+                }
 
+
+                foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+                {
+                    TLIdependency Dependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+                        x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
+                            x => x.Operation, x => x.DynamicAtt);
+
+                    if (Dependency != null)
+                    {
+                        AddDynamicLibAttValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.TLIdynamicAttLibValue
+                            .FirstOrDefault(x => x.DynamicAttId == DynamicAttribute.Id);
+
+                        if (InsertedDynamicAttributeValue == null)
+                            return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
+
+                        List<int> RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null).Select(x => x.RowId.Value).Distinct().ToList();
+
+                        foreach (int RowId in RowsIds)
+                        {
+                            List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == RowId, x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated
+                                , x => x.Rule.dynamicAtt).Select(x => x.Rule).Distinct().ToList();
+
+                            int Succed = 0;
+
+                            foreach (TLIrule Rule in Rules)
+                            {
+                                string RuleOperation = Rule.Operation.Name;
+                                object RuleValue = new object();
+
+                                if (Rule.OperationValueBoolean != null)
+                                    RuleValue = Rule.OperationValueBoolean;
+
+                                else if (Rule.OperationValueDateTime != null)
+                                    RuleValue = Rule.OperationValueDateTime;
+
+                                else if (Rule.OperationValueDouble != null)
+                                    RuleValue = Rule.OperationValueDouble;
+
+                                else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                                    RuleValue = Rule.OperationValueString;
+
+                                object InsertedValue = new object();
+
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    InsertedValue = AddCivilLibraryViewModel.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddCivilLibraryViewModel, null);
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    AddDynamicLibAttValueViewModel DynamicObject = AddCivilLibraryViewModel.TLIdynamicAttLibValue
+                                        .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+                                    if (DynamicObject == null)
+                                        break;
+
+                                    if (DynamicObject.ValueBoolean != null)
+                                        InsertedValue = DynamicObject.ValueBoolean;
+
+                                    else if (DynamicObject.ValueDateTime != null)
+                                        InsertedValue = DynamicObject.ValueDateTime;
+
+                                    else if (DynamicObject.ValueDouble != null)
+                                        InsertedValue = DynamicObject.ValueDouble;
+
+                                    else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+                                        InsertedValue = DynamicObject.ValueString;
+                                }
+
+                                if (InsertedValue == null)
+                                    break;
+
+                                if (RuleOperation == "==" ? InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower() :
+                                    RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
+                                    RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
+                                    RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 ||
+                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
+                                    RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
+                                    RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 ||
+                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false)
+                                {
+                                    Succed++;
+                                }
+                            }
+                            if (Rules.Count() == Succed)
+                            {
+                                string DependencyValidationOperation = Dependency.Operation.Name;
+
+                                object DependencyValdiationValue = Dependency.ValueBoolean != null ? Dependency.ValueBoolean :
+                                    Dependency.ValueDateTime != null ? Dependency.ValueDateTime :
+                                    Dependency.ValueDouble != null ? Dependency.ValueDouble :
+                                    !string.IsNullOrEmpty(Dependency.ValueString) ? Dependency.ValueString : null;
+
+                                object InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValue.ValueBoolean != null ? InsertedDynamicAttributeValue.ValueBoolean :
+                                    InsertedDynamicAttributeValue.ValueDateTime != null ? InsertedDynamicAttributeValue.ValueDateTime :
+                                    InsertedDynamicAttributeValue.ValueDouble != null ? InsertedDynamicAttributeValue.ValueDouble :
+                                    !string.IsNullOrEmpty(InsertedDynamicAttributeValue.ValueString) ? InsertedDynamicAttributeValue.ValueString : null;
+
+                                if (Dependency.ValueDateTime != null && InsertedDynamicAttributeValue.ValueDateTime != null)
+                                {
+                                    DateTime DependencyValdiationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
+                                        Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
+
+                                    DependencyValdiationValue = DependencyValdiationValueConverter;
+
+                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(InsertedDynamicAttributeValue.ValueDateTime.Value.Year,
+                                        InsertedDynamicAttributeValue.ValueDateTime.Value.Month, InsertedDynamicAttributeValue.ValueDateTime.Value.Day);
+
+                                    InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
+                                }
+
+                                if (InsertedDynamicAttributeValueAsObject != null && DependencyValdiationValue != null)
+                                {
+                                    if (!(DependencyValidationOperation == "==" ? InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() :
+                                         DependencyValidationOperation == "!=" ? InsertedDynamicAttributeValueAsObject.ToString().ToLower() != DependencyValdiationValue.ToString().ToLower() :
+                                         DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1 :
+                                         DependencyValidationOperation == ">=" ? (InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() ||
+                                             Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1) :
+                                         DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1 :
+                                         DependencyValidationOperation == "<=" ? (InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() ||
+                                             Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1) : false))
+                                    {
+                                        string ReturnOperation = (DependencyValidationOperation == "==" ? "Equal To" :
+                                            (DependencyValidationOperation == "!=" ? "not equal to" :
+                                            (DependencyValidationOperation == ">" ? "bigger than" :
+                                            (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+                                            (DependencyValidationOperation == "<" ? "smaller than" :
+                                            (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+                                        return $"({Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {DependencyValdiationValue}";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
+            {
+                AddCivilNonSteelLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryViewModel>(Input);
+
+                DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
+                        , x => x.tablesNames).ToList());
+
+                foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
+                {
+                    TLIdependency Dependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
+                        x.OperationId != null && (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)),
+                            x => x.Operation, x => x.DynamicAtt);
+
+                    if (Dependency != null)
+                    {
+                        AddDynamicLibAttValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.TLIdynamicAttLibValue
+                            .FirstOrDefault(x => x.DynamicAttId == DynamicAttribute.Id);
+
+                        if (InsertedDynamicAttributeValue == null)
+                            return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
+
+                        List<int> RowsIds = _unitOfWork.DependencyRowRepository.GetWhere(x => x.DependencyId == Dependency.Id && x.RowId != null).Select(x => x.RowId.Value).Distinct().ToList();
+
+                        foreach (int RowId in RowsIds)
+                        {
+                            List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId.Value == RowId, x => x.Rule, x => x.Rule.Operation, x => x.Rule.attributeActivated
+                                , x => x.Rule.dynamicAtt).Select(x => x.Rule).Distinct().ToList();
+
+                            int Succed = 0;
+
+                            foreach (TLIrule Rule in Rules)
+                            {
+                                string RuleOperation = Rule.Operation.Name;
+                                object RuleValue = new object();
+
+                                if (Rule.OperationValueBoolean != null)
+                                    RuleValue = Rule.OperationValueBoolean;
+
+                                else if (Rule.OperationValueDateTime != null)
+                                    RuleValue = Rule.OperationValueDateTime;
+
+                                else if (Rule.OperationValueDouble != null)
+                                    RuleValue = Rule.OperationValueDouble;
+
+                                else if (!string.IsNullOrEmpty(Rule.OperationValueString))
+                                    RuleValue = Rule.OperationValueString;
+
+                                object InsertedValue = new object();
+
+                                if (Rule.attributeActivatedId != null)
+                                {
+                                    string AttributeName = Rule.attributeActivated.Key;
+
+                                    InsertedValue = AddCivilLibraryViewModel.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddCivilLibraryViewModel, null);
+                                }
+                                else if (Rule.dynamicAttId != null)
+                                {
+                                    AddDynamicLibAttValueViewModel DynamicObject = AddCivilLibraryViewModel.TLIdynamicAttLibValue
+                                        .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+
+                                    if (DynamicObject == null)
+                                        break;
+
+                                    if (DynamicObject.ValueBoolean != null)
+                                        InsertedValue = DynamicObject.ValueBoolean;
+
+                                    else if (DynamicObject.ValueDateTime != null)
+                                        InsertedValue = DynamicObject.ValueDateTime;
+
+                                    else if (DynamicObject.ValueDouble != null)
+                                        InsertedValue = DynamicObject.ValueDouble;
+
+                                    else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
+                                        InsertedValue = DynamicObject.ValueString;
+                                }
+
+                                if (InsertedValue == null)
+                                    break;
+
+                                if (RuleOperation == "==" ? InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower() :
+                                    RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
+                                    RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
+                                    RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 ||
+                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
+                                    RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
+                                    RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 ||
+                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false)
+                                {
+                                    Succed++;
+                                }
+                            }
+                            if (Rules.Count() == Succed)
+                            {
+                                string DependencyValidationOperation = Dependency.Operation.Name;
+
+                                object DependencyValdiationValue = Dependency.ValueBoolean != null ? Dependency.ValueBoolean :
+                                    Dependency.ValueDateTime != null ? Dependency.ValueDateTime :
+                                    Dependency.ValueDouble != null ? Dependency.ValueDouble :
+                                    !string.IsNullOrEmpty(Dependency.ValueString) ? Dependency.ValueString : null;
+
+                                object InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValue.ValueBoolean != null ? InsertedDynamicAttributeValue.ValueBoolean :
+                                    InsertedDynamicAttributeValue.ValueDateTime != null ? InsertedDynamicAttributeValue.ValueDateTime :
+                                    InsertedDynamicAttributeValue.ValueDouble != null ? InsertedDynamicAttributeValue.ValueDouble :
+                                    !string.IsNullOrEmpty(InsertedDynamicAttributeValue.ValueString) ? InsertedDynamicAttributeValue.ValueString : null;
+
+                                if (Dependency.ValueDateTime != null && InsertedDynamicAttributeValue.ValueDateTime != null)
+                                {
+                                    DateTime DependencyValdiationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
+                                        Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
+
+                                    DependencyValdiationValue = DependencyValdiationValueConverter;
+
+                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(InsertedDynamicAttributeValue.ValueDateTime.Value.Year,
+                                        InsertedDynamicAttributeValue.ValueDateTime.Value.Month, InsertedDynamicAttributeValue.ValueDateTime.Value.Day);
+
+                                    InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
+                                }
+
+                                if (InsertedDynamicAttributeValueAsObject != null && DependencyValdiationValue != null)
+                                {
+                                    if (!(DependencyValidationOperation == "==" ? InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() :
+                                         DependencyValidationOperation == "!=" ? InsertedDynamicAttributeValueAsObject.ToString().ToLower() != DependencyValdiationValue.ToString().ToLower() :
+                                         DependencyValidationOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1 :
+                                         DependencyValidationOperation == ">=" ? (InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() ||
+                                             Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == 1) :
+                                         DependencyValidationOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1 :
+                                         DependencyValidationOperation == "<=" ? (InsertedDynamicAttributeValueAsObject.ToString().ToLower() == DependencyValdiationValue.ToString().ToLower() ||
+                                             Comparer.DefaultInvariant.Compare(InsertedDynamicAttributeValueAsObject, DependencyValdiationValue) == -1) : false))
+                                    {
+                                        string ReturnOperation = (DependencyValidationOperation == "==" ? "Equal To" :
+                                            (DependencyValidationOperation == "!=" ? "not equal to" :
+                                            (DependencyValidationOperation == ">" ? "bigger than" :
+                                            (DependencyValidationOperation == ">=" ? "bigger than or equal to" :
+                                            (DependencyValidationOperation == "<" ? "smaller than" :
+                                            (DependencyValidationOperation == "<=" ? "smaller than or equal to" : ""))))));
+
+                                        return $"({Dependency.DynamicAtt.Key}) value must be {ReturnOperation} {DependencyValdiationValue}";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return string.Empty;
         }
         public string CheckGeneralValidationFunction(List<AddDynamicLibAttValueViewModel> TLIdynamicAttLibValue, string TableName, int? catid = null)
@@ -1080,12 +1365,14 @@ namespace TLIS_Service.Services
                 try
                 {
                     TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
-
+                    
                     TLIcivilWithLegLibrary CivilWithLegLibraryEntites = _mapper.Map<TLIcivilWithLegLibrary>(editCivilWithLegsLibrary.attributesActivatedLibrary);
 
                     TLIcivilWithLegLibrary CivilWithLegLib = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilWithLegLibraryEntites.Id);
-
-
+                    if(CivilWithLegLib.Model != CivilWithLegLibraryEntites.Model)
+                    {
+                        return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "structureType and vendor and Prefix and Height_Designed It cannot be changed", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                     var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilWithLegsLibrary.logisticalItems.Vendor);
                     var vendor = logisticalObject?.Name;
 
@@ -1395,6 +1682,136 @@ namespace TLIS_Service.Services
             }
         }
         #region Helper Methods..
+        public async Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId)
+        {
+            int resultId = 0;
+            int civilLibId = 0;
+            int tablesNameId = 0;
+            dynamic DtestUpdate = new ExpandoObject();
+
+            using (TransactionScope transaction =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+
+                    TLIcivilWithoutLegLibrary CivilWithLegLibraryEntites = _mapper.Map<TLIcivilWithoutLegLibrary>(editCivilWithoutLegsLibraryObject.attributesActivatedLibrary);
+
+                    TLIcivilWithoutLegLibrary CivilWithLegLib = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilWithLegLibraryEntites.Id);
+
+
+                    var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilWithoutLegsLibraryObject.logisticalItems.Vendor);
+                    var vendor = logisticalObject?.Name;
+
+                    var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
+                    var structureTypeName = structureType?.Name;
+                    if (CivilWithLegLib.SpaceLibrary == 0)
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (structureTypeName == null)
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "structureType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (vendor == null)
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "Vendor It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    }
+                    if (CivilWithLegLibraryEntites.Prefix == null)
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    }
+                    var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegLib.Prefix + ' ' + CivilWithLegLib.Height_Designed;
+                    if (_unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Model == model && x.Id != CivilWithLegLibraryEntites.Id && !x.Deleted) != null)
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (CivilWithLegLib.Model != CivilWithLegLibraryEntites.Model)
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, $"Can not Edit model", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+       
+
+                    CivilWithLegLibraryEntites.Model = model;
+
+                    CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
+                    CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
+
+                    _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegLib, CivilWithLegLibraryEntites);
+
+
+                    string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithoutLegsLibraryObject, TableName);
+                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
+                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    {
+                        return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+                    var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckVendorId != null)
+                        OldLogisticalItemIds.Vendor = Convert.ToInt32(CheckVendorId.logisticalId);
+
+                    var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckSupplierId != null)
+                        OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
+
+                    var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckDesignerId != null)
+                        OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
+
+
+                    var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckManufacturerId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+                    EditLogisticalItem(editCivilWithoutLegsLibraryObject.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+
+                    if (editCivilWithoutLegsLibraryObject.dynamicAttributes != null ? editCivilWithoutLegsLibraryObject.dynamicAttributes.Count > 0 : false)
+                    {
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, Helpers.LogFilterAttribute.UserId, resultId, CivilWithLegLib.Id);
+                    }
+                    civilLibId = CivilWithLegLibraryEntites.Id;
+                    tablesNameId = TableNameEntity.Id;
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    transaction.Complete();
+                    return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+
+                catch (Exception err)
+                {
+                    return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         public string CheckDependencyValidationForCivilTypesEditApiVersion(object Input, string CivilType, int? catid = null)
         {
             if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
@@ -2602,7 +3019,7 @@ namespace TLIS_Service.Services
         //First Id to get record by Id
         //Second TableName to specify table i deal with
         //Function return list of activated attributes with value, list  dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName)
+        public Response<GetForAddCivilLibrarybject> GetCivilWithLegsLibraryById(int Id, string TableName)
         {
             try
             {
@@ -2743,6 +3160,92 @@ namespace TLIS_Service.Services
         //First TableName to specify the table i deal with
         //Second CivilWithoutLegCategoryId to specify the category of civil Without Leg Library 
         //Function return all records depened on TableName
+        public Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName)
+        {
+            int CatId = 0;
+            try
+            {
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
+
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c =>
+                    c.TableName == TableName);
+
+                TLIcivilWithoutLegLibrary CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetIncludeWhereFirst(x =>
+                          x.Id == Id, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstCivilwithoutLegsType, x => x.structureType);
+                CatId = (int)CivilWithoutLegLibrary.CivilWithoutLegCategoryId;
+                
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CivilWithoutLegLibrary, null).ToList();
+                listofAttributesActivated
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "structuretype_name")
+                        {
+                            FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithoutLegLibrary.structureType);
+                        }
+                        else if (FKitem.Label.ToLower() == "InstallationcivilwithoutLlegstype_name")
+                        {
+                            FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithoutLegLibrary.InstCivilwithoutLegsType);
+                        }
+                        else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
+                        {
+                            FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x =>!x.disable).ToList());
+                            FKitem.Value = _mapper.Map<CivilSteelSupportCategoryViewModel>(CivilWithoutLegLibrary.CivilSteelSupportCategory);
+                        }
+                        return FKitem;
+                    })
+                    .ToList();
+                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), TableName, Id);
+                attributes.LogisticalItems = LogisticalItems;
+                attributes.AttributesActivatedLibrary = listofAttributesActivated;
+
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+
+                List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                if (NameAttribute != null)
+                {
+                    BaseInstAttViews Swap = Test.ToList()[0];
+                    Test[Test.IndexOf(NameAttribute)] = Swap;
+                    Test[0] = NameAttribute;
+                    attributes.AttributesActivatedLibrary = Test;
+                }
+
+
+                //else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
+                //{
+                //    TLIcivilNonSteelLibrary CivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetIncludeWhereFirst(x =>
+                //        x.Id == Id, x => x.civilNonSteelType);
+
+                //    object FK_civilNonSteelType_Name = CivilNonSteelLibrary.civilNonSteelType != null ? CivilNonSteelLibrary.civilNonSteelType.Name : null;
+
+                //    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, CivilNonSteelLibrary, null).ToList();
+
+                //    foreach (BaseAttView FKitem in ListAttributesActivated)
+                //    {
+                //        if (FKitem.Label.ToLower() == "civilnonsteeltype_name")
+                //        {
+                //            if (FK_civilNonSteelType_Name == null)
+                //                FKitem.Value = FKitem.Value = "NA";
+
+                //            else
+                //                FKitem.Value = FK_civilNonSteelType_Name;
+                //        }
+                //    }
+                //}
+
+
+
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+                return new Response<GetForAddCivilLibrarybject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
         public Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string TableName, int? CivilWithoutLegCategoryId = null)
         {
             try
@@ -3028,7 +3531,7 @@ namespace TLIS_Service.Services
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                 List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, 2, "Model", "CivilSteelSupportCategoryId").ToList();
                 listofAttributesActivated
-                  .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                  .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
                   .ToList()
                   .Select(FKitem =>
                   {
@@ -4056,7 +4559,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.AsEnumerable()
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted && x.Active).AsEnumerable()
                     .Select(item =>_unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -4066,7 +4569,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.AsEnumerable()
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted && x.Active).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,

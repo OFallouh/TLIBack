@@ -1845,7 +1845,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId)
+        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId,int UserId)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -1871,7 +1871,7 @@ namespace TLIS_Service.Services
                                     IsCabinetPowerLibraryType = true;
                                     if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
                                     {
-                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, addCabinetViewModel.CabinetPowerLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Power").Message;
+                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId,SiteCode, TableName, addCabinetViewModel.CabinetPowerLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Power").Message;
                                         if (CheckSpace != "Success")
                                         {
                                             return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1883,7 +1883,7 @@ namespace TLIS_Service.Services
                                     if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
                                     {
 
-                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, addCabinetViewModel.CabinetTelecomLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Telecom").Message;
+                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCabinetViewModel.CabinetTelecomLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Telecom").Message;
                                         if (CheckSpace != "Success")
                                         {
                                             return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2006,7 +2006,7 @@ namespace TLIS_Service.Services
                                 var Generator = _mapper.Map<TLIgenerator>(addGeneratorViewModel);
                                 if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
                                 {
-                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, addGeneratorViewModel.GeneratorLibraryId, addGeneratorViewModel.SpaceInstallation, null).Message;
+                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addGeneratorViewModel.GeneratorLibraryId, addGeneratorViewModel.SpaceInstallation, null).Message;
                                     if (CheckSpace != "Success")
                                     {
                                         return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2103,7 +2103,7 @@ namespace TLIS_Service.Services
                                 var Solar = _mapper.Map<TLIsolar>(addSolarViewModel);
                                 if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
                                 {
-                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, addSolarViewModel.SolarLibraryId, addSolarViewModel.SpaceInstallation, null).Message;
+                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addSolarViewModel.SolarLibraryId, addSolarViewModel.SpaceInstallation, null).Message;
                                     if (CheckSpace != "Success")
                                     {
                                         return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);

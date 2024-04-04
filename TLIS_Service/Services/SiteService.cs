@@ -857,29 +857,6 @@ namespace TLIS_Service.Services
         }
 
         //Function check rented space if there is space update rented space
-        public bool CheckRentedSpace(string SiteCode, float InstallationSpaceValue)
-        {
-            try
-            {
-                var Site = _unitOfWork.SiteRepository.GetAllAsQueryable().Where(s => s.SiteCode == SiteCode).FirstOrDefault();
-                if ((Site.ReservedSpace + InstallationSpaceValue) <= Site.RentedSpace)
-                {
-                    //Site.RentedSpace += InstallationSpaceValue;
-                    //await _unitOfWork.SiteRepository.UpdateItem(Site);
-                    //await _unitOfWork.SaveChangesAsync();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception err)
-            {
-
-                return false;
-            }
-        }
         public Response<SiteCivilsViewModel> GetCivilsWithAllCivilInstIdsBySiteCode(string SiteCode, string CivilType)
         {
             try
@@ -7565,6 +7542,7 @@ namespace TLIS_Service.Services
                 return err.Message;
             }
         }
+
         public Response<List<RegionViewModel>> GetAllRegion()
         {
             try
@@ -7805,6 +7783,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
+
         public Response<SiteInfo> GetSiteInfo(string SiteCode)
         {
             var SiteInfo = _context.TLIsite.Include(x=>x.Area).Include(x=>x.Region).FirstOrDefault(x => x.SiteCode == SiteCode);

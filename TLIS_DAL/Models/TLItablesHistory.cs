@@ -18,7 +18,7 @@ namespace TLIS_DAL.Models
         [Required]
         public int UserId { get; set; }
         [Required]
-        public int RecordId { get; set; }
+        public string RecordId { get; set; }
         //[Required]
         //public string TableName { get; set; }
         [Required]

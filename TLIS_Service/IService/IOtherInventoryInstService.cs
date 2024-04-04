@@ -22,7 +22,7 @@ namespace TLIS_Service.IService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, string OtherInventoryLibraryType, int OtherInventoryId, string SiteCode);
 
-        Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId);
+        Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);
 
         Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId);
 

@@ -10817,10 +10817,10 @@ namespace TLIS_Service.Services
             history.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereSelectFirst(x => x.Name == HistoryType, x => new { x.Id }).Id;
             history.UserId = 83;
             int? TableHistoryId = null;
-            var CheckTableHistory = _unitOfWork.TablesHistoryRepository.GetWhereFirst(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId && x.TablesNameId == TableNameid);
+            var CheckTableHistory = _unitOfWork.TablesHistoryRepository.GetWhereFirst(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameid);
             if (CheckTableHistory != null)
             {
-                var TableHistory = _unitOfWork.TablesHistoryRepository.GetWhereAndSelect(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId && x.TablesNameId == TableNameid, x => new { x.Id }).ToList().Max(x => x.Id);
+                var TableHistory = _unitOfWork.TablesHistoryRepository.GetWhereAndSelect(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameid, x => new { x.Id }).ToList().Max(x => x.Id);
                 if (TableHistory != null)
                     TableHistoryId = TableHistory;
                 if (TableHistoryId != null)

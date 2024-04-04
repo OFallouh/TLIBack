@@ -31,6 +31,7 @@ namespace TLIS_Repository.Base
         Task AddAsync(TModel item);
         Task AddAsync(TEntity entity);
         void Add(TEntity entity);
+        void UpdateSiteWithHistory(int? UserId, TEntity OldObject, TEntity NewObject);
         Task AddRangeAsync(IEnumerable<TModel> items);
         Task AddRangeAsync(IEnumerable<TEntity> items);
         void AddRange(IEnumerable<TEntity> items);

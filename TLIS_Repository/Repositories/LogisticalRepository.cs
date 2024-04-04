@@ -110,19 +110,22 @@ namespace TLIS_Repository.Repositories
                         });
 
                     }
-                    result.Add(new BaseInstAttViews
+                    else
                     {
-                        Key = LogisticalType.Name,
-                        Label = LogisticalType.Name,
-                        enable = true,
-                        DataType = "List",
-                        AutoFill = false,
-                        Desc = LogisticalType.Name,
-                        Manage = false,
-                        Required = false,
-                        Value =_mapper.Map<LogisticalViewModel>(LogisticalItem.logistical),
-                        Options= Logisticals
-                    });
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = false,
+                            Value = _mapper.Map<LogisticalViewModel>(LogisticalItem.logistical),
+                            Options = Logisticals
+                        });
+                    }
                 }
                 else
                 {

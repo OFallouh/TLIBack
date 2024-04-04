@@ -17,6 +17,7 @@ namespace TLIS_Repository.IRepository
         void UpdateReservedSpace(string SiteCode, float SpaceInstallation);
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
         Response<string> CheckSpace(string SiteCode, string TableName, int LibraryId, float SpaceInstallation, string Cabinet);
+        Response<string> CheckSpaces(int UserId, string SiteCode, string TableName, int LibraryId, float SpaceInstallation, string Cabinet);
         Task<SumbitsTaskByTLI> SubmitTaskByTLI(int? TaskId);
         Task<SumbitsTaskByTLI> EditTicketInfoByTLI(EditTicketInfoBinding editTicketInfoBinding);
     }

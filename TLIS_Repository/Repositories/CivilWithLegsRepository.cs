@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -206,6 +207,8 @@ namespace TLIS_Repository.Repositories
                     {
                         if (value != null)
                         {
+                            bool isDate = DateTime.TryParseExact(value.ToString(), "dd-MMM-yy hh.mm.ss.fffffff tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime Dateres);
+                            bool isInt = int.TryParse(value.ToString(), out int Intres);
                             if (filter.value.Count > 1)
                             {
                                 if (!filter.value.Any(x => x.ToString().ToLower() == value.ToString().ToLower()))
@@ -216,17 +219,18 @@ namespace TLIS_Repository.Repositories
                             }
                             else if (filter.value.Count == 1)
                             {
-                                if (int.TryParse(value.ToString(), out int Intres) && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
+                                if (isInt && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
                                 {
                                     x = false;
                                     break;
                                 }
-                                if (DateTime.TryParse(value.ToString(), out DateTime Dateres) && DateTime.TryParse(filter.value[0].ToString(), out DateTime FDateres) && Dateres != FDateres)
+                                if (isDate && DateTime.TryParseExact(filter.value[0].ToString(), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime FDateres)
+                                    && Dateres != FDateres)
                                 {
                                     x = false;
                                     break;
                                 }
-                                else if (!value.ToString().ToLower().StartsWith(filter.value[0].ToString().ToLower()))
+                                else if (!isDate && !isInt && !value.ToString().ToLower().StartsWith(filter.value[0].ToString().ToLower()))
                                 {
                                     x = false;
                                     break;

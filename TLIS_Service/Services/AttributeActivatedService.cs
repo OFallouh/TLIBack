@@ -844,10 +844,10 @@ namespace TLIS_Service.Services
                 tablesHistory.RecordId = RecordId;
                 int TableNameid = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIattributeActivated", x => new { x.Id }).Id;
                 tablesHistory.TablesNameId = TableNameid;
-                var CheckTableHistory = _unitOfWork.TablesHistoryRepository.GetWhereFirst(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId && x.TablesNameId == TableNameid);
+                var CheckTableHistory = _unitOfWork.TablesHistoryRepository.GetWhereFirst(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameid);
                 if (CheckTableHistory != null)
                 {
-                    var TableHistory = _unitOfWork.TablesHistoryRepository.GetWhereAndSelect(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId && x.TablesNameId == TableNameid, x => new { x.Id }).ToList().Max(x => x.Id);
+                    var TableHistory = _unitOfWork.TablesHistoryRepository.GetWhereAndSelect(x => x.HistoryType.Name == HistoryType && x.RecordId == RecordId.ToString() && x.TablesNameId == TableNameid, x => new { x.Id }).ToList().Max(x => x.Id);
                     tablesHistory.PreviousHistoryId = TableHistory;
                 }
                 tablesHistory.UserId = 83;

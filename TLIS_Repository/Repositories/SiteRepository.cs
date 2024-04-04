@@ -170,17 +170,17 @@ namespace TLIS_Repository.Repositories
                     }
                     else
                     {
-                        return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else
                 {
                     if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
                     {
-                        var civilWithoutLegSpaceLibrary = _context.TLIcivilWithoutLegLibrary.FirstOrDefault(x => x.Id == LibraryId).SpaceLibrary;
-                        if (civilWithoutLegSpaceLibrary != 0)
+                        var civilWithoutLegSpaceLibrary = _context.TLIcivilWithoutLegLibrary.FirstOrDefault(x => x.Id == LibraryId);
+                        if (civilWithoutLegSpaceLibrary != null)
                         {
-                            var space = Site.ReservedSpace + civilWithoutLegSpaceLibrary;
+                            var space = Site.ReservedSpace + civilWithoutLegSpaceLibrary.SpaceLibrary;
                             if (space <= Site.RentedSpace)
                             {
                                 Site.ReservedSpace = space;
@@ -190,7 +190,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                         }
@@ -215,7 +215,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                         }
@@ -239,7 +239,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                         }
@@ -264,7 +264,7 @@ namespace TLIS_Repository.Repositories
 
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
                         else if (cabinetPowerLibrarySpaceLibrary.Depth != 0 && cabinetPowerLibrarySpaceLibrary.Width != 0)
@@ -281,7 +281,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
                         else
@@ -304,7 +304,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                         }
@@ -322,7 +322,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
                         else
@@ -345,7 +345,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                         }
@@ -364,7 +364,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
                         else
@@ -387,7 +387,7 @@ namespace TLIS_Repository.Repositories
                             }
                             else
                             {
-                                return new Response<string>(true, null, null, "Not available space", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<string>(true, null, null, "Not available space in site", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                         }

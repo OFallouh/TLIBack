@@ -17,9 +17,9 @@ namespace TLIS_Repository.IRepository
         void AddTableHistory(int RecordId, int TableNameId, int UserId, int HistoryTypeId, List<Tuple<string, string, string>> values = null);
         void AddTableHistory(AddTablesHistoryViewModel addModel, List<Tuple<string, string, string>> values = null);
         int AddTableHistory(AddTablesHistoryViewModel addModel, List<TLIhistoryDetails> details);
-        List<StaticAttsHistoryViewModel> GetDynamicAttributesHistory(string TableName, ParameterPagination parameterPagination);
-        List<StaticAttsHistoryViewModel> GetStaticAttributesHistory(string TableName, ParameterPagination parameterPagination);
-        List<HistoryViewModel> GetAttachedFileHistory( string TableName, int RecordId, ParameterPagination parameterPagination);
+        //List<StaticAttsHistoryViewModel> GetDynamicAttributesHistory(string TableName, ParameterPagination parameterPagination);
+        //List<StaticAttsHistoryViewModel> GetStaticAttributesHistory(string TableName, ParameterPagination parameterPagination);
+        //List<HistoryViewModel> GetAttachedFileHistory( string TableName, int RecordId, ParameterPagination parameterPagination);
         EditHistoryDetails CheckUpdateObject(object originalObj, object updateObj);
         int AddHistoryForEdit(int RecordId, int TableNameid, string HistoryType, List<TLIhistoryDetails> details);
         void AddHistory(int MW_lib_id, string historyType, string TableName);

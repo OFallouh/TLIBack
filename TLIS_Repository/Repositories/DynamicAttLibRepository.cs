@@ -446,13 +446,13 @@ namespace TLIS_Repository.Repositories
                             string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
                             tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
 
-                            tablesHistory.RecordId = EntitesId;
+                            tablesHistory.RecordId = EntitesId.ToString();
                             tablesHistory.UserId = UserId.Value;
                             tablesHistory.Date = DateTime.Now;
-                            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId);
+                            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId);
                             if (CheckTableHistory)
                             {
-                                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
+                                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
 
                                 TablehistoryId = TableHistory;
                                 if (TablehistoryId != null)
@@ -615,13 +615,13 @@ namespace TLIS_Repository.Repositories
                                 string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
                                 tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
 
-                                tablesHistory.RecordId = EntitesId;
+                                tablesHistory.RecordId = EntitesId.ToString();
                                 tablesHistory.UserId = UserId.Value;
                                 tablesHistory.Date = DateTime.Now;
-                                var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId);
+                                var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId);
                                 if (CheckTableHistory)
                                 {
-                                    var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
+                                    var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
                                     if (TableHistory != null)
                                     {
                                         TablehistoryId = TableHistory;
@@ -633,7 +633,7 @@ namespace TLIS_Repository.Repositories
                                 }
                                 _context.TLItablesHistory.Add(tablesHistory);
                                 _context.SaveChanges();
-                                var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId && x.RecordId == EntitesId).Select(x => x.Id).ToList();
+                                var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId && x.RecordId == EntitesId.ToString()).Select(x => x.Id).ToList();
                                 int? tablehistoryid = null;
 
 
@@ -709,13 +709,13 @@ namespace TLIS_Repository.Repositories
                             string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Edit").Select(x => x.Name).FirstOrDefault();
                             tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Edit").Select(x => x.Id).FirstOrDefault();
 
-                            tablesHistory.RecordId = EntitesId;
+                            tablesHistory.RecordId = EntitesId.ToString();
                             tablesHistory.UserId = UserId.Value;
                             tablesHistory.Date = DateTime.Now;
-                            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId);
+                            var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId);
                             if (CheckTableHistory)
                             {
-                                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
+                                var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
 
                                 TablehistoryId = TableHistory;
                                 if (TablehistoryId != null)
@@ -875,13 +875,13 @@ namespace TLIS_Repository.Repositories
                                 string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
                                 tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
 
-                                tablesHistory.RecordId = EntitesId;
+                                tablesHistory.RecordId = EntitesId.ToString();
                                 tablesHistory.UserId = UserId.Value;
                                 tablesHistory.Date = DateTime.Now;
-                                var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId);
+                                var CheckTableHistory = _context.TLItablesHistory.Any(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId);
                                 if (CheckTableHistory)
                                 {
-                                    var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
+                                    var TableHistory = _context.TLItablesHistory.Where(x => x.HistoryType.Name == HistoryTybeName && x.RecordId == EntitesId.ToString() && x.TablesNameId == TablesNameId).Select(x => x.Id).Max();
                                     if (TableHistory != null)
                                     {
                                         TablehistoryId = TableHistory;
@@ -893,7 +893,7 @@ namespace TLIS_Repository.Repositories
                                 }
                                 _context.TLItablesHistory.Add(tablesHistory);
                                 _context.SaveChanges();
-                                var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId && x.RecordId == EntitesId).Select(x => x.Id).ToList();
+                                var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId && x.RecordId == EntitesId.ToString()).Select(x => x.Id).ToList();
                                 int? tablehistoryid = null;
 
 
