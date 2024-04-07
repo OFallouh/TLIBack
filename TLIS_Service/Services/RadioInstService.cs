@@ -3873,7 +3873,7 @@ namespace TLIS_Service.Services
 
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.mwDishId != null && LoadName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                                     {
@@ -3931,7 +3931,7 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
 
                                     }
                                     else if (item.mwODUId != null && LoadName == Helpers.Constants.TablesNames.TLImwODU.ToString())
@@ -3944,7 +3944,7 @@ namespace TLIS_Service.Services
                                             EquivalentSpace += 0;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
 
                                     }
                                     else if (item.mwRFUId != null && LoadName == Helpers.Constants.TablesNames.TLImwRFU.ToString())
@@ -3957,7 +3957,7 @@ namespace TLIS_Service.Services
                                             EquivalentSpace += 0;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.mwOtherId != null && LoadName == Helpers.Constants.TablesNames.TLImwOther.ToString())
                                     {
@@ -3982,7 +3982,7 @@ namespace TLIS_Service.Services
                                             mwother.Dismantle = true;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.radioAntennaId != null && LoadName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                                     {
@@ -4017,7 +4017,7 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.radioRRUId != null && LoadName == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
                                     {
@@ -4042,7 +4042,7 @@ namespace TLIS_Service.Services
                                             radiorru.Dismantle = true;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.radioOtherId != null && LoadName == Helpers.Constants.TablesNames.TLIradioOther.ToString())
                                     {
@@ -4066,7 +4066,7 @@ namespace TLIS_Service.Services
                                             radioother.Dismantle = true;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.powerId != null && LoadName == Helpers.Constants.TablesNames.TLIpower.ToString())
                                     {
@@ -4090,7 +4090,7 @@ namespace TLIS_Service.Services
                                             power.Dismantle = true;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     else if (item.loadOtherId != null && LoadName == Helpers.Constants.TablesNames.TLIloadOther.ToString())
                                     {
@@ -4114,7 +4114,7 @@ namespace TLIS_Service.Services
                                             loadother.Dismantle = true;
                                         }
                                         TLIcivilWithoutLeg tLIcivilWithoutLeg = t.civilWithoutLeg;
-                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float?)EquivalentSpace;
+                                        tLIcivilWithoutLeg.CurrentLoads = tLIcivilWithoutLeg.CurrentLoads - (float)EquivalentSpace;
                                     }
                                     _dbContext.SaveChanges();
                                 }

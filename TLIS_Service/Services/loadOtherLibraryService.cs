@@ -92,10 +92,10 @@ namespace TLIS_Service.Services
 
                             AddLogisticalItem(LogisticalItemIds, loadOtherLibrary, TableNameEntity.Id);
 
-                            if (LoadOtherLibraryViewModel.dynamicAttribute.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(LoadOtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, loadOtherLibrary.Id);
-                            }
+                            //if (LoadOtherLibraryViewModel.dynamicAttribute.Count > 0)
+                            //{
+                            //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(LoadOtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, loadOtherLibrary.Id);
+                            //}
                             //    AddHistory(loadOtherLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLIloadOtherLibrary");
                           
                             transaction.Complete();

@@ -33,7 +33,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float? ConcreteBaseThicknessm { get; set; }
         public float? ConcreteBaseLengthm { get; set; }
         public LadderSteps ladderSteps { get; set; }
-        public AvailabilityOfWorkPlatforms availabilityOfWorkPlatforms { get; set; }
+        public bool availabilityOfWorkPlatforms { get; set; }
         public EquipmentsLocation equipmentsLocation { get; set; }
         //public float? ConcreteBaseWidthm { get; set; }
         public string Civil_Remarks { get; set; }
@@ -52,7 +52,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public string PoNo { get; set; }
         public DateTime PoDate { get; set; }
         public int subTypeId { get; set; }
-        public Reinforced reinforced { get; set; }
+        public bool reinforced { get; set; }
         public float? HeightImplemented { get; set; }
         public float? BuildingMaxLoad { get; set; }
         public float? SupportMaxLoadAfterInforcement { get; set; }

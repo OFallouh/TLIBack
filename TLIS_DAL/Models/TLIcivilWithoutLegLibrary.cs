@@ -34,7 +34,7 @@ namespace TLIS_DAL.Models
         [ForeignKey("TLIcivilWithoutLegCategory")]
         public int CivilWithoutLegCategoryId { get; set; }
         public float Manufactured_Max_Load { get; set; }
-
+        public string? WidthVariation { get; set; }
         public TLIcivilWithoutLegCategory? CivilWithoutLegCategory { get; set; }
         public IEnumerable<TLIcivilWithoutLeg> civilWithoutLegs { get; set; }
 

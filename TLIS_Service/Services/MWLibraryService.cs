@@ -3266,10 +3266,10 @@ namespace TLIS_Service.Services
                                 AddLogisticalItemWithMW(LogisticalItemIds, MW_BULibraryEntity, TableNameEntity.Id);
 
 
-                                if (MW_BULibraryViewModel.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_BULibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_BULibraryEntity.Id);
-                                }
+                                //if (MW_BULibraryViewModel.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_BULibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_BULibraryEntity.Id);
+                                //}
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_BULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwBULibrary.ToString().ToLower());
                                
                             }
@@ -3301,10 +3301,10 @@ namespace TLIS_Service.Services
 
                                 AddLogisticalItemWithMW(LogisticalItemIds, MW_DishLibraryEntity, TableNameEntity.Id);
 
-                                if (MW_DishLibraryViewModel.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_DishLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_DishLibraryEntity.Id);
-                                }
+                                //if (MW_DishLibraryViewModel.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_DishLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_DishLibraryEntity.Id);
+                                //}
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_DishLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
                               
                             }
@@ -3338,10 +3338,10 @@ namespace TLIS_Service.Services
 
                                     AddLogisticalItemWithMW(LogisticalItemIds, MW_ODULibraryEntity, TableNameEntity.Id);
 
-                                    if (AddMW_ODULibrary.dynamicAttribute.Count > 0)
-                                    {
-                                        _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(AddMW_ODULibrary.dynamicAttribute, TableNameEntity.Id, MW_ODULibraryEntity.Id);
-                                    }
+                                    //if (AddMW_ODULibrary.dynamicAttribute.Count > 0)
+                                    //{
+                                    //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(AddMW_ODULibrary.dynamicAttribute, TableNameEntity.Id, MW_ODULibraryEntity.Id);
+                                    //}
                                     _unitOfWork.TablesHistoryRepository.AddHistory(MW_ODULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), "TLImwODULibrary");
                               
                             }
@@ -3374,10 +3374,10 @@ namespace TLIS_Service.Services
 
                                 AddLogisticalItemWithMW(LogisticalItemIds, MW_RFULibraryEntity, TableNameEntity.Id);
 
-                                if (MW_RFULibraryViewModel.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_RFULibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_RFULibraryEntity.Id);
-                                }
+                                //if (MW_RFULibraryViewModel.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_RFULibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_RFULibraryEntity.Id);
+                                //}
                                 //  _unitOfWork.TablesHistoryRepository.AddHistory(MW_RFULibraryEntity.Id, "Add", "TLImwRFULibrary");
                                
                             }
@@ -3410,10 +3410,10 @@ namespace TLIS_Service.Services
 
                                 AddLogisticalItemWithMW(LogisticalItemIds, MW_OtherLibraryEntity, TableNameEntity.Id);
 
-                                if (MW_OtherLibraryViewModel.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_OtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_OtherLibraryEntity.Id);
-                                }
+                                //if (MW_OtherLibraryViewModel.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(MW_OtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_OtherLibraryEntity.Id);
+                                //}
                                  //  _unitOfWork.TablesHistoryRepository.AddHistory(MW_OtherLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwOtherLibrary.ToString().ToLower());
                             }
                             transaction.Complete();

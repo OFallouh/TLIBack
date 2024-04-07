@@ -66,10 +66,6 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public int? GuylineTypeId { get; set; }
         public int SupportTypeImplementedId { get; set; }
         public int? enforcmentCategoryId { get; set; }
-        public float CenterHigh { get; set; } = 0;
-        public float HBA { get; set; } = 0;
-        public float HieghFromLand { get; set; } = 0;
-        public float EquivalentSpace { get; set; } = 0;
         public string? SpecialEnforcementCategory { get; set; }
         public string? Remarks { get; set; }
         public float Support_Limited_Load { get; set; } = 0;

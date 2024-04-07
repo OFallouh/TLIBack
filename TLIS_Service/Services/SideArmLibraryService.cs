@@ -169,10 +169,10 @@ namespace TLIS_Service.Services
 
                             AddLogisticalItemWithSideArm(LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id);
 
-                            if (addSideArmLibraryViewModel.dynamicAttribute.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
-                            }
+                            //if (addSideArmLibraryViewModel.dynamicAttribute.Count > 0)
+                            //{
+                            //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
+                            //}
                             transaction.Complete();
                             tran.Commit();
                             return new Response<SideArmLibraryViewModel>();

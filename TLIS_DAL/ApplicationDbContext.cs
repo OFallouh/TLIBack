@@ -162,6 +162,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIimportSheet> TLIimportSheets { get; set; }
         public virtual DbSet<TLIexternalSys> TLIexternalSys { get; set; }
         public virtual DbSet<TLIinternalApis> TLIinternalApis { get; set; }
+        public virtual DbSet<TLIcivilSupportDistance> TLIcivilSupportDistance { get; set; }
         public virtual DbSet<TLIexternalSysPermissions> TLIexternalSysPermissions { get; set; }
         public virtual DbSet<TLIintegrationAccessLog> TLIintegrationAccessLog { get; set; }
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }

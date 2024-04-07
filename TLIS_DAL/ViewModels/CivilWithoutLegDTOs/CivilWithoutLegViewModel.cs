@@ -58,16 +58,11 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float Support_Limited_Load { get; set; }
         public List<BaseInstAttView> DynamicInstAttsValue { get; set; }
 
-
-        [EnumDataType(typeof(Reinforced))]
-
-        public Reinforced? reinforced { get; set; }
+        public bool reinforced { get; set; }
         [EnumDataType(typeof(LadderSteps))]
 
         public LadderSteps? ladderSteps { get; set; }
-        [EnumDataType(typeof(AvailabilityOfWorkPlatforms))]
-
-        public AvailabilityOfWorkPlatforms? availabilityOfWorkPlatforms { get; set; }
+        public bool availabilityOfWorkPlatforms { get; set; }
         [EnumDataType(typeof(EquipmentsLocation))]
 
         public EquipmentsLocation? equipmentsLocation { get; set; }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using TLIS_DAL;
@@ -12,6 +13,7 @@ using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
+using static Dapper.SqlMapper;
 
 namespace TLIS_Repository.Repositories
 {
@@ -70,7 +72,7 @@ namespace TLIS_Repository.Repositories
                 _context.SaveChanges();
             }
         }
-        public void AddDdynamicAttributeInstallation(AddDdynamicAttributeInstallationValueViewModel addDynamicInstAttValue, int TableNameId, int Id)
+        public void AddDdynamicAttributeInstallation(int UserId,AddDdynamicAttributeInstallationValueViewModel addDynamicInstAttValue, int TableNameId, int Id)
         {
             var DynamicAtt = _context.TLIdynamicAtt.Include(x => x.DataType).FirstOrDefault(x => x.Id == addDynamicInstAttValue.id);
             TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
@@ -81,7 +83,7 @@ namespace TLIS_Repository.Repositories
                 dynamicAttInstValue.tablesNamesId = TableNameId;
                 dynamicAttInstValue.ValueString = stringValue;
                 dynamicAttInstValue.disable = false;
-                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+               AddWithHistorys(UserId,dynamicAttInstValue);
                 _context.SaveChanges();
             }
             else if( addDynamicInstAttValue.value is double DoubleValue)
@@ -91,7 +93,7 @@ namespace TLIS_Repository.Repositories
                 dynamicAttInstValue.tablesNamesId = TableNameId;
                 dynamicAttInstValue.ValueDouble = DoubleValue;
                 dynamicAttInstValue.disable = false;
-                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+               AddWithHistorys(UserId,dynamicAttInstValue);
                 _context.SaveChanges();
             }
             else if (addDynamicInstAttValue.value is DateTime dateTimeValue)
@@ -101,7 +103,7 @@ namespace TLIS_Repository.Repositories
                 dynamicAttInstValue.tablesNamesId = TableNameId;
                 dynamicAttInstValue.ValueDateTime = dateTimeValue;
                 dynamicAttInstValue.disable = false;
-                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+             AddWithHistorys(UserId,dynamicAttInstValue);
                 _context.SaveChanges();
             }
             else if (addDynamicInstAttValue.value is bool booleanValue)
@@ -111,7 +113,7 @@ namespace TLIS_Repository.Repositories
                 dynamicAttInstValue.tablesNamesId = TableNameId;
                 dynamicAttInstValue.ValueBoolean = booleanValue;
                 dynamicAttInstValue.disable = false;
-                _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                AddWithHistorys(UserId,dynamicAttInstValue);
                 _context.SaveChanges();
             }
         }
@@ -292,7 +294,7 @@ namespace TLIS_Repository.Repositories
             }
            
         }
-        public void UpdateDynamicValues(List<AddDdynamicAttributeInstallationValueViewModel> DynamicInstAttsValue, int TableNameId, int InstId)
+        public void UpdateDynamicValues(int UserId,List<AddDdynamicAttributeInstallationValueViewModel> DynamicInstAttsValue, int TableNameId, int InstId)
         {
             foreach (var DynamicIns in DynamicInstAttsValue)
             {
@@ -355,12 +357,39 @@ namespace TLIS_Repository.Repositories
                         dynamicAttInstValue.DynamicAttId = DynamicIns.id;
                         dynamicAttInstValue.tablesNamesId = TableNameId;
                         dynamicAttInstValue.InventoryId = InstId;
-                        _context.TLIdynamicAttInstValue.Add(dynamicAttInstValue);
+                        AddWithHistorys(UserId,dynamicAttInstValue);
                         _context.SaveChanges();
                     }
                 }
             }
 
+        }
+        public virtual void AddWithHistorys(int? UserId, TLIdynamicAttInstValue entity)
+        {
+  
+            _context.TLIdynamicAttInstValue.Add(entity);
+            _context.SaveChanges();
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == entity.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id;
+
+                int entityId = (int)entity.GetType().GetProperty("Id").GetValue(entity, null);
+
+                TLItablesHistory AddTablesHistory = new TLItablesHistory
+                {
+                    Date = DateTime.Now,
+                    HistoryTypeId = HistoryTypeId,
+                    PreviousHistoryId = null,
+                    RecordId = entityId.ToString(),
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+                _context.TLItablesHistory.Add(AddTablesHistory);
+                _context.SaveChanges();
+            }
         }
     }
 }

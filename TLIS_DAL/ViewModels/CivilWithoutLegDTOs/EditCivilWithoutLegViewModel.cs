@@ -58,9 +58,9 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float? CurrentLoads { get; set; }
         public float? SupportMaxLoadAfterInforcement { get; set; }
         public int? WarningPercentageLoads { get; set; }
-       public Reinforced? reinforced { get; set; }
+       public bool reinforced { get; set; }
         public LadderSteps? ladderSteps { get; set; }
-        public AvailabilityOfWorkPlatforms? availabilityOfWorkPlatforms { get; set; }
+        public bool availabilityOfWorkPlatforms { get; set; }
         public EquipmentsLocation? equipmentsLocation { get; set; }
         public string ? Visiable_Status { get; set; }
         public float? BuildingHeightH3 { get; set; }

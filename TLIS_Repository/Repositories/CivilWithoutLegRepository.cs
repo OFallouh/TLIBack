@@ -65,25 +65,25 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> equipmentsLocation = _mapper.Map<List<DropDownListFilters>>(OutPut);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("equipmentsLocation", equipmentsLocation));
 
-            var availabilityOfWorkPlatforms = Enum.GetNames(typeof(AvailabilityOfWorkPlatforms)).ToList();
-            List<SubTypeViewModel> outPut = new List<SubTypeViewModel>();
-            if (availabilityOfWorkPlatforms.Exists(x => x == "Yes"))
-            {
-                SubTypeViewModel SubType = new SubTypeViewModel();
-                SubType.Id = 0;
-                SubType.Name = "Yes";
-                outPut.Add(SubType);
-            }
-            if (availabilityOfWorkPlatforms.Exists(x => x == "No"))
-            {
-                SubTypeViewModel SubType = new SubTypeViewModel();
-                SubType.Id = 1;
-                SubType.Name = "No";
-                outPut.Add(SubType);
-            }
+            //var availabilityOfWorkPlatforms = Enum.GetNames(typeof(AvailabilityOfWorkPlatforms)).ToList();
+            //List<SubTypeViewModel> outPut = new List<SubTypeViewModel>();
+            //if (availabilityOfWorkPlatforms.Exists(x => x == "Yes"))
+            //{
+            //    SubTypeViewModel SubType = new SubTypeViewModel();
+            //    SubType.Id = 0;
+            //    SubType.Name = "Yes";
+            //    outPut.Add(SubType);
+            //}
+            //if (availabilityOfWorkPlatforms.Exists(x => x == "No"))
+            //{
+            //    SubTypeViewModel SubType = new SubTypeViewModel();
+            //    SubType.Id = 1;
+            //    SubType.Name = "No";
+            //    outPut.Add(SubType);
+            //}
            
-            List<DropDownListFilters> AvailabilityOfWorkPlatforms = _mapper.Map<List<DropDownListFilters>>(outPut);
-            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("availabilityOfWorkPlatforms", AvailabilityOfWorkPlatforms));
+            //List<DropDownListFilters> AvailabilityOfWorkPlatforms = _mapper.Map<List<DropDownListFilters>>(outPut);
+            //RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("availabilityOfWorkPlatforms", AvailabilityOfWorkPlatforms));
 
             var LadderSteps = Enum.GetNames(typeof(LadderSteps)).ToList();
             List<SubTypeViewModel> output = new List<SubTypeViewModel>();
@@ -105,25 +105,25 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> ladderSteps = _mapper.Map<List<DropDownListFilters>>(output);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("ladderSteps", ladderSteps));
 
-            var Reinforced = Enum.GetNames(typeof(Reinforced)).ToList();
-            List<SubTypeViewModel> outpput = new List<SubTypeViewModel>();
-            if (Reinforced.Exists(x => x == "Yes"))
-            {
-                SubTypeViewModel SubType = new SubTypeViewModel();
-                SubType.Id = 0;
-                SubType.Name = "Yes";
-                outpput.Add(SubType);
-            }
-            if (Reinforced.Exists(x => x == "No"))
-            {
-                SubTypeViewModel SubType = new SubTypeViewModel();
-                SubType.Id = 1;
-                SubType.Name = "No";
-                outpput.Add(SubType);
-            }
+            //var Reinforced = Enum.GetNames(typeof(Reinforced)).ToList();
+            //List<SubTypeViewModel> outpput = new List<SubTypeViewModel>();
+            //if (Reinforced.Exists(x => x == "Yes"))
+            //{
+            //    SubTypeViewModel SubType = new SubTypeViewModel();
+            //    SubType.Id = 0;
+            //    SubType.Name = "Yes";
+            //    outpput.Add(SubType);
+            //}
+            //if (Reinforced.Exists(x => x == "No"))
+            //{
+            //    SubTypeViewModel SubType = new SubTypeViewModel();
+            //    SubType.Id = 1;
+            //    SubType.Name = "No";
+            //    outpput.Add(SubType);
+            //}
 
-            List<DropDownListFilters> reinforced = _mapper.Map<List<DropDownListFilters>>(outpput);
-            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("reinforced", reinforced));
+            //List<DropDownListFilters> reinforced = _mapper.Map<List<DropDownListFilters>>(outpput);
+            //RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("reinforced", reinforced));
             return RelatedTables;
         }
     }

@@ -703,10 +703,10 @@ namespace TLIS_Service.Services
 
                             AddLogisticalItemWithPower(LogisticalItemIds, PowerLibrary, TableNameEntity.Id);
 
-                            if (PowerLibraryViewModel.dynamicAttribute.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(PowerLibraryViewModel.dynamicAttribute, TableNameEntity.Id, PowerLibrary.Id);
-                            }
+                            //if (PowerLibraryViewModel.dynamicAttribute.Count > 0)
+                            //{
+                            //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(PowerLibraryViewModel.dynamicAttribute, TableNameEntity.Id, PowerLibrary.Id);
+                            //}
                             
                             transaction.Complete();
                             tran.Commit();

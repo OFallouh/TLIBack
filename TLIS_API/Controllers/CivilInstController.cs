@@ -11,6 +11,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
@@ -188,10 +189,28 @@ namespace TLIS_API.Controllers
         public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
             if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
             {
-                var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
+                var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId,userId);
                 return Ok(response);
             }
             else
@@ -206,14 +225,32 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddCivilNonSteel/{SiteCode}")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelViewModel))]
-        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModel addCivilNonSteel, string SiteCode, int? TaskId)
+        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelObject))]
+        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        
-            if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModel)))
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var response = _unitOfWorkService.CivilInstService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+            if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelObject)))
+            {
+                var response = _unitOfWorkService.CivilInstService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId, userId);
                 return Ok(response);
             }
             else
@@ -221,25 +258,25 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddCivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddCivilNonSteelObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
                 
            
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetCivilWithLegsById")]
+        [HttpGet("GetCivilWithLegsInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithLegsById(int CivilId)
+        public IActionResult GetCivilWithLegsInstallationById(int CivilId)
         {
-            var response = _unitOfWorkService.CivilInstService.GetById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetCivilWithoutLegsById")]
+        [HttpGet("GetCivilWithoutLegsInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithoutLegsById(int CivilId)
+        public IActionResult GetCivilWithoutLegsInstallationById(int CivilId)
         {
-            var response = _unitOfWorkService.CivilInstService.GetById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -251,16 +288,16 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetCivilNonSteelById")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilNonSteelById(int CivilId)
-        {
-            var response = _unitOfWorkService.CivilInstService.GetById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
-            return Ok(response);
-        }
+        //[HttpGet("GetCivilNonSteelById")]
+        //[ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        //public IActionResult GetCivilNonSteelById(int CivilId)
+        //{
+        //    var response = _unitOfWorkService.CivilInstService.GetById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+        //    return Ok(response);
+        //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilWithLegs")]
-        [ProducesResponseType(200, Type = typeof(CivilWithLegsViewModel))]
+        [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
@@ -296,13 +333,32 @@ namespace TLIS_API.Controllers
             }
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditCivilWithoutLegs")]
-        [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg, int? TaskId)
+        [HttpPost("EditCivilWithoutLegsInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
+        public async Task<IActionResult> EditCivilWithoutLegsInstallation([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
-            if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId);
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegsInstallationObject)))
+            {
+                var response = await _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId);
                 return Ok(response);
             }
             else
@@ -315,12 +371,31 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilNonSteel")]
-        [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel, int? TaskId)
+        [ProducesResponseType(200, Type = typeof(EditCivilNonSteelInstallationObject))]
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel, int? TaskId)
         {
-            if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId);
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelInstallationObject)))
+            {
+                var response = await _unitOfWorkService.CivilInstService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId);
                 return Ok(response);
             }
             else
@@ -340,22 +415,84 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
-
-        //[HttpPost("DismantleCivil")]
-
-        //public IActionResult DismantleCivil([FromBody] DismantleBinding dis)
-        //{
-        //    var response = _unitOfWorkService.CivilInstService.DismantleCivil(dis);
-        //    return Ok(response);
-
-        //}
-
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("DismantleCivil")]
-
-        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName, int? TaskId)
+        [HttpPost("DismantleCivilWithLegsInstallation")]
+        public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, string CivilName, int? TaskId)
         {
-            var response = _unitOfWorkService.CivilInstService.DismantleCivil(SiteCode, CivilId, CivilName, TaskId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, CivilName, TaskId);
+            return Ok(response);
+
+        }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("DismantleCivilWithoutLegsInstallation")]
+        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, string CivilName, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, CivilName, TaskId);
+            return Ok(response);
+
+        }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("DismantleCivilNonSteelInstallation")]
+        public IActionResult DismantleCivilNonSteelInstallation(string SiteCode, int CivilId, string CivilName, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, CivilName, TaskId);
             return Ok(response);
 
         }

@@ -1721,10 +1721,10 @@ namespace TLIS_Service.Services
                                 LogisticalItemIds = addRadioAntenna.LogisticalItems;
                                 AddLogisticalItemWithRadio(LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id);
                                
-                                if (addRadioAntenna.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioAntenna.dynamicAttribute, TableNameEntity.Id, radioAntennaLibrary.Id);
-                                }
+                                //if (addRadioAntenna.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioAntenna.dynamicAttribute, TableNameEntity.Id, radioAntennaLibrary.Id);
+                                //}
                                     // _unitOfWork.TablesHistoryRepository.AddHistory(radioAntennaLibrary.Id, "Add", "TLIradioAntennaLibrary");
                             }
                             else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString().ToLower() == TableName.ToLower())
@@ -1754,10 +1754,10 @@ namespace TLIS_Service.Services
 
                                 AddLogisticalItemWithRadio(LogisticalItemIds, radioOther, TableNameEntity.Id);
 
-                                if (addRadioOther.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioOther.dynamicAttribute, TableNameEntity.Id, radioOther.Id);
-                                }
+                                //if (addRadioOther.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioOther.dynamicAttribute, TableNameEntity.Id, radioOther.Id);
+                                //}
                                  //   _unitOfWork.TablesHistoryRepository.AddHistory(radioOther.Id, "Add", "TLIradioOtherLibrary");
                                
                             }
@@ -1792,10 +1792,10 @@ namespace TLIS_Service.Services
 
                                 AddLogisticalItemWithRadio(LogisticalItemIds, radioRRULibrary, TableNameEntity.Id);
 
-                                if (addRadioRRULibrary.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioRRULibrary.dynamicAttribute, TableNameEntity.Id, radioRRULibrary.Id);
-                                }
+                                //if (addRadioRRULibrary.dynamicAttribute.Count > 0)
+                                //{
+                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioRRULibrary.dynamicAttribute, TableNameEntity.Id, radioRRULibrary.Id);
+                                //}
                                 //_unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, "Add", "TLIradioRRULibrary");
                                 
                             }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using TLIS_DAL;
@@ -11,6 +12,7 @@ using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
+using static Dapper.SqlMapper;
 
 namespace TLIS_Repository.Repositories
 {
@@ -70,7 +72,7 @@ namespace TLIS_Repository.Repositories
                 _context.SaveChanges();
             }
         }
-        public void AddDynamicLibAtt(List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id)
+        public void AddDynamicLibAtt(int UserId,List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id)
         {
             var dynamicAttLibValueEntities = addDynamicLibAttValues.Select(DynamicLibAttValue =>
             {
@@ -154,7 +156,15 @@ namespace TLIS_Repository.Repositories
                 return dynamicAttLibValueEntity;
             }).ToList(); 
 
-            _context.TLIdynamicAttLibValue.AddRange(dynamicAttLibValueEntities);
+            AddRangeWithHistory(UserId, dynamicAttLibValueEntities);
+            _context.SaveChanges();
+        }
+        public void AddRangeWithHistory(int? UserId, IEnumerable<TLIdynamicAttLibValue> Entities)
+        {
+            foreach (TLIdynamicAttLibValue Entity in Entities)
+            {
+                AddWithHistory(UserId, Entity);
+            }
             _context.SaveChanges();
         }
         public void DisableDynamicAttLibValues(int TableNameId, int Id)

@@ -10435,14 +10435,14 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        string MonopoleReinforcedForType = TypeOfSupportInfoDataTable.Rows[j]["Reinforced"].ToString();
-                                        NewMonopoleEntity.reinforced = Reinforced.No;
+                                        //string MonopoleReinforcedForType = TypeOfSupportInfoDataTable.Rows[j]["Reinforced"].ToString();
+                                        //NewMonopoleEntity.reinforced = Reinforced.No;
 
-                                        if (!string.IsNullOrEmpty(MonopoleReinforcedForType))
-                                        {
-                                            if (MonopoleReinforcedForType.ToLower() == "Yes".ToLower())
-                                                NewMonopoleEntity.reinforced = Reinforced.Yes;
-                                        }
+                                        //if (!string.IsNullOrEmpty(MonopoleReinforcedForType))
+                                        //{
+                                        //    if (MonopoleReinforcedForType.ToLower() == "Yes".ToLower())
+                                        //        NewMonopoleEntity.reinforced = Reinforced.Yes;
+                                        //}
 
                                         string MonopoleLadder_Steps = TypeOfSupportInfoDataTable.Rows[j]["Ladder /steps"].ToString();
                                         if (!string.IsNullOrEmpty(MonopoleLadder_Steps))
@@ -10454,14 +10454,14 @@ namespace TLIS_Service.Services
                                                 NewMonopoleEntity.ladderSteps = LadderSteps.Steps;
                                         }
 
-                                        string MonopoleAvailablityOfWorkPlatforms = TypeOfSupportInfoDataTable.Rows[j]["Availability of work platforms"].ToString();
-                                        NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.No;
+                                        //string MonopoleAvailablityOfWorkPlatforms = TypeOfSupportInfoDataTable.Rows[j]["Availability of work platforms"].ToString();
+                                        //NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.No;
 
-                                        if (!string.IsNullOrEmpty(MonopoleAvailablityOfWorkPlatforms))
-                                        {
-                                            if (MonopoleAvailablityOfWorkPlatforms.ToLower() == "Yes".ToLower())
-                                                NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.Yes;
-                                        }
+                                        //if (!string.IsNullOrEmpty(MonopoleAvailablityOfWorkPlatforms))
+                                        //{
+                                        //    if (MonopoleAvailablityOfWorkPlatforms.ToLower() == "Yes".ToLower())
+                                        //        NewMonopoleEntity.availabilityOfWorkPlatforms = AvailabilityOfWorkPlatforms.Yes;
+                                        //}
 
                                         string MonopoleEquipmentsLocation = TypeOfSupportInfoDataTable.Rows[j]["Equipments Location"].ToString();
                                         if (!string.IsNullOrEmpty(MonopoleEquipmentsLocation))
