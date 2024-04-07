@@ -3327,7 +3327,7 @@ namespace TLIS_Service.Services
                             FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithoutLegLibrary.structureType);
                         }
-                        else if (FKitem.Label.ToLower() == "InstallationcivilwithoutLlegstype_name")
+                        else if (FKitem.Label.ToLower() == "installationcivilwithoutLlegstype_name")
                         {
                             FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithoutLegLibrary.InstCivilwithoutLegsType);
@@ -3548,8 +3548,8 @@ namespace TLIS_Service.Services
                   .Select(FKitem =>
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
-                          FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                      else if (FKitem.Label.ToLower() == "InstallationcivilwithoutLlegstype_name")
+                          FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==1).ToList());
+                      else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
