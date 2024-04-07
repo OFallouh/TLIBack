@@ -10,7 +10,7 @@ using TLIS_Repository.IRepository;
 
 namespace TLIS_Repository.Repositories
 {
-    public class InstCivilwithoutLegsTypeRepository:RepositoryBase<TLIInstCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel, int>, IInstCivilwithoutLegsTypeRepository
+    public class InstCivilwithoutLegsTypeRepository:RepositoryBase<TLIinstallationCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel, int>, IInstCivilwithoutLegsTypeRepository
     {
         private readonly ApplicationDbContext _dbContext;
         IMapper _mapper;

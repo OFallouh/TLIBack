@@ -12842,7 +12842,7 @@ namespace TLIS_Service.Services
             {
                 TLIstructureType structureType=null;
                 TLIcivilSteelSupportCategory supportCategory=null;
-                TLIInstCivilwithoutLegsType installationType=null;
+                TLIinstallationCivilwithoutLegsType installationType=null;
                 TLIcivilWithoutLegCategory withoutLegCategory = null;
                 int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
@@ -12900,7 +12900,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     },
-                    { "tliInstCivilwithoutLegsType", () =>
+                    { "TLIinstallationCivilwithoutLegsType", () =>
                         {
                            
                             if (installationType != null)
@@ -13066,7 +13066,7 @@ namespace TLIS_Service.Services
             {
                 TLIstructureType structureType = null;
                 TLIcivilSteelSupportCategory supportCategory = null;
-                TLIInstCivilwithoutLegsType installationType = null;
+                TLIinstallationCivilwithoutLegsType installationType = null;
                 TLIcivilWithoutLegCategory withoutLegCategory = null;
                 int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
@@ -13124,7 +13124,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     },
-                    { "tliInstCivilwithoutLegsType", () =>
+                    { "TLIinstallationCivilwithoutLegsType", () =>
                         {
 
                             if (installationType != null)
@@ -13287,7 +13287,7 @@ namespace TLIS_Service.Services
             {
                 TLIstructureType structureType = null;
                 TLIcivilSteelSupportCategory supportCategory = null;
-                TLIInstCivilwithoutLegsType installationType = null;
+                TLIinstallationCivilwithoutLegsType installationType = null;
                 TLIcivilWithoutLegCategory withoutLegCategory = null;
                 int NumberofNumber = 0;
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
@@ -13345,7 +13345,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     },
-                    { "tliInstCivilwithoutLegsType", () =>
+                    { "TLIinstallationCivilwithoutLegsType", () =>
                         {
 
                             if (installationType != null)

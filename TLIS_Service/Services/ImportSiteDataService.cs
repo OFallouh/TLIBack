@@ -1104,7 +1104,7 @@ namespace TLIS_Service.Services
 
                                         if (!string.IsNullOrEmpty(Type))
                                         {
-                                            TLIInstCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstCivilwithoutLegsTypeRepository
+                                            TLIinstallationCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstCivilwithoutLegsTypeRepository
                                                 .GetWhereFirst(x => x.Name.ToLower() == Type.ToLower() && !x.Deleted);
 
                                             if (CheckInstallationTypeIfExist != null)
@@ -1112,7 +1112,7 @@ namespace TLIS_Service.Services
 
                                             else
                                             {
-                                                TLIInstCivilwithoutLegsType NewInstallationTypeEntity = new TLIInstCivilwithoutLegsType()
+                                                TLIinstallationCivilwithoutLegsType NewInstallationTypeEntity = new TLIinstallationCivilwithoutLegsType()
                                                 {
                                                     Name = Type,
                                                     Deleted = false,
@@ -4023,7 +4023,7 @@ namespace TLIS_Service.Services
 
                         string Type = row["Type1"].ToString();
 
-                        TLIInstCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstCivilwithoutLegsTypeRepository
+                        TLIinstallationCivilwithoutLegsType CheckInstallationTypeIfExist = _unitOfWork.InstCivilwithoutLegsTypeRepository
                             .GetWhereFirst(x => x.Name.ToLower() == Type.ToLower() && !x.Deleted);
 
                         if (CheckInstallationTypeIfExist != null)
@@ -4031,7 +4031,7 @@ namespace TLIS_Service.Services
 
                         else
                         {
-                            TLIInstCivilwithoutLegsType NewInstallationTypeEntity = new TLIInstCivilwithoutLegsType()
+                            TLIinstallationCivilwithoutLegsType NewInstallationTypeEntity = new TLIinstallationCivilwithoutLegsType()
                             {
                                 Name = Type,
                                 Deleted = false,

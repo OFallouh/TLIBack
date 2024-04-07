@@ -324,11 +324,11 @@ namespace TLIS_Service.Services
                         return new Response<ConfigurationAttsViewModel>(true, null, null, $"This baseGeneratorType { baseGeneratorType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
                     var InstCivilwithoutLegsType = _mapper.Map<AddInstCivilwithoutLegsTypeViewModel>(model);
-                    var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIInstCivilwithoutLegsType>(InstCivilwithoutLegsType);
-                    if(!ValidateAdd(ConfigrationTables.TLIInstCivilwithoutLegsType.ToString(),InstCivilwithoutLegsTypeEntity))
+                    var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(InstCivilwithoutLegsType);
+                    if(!ValidateAdd(ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString(),InstCivilwithoutLegsTypeEntity))
                     {
                         _unitOfWork.InstCivilwithoutLegsTypeRepository.Add(InstCivilwithoutLegsTypeEntity);
                         _unitOfWork.SaveChanges();
@@ -1101,7 +1101,7 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
                     var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
 
@@ -6733,7 +6733,7 @@ namespace TLIS_Service.Services
                         return new Response<List<TableAffected>>(true, null, null, $"The Id Is Not Found in {TableName}", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
                     var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
 
@@ -12092,7 +12092,7 @@ namespace TLIS_Service.Services
                     ConfigurationAtts = _unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
                         .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
                 }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
                         .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
@@ -12300,10 +12300,10 @@ namespace TLIS_Service.Services
                     var TLIbaseGeneratorType = _unitOfWork.BaseGeneratorTypeRepository.GetByID(Id);
                     ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIbaseGeneratorType);
                 }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
-                    var TLIInstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
-                    ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIInstCivilwithoutLegsType);
+                    var TLIinstallationCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetByID(Id);
+                    ConfigurationAtts = _mapper.Map<ConfigurationAttsViewModel>(TLIinstallationCivilwithoutLegsType);
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
                 {
@@ -12692,14 +12692,14 @@ namespace TLIS_Service.Services
                         return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Base Generator Type Name {viewModel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
-                    TLIInstCivilwithoutLegsType CheckName = _unitOfWork.InstCivilwithoutLegsTypeRepository
+                    TLIinstallationCivilwithoutLegsType CheckName = _unitOfWork.InstCivilwithoutLegsTypeRepository
                         .GetWhereFirst(x => x.Name.ToLower() == viewModel.Name.ToLower() && x.Id != viewModel.Id && !x.Deleted);
 
                     if (CheckName == null)
                     {
-                        TLIInstCivilwithoutLegsType OldEntity = _unitOfWork.InstCivilwithoutLegsTypeRepository
+                        TLIinstallationCivilwithoutLegsType OldEntity = _unitOfWork.InstCivilwithoutLegsTypeRepository
                             .GetWhereFirst(x => x.Id == viewModel.Id);
 
                         OldEntity.Name = viewModel.Name;
@@ -13411,11 +13411,11 @@ namespace TLIS_Service.Services
                 else
                     return false;
             }
-            else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == TableName)
+            else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
             {
-                TLIInstCivilwithoutLegsType InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIInstCivilwithoutLegsType>(entity);
+                TLIinstallationCivilwithoutLegsType InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(entity);
 
-                TLIInstCivilwithoutLegsType InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository
+                TLIinstallationCivilwithoutLegsType InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository
                     .GetWhereFirst(x => x.Name.ToLower() == InstCivilwithoutLegsTypeEntity.Name.ToLower() && !x.Deleted);
                 
                 if (InstCivilwithoutLegsType != null)
@@ -13804,9 +13804,9 @@ namespace TLIS_Service.Services
                     return false;
                 }
             }
-            else if (ConfigrationTables.TLIInstCivilwithoutLegsType.ToString() == Name)
+            else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == Name)
             {
-                var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIInstCivilwithoutLegsType>(entity);
+                var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(entity);
                 //  var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.WhereFilters(new List<TLIS_DAL.Helper.Filters.FilterExperssionOneValue> { new TLIS_DAL.Helper.Filters.FilterExperssionOneValue { propertyName = "Name", comparison = "==", value = InstCivilwithoutLegsTypeEntity.Name },
                 var InstCivilwithoutLegsType = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => (x.Name == InstCivilwithoutLegsTypeEntity.Name && x.Id != InstCivilwithoutLegsTypeEntity.Id));                                                                                                                              // new TLIS_DAL.Helper.Filters.FilterExperssionOneValue { propertyName = "Id", comparison = "!=", value = InstCivilwithoutLegsTypeEntity.Id.ToString() }}).FirstOrDefault();
                 if (InstCivilwithoutLegsType == null)

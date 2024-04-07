@@ -1502,7 +1502,7 @@ namespace TLIS_Repository.Repositories
         //        {
         //            var ForeignKeys = new Dictionary<string, string>();
         //            ForeignKeys.Add("TLIcivilSteelSupportCategory", "CivilSteelSupportCategoryId");
-        //            ForeignKeys.Add("TLIInstCivilwithoutLegsType", "InstCivilwithoutLegsTypeId");
+        //            ForeignKeys.Add("TLIinstallationCivilwithoutLegsType", "InstCivilwithoutLegsTypeId");
         //            ForeignKeys.Add("TLIcivilWithoutLegCategory", "CivilWithoutLegCategoryId");
         //            var Operations = _context.TLIoperation.ToList();
         //            AddCivilWithoutLegLibraryViewModel addCivilWithoutLegLibrary = _mapper.Map<AddCivilWithoutLegLibraryViewModel>(AddViewModel);

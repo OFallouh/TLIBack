@@ -7,7 +7,7 @@ using TLIS_Repository.Base;
 
 namespace TLIS_Repository.IRepository
 {
-    public interface IInstCivilwithoutLegsTypeRepository:IRepositoryBase<TLIInstCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel,int>
+    public interface IInstCivilwithoutLegsTypeRepository:IRepositoryBase<TLIinstallationCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel,int>
     {
     }
 }

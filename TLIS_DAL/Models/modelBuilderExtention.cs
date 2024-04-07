@@ -262,8 +262,8 @@ namespace TLIS_DAL.Models
 
             //    }
             //   );
-            //modelBuilder.Entity<TLIInstCivilwithoutLegsType>().HasData(
-            //   new TLIInstCivilwithoutLegsType
+            //modelBuilder.Entity<TLIinstallationCivilwithoutLegsType>().HasData(
+            //   new TLIinstallationCivilwithoutLegsType
             //   {
             //       Id = 0,
             //       Name = "NA",
@@ -524,7 +524,7 @@ namespace TLIS_DAL.Models
                 new TLItablesNames { Id = 41, TableName = "TLIguyLineType", tablePartNameId = null },
                 new TLItablesNames { Id = 42, TableName = "TLIhistoryDetails", tablePartNameId = null },
                 new TLItablesNames { Id = 43, TableName = "TLIhistoryType", tablePartNameId = null },
-                new TLItablesNames { Id = 44, TableName = "TLIInstCivilwithoutLegsType", tablePartNameId = null },
+                new TLItablesNames { Id = 44, TableName = "TLIinstallationCivilwithoutLegsType", tablePartNameId = null },
                 new TLItablesNames { Id = 45, TableName = "TLIinstallationPlace", tablePartNameId = null },
                 new TLItablesNames { Id = 46, TableName = "TLIitemConnectTo", tablePartNameId = null },
                 new TLItablesNames { Id = 47, TableName = "TLIitemStatus", tablePartNameId = null },

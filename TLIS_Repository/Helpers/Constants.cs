@@ -136,7 +136,7 @@ namespace TLIS_Repository.Helpers
             TLIguyLineType,
             TLIhistoryDetails,
             TLIhistoryType,
-            TLIInstCivilwithoutLegsType,
+            TLIinstallationCivilwithoutLegsType,
             TLIitemStatus,
             TLIleg,
             TLIloadPart,

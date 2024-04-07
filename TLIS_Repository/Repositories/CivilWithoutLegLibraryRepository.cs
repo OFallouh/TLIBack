@@ -37,7 +37,7 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> CivilSteelSupportCategoryFilters = _mapper.Map<List<DropDownListFilters>>(CivilSteelSupportCategory);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CivilSteelSupportCategoryId", CivilSteelSupportCategoryFilters));
 
-            var InstCivilwithoutLegsType = _context.TLIInstCivilwithoutLegsType.AsNoTracking().Where(x => !x.Deleted && !x.Disable).ToList();
+            var InstCivilwithoutLegsType = _context.TLIinstallationCivilwithoutLegsType.AsNoTracking().Where(x => !x.Deleted && !x.Disable).ToList();
             List<DropDownListFilters> InstCivilwithoutLegsTypeFilters = _mapper.Map<List<DropDownListFilters>>(InstCivilwithoutLegsType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("InstCivilwithoutLegsTypeId", InstCivilwithoutLegsTypeFilters));
 

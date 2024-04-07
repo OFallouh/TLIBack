@@ -2258,7 +2258,7 @@ namespace TLIS_Service.Helpers
             TLIguyLineType,
             TLIhistoryDetails,
             TLIhistoryType,
-            TLIInstCivilwithoutLegsType,
+            TLIinstallationCivilwithoutLegsType,
             TLIitemStatus,
             TLIleg,
             TLIloadPart,
@@ -2338,7 +2338,7 @@ namespace TLIS_Service.Helpers
             //[Description("TLIcivilWithLegLibrary TLIcivilWithoutLegLibrary")]
             //TLIstructureType,
             //[Description("TLIcivilWithoutLegLibrary")]
-            //TLIInstCivilwithoutLegsType,
+            //TLIinstallationCivilwithoutLegsType,
             //[Description("TLIcivilWithoutLegLibrary")]
             //TLIcivilWithoutLegCategory,
             //[Description("TLIcivilWithoutLegLibrary")]
@@ -2439,7 +2439,7 @@ namespace TLIS_Service.Helpers
             /// </summary>
 
 
-            [Description("TLIstructureType TLIcivilSteelSupportCategory TLIInstCivilwithoutLegsType")]
+            [Description("TLIstructureType TLIcivilSteelSupportCategory TLIinstallationCivilwithoutLegsType")]
             TLIcivilWithoutLegLibrary,
 
             [Description("TLIcivilNonSteelType")]
@@ -2561,7 +2561,7 @@ namespace TLIS_Service.Helpers
             [Description("TLIcivilWithLegLibrary TLIcivilWithoutLegLibrary")]
             TLIstructureType,
             [Description("TLIcivilWithoutLegLibrary")]
-            TLIInstCivilwithoutLegsType,
+            TLIinstallationCivilwithoutLegsType,
             [Description("TLIcivilWithoutLegLibrary")]
             TLIcivilWithoutLegCategory,
             [Description("TLIcivilWithoutLegLibrary")]

@@ -437,7 +437,7 @@ namespace TLIS_Service.Services
             await addAtts(historyDetails);
             TLIhistoryType historyType = new TLIhistoryType();
             await addAtts(historyType);
-            TLIInstCivilwithoutLegsType InstCivilwithoutLegsType = new TLIInstCivilwithoutLegsType();
+            TLIinstallationCivilwithoutLegsType InstCivilwithoutLegsType = new TLIinstallationCivilwithoutLegsType();
             await addAtts(InstCivilwithoutLegsType);
             TLIitemStatus itemStatus = new TLIitemStatus();
             await addAtts(itemStatus);

@@ -154,11 +154,11 @@ namespace TLIS_DAL.ViewModels
            // ---------------------------------------------------------------------------------------
 
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
-            CreateMap<StructureTypeViewModel, TLIInstCivilwithoutLegsType>().ReverseMap();
+            CreateMap<StructureTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
             CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAttLibValue>().ReverseMap();
             CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAtt>().ReverseMap();
             CreateMap<TLIcivilWithLegLibrary, CivilWihtLegsLibraryAttributes>().ReverseMap();
-            CreateMap<LocationTypeViewModel, TLIInstCivilwithoutLegsType>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIcivilWithoutLegCategory>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIsectionsLegType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIsupportTypeDesigned>().ReverseMap();
@@ -757,11 +757,11 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<TLIbaseGeneratorType, ConfigurationAttsViewModel>().ReverseMap();
 
-            CreateMap<TLIInstCivilwithoutLegsType, ConfigurationAttsViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, ConfigurationAttsViewModel>().ReverseMap();
 
-            CreateMap<TLIInstCivilwithoutLegsType, AddInstCivilwithoutLegsTypeViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, AddInstCivilwithoutLegsTypeViewModel>().ReverseMap();
 
-            CreateMap<TLIInstCivilwithoutLegsType, EditInstCivilwithoutLegsTypeViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, EditInstCivilwithoutLegsTypeViewModel>().ReverseMap();
 
             CreateMap<TLIattActivatedCategory, ConfigurationAttsViewModel>().ReverseMap();
 
@@ -876,8 +876,8 @@ namespace TLIS_DAL.ViewModels
               .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
             CreateMap<TLIcivilSteelSupportCategory, DropDownListFilters>()
             .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
-            CreateMap<TLIInstCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel>().ReverseMap();
-            CreateMap<TLIInstCivilwithoutLegsType, DropDownListFilters>()
+            CreateMap<TLIinstallationCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, DropDownListFilters>()
             .ForMember(c => c.Value, c => c.MapFrom(f => f.Name));
             CreateMap<TLIbaseCivilWithLegsType, DropDownListFilters>()
                 .ForMember(x => x.Value, x => x.MapFrom(f => f.Name));
@@ -1657,7 +1657,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIasType, AsTypeViewModel>().ReverseMap();
             CreateMap<TLIparity, ParityViewModel>().ReverseMap();
             CreateMap<TLIsupportTypeDesigned, SupportTypeDesignedViewModel>().ReverseMap();
-            CreateMap<TLIInstCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel>().ReverseMap();
+            CreateMap<TLIinstallationCivilwithoutLegsType, InstCivilwithoutLegsTypeViewModel>().ReverseMap();
             CreateMap<TLIsectionsLegType, SectionsLegTypeViewModel>().ReverseMap();
             CreateMap<TLIstructureType, StructureTypeViewModel>().ReverseMap();
             CreateMap<DicMod, DropDownListFilters>().ReverseMap();
