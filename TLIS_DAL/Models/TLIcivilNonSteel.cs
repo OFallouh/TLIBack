@@ -28,6 +28,10 @@ namespace TLIS_DAL.Models
         public float CivilSupportCurrentLoad { get; set; }
         public float H2Height { get; set; }
         public float Support_Limited_Load { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
 
         public IEnumerable<TLIallCivilInst> allCivilInsts { get; set; }
     }

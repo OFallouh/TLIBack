@@ -90,6 +90,10 @@ namespace TLIS_DAL.Models
         public int SupportTypeImplementedId { get; set; }
         public TLIsupportTypeImplemented SupportTypeImplemented { get; set; }
         public int? enforcmentCategoryId { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
         public string? SpecialEnforcementCategory { get; set; }
         public string? Remark { get; set; }
         public float Support_Limited_Load { get; set; } = 0;

@@ -81,6 +81,10 @@ namespace TLIS_DAL.Models
         public TLIsubType subType { get; set; }
         public int ? subTypeId { get; set; }      
         public float Support_Limited_Load { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
         public IEnumerable<TLIallCivilInst> allCivilInsts { get; set; }
     }
 }

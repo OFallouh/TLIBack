@@ -16,6 +16,7 @@ namespace TLIS_DAL.Models
         public string Name { get; set; }
         public bool Deleted { get; set; }
         public bool Disable { get; set; }
+        public int? Type { get; set; }
         public IEnumerable<TLIcivilWithLegLibrary> civilWithLeg { get; set; }
         public IEnumerable<TLIcivilWithoutLegLibrary> civilWithoutLegLibrary { get; set; }
 

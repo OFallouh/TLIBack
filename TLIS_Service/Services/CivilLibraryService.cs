@@ -3187,7 +3187,7 @@ namespace TLIS_Service.Services
                         }
                         else if (FKitem.Label.ToLower() == "structuretype_name")
                         {
-                            FKitem.Options = _mapper.Map < List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            FKitem.Options = _mapper.Map < List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==1).ToList());
                             FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithLegLibrary.structureType);
                         }
                         else if (FKitem.Label.ToLower() == "supporttypedesigned_name")
@@ -3793,7 +3793,7 @@ namespace TLIS_Service.Services
                           if (FKitem.Label.ToLower() == "sectionslegtype_name")
                               FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                           else if (FKitem.Label.ToLower() == "structuretype_name")
-                              FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                              FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==1).ToList());
                           else if (FKitem.Label.ToLower() == "supporttypedesigned_name")
                               FKitem.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
