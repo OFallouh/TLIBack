@@ -32,7 +32,8 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public int? structureTypeId { get; set; }
         public float Manufactured_Max_Load { get; set; } 
         public string? structureType_Name { get; set; }
-        
+        public string? WidthVariation { get; set; }
+
 
     }
 }
