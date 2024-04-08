@@ -5005,7 +5005,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<object> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, int CategoryId, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<object> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -5099,7 +5099,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<object> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, int CategoryId, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<object> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -5193,7 +5193,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<object> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, int CategoryId, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<object> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {

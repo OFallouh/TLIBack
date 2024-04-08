@@ -239,6 +239,11 @@ namespace TLIS_Repository.Repositories
                                 }
                             }
                         }
+                        else
+                        {
+                            x = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -267,10 +272,9 @@ namespace TLIS_Repository.Repositories
                 if (propertyInfo != null)
                 {
                     var value = propertyInfo.GetValue(obj);
-                    if (value != null)
-                    {
+                 
                         item.Add(name, propertyInfo.GetValue(obj));
-                    }
+                    
                 }
             }
             foreach (var propertyName in propertyNamesDynamic)
