@@ -39,7 +39,7 @@ namespace TLIS_Service.IService
         Task<Response<AllItemAttributes>> Delete(int Id, string CivilType);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
-        Response<object> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
         Response<object> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
         Response<object> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
         Response<object> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);

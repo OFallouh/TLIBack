@@ -4911,12 +4911,13 @@ namespace TLIS_Service.Services
             }
         }
         #endregion
-        public Response<object> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination,string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination,string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     string storedProcedureName = "create_dynamic_pivot_withleg ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
@@ -4930,7 +4931,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" && x.AttributeActivated.Key.ToLower()!="active" &&
                         x.AttributeActivated.Key.ToLower() != "delete" &&((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key,dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() }).ToList();
+                    getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
@@ -4963,8 +4965,8 @@ namespace TLIS_Service.Services
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
-
-                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
@@ -4994,14 +4996,14 @@ namespace TLIS_Service.Services
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
-
-                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
 
                 }
                 catch (Exception err)
                 {
-                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
         }
