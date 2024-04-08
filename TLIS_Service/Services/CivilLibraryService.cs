@@ -3555,7 +3555,7 @@ namespace TLIS_Service.Services
                             FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type == 2).ToList());
                             FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithoutLegLibrary.structureType);
                         }
-                        else if (FKitem.Label.ToLower() == "installationcivilwithoutLlegstype_name")
+                        else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
                         {
                             FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             FKitem.Value = _mapper.Map<StructureTypeViewModel>(CivilWithoutLegLibrary.InstCivilwithoutLegsType);
@@ -3777,7 +3777,7 @@ namespace TLIS_Service.Services
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
                           FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==2).ToList());
-                      else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
+                      else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
@@ -3856,7 +3856,7 @@ namespace TLIS_Service.Services
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
                           FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==2).ToList());
-                      else if (FKitem.Label.ToLower() == "InstallationcivilwithoutLlegstype_name")
+                      else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
@@ -3936,7 +3936,7 @@ namespace TLIS_Service.Services
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
                           FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type == 2).ToList());
-                      else if (FKitem.Label.ToLower() == "InstallationcivilwithoutLlegstype_name")
+                      else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
@@ -4958,7 +4958,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).AsEnumerable()
                     .Select(item =>_unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -4968,7 +4968,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -5023,7 +5023,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && x.AttributeActivated.Key.ToLower() != "active" &&
-                        x.AttributeActivated.Key.ToLower() != "delete" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                         x.AttributeActivated.Key.ToLower() != "delete" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5052,7 +5052,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -5062,7 +5062,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -5070,17 +5070,17 @@ namespace TLIS_Service.Services
                         Note = x.Note,
                         Prefix = x.Prefix,
                         Height_Designed = x.Height_Designed,
-                        Max_load_M2 = x.Max_load_M2,
+                        Max_Load = x.Max_Load,
                         SpaceLibrary = x.SpaceLibrary,
                         Active = x.Active,
                         Deleted = x.Deleted,
-                        SUPPORTTYPEDESIGNED = x.SUPPORTTYPEDESIGNED,
-                        SECTIONSLEGTYPE = x.SECTIONSLEGTYPE,
-                        STRUCTURETYPE = x.STRUCTURETYPE,
+                        CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                        INSTCIVILWITHOUTLEGSTYPE = x.INSTCIVILWITHOUTLEGSTYPE,
                         CIVILSTEELSUPPORTCATEGORY = x.CIVILSTEELSUPPORTCATEGORY,
+                        STRUCTURETYPE = x.STRUCTURETYPE,
                         Manufactured_Max_Load = x.Manufactured_Max_Load,
-                        WidthVariation = x.WidthVariation,
-                        NumberOfLegs = x.NumberOfLegs
+                        HeightBase = x.HeightBase,
+                        WidthVariation = x.WidthVariation
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
@@ -5156,7 +5156,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -5164,17 +5164,17 @@ namespace TLIS_Service.Services
                         Note = x.Note,
                         Prefix = x.Prefix,
                         Height_Designed = x.Height_Designed,
-                        Max_load_M2 = x.Max_load_M2,
+                        Max_Load = x.Max_Load,
                         SpaceLibrary = x.SpaceLibrary,
                         Active = x.Active,
                         Deleted = x.Deleted,
-                        SUPPORTTYPEDESIGNED = x.SUPPORTTYPEDESIGNED,
-                        SECTIONSLEGTYPE = x.SECTIONSLEGTYPE,
-                        STRUCTURETYPE = x.STRUCTURETYPE,
+                        CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                        INSTCIVILWITHOUTLEGSTYPE = x.INSTCIVILWITHOUTLEGSTYPE,
                         CIVILSTEELSUPPORTCATEGORY = x.CIVILSTEELSUPPORTCATEGORY,
+                        STRUCTURETYPE = x.STRUCTURETYPE,
                         Manufactured_Max_Load = x.Manufactured_Max_Load,
-                        WidthVariation = x.WidthVariation,
-                        NumberOfLegs = x.NumberOfLegs
+                        HeightBase = x.HeightBase,
+                        WidthVariation = x.WidthVariation
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
@@ -5250,7 +5250,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -5258,17 +5258,17 @@ namespace TLIS_Service.Services
                         Note = x.Note,
                         Prefix = x.Prefix,
                         Height_Designed = x.Height_Designed,
-                        Max_load_M2 = x.Max_load_M2,
+                        Max_Load = x.Max_Load,
                         SpaceLibrary = x.SpaceLibrary,
                         Active = x.Active,
                         Deleted = x.Deleted,
-                        SUPPORTTYPEDESIGNED = x.SUPPORTTYPEDESIGNED,
-                        SECTIONSLEGTYPE = x.SECTIONSLEGTYPE,
-                        STRUCTURETYPE = x.STRUCTURETYPE,
+                        CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                        INSTCIVILWITHOUTLEGSTYPE = x.INSTCIVILWITHOUTLEGSTYPE,
                         CIVILSTEELSUPPORTCATEGORY = x.CIVILSTEELSUPPORTCATEGORY,
+                        STRUCTURETYPE = x.STRUCTURETYPE,
                         Manufactured_Max_Load = x.Manufactured_Max_Load,
-                        WidthVariation = x.WidthVariation,
-                        NumberOfLegs = x.NumberOfLegs
+                        HeightBase = x.HeightBase,
+                        WidthVariation = x.WidthVariation
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })

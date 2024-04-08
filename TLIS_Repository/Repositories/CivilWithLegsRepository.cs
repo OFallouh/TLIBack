@@ -219,12 +219,14 @@ namespace TLIS_Repository.Repositories
                             }
                             else if (filter.value.Count == 1)
                             {
-                                if (isInt && int.TryParse(filter.value[0].ToString(), out int FIntres) && Intres != FIntres)
+                                bool isIntF = int.TryParse(filter.value[0].ToString(), out int FIntres);
+                                if ((isInt || isIntF) && Intres != FIntres)
                                 {
                                     x = false;
                                     break;
                                 }
-                                if (isDate && DateTime.TryParseExact(filter.value[0].ToString(), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime FDateres)
+                                bool isDateF = DateTime.TryParseExact(filter.value[0].ToString(), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime FDateres);
+                                if ((isDate || isDateF)
                                     && Dateres != FDateres)
                                 {
                                     x = false;
