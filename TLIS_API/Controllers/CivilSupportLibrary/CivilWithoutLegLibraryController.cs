@@ -42,11 +42,28 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilLibraryService.getCivilWithoutLegLibraries(filters, WithFilterData, parameters);
             return Ok(response);
         }
-        [HttpPost("GetCivilWithoutLegLibrariesEnabledAtt")]
+        [HttpPost("GetCivilWithoutLegMastLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithoutLegLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetCivilWithoutLegMastLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegMastLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetCivilWithoutLegMonopoleLibrariesEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        public IActionResult GetCivilWithoutLegMonopoleLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegMonopoleLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetCivilWithoutLegCapsuleLibrariesEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        public IActionResult GetCivilWithoutLegCapsuleLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegCapsuleLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters, ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetCivilWithoutLegsLibraryById/{id}")]
