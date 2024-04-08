@@ -147,8 +147,9 @@ namespace TLIS_Service.Services
                                 string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
 
                                 if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                 
-                               
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+
                                 _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(UserId, CivilWithLegEntites);
                                     
                                 _unitOfWork.SaveChanges();
