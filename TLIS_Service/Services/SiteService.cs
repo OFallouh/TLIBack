@@ -7705,8 +7705,8 @@ namespace TLIS_Service.Services
             OutPut.LoadOtherCount = UsedSitesInLoads.Count(x => x.allLoadInst.Draft == false && x.allLoadInst.loadOtherId != null);
             OutPut.SideArmCount = UsedSitesInLoads.Count(x => x.sideArmId != null && x.sideArm.Draft == false);
 
-            
-            IQueryable<TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository
+
+          IQueryable <TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository
             .GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
                 && !x.Dismantle && x.allCivilInst.Draft == false, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                 x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel,

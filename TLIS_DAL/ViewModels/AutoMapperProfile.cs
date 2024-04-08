@@ -141,6 +141,8 @@ using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.AddCivilWithLegsLibraryObject;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.EditCivilWithLegsLibraryObject;
+using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.AddCivilWithoutLegsLibraryObject;
+using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -157,6 +159,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<StructureTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
             CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAttLibValue>().ReverseMap();
             CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAtt>().ReverseMap();
+            CreateMap<AddDdynamicAttributeInstallationValueViewModel, AddCivilWithoutLegLibraryViewModel>().ReverseMap();
             CreateMap<TLIcivilWithLegLibrary, CivilWihtLegsLibraryAttributes>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIcivilWithoutLegCategory>().ReverseMap();
@@ -169,6 +172,8 @@ namespace TLIS_DAL.ViewModels
                 .ForMember(x => x.Name, x => x.MapFrom(f => f.allCivilInst.civilWithLegs.Name));
             CreateMap<EditCivilWithLegsInstallationObject, TLIcivilWithLegs>().ReverseMap();
             CreateMap<EditinstallationAttributesCivilWithLegs, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<CivilWihtoutLegsLibraryAttributes, TLIcivilWithoutLegLibrary>().ReverseMap();
+            CreateMap<AddCivilWithoutLegsLibraryObject, TLIcivilWithoutLegLibrary>().ReverseMap();
 
 
             //---------------------------------------------------------------------------

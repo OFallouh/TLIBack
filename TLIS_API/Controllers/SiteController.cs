@@ -453,7 +453,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetUsedSitesCount();
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetItemsOnSite")]
         public IActionResult GetItemsOnSite(string SiteCode)
         {

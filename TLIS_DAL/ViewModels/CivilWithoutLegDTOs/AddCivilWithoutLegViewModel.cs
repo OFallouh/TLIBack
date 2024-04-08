@@ -52,7 +52,6 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float ConcreteBaseWidthm { get; set; }
         public string? Civil_Remarks { get; set; }
         public float BottomPartLengthm { get; set; }
-        public float BottomPartDiametermm { get; set; }
         public float BasePlateWidthcm { get; set; }
         public float BasePlateThicknesscm { get; set; }
         public float BasePlateLengthcm { get; set; }

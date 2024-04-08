@@ -122,7 +122,7 @@ namespace TLIS_Service.Services
                                 }
                                 if (CivilWithLegEntites.Prefix == null)
                                 {
-                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, $"{CivilWithLegEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, $"Prefix It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 }
                                 var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + CivilWithLegEntites.Height_Designed;
@@ -138,19 +138,16 @@ namespace TLIS_Service.Services
                                     CivilWithLegEntites.NumberOfLegs = 4;
 
                                 CivilWithLegEntites.Model = model;
-
+                                
                                 string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithLegsLibraryObject, TableName);
 
                                 if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-
-
                                 string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
 
                                 if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                 
                                
                                 _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(UserId, CivilWithLegEntites);
                                     
@@ -299,7 +296,7 @@ namespace TLIS_Service.Services
                             }
                             if (CivilWithoutLegEntites.Prefix == null)
                             {
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilWithoutLegEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"Prefix It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             }
                             var model = structureTypeName + ' ' + vendor + ' ' + CivilWithoutLegEntites.Prefix + ' ' + CivilWithoutLegEntites.Height_Designed;
@@ -307,16 +304,20 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
-
-                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                             string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithoutLegsLibraryObject, TableName);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
+
+                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
+
+                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                            CivilWithoutLegEntites.Model = model;
                             _unitOfWork.CivilWithoutLegLibraryRepository.AddWithHistory(UserId, CivilWithoutLegEntites);
 
                             _unitOfWork.SaveChanges();
@@ -384,15 +385,18 @@ namespace TLIS_Service.Services
                             //{
                             //    return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             //}
-                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.TableName);
 
-                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                          
                             string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilNonSteelLibraryObject, TableName);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.TableName);
+
+                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                             _unitOfWork.CivilNonSteelLibraryRepository.AddWithHistory(UserId, CivilNonSteelEntites);
 
@@ -685,20 +689,12 @@ namespace TLIS_Service.Services
             }
             else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
             {
-                AddCivilWithoutLegLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegLibraryViewModel>(Input);
-                if (catid != null)
-                {
-                    DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
-                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable && x.CivilWithoutLegCategoryId == catid
-                         , x => x.tablesNames).ToList());
-                }
-                else
-                {
-                    DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
-                .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
-                    , x => x.tablesNames).ToList());
-                }
 
+                AddCivilWithoutLegsLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilWithoutLegsLibraryObject>(Input);
+
+                DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
+                    .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
+                        , x => x.tablesNames).ToList());
 
                 foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
                 {
@@ -708,8 +704,8 @@ namespace TLIS_Service.Services
 
                     if (Dependency != null)
                     {
-                        AddDynamicLibAttValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.TLIdynamicAttLibValue
-                            .FirstOrDefault(x => x.DynamicAttId == DynamicAttribute.Id);
+                        AddDdynamicAttributeInstallationValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.dynamicAttributes
+                            .FirstOrDefault(x => x.id == DynamicAttribute.Id);
 
                         if (InsertedDynamicAttributeValue == null)
                             return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
@@ -751,23 +747,75 @@ namespace TLIS_Service.Services
                                 }
                                 else if (Rule.dynamicAttId != null)
                                 {
-                                    AddDynamicLibAttValueViewModel DynamicObject = AddCivilLibraryViewModel.TLIdynamicAttLibValue
-                                        .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+                                    AddDdynamicAttributeInstallationValueViewModel DynamicObject = AddCivilLibraryViewModel.dynamicAttributes
+                                        .FirstOrDefault(x => x.id == Rule.dynamicAttId.Value);
+                                    var Value = DynamicObject.value.ToString();
+                                    if (Value != null)
+                                    {
+                                        string dataType = DynamicAttribute.DataType_Name.ToLower();
 
-                                    if (DynamicObject == null)
-                                        break;
+                                        switch (dataType)
+                                        {
+                                            case "bool":
+                                                bool boolValue;
+                                                if (bool.TryParse(Value, out boolValue))
+                                                {
+                                                    InsertedValue = boolValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    if (DynamicObject.ValueBoolean != null)
-                                        InsertedValue = DynamicObject.ValueBoolean;
+                                                    throw new ArgumentException("Invalid boolean value.");
+                                                }
+                                                break;
+                                            case "datetime":
+                                                DateTime dateTimeValue;
+                                                if (DateTime.TryParse(Value, out dateTimeValue))
+                                                {
+                                                    InsertedValue = dateTimeValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    else if (DynamicObject.ValueDateTime != null)
-                                        InsertedValue = DynamicObject.ValueDateTime;
+                                                    throw new ArgumentException("Invalid datetime value.");
+                                                }
+                                                break;
+                                            case "double":
+                                                double doubleValue;
+                                                if (double.TryParse(Value, out doubleValue))
+                                                {
+                                                    InsertedValue = doubleValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    else if (DynamicObject.ValueDouble != null)
-                                        InsertedValue = DynamicObject.ValueDouble;
+                                                    throw new ArgumentException("Invalid double value.");
+                                                }
+                                                break;
+                                            case "int":
+                                                int intValue;
+                                                if (int.TryParse(Value, out intValue))
+                                                {
+                                                    InsertedValue = intValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
-                                        InsertedValue = DynamicObject.ValueString;
+                                                    throw new ArgumentException("Invalid int value.");
+                                                }
+                                                break;
+                                            case "string":
+                                                InsertedValue = Value;
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
+                                    }
                                 }
 
                                 if (InsertedValue == null)
@@ -777,10 +825,10 @@ namespace TLIS_Service.Services
                                     RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
                                     RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
                                     RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 ||
-                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
+                                        Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 0) :
                                     RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
                                     RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 ||
-                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false)
+                                        Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 0) : false)
                                 {
                                     Succed++;
                                 }
@@ -793,21 +841,84 @@ namespace TLIS_Service.Services
                                     Dependency.ValueDateTime != null ? Dependency.ValueDateTime :
                                     Dependency.ValueDouble != null ? Dependency.ValueDouble :
                                     !string.IsNullOrEmpty(Dependency.ValueString) ? Dependency.ValueString : null;
+                                object InsertedDynamicAttributeValueAsObject = new object();
+                                var Value = InsertedDynamicAttributeValue.value.ToString();
+                                if (Value != null)
+                                {
+                                    string dataType = DynamicAttribute.DataType_Name.ToLower();
 
-                                object InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValue.ValueBoolean != null ? InsertedDynamicAttributeValue.ValueBoolean :
-                                    InsertedDynamicAttributeValue.ValueDateTime != null ? InsertedDynamicAttributeValue.ValueDateTime :
-                                    InsertedDynamicAttributeValue.ValueDouble != null ? InsertedDynamicAttributeValue.ValueDouble :
-                                    !string.IsNullOrEmpty(InsertedDynamicAttributeValue.ValueString) ? InsertedDynamicAttributeValue.ValueString : null;
+                                    switch (dataType)
+                                    {
+                                        case "bool":
+                                            bool boolValue;
+                                            if (bool.TryParse(Value, out boolValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = boolValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
 
-                                if (Dependency.ValueDateTime != null && InsertedDynamicAttributeValue.ValueDateTime != null)
+                                                throw new ArgumentException("Invalid boolean value.");
+                                            }
+                                            break;
+                                        case "datetime":
+                                            DateTime dateTimeValue;
+                                            if (DateTime.TryParse(Value, out dateTimeValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = dateTimeValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid datetime value.");
+                                            }
+                                            break;
+                                        case "double":
+                                            double doubleValue;
+                                            if (double.TryParse(Value, out doubleValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = doubleValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid double value.");
+                                            }
+                                            break;
+                                        case "int":
+                                            int intValue;
+                                            if (int.TryParse(Value, out intValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = intValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid int value.");
+                                            }
+                                            break;
+                                        case "string":
+                                            InsertedDynamicAttributeValueAsObject = Value;
+                                            break;
+                                        default:
+
+                                            break;
+                                    }
+                                }
+
+                                if (Dependency.ValueDateTime != null && DynamicAttribute.DataType_Name.ToLower() == "datetime")
                                 {
                                     DateTime DependencyValdiationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
                                         Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
 
                                     DependencyValdiationValue = DependencyValdiationValueConverter;
 
-                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(InsertedDynamicAttributeValue.ValueDateTime.Value.Year,
-                                        InsertedDynamicAttributeValue.ValueDateTime.Value.Month, InsertedDynamicAttributeValue.ValueDateTime.Value.Day);
+                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(((DateTime)InsertedDynamicAttributeValue.value).Year,
+                                   ((DateTime)InsertedDynamicAttributeValue.value).Month, ((DateTime)InsertedDynamicAttributeValue.value).Day);
 
                                     InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
                                 }
@@ -840,7 +951,8 @@ namespace TLIS_Service.Services
             }
             else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
             {
-                AddCivilNonSteelLibraryViewModel AddCivilLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryViewModel>(Input);
+
+                AddCivilNonSteelLibraryObject AddCivilLibraryViewModel = _mapper.Map<AddCivilNonSteelLibraryObject>(Input);
 
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
@@ -854,8 +966,8 @@ namespace TLIS_Service.Services
 
                     if (Dependency != null)
                     {
-                        AddDynamicLibAttValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.TLIdynamicAttLibValue
-                            .FirstOrDefault(x => x.DynamicAttId == DynamicAttribute.Id);
+                        AddDdynamicAttributeInstallationValueViewModel InsertedDynamicAttributeValue = AddCivilLibraryViewModel.dynamicAttributes
+                            .FirstOrDefault(x => x.id == DynamicAttribute.Id);
 
                         if (InsertedDynamicAttributeValue == null)
                             return $"({DynamicAttribute.Key}) value can't be null and must be inserted";
@@ -897,23 +1009,75 @@ namespace TLIS_Service.Services
                                 }
                                 else if (Rule.dynamicAttId != null)
                                 {
-                                    AddDynamicLibAttValueViewModel DynamicObject = AddCivilLibraryViewModel.TLIdynamicAttLibValue
-                                        .FirstOrDefault(x => x.DynamicAttId == Rule.dynamicAttId.Value);
+                                    AddDdynamicAttributeInstallationValueViewModel DynamicObject = AddCivilLibraryViewModel.dynamicAttributes
+                                        .FirstOrDefault(x => x.id == Rule.dynamicAttId.Value);
+                                    var Value = DynamicObject.value.ToString();
+                                    if (Value != null)
+                                    {
+                                        string dataType = DynamicAttribute.DataType_Name.ToLower();
 
-                                    if (DynamicObject == null)
-                                        break;
+                                        switch (dataType)
+                                        {
+                                            case "bool":
+                                                bool boolValue;
+                                                if (bool.TryParse(Value, out boolValue))
+                                                {
+                                                    InsertedValue = boolValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    if (DynamicObject.ValueBoolean != null)
-                                        InsertedValue = DynamicObject.ValueBoolean;
+                                                    throw new ArgumentException("Invalid boolean value.");
+                                                }
+                                                break;
+                                            case "datetime":
+                                                DateTime dateTimeValue;
+                                                if (DateTime.TryParse(Value, out dateTimeValue))
+                                                {
+                                                    InsertedValue = dateTimeValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    else if (DynamicObject.ValueDateTime != null)
-                                        InsertedValue = DynamicObject.ValueDateTime;
+                                                    throw new ArgumentException("Invalid datetime value.");
+                                                }
+                                                break;
+                                            case "double":
+                                                double doubleValue;
+                                                if (double.TryParse(Value, out doubleValue))
+                                                {
+                                                    InsertedValue = doubleValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    else if (DynamicObject.ValueDouble != null)
-                                        InsertedValue = DynamicObject.ValueDouble;
+                                                    throw new ArgumentException("Invalid double value.");
+                                                }
+                                                break;
+                                            case "int":
+                                                int intValue;
+                                                if (int.TryParse(Value, out intValue))
+                                                {
+                                                    InsertedValue = intValue;
+                                                }
+                                                else
+                                                {
+                                                    InsertedValue = null;
 
-                                    else if (!string.IsNullOrEmpty(DynamicObject.ValueString))
-                                        InsertedValue = DynamicObject.ValueString;
+                                                    throw new ArgumentException("Invalid int value.");
+                                                }
+                                                break;
+                                            case "string":
+                                                InsertedValue = Value;
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
+                                    }
                                 }
 
                                 if (InsertedValue == null)
@@ -923,10 +1087,10 @@ namespace TLIS_Service.Services
                                     RuleOperation == "!=" ? InsertedValue.ToString().ToLower() != RuleValue.ToString().ToLower() :
                                     RuleOperation == ">" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 :
                                     RuleOperation == ">=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 1 ||
-                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) :
+                                        Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 0) :
                                     RuleOperation == "<" ? Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 :
                                     RuleOperation == "<=" ? (Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == -1 ||
-                                        InsertedValue.ToString().ToLower() == RuleValue.ToString().ToLower()) : false)
+                                        Comparer.DefaultInvariant.Compare(InsertedValue, RuleValue) == 0) : false)
                                 {
                                     Succed++;
                                 }
@@ -939,21 +1103,84 @@ namespace TLIS_Service.Services
                                     Dependency.ValueDateTime != null ? Dependency.ValueDateTime :
                                     Dependency.ValueDouble != null ? Dependency.ValueDouble :
                                     !string.IsNullOrEmpty(Dependency.ValueString) ? Dependency.ValueString : null;
+                                object InsertedDynamicAttributeValueAsObject = new object();
+                                var Value = InsertedDynamicAttributeValue.value.ToString();
+                                if (Value != null)
+                                {
+                                    string dataType = DynamicAttribute.DataType_Name.ToLower();
 
-                                object InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValue.ValueBoolean != null ? InsertedDynamicAttributeValue.ValueBoolean :
-                                    InsertedDynamicAttributeValue.ValueDateTime != null ? InsertedDynamicAttributeValue.ValueDateTime :
-                                    InsertedDynamicAttributeValue.ValueDouble != null ? InsertedDynamicAttributeValue.ValueDouble :
-                                    !string.IsNullOrEmpty(InsertedDynamicAttributeValue.ValueString) ? InsertedDynamicAttributeValue.ValueString : null;
+                                    switch (dataType)
+                                    {
+                                        case "bool":
+                                            bool boolValue;
+                                            if (bool.TryParse(Value, out boolValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = boolValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
 
-                                if (Dependency.ValueDateTime != null && InsertedDynamicAttributeValue.ValueDateTime != null)
+                                                throw new ArgumentException("Invalid boolean value.");
+                                            }
+                                            break;
+                                        case "datetime":
+                                            DateTime dateTimeValue;
+                                            if (DateTime.TryParse(Value, out dateTimeValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = dateTimeValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid datetime value.");
+                                            }
+                                            break;
+                                        case "double":
+                                            double doubleValue;
+                                            if (double.TryParse(Value, out doubleValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = doubleValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid double value.");
+                                            }
+                                            break;
+                                        case "int":
+                                            int intValue;
+                                            if (int.TryParse(Value, out intValue))
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = intValue;
+                                            }
+                                            else
+                                            {
+                                                InsertedDynamicAttributeValueAsObject = null;
+
+                                                throw new ArgumentException("Invalid int value.");
+                                            }
+                                            break;
+                                        case "string":
+                                            InsertedDynamicAttributeValueAsObject = Value;
+                                            break;
+                                        default:
+
+                                            break;
+                                    }
+                                }
+
+                                if (Dependency.ValueDateTime != null && DynamicAttribute.DataType_Name.ToLower() == "datetime")
                                 {
                                     DateTime DependencyValdiationValueConverter = new DateTime(Dependency.ValueDateTime.Value.Year,
                                         Dependency.ValueDateTime.Value.Month, Dependency.ValueDateTime.Value.Day);
 
                                     DependencyValdiationValue = DependencyValdiationValueConverter;
 
-                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(InsertedDynamicAttributeValue.ValueDateTime.Value.Year,
-                                        InsertedDynamicAttributeValue.ValueDateTime.Value.Month, InsertedDynamicAttributeValue.ValueDateTime.Value.Day);
+                                    DateTime InsertedDynamicAttributeValueAsObjectConverter = new DateTime(((DateTime)InsertedDynamicAttributeValue.value).Year,
+                                   ((DateTime)InsertedDynamicAttributeValue.value).Month, ((DateTime)InsertedDynamicAttributeValue.value).Day);
 
                                     InsertedDynamicAttributeValueAsObject = InsertedDynamicAttributeValueAsObjectConverter;
                                 }

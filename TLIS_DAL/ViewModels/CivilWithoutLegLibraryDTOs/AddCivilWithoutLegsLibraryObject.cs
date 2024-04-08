@@ -23,9 +23,9 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs
             public string Prefix { get; set; }
             public bool Active { get; set; } = true;
             public bool Deleted { get; set; } = false;
-            public int CivilSteelSupportCategoryId { get; set; }
+            public int? CivilSteelSupportCategoryId { get; set; }
             public int? InstCivilwithoutLegsTypeId { get; set; }
-            public int? CivilWithoutLegCategoryId { get; set; }
+            public int CivilWithoutLegCategoryId { get; set; }
             public float Manufactured_Max_Load { get; set; }
             public int structureTypeId { get; set; }
         }

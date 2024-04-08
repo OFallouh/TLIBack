@@ -226,22 +226,45 @@ namespace TLIS_Repository.Repositories
                 List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical
                     .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
                         x.Active && !x.Deleted).ToList());
-
-                BaseInstAttViews BaseAtt = new BaseInstAttViews
+                if (LogisticalType.Name.ToLower() == "vendor")
                 {
-                    Key = LogisticalType.Name,
-                    Label = LogisticalType.Name,
-                    Required = false,
-                    enable = true,
-                    AutoFill = false,
-                    DataType = "List",
-                    Desc = LogisticalType.Name,
-                    Manage = false,
-                    Value = null,
-                    Options= Logisticals
-                };
-                if (!result.Exists(x => x.Key == BaseAtt.Key))
-                    result.Add(BaseAtt);
+                    BaseInstAttViews BaseAtt = new BaseInstAttViews
+                    {
+
+                        Key = LogisticalType.Name,
+                        Label = LogisticalType.Name,
+                        Required = true,
+                        enable = true,
+                        AutoFill = false,
+                        DataType = "List",
+                        Desc = LogisticalType.Name,
+                        Manage = false,
+                        Value = null,
+                        Options = Logisticals
+                    };
+                    if (!result.Exists(x => x.Key == BaseAtt.Key))
+                        result.Add(BaseAtt);
+                }
+                else
+                {
+
+                    BaseInstAttViews BaseAtt = new BaseInstAttViews
+                    {
+
+                        Key = LogisticalType.Name,
+                        Label = LogisticalType.Name,
+                        Required = false,
+                        enable = true,
+                        AutoFill = false,
+                        DataType = "List",
+                        Desc = LogisticalType.Name,
+                        Manage = false,
+                        Value = null,
+                        Options = Logisticals
+                    };
+                    if (!result.Exists(x => x.Key == BaseAtt.Key))
+                        result.Add(BaseAtt);
+                }
             }
 
             return result;

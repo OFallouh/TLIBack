@@ -9176,34 +9176,34 @@ namespace TLIS_Service.Services
                                                 continue;
                                             }
                                         }
-                                        if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Bottom part diameter (mm)"].ToString()))
-                                        {
-                                            CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Bottom part diameter (mm)"].ToString(), out FloatParser);
+                                        //if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Bottom part diameter (mm)"].ToString()))
+                                        //{
+                                        //    CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Bottom part diameter (mm)"].ToString(), out FloatParser);
 
-                                            if (CheckParser)
-                                                NewCivilWithoutLegEntity.BottomPartDiametermm = FloatParser;
+                                        //    if (CheckParser)
+                                        //        NewCivilWithoutLegEntity.BottomPartDiametermm = FloatParser;
 
-                                            else
-                                            {
-                                                MastTransaction.Dispose();
+                                        //    else
+                                        //    {
+                                        //        MastTransaction.Dispose();
 
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Bottom part diameter (mm)) coulumn's value must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(),
-                                                    SheetName = "Type of support info",
-                                                    UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
-                                                };
+                                        //        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                        //        {
+                                        //            CreatedAt = DateTime.Now,
+                                        //            ErrMsg = $"(Bottom part diameter (mm)) coulumn's value must be a number",
+                                        //            IsDeleted = false,
+                                        //            IsLib = false,
+                                        //            RefTable = Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(),
+                                        //            SheetName = "Type of support info",
+                                        //            UniqueName = $"(Civil steel Name) : {TypeOfSupportInfoDataTable.Rows[j]["Civil steel Name"]}"
+                                        //        };
 
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
+                                        //        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                        //        _unitOfWork.SaveChanges();
 
-                                                continue;
-                                            }
-                                        }
+                                        //        continue;
+                                        //    }
+                                        //}
                                         if (!string.IsNullOrEmpty(TypeOfSupportInfoDataTable.Rows[j]["Flange Diameter (cm)"].ToString()))
                                         {
                                             CheckParser = float.TryParse(TypeOfSupportInfoDataTable.Rows[j]["Flange Diameter (cm)"].ToString(), out FloatParser);
