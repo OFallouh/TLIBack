@@ -63,6 +63,10 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
         public string SUPPORTTYPEIMPLEMENTED { get; set; } 
         public float? Support_Limited_Load { get; set; }
         public string? ENFORCMENTCATEGORY { get; set; }
+        public float CenterHigh { get; set; }
+        public float HBA { get; set; }
+        public float HieghFromLand { get; set; }
+        public float EquivalentSpace { get; set; }
 
 
         public Dictionary<string, object> GenerateOutputData()
@@ -118,6 +122,10 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
             outputData.Add("GuyLineType", GUYLINETYPE);
             outputData.Add("SupportTypeImplemented", SUPPORTTYPEIMPLEMENTED);
             outputData.Add("Support_Limited_Load", Support_Limited_Load);
+            outputData.Add("CenterHigh", CenterHigh);
+            outputData.Add("HBA", HBA);
+            outputData.Add("HieghFromLand", HieghFromLand);
+            outputData.Add("EquivalentSpace", EquivalentSpace);
 
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))

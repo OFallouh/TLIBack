@@ -433,7 +433,7 @@ namespace TLIS_Service.Services
 
                 DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == CivilType.ToLower() && !x.disable
-                        , x => x.tablesNames).ToList());
+                        , x => x.tablesNames, x => x.DataType).ToList());
 
                 foreach (DynamicAttViewModel DynamicAttribute in DynamicAttributes)
                 {
@@ -481,7 +481,7 @@ namespace TLIS_Service.Services
                                 {
                                     string AttributeName = Rule.attributeActivated.Key;
 
-                                    InsertedValue = AddCivilLibraryViewModel.GetType().GetProperties()
+                                    InsertedValue = AddCivilLibraryViewModel.attributesActivatedLibrary.GetType().GetProperties()
                                         .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddCivilLibraryViewModel.attributesActivatedLibrary, null);
                                 }
                                 else if (Rule.dynamicAttId != null)
