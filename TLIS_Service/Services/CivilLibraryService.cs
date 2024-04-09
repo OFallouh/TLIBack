@@ -482,7 +482,7 @@ namespace TLIS_Service.Services
                                     string AttributeName = Rule.attributeActivated.Key;
 
                                     InsertedValue = AddCivilLibraryViewModel.GetType().GetProperties()
-                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddCivilLibraryViewModel, null);
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(AddCivilLibraryViewModel.attributesActivatedLibrary, null);
                                 }
                                 else if (Rule.dynamicAttId != null)
                                 {

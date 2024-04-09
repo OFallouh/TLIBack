@@ -12964,8 +12964,8 @@ namespace TLIS_Service.Services
 
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlisubtype", () => _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList()) },
+                    { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "subtype_name", () => _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList()) },
                     { "equipmentslocation", () => {
                         List<EnumOutPut> equipmentslocation = new List<EnumOutPut>
                         {
@@ -12975,7 +12975,6 @@ namespace TLIS_Service.Services
                         };
                         return equipmentslocation;
                     }},
-                    
                     { "laddersteps", () => {
                         List<EnumOutPut> ladderSteps = new List<EnumOutPut>
                         {
@@ -12984,15 +12983,15 @@ namespace TLIS_Service.Services
                         };
                         return ladderSteps;
                     }},
-                   
+
                 };
 
                 ListAttributesActivated = ListAttributesActivated
                     .Select(FKitem =>
                     {
-                        if (repositoryMethods.ContainsKey(FKitem.Desc.ToLower()))
+                        if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
                         {
-                            FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
+                            FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
                         }
                         else
                         {
@@ -13186,8 +13185,8 @@ namespace TLIS_Service.Services
                 }
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlisubtype", () => _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList()) },
+                    { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "subtype_name", () => _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList()) },
                     { "equipmentslocation", () => {
                         List<EnumOutPut> equipmentslocation = new List<EnumOutPut>
                         {
@@ -13211,9 +13210,9 @@ namespace TLIS_Service.Services
                 ListAttributesActivated = ListAttributesActivated
                     .Select(FKitem =>
                     {
-                        if (repositoryMethods.ContainsKey(FKitem.Desc.ToLower()))
+                        if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
                         {
-                            FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
+                            FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
                         }
                         else
                         {
@@ -13407,8 +13406,8 @@ namespace TLIS_Service.Services
                 }
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tlisubtype", () => _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList()) },
+                    { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "subtype_name", () => _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList()) },
                     { "equipmentslocation", () => {
                         List<EnumOutPut> equipmentslocation = new List<EnumOutPut>
                         {
@@ -13426,15 +13425,15 @@ namespace TLIS_Service.Services
                         };
                         return ladderSteps;
                     }},
-                   
+
                 };
 
                 ListAttributesActivated = ListAttributesActivated
                     .Select(FKitem =>
                     {
-                        if (repositoryMethods.ContainsKey(FKitem.Desc.ToLower()))
+                        if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
                         {
-                            FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
+                            FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
                         }
                         else
                         {
