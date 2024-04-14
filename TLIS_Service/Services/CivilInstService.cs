@@ -2992,12 +2992,12 @@ namespace TLIS_Service.Services
                     if (civilwithoutlegs.BaseBeamSectionmm != 100 && civilwithoutlegs.BaseBeamSectionmm != 120 && civilwithoutlegs.BaseBeamSectionmm != 140
                       && civilwithoutlegs.BaseBeamSectionmm != 160 && civilwithoutlegs.BaseBeamSectionmm != 180 && civilwithoutlegs.BaseBeamSectionmm != 200)
                     {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (100,120,140,160,180,200)", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     if (civilwithoutlegs.BPlateBoltsAnchorDiametermm != 12 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 14 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 16
                      && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 18 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 20)
                     {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     if (civilwithoutlegs.SpindlesBasePlateLengthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
                     {
@@ -3010,7 +3010,7 @@ namespace TLIS_Service.Services
                     if (civilwithoutlegs.SpinBasePlateAnchorDiametercm != 12 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 14 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 16
                      && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 18 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 20)
                     {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilWithoutLegViewModel.dynamicAttribute, TableName);
 
