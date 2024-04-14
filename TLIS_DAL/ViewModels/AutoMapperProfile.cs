@@ -143,6 +143,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.EditCivilWithLegsLibraryObject;
 using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.AddCivilWithoutLegsLibraryObject;
 using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
+using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.EditCivilWithoutLegsLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -174,6 +175,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditinstallationAttributesCivilWithLegs, TLIcivilWithLegs>().ReverseMap();
             CreateMap<CivilWihtoutLegsLibraryAttributes, TLIcivilWithoutLegLibrary>().ReverseMap();
             CreateMap<AddCivilWithoutLegsLibraryObject, TLIcivilWithoutLegLibrary>().ReverseMap();
+            CreateMap<EditCivilWihtoutLegsLibraryAttributes, TLIcivilWithoutLegLibrary>().ReverseMap();
 
 
             //---------------------------------------------------------------------------

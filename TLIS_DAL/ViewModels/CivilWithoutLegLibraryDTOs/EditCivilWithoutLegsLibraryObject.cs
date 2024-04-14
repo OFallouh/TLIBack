@@ -18,6 +18,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs
         public class EditCivilWihtoutLegsLibraryAttributes
         {
             public int Id { get; set; }
+            public string Model { get; set; }
             public string? Note { get; set; }
             public float Height_Designed { get; set; } = 0;
             public float HeightBase { get; set; } = 0;

@@ -33,6 +33,7 @@ using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using TLIS_DAL.ViewModels.CivilSteelSupportCategoryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegCategoryDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
 using TLIS_DAL.ViewModels.DataTypeDTOs;
 using TLIS_DAL.ViewModels.DismantleDto;
@@ -6540,8 +6541,8 @@ namespace TLIS_Service.Services
                             _mapper.Map<LocationTypeViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegLibrary.supportTypeDesignedId)) :
                             null;
                     }
-
-                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                
+                List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
@@ -7113,16 +7114,17 @@ namespace TLIS_Service.Services
                             null;
                     }
 
-                    var supportTypeDesignedItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilwithoutlegcategory_name");
-                    if (supportTypeDesignedItem != null)
+                    var civilwithoutlegcategory_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilwithoutlegcategory_name");
+                    if (civilwithoutlegcategory_name != null)
                     {
-                        supportTypeDesignedItem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                        supportTypeDesignedItem.Value = _unitOfWork.SupportTypeDesignedRepository != null && CivilWithoutLibrary.CivilWithoutLegCategoryId != null ?
-                            _mapper.Map<CivilSteelSupportCategoryViewModel>(_unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithoutLibrary.CivilWithoutLegCategoryId)) :
+                        civilwithoutlegcategory_name.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
+                        civilwithoutlegcategory_name.Value = _unitOfWork.SupportTypeDesignedRepository != null && CivilWithoutLibrary.CivilWithoutLegCategoryId != null ?
+                                _mapper.Map<CivilWithoutLegCategoryViewModel>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLibrary.CivilWithoutLegCategoryId)) :
                             null;
                     }
+               
 
-                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithoutLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
@@ -7130,7 +7132,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(), CivilWithLoutInst, "CivilWithoutlegsLibId").ToList();
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(), CivilWithLoutInst, "CivilWithoutlegsLibId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -7200,7 +7202,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
-                      .GetWhereFirst(x => x.civilWithLegsId == CivilInsId);
+                      .GetWhereFirst(x => x.civilWithoutLegId == CivilInsId);
 
                     TLIcivilSiteDate CivilSiteDateInfo = _unitOfWork.CivilSiteDateRepository
                         .GetWhereFirst(x => x.allCivilInstId == AllCivilInst.Id);
