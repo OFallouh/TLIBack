@@ -39,6 +39,10 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelDTOs
             public float CenterHigh { get; set; }
             public float HBA { get; set; }
             public float EquivalentSpace { get; set; }
+            public float CenterHigh { get; set; }
+            public float HBA { get; set; }
+            public float HieghFromLand { get; set; }
+            public float EquivalentSpace { get; set; }
         }
     }
 }

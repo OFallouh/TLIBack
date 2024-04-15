@@ -4940,8 +4940,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" && x.AttributeActivated.Key.ToLower()!="active" &&
-                        x.AttributeActivated.Key.ToLower() != "delete" &&((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" 
+                        &&((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key,dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() }).ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
@@ -5035,8 +5035,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && x.AttributeActivated.Key.ToLower() != "active" &&
-                         x.AttributeActivated.Key.ToLower() != "delete" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5129,8 +5128,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" && x.AttributeActivated.Key.ToLower() != "active" &&
-                        x.AttributeActivated.Key.ToLower() != "delete" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" 
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5223,8 +5222,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule" && x.AttributeActivated.Key.ToLower() != "active" &&
-                        x.AttributeActivated.Key.ToLower() != "delete" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();

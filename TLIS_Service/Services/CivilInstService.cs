@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Nancy.Extensions;
 using Oracle.ManagedDataAccess.Client;
 using Org.BouncyCastle.Asn1.X509;
 using System;
@@ -7510,7 +7511,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x=>x.attribute.ToLower().StartsWith("name"))
+                        .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
@@ -7538,7 +7540,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0) 
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -7551,8 +7553,9 @@ namespace TLIS_Service.Services
                         var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
-                        Name = x.Name,
+                     
                         Id = x.Id,
+                        Name = x.Name,
                         SITECODE = x.SITECODE,
                         WindMaxLoadm2 = x.WindMaxLoadm2,
                         LocationHeight = x.LocationHeight,
@@ -7634,7 +7637,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMast" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.dynamic)
+                        .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
@@ -7675,8 +7679,8 @@ namespace TLIS_Service.Services
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
-                        Name = x.Name,
                         Id = x.Id,
+                        Name = x.Name,
                         SITECODE = x.SITECODE,
                         HeightBase = x.HeightBase,
                         UpperPartLengthm = x.UpperPartLengthm,
@@ -7768,7 +7772,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.dynamic)
+                        .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
@@ -7809,8 +7814,8 @@ namespace TLIS_Service.Services
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
-                        Name = x.Name,
                         Id = x.Id,
+                        Name = x.Name,
                         SITECODE = x.SITECODE,
                         HeightBase = x.HeightBase,
                         UpperPartLengthm = x.UpperPartLengthm,
@@ -7902,7 +7907,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.dynamic)
+                        .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
@@ -7943,8 +7949,8 @@ namespace TLIS_Service.Services
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                     .GroupBy(x => new
                     {
-                        Name = x.Name,
                         Id = x.Id,
+                        Name = x.Name,
                         SITECODE = x.SITECODE,
                         HeightBase = x.HeightBase,
                         UpperPartLengthm = x.UpperPartLengthm,
