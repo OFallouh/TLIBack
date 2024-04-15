@@ -22,7 +22,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-   // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilWithoutLegLibraryController : Controller

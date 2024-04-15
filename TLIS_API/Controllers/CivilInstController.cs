@@ -53,7 +53,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Capsule(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
-      // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithOutLegInstallation_Mast")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCivilWithOutLegInstallation_Mast(int CivilLibraryId, string SiteCode)
@@ -77,7 +77,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
-        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithLegsWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithLegsWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -102,7 +102,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetLoadsOnSideArm(SideArmId);
             return Ok(response);
         }
-       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMastWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMastWithEnableAttt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -111,7 +111,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
-        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMonopoleWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMonopoleWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -120,7 +120,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
-        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegCapsuleWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegCapsuleWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -290,7 +290,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
             return Ok(response);
         }
-        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilWithoutLegsInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilWithoutLegsInstallationById(int CivilId)
