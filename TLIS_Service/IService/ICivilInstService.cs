@@ -64,5 +64,8 @@ namespace TLIS_Service.IService
         Response<SideArmAndLoadsOnCivil> CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType);
         Response<LoadsCountOnSideArm> CheckLoadsOnSideArm(int SideArmId);
         Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
+        Response<object> GetCivilWithoutLegMastWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString);
+        Response<object> GetCivilWithoutLegCapsuleWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString);
+        Response<object> GetCivilWithoutLegMonopoleWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString);
     }
 }

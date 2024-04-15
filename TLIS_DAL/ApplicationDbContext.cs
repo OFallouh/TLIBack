@@ -11,6 +11,7 @@ using System.Data;
 using System.Xml;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
 
 
 namespace TLIS_DAL
@@ -172,6 +173,7 @@ namespace TLIS_DAL
         public virtual DbSet<CivilWithLegView> CIVIL_WITHLEGS_VIEW { get; set; }
         public virtual DbSet<ViewWithLegsLibrary> CIVIL_WITHLEG_LIBRARY_VIEW { get; set; }
         public virtual DbSet<CIVIL_WITHOUTLEG_LIBRARY_VIEW> CIVIL_WITHOUTLEG_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<CIVIL_WITHOUTLEGS_VIEW> CIVIL_WITHOUTLEGS_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -247,7 +249,11 @@ namespace TLIS_DAL
                 cn.HasNoKey();
                 cn.ToView("CIVIL_WITHOUTLEG_LIBRARY_VIEW");
             });
-
+            builder.Entity<CIVIL_WITHOUTLEGS_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("CIVIL_WITHOUTLEGS_VIEW");
+            });
             builder.Entity<TLIsession>();
 
             builder.Entity<TLIuser_Permissions>(entity =>

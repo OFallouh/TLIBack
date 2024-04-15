@@ -103,11 +103,30 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetCivilWithoutLegWithEnableAtt")]
+        [HttpPost("GetCivilWithoutLegMastWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetCivilWithoutLegWithEnableAtt([FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, int CategoryId)
+        public IActionResult GetCivilWithoutLegMastWithEnableAttt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
-            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CategoryId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
+            return Ok(response);
+        }
+        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetCivilWithoutLegMonopoleWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithoutLegMonopoleWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
+            return Ok(response);
+        }
+        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetCivilWithoutLegCapsuleWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithoutLegCapsuleWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

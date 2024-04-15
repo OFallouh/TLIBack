@@ -3706,19 +3706,17 @@ namespace TLIS_Service.Services
 
                 try
                 {
-
                     string ErrorMessage = string.Empty;
-                    string ownername = null;
-                    string sitename = null;
-                    string Model = null;
                     int TableNameId = 0;
 
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "tlicivilwithoutleg", x => new { x.Id }).Id;
+                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithoutLeg", x => new { x.Id }).Id;
 
                     TLIcivilWithoutLeg civilWithoutLegsEntity = _mapper.Map<TLIcivilWithoutLeg>(editCivilWithoutLegsInstallationObject.installationAttributes);
 
                     var CivilWithoutLegInst = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable().AsNoTracking()
                         .Include(x => x.CivilWithoutlegsLib).FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.installationAttributes.Id);
+
+                    var CivilWithoutLegLibary = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId);
 
                     if (CivilWithoutLegInst.Name != civilWithoutLegsEntity.Name)
                     {
@@ -3757,11 +3755,11 @@ namespace TLIS_Service.Services
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    if (civilWithoutLegsEntity.ConcreteBaseLengthm == 0 && civilWithoutLegsEntity.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
+                    if (civilWithoutLegsEntity.ConcreteBaseLengthm == 0 && CivilWithoutLegLibary.Model.ToLower().Contains("located"))
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    if (civilWithoutLegsEntity.ConcreteBaseWidthm == 0 && civilWithoutLegsEntity.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
+                    if (civilWithoutLegsEntity.ConcreteBaseWidthm == 0 && CivilWithoutLegLibary.Model.ToLower().Contains("located"))
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3921,8 +3919,8 @@ namespace TLIS_Service.Services
                     civilWithoutLegsEntity.CivilWithoutlegsLibId = editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId;
                     _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(userId, CivilWithoutLegInst, civilWithoutLegsEntity);
                     ////////////////////////UpdateCivilSiteDate=////////////////////////
-                    var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilWithLegsId == civilWithoutLegsEntity.Id);
-                    var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId == civilWithoutLegsEntity.Id);
+                    var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegsEntity.Id);
+                    var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegsEntity.Id);
                     civilsitedate.LongitudinalSpindleLengthm = editCivilWithoutLegsInstallationObject.civilSiteDate.LongitudinalSpindleLengthm;
                     civilsitedate.HorizontalSpindleLengthm = editCivilWithoutLegsInstallationObject.civilSiteDate.HorizontalSpindleLengthm;
                     civilsitedate.ReservedSpace = editCivilWithoutLegsInstallationObject.civilSiteDate.ReservedSpace;
@@ -3933,7 +3931,7 @@ namespace TLIS_Service.Services
 
                     //////////////UpdateCivilSupportDistance/////////////////////////////////
 
-                    var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithLegsId == civilWithoutLegsEntity.Id);
+                    var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId == civilWithoutLegsEntity.Id);
                     if (allcivilinstId != null)
                     {
                         var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
@@ -5588,7 +5586,7 @@ namespace TLIS_Service.Services
             else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
             {
                 string MainTableName = Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString();
-                EditCivilWithoutLegViewModel EditCivilInstallationViewModel = _mapper.Map<EditCivilWithoutLegViewModel>(Input);
+                EditCivilWithoutLegsInstallationObject EditCivilInstallationViewModel = _mapper.Map<EditCivilWithoutLegsInstallationObject>(Input);
 
                 List<DynamicAttViewModel> DynamicAttributes = _mapper.Map<List<DynamicAttViewModel>>(_unitOfWork.DynamicAttRepository
                     .GetIncludeWhere(x => x.tablesNames.TableName.ToLower() == MainTableName.ToLower() && !x.disable &&
@@ -5598,7 +5596,7 @@ namespace TLIS_Service.Services
                 {
                     TLIdependency DynamicAttributeMainDependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(x => x.DynamicAttId == DynamicAttribute.Id &&
                         (x.ValueBoolean != null || x.ValueDateTime != null || x.ValueDouble != null || !string.IsNullOrEmpty(x.ValueString)) &&
-                            x.OperationId != null, x => x.Operation);
+                         x.OperationId != null, x => x.Operation);
 
                     if (DynamicAttributeMainDependency == null)
                         continue;
@@ -5608,7 +5606,7 @@ namespace TLIS_Service.Services
 
                     foreach (int RowId in DependencyRows)
                     {
-                        List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId, x => x.Rule, x => x.Rule.tablesNames,
+                        List<TLIrule> Rules = _unitOfWork.RowRuleRepository.GetIncludeWhere(x => x.RowId == RowId && x.Rule.OperationId != null, x => x.Rule, x => x.Rule.tablesNames,
                             x => x.Rule.Operation, x => x.Rule.dynamicAtt, x => x.Rule.attributeActivated).Select(x => x.Rule).ToList();
 
                         int CheckIfSuccessAllRules = 0;
@@ -5651,8 +5649,8 @@ namespace TLIS_Service.Services
                                 {
                                     string AttributeName = Rule.attributeActivated.Key;
 
-                                    object TestValue = EditCivilInstallationViewModel.GetType().GetProperties()
-                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilInstallationViewModel, null);
+                                    object TestValue = EditCivilInstallationViewModel.installationAttributes.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == AttributeName.ToLower()).GetValue(EditCivilInstallationViewModel.installationAttributes, null);
 
                                     if (TestValue == null)
                                         break;
@@ -5671,25 +5669,25 @@ namespace TLIS_Service.Services
                                 }
                                 else if (Rule.dynamicAttId != null)
                                 {
-                                    BaseInstAttView DynamicObject = EditCivilInstallationViewModel.DynamicInstAttsValue
-                                        .FirstOrDefault(x => x.Id == Rule.dynamicAttId.Value);
+                                    AddDdynamicAttributeInstallationValueViewModel DynamicObject = EditCivilInstallationViewModel.dynamicAttribute
+                                        .FirstOrDefault(x => x.id == Rule.dynamicAttId.Value);
 
                                     if (DynamicObject == null)
                                         break;
 
-                                    string DynamicAttributeDataType = _unitOfWork.DataTypeRepository.GetByID(DynamicObject.DataTypeId.Value).Name;
+                                    string DynamicAttributeDataType = _unitOfWork.DataTypeRepository.GetByID(DynamicAttribute.DataTypeId.Value).Name;
 
                                     if (DynamicAttributeDataType.ToLower() == "boolean".ToLower())
-                                        InsertedValue = bool.Parse(DynamicObject.Value.ToString());
+                                        InsertedValue = bool.Parse(DynamicObject.value.ToString());
 
                                     else if (DynamicAttributeDataType.ToLower() == "string".ToLower())
-                                        InsertedValue = DynamicObject.Value.ToString();
+                                        InsertedValue = DynamicObject.value.ToString();
 
                                     else if (DynamicAttributeDataType.ToLower() == "int".ToLower() || DynamicAttributeDataType.ToLower() == "double".ToLower())
-                                        InsertedValue = double.Parse(DynamicObject.Value.ToString());
+                                        InsertedValue = double.Parse(DynamicObject.value.ToString());
 
                                     else if (DynamicAttributeDataType.ToLower() == "datetime".ToLower())
-                                        InsertedValue = DateTime.Parse(DynamicObject.Value.ToString());
+                                        InsertedValue = DateTime.Parse(DynamicObject.value.ToString());
                                 }
 
                                 if (Operation == "==" ? InsertedValue.ToString().ToLower() == OperationValue.ToString().ToLower() :
@@ -5892,8 +5890,8 @@ namespace TLIS_Service.Services
                             int DynamicAttributeId = _unitOfWork.DependencyRowRepository
                                 .GetIncludeWhereFirst(x => x.RowId == RowId, x => x.Dependency).Dependency.DynamicAttId.Value;
 
-                            BaseInstAttView InputDynamicAttribute = EditCivilInstallationViewModel.DynamicInstAttsValue
-                                .FirstOrDefault(x => x.Id == DynamicAttributeId);
+                            AddDdynamicAttributeInstallationValueViewModel InputDynamicAttribute = EditCivilInstallationViewModel.dynamicAttribute
+                                .FirstOrDefault(x => x.id == DynamicAttributeId);
 
                             if (InputDynamicAttribute == null)
                             {
@@ -5910,22 +5908,22 @@ namespace TLIS_Service.Services
                                 if (DynamicAttributeMainDependency.ValueBoolean != null)
                                 {
                                     DependencyValidationValue = DynamicAttributeMainDependency.ValueBoolean;
-                                    InputDynamicValue = bool.Parse(InputDynamicAttribute.Value.ToString());
+                                    InputDynamicValue = bool.Parse(InputDynamicAttribute.value.ToString());
                                 }
                                 else if (DynamicAttributeMainDependency.ValueDateTime != null)
                                 {
                                     DependencyValidationValue = DynamicAttributeMainDependency.ValueDateTime;
-                                    InputDynamicValue = DateTime.Parse(InputDynamicAttribute.Value.ToString());
+                                    InputDynamicValue = DateTime.Parse(InputDynamicAttribute.value.ToString());
                                 }
                                 else if (DynamicAttributeMainDependency.ValueDouble != null)
                                 {
                                     DependencyValidationValue = DynamicAttributeMainDependency.ValueDouble;
-                                    InputDynamicValue = double.Parse(InputDynamicAttribute.Value.ToString());
+                                    InputDynamicValue = double.Parse(InputDynamicAttribute.value.ToString());
                                 }
                                 else if (!string.IsNullOrEmpty(DynamicAttributeMainDependency.ValueString))
                                 {
                                     DependencyValidationValue = DynamicAttributeMainDependency.ValueString;
-                                    InputDynamicValue = InputDynamicAttribute.Value.ToString();
+                                    InputDynamicValue = InputDynamicAttribute.value.ToString();
                                 }
 
                                 string DependencyValidationOperation = DynamicAttributeMainDependency.Operation.Name;
@@ -7610,6 +7608,408 @@ namespace TLIS_Service.Services
                         return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     
+                }
+                catch (Exception err)
+                {
+                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public Response<object> GetCivilWithoutLegMastWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_withleg";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMast" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                    List<string> propertyNamesStatic = new List<string>();
+                    List<string> propertyNamesDynamic = new List<string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            propertyNamesDynamic.Add(name);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Name = x.Name,
+                        Id = x.Id,
+                        SITECODE = x.SITECODE,
+                        HeightBase = x.HeightBase,
+                        UpperPartLengthm = x.UpperPartLengthm,
+                        UpperPartDiameterm = x.UpperPartDiameterm,
+                        BottomPartDiameterm = x.BottomPartDiameterm,
+                        SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                        SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                        SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                        NumberOfCivilParts = x.NumberOfCivilParts,
+                        NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                        NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                        CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                        CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                        LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                        HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                        HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                        FlangeThicknesscm = x.FlangeThicknesscm,
+                        FlangeDiametercm = x.FlangeDiametercm,
+                        FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                        ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                        ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                        ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                        Civil_Remarks = x.Civil_Remarks,
+                        BottomPartLengthm = x.BottomPartLengthm,
+                        BasePlateWidthcm = x.BasePlateWidthcm,
+                        BasePlateThicknesscm = x.BasePlateThicknesscm,
+                        BasePlateLengthcm = x.BasePlateLengthcm,
+                        BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                        BaseBeamSectionmm = x.BaseBeamSectionmm,
+                        WindMaxLoadm2 = x.WindMaxLoadm2,
+                        Location_Height = x.Location_Height,
+                        PoType = x.PoType,
+                        PoNo = x.PoNo,
+                        PoDate = x.PoDate,
+                        reinforced = x.reinforced,
+                        ladderSteps = x.ladderSteps,
+                        availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                        equipmentsLocation = x.equipmentsLocation,
+                        HeightImplemented = x.HeightImplemented,
+                        BuildingMaxLoad = x.BuildingMaxLoad,
+                        SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                        CurrentLoads = x.CurrentLoads,
+                        BuildingHeightH3 = x.BuildingHeightH3,
+                        WarningPercentageLoads = x.WarningPercentageLoads,
+                        Visiable_Status = x.Visiable_Status,
+                        SpaceInstallation = x.SpaceInstallation,
+                        CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                        OWNER = x.OWNER,
+                        SUBTYPE = x.SUBTYPE,
+                        Support_Limited_Load = x.Support_Limited_Load,
+                        CenterHigh = x.CenterHigh,
+                        HBA = x.HBA,
+                        HieghFromLand = x.HieghFromLand,
+                        EquivalentSpace = x.EquivalentSpace,
+                    }).OrderBy(x => x.Key.Name)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public Response<object> GetCivilWithoutLegCapsuleWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_withleg";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                    List<string> propertyNamesStatic = new List<string>();
+                    List<string> propertyNamesDynamic = new List<string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            propertyNamesDynamic.Add(name);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Name = x.Name,
+                        Id = x.Id,
+                        SITECODE = x.SITECODE,
+                        HeightBase = x.HeightBase,
+                        UpperPartLengthm = x.UpperPartLengthm,
+                        UpperPartDiameterm = x.UpperPartDiameterm,
+                        BottomPartDiameterm = x.BottomPartDiameterm,
+                        SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                        SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                        SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                        NumberOfCivilParts = x.NumberOfCivilParts,
+                        NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                        NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                        CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                        CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                        LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                        HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                        HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                        FlangeThicknesscm = x.FlangeThicknesscm,
+                        FlangeDiametercm = x.FlangeDiametercm,
+                        FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                        ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                        ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                        ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                        Civil_Remarks = x.Civil_Remarks,
+                        BottomPartLengthm = x.BottomPartLengthm,
+                        BasePlateWidthcm = x.BasePlateWidthcm,
+                        BasePlateThicknesscm = x.BasePlateThicknesscm,
+                        BasePlateLengthcm = x.BasePlateLengthcm,
+                        BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                        BaseBeamSectionmm = x.BaseBeamSectionmm,
+                        WindMaxLoadm2 = x.WindMaxLoadm2,
+                        Location_Height = x.Location_Height,
+                        PoType = x.PoType,
+                        PoNo = x.PoNo,
+                        PoDate = x.PoDate,
+                        reinforced = x.reinforced,
+                        ladderSteps = x.ladderSteps,
+                        availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                        equipmentsLocation = x.equipmentsLocation,
+                        HeightImplemented = x.HeightImplemented,
+                        BuildingMaxLoad = x.BuildingMaxLoad,
+                        SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                        CurrentLoads = x.CurrentLoads,
+                        BuildingHeightH3 = x.BuildingHeightH3,
+                        WarningPercentageLoads = x.WarningPercentageLoads,
+                        Visiable_Status = x.Visiable_Status,
+                        SpaceInstallation = x.SpaceInstallation,
+                        CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                        OWNER = x.OWNER,
+                        SUBTYPE = x.SUBTYPE,
+                        Support_Limited_Load = x.Support_Limited_Load,
+                        CenterHigh = x.CenterHigh,
+                        HBA = x.HBA,
+                        HieghFromLand = x.HieghFromLand,
+                        EquivalentSpace = x.EquivalentSpace,
+                    }).OrderBy(x => x.Key.Name)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public Response<object> GetCivilWithoutLegMonopoleWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_withleg";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                    List<string> propertyNamesStatic = new List<string>();
+                    List<string> propertyNamesDynamic = new List<string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            propertyNamesDynamic.Add(name);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Name = x.Name,
+                        Id = x.Id,
+                        SITECODE = x.SITECODE,
+                        HeightBase = x.HeightBase,
+                        UpperPartLengthm = x.UpperPartLengthm,
+                        UpperPartDiameterm = x.UpperPartDiameterm,
+                        BottomPartDiameterm = x.BottomPartDiameterm,
+                        SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                        SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                        SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                        NumberOfCivilParts = x.NumberOfCivilParts,
+                        NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                        NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                        CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                        CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                        LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                        HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                        HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                        FlangeThicknesscm = x.FlangeThicknesscm,
+                        FlangeDiametercm = x.FlangeDiametercm,
+                        FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                        ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                        ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                        ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                        Civil_Remarks = x.Civil_Remarks,
+                        BottomPartLengthm = x.BottomPartLengthm,
+                        BasePlateWidthcm = x.BasePlateWidthcm,
+                        BasePlateThicknesscm = x.BasePlateThicknesscm,
+                        BasePlateLengthcm = x.BasePlateLengthcm,
+                        BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                        BaseBeamSectionmm = x.BaseBeamSectionmm,
+                        WindMaxLoadm2 = x.WindMaxLoadm2,
+                        Location_Height = x.Location_Height,
+                        PoType = x.PoType,
+                        PoNo = x.PoNo,
+                        PoDate = x.PoDate,
+                        reinforced = x.reinforced,
+                        ladderSteps = x.ladderSteps,
+                        availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                        equipmentsLocation = x.equipmentsLocation,
+                        HeightImplemented = x.HeightImplemented,
+                        BuildingMaxLoad = x.BuildingMaxLoad,
+                        SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                        CurrentLoads = x.CurrentLoads,
+                        BuildingHeightH3 = x.BuildingHeightH3,
+                        WarningPercentageLoads = x.WarningPercentageLoads,
+                        Visiable_Status = x.Visiable_Status,
+                        SpaceInstallation = x.SpaceInstallation,
+                        CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                        OWNER = x.OWNER,
+                        SUBTYPE = x.SUBTYPE,
+                        Support_Limited_Load = x.Support_Limited_Load,
+                        CenterHigh = x.CenterHigh,
+                        HBA = x.HBA,
+                        HieghFromLand = x.HieghFromLand,
+                        EquivalentSpace = x.EquivalentSpace,
+                    }).OrderBy(x => x.Key.Name)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
                 }
                 catch (Exception err)
                 {

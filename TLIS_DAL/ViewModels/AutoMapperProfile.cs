@@ -144,6 +144,7 @@ using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.EditCivilWithLegsLibrar
 using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.AddCivilWithoutLegsLibraryObject;
 using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.EditCivilWithoutLegsLibraryObject;
+using static TLIS_DAL.ViewModels.CivilWithoutLegDTOs.EditCivilWithoutLegsInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -851,6 +852,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIpolarityOnLocation, EditPolarityOnLocationViewModel>().ReverseMap();
 
             CreateMap<TLIpowerType, PowerTypeViewModel>().ReverseMap();
+            CreateMap<TLIcivilWithoutLeg, EditinstallationAttributesCivilWithoutLegs>().ReverseMap();
 
             CreateMap<TLIpowerType, AddPowerTypeViewModel>().ReverseMap();
             CreateMap<TLIsubType, AddTLIsubTypeViewModel>().ReverseMap();

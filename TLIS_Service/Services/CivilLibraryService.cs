@@ -4930,7 +4930,7 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    string storedProcedureName = "create_dynamic_pivot_withleg_library ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -5025,7 +5025,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    string storedProcedureName = "create_dynamic_pivot_withoutleg_library ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -5119,7 +5119,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    string storedProcedureName = "create_dynamic_pivot_withoutleg_library ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -5213,7 +5213,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    string storedProcedureName = "create_dynamic_pivot_withoutleg_library ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
