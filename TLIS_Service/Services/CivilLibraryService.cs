@@ -3563,6 +3563,11 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                         {
                             FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x =>!x.disable).ToList());
+                            FKitem.Value = _mapper.Map<CivilSteelSupportCategoryViewModel>(CivilWithoutLegLibrary.CivilWithoutLegCategory);
+                        }
+                        else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
+                        {
+                            FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(db.TLIcivilSteelSupportCategory.ToList());
                             FKitem.Value = _mapper.Map<CivilSteelSupportCategoryViewModel>(CivilWithoutLegLibrary.CivilSteelSupportCategory);
                         }
                         return FKitem;
@@ -3781,6 +3786,8 @@ namespace TLIS_Service.Services
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
+                      else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
+                          FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(db.TLIcivilSteelSupportCategory.ToList());
 
                       return FKitem;
                   })
@@ -3860,6 +3867,8 @@ namespace TLIS_Service.Services
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
+                      else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
+                          FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(db.TLIcivilSteelSupportCategory.ToList());
 
                       return FKitem;
                   })
@@ -3940,6 +3949,8 @@ namespace TLIS_Service.Services
                           FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
+                      else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
+                          FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(db.TLIcivilSteelSupportCategory.ToList());
 
                       return FKitem;
                   })
