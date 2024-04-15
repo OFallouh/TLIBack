@@ -3563,7 +3563,7 @@ namespace TLIS_Service.Services
                         else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                         {
                             FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x =>!x.disable).ToList());
-                            FKitem.Value = _mapper.Map<CivilSteelSupportCategoryViewModel>(CivilWithoutLegLibrary.CivilWithoutLegCategory);
+                            FKitem.Value = _mapper.Map<CivilWithoutLegCategoryViewModel>(CivilWithoutLegLibrary.CivilWithoutLegCategory);
                         }
                         else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
                         {
