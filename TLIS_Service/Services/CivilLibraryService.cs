@@ -4020,7 +4020,7 @@ namespace TLIS_Service.Services
                     .GetAttributeActivatedGetForAdd(TableName, null, null)
                     .Select(item =>
                     {
-                        if (item.DataType.ToLower() == "list" && item.Desc?.ToLower() == "civilonsteeltype_name")
+                        if (item.DataType.ToLower() == "list" && item.Label?.ToLower() == "civilnonsteeltype_name")
                             item.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(
                                 db.TLIcivilNonSteelType.Where(x => !x.Disable && !x.Deleted).ToList());
                         return item;
