@@ -7610,7 +7610,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg";
+                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -7745,7 +7745,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg";
+                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -7880,7 +7880,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg";
+                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -8284,7 +8284,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_NONSTEEL ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -13434,9 +13434,9 @@ namespace TLIS_Service.Services
                 objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
                    .Select(FKitem =>
                    {
-                       if (repositoryM.ContainsKey(FKitem.Desc.ToLower()))
+                       if (repositoryM.ContainsKey(FKitem.Label.ToLower()))
                        {
-                           FKitem.Options = repositoryM[FKitem.Desc.ToLower()]();
+                           FKitem.Options = repositoryM[FKitem.Label.ToLower()]();
                        }
                        else
                        {
@@ -13571,9 +13571,9 @@ namespace TLIS_Service.Services
                 LibraryAttributes = LibraryAttributes
                    .Select(FKitem =>
                    {
-                       if (repository.ContainsKey(FKitem.Desc.ToLower()))
+                       if (repository.ContainsKey(FKitem.Label.ToLower()))
                        {
-                           FKitem.Options = repository[FKitem.Desc.ToLower()]();
+                           FKitem.Options = repository[FKitem.Label.ToLower()]();
                        }
                        else
                        {
@@ -13792,9 +13792,9 @@ namespace TLIS_Service.Services
                 LibraryAttributes = LibraryAttributes
                    .Select(FKitem =>
                    {
-                       if (repository.ContainsKey(FKitem.Desc.ToLower()))
+                       if (repository.ContainsKey(FKitem.Label.ToLower()))
                        {
-                           FKitem.Options = repository[FKitem.Desc.ToLower()]();
+                           FKitem.Options = repository[FKitem.Label.ToLower()]();
                        }
                        else
                        {
@@ -13975,17 +13975,17 @@ namespace TLIS_Service.Services
                 }
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "tlilocationtype", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-                    { "tliowner", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },  
-                    { "tlisupporttypeimplemented", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },  
+                    { "supporttypeimplemented_name", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                 };
 
                 ListAttributesActivated = ListAttributesActivated
                     .Select(FKitem =>
                     {
-                        if (repositoryMethods.ContainsKey(FKitem.Desc.ToLower()))
+                        if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
                         {
-                            FKitem.Options = repositoryMethods[FKitem.Desc.ToLower()]().ToList();
+                            FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
                         }
                         else
                         {

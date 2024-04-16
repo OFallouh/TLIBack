@@ -102,7 +102,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetLoadsOnSideArm(SideArmId);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMastWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMastWithEnableAttt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -129,7 +129,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilNonSteelWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilNonSteelWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)

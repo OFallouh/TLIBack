@@ -20,7 +20,6 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
         public string? SITECODE { get; set; }
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
-       
         public float? WindMaxLoadm2 { get; set; }
         public double? LocationHeight { get; set; }
         public string? PoType { get; set; }
@@ -32,7 +31,7 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
         public double? CurrentLoads { get; set; }
         public double? warningpercentageloads { get; set; }
         public string? VisiableStatus { get; set; }
-        public string? VerticalMeasured { get; set; }
+        public bool VerticalMeasured { get; set; }
         public string? OtherBaseType { get; set; }
         public bool IsEnforeced { get; set; }
         public double H2height { get; set; }

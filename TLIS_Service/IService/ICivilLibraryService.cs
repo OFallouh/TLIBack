@@ -41,9 +41,9 @@ namespace TLIS_Service.IService
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<object> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<object> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<object> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<ReturnWithFilters<object>> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
+        Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
     }
 }
