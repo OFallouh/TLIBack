@@ -2622,7 +2622,7 @@ namespace TLIS_Service.Services
                         {
                             var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
                             {
-                                CiviLegName = civilWithLegs.Name + item.LegLetter,
+                                CiviLegName = civilWithLegs.Name +' '+ item.LegLetter,
                                 LegAzimuth = item.LegAzimuth,
                                 LegLetter = item.LegLetter,
                                 Notes = item.Notes,
@@ -3232,31 +3232,6 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        //if (editCivilWithLegsInstallationObject.installationAttributes.Name.ToLower() != CivilWithLegInst.Name.ToLower())
-                        //{
-                        //    var civilwithleglibrary = _dbContext.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId);
-                        //    sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
-                        //    if (editCivilWithLegsInstallationObject.installationAttributes.OwnerId == 0 || editCivilWithLegsInstallationObject.installationAttributes.OwnerId == null)
-                        //    {
-                        //        return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-                        //    }
-                        //    ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.installationAttributes.OwnerId)?.OwnerName;
-                        //    if (civilwithleglibrary.Model != null)
-                        //        Model = civilwithleglibrary.Model;
-
-                        //    civilWithLegsEntity.Name = sitename + "" + Model + "" + ownername + "" + editCivilWithLegsInstallationObject.installationAttributes.HeightImplemented;
-
-
-                        //    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.Id != civilWithLegsEntity.Id &&
-                        //    !x.Dismantle && !x.allCivilInst.Draft &&
-                        //        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
-                        //        &&
-                        //        x.SiteCode.ToLower() == SiteCode.ToLower()),
-                        //        x => x.allCivilInst, x => x.allCivilInst.civilWithLegs).FirstOrDefault();
-
-                        //    if (CheckName != null)
-                        //        return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilWithLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                        //}
                         if (civilWithLegsEntity.HeightBase != CivilWithLegInst.HeightBase)
                         {
                             var allcivilinst = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == civilWithLegsEntity.Id).Select(x => x.Id).FirstOrDefault();
@@ -3410,7 +3385,7 @@ namespace TLIS_Service.Services
                         }
                         var legEntities = editCivilWithLegsInstallationObject.legsInfo.Select(item => new TLIleg
                         {
-                            CiviLegName = civilWithLegsEntity.Name + item.LegLetter,
+                            CiviLegName = civilWithLegsEntity.Name+' '+ item.LegLetter,
                             LegAzimuth = item.LegAzimuth,
                             LegLetter = item.LegLetter,
                             Notes = item.Notes,
@@ -6650,35 +6625,42 @@ namespace TLIS_Service.Services
                     }
                     objectInst.LibraryAttribute = LibraryAttributes;
 
-                    var leg = _unitOfWork.LegRepository
-                        .GetWhere(x => x.CivilWithLegInstId == CivilInsId).ToList();
-                    List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
-                    string[] legLetters = { "A", "B", "C", "D" };
-                    float[] legAzimuths = { 0, 90, 180, 270 };
+                var leg = _unitOfWork.LegRepository
+                 .GetWhere(x => x.CivilWithLegInstId == CivilInsId)
+                 .ToList();
 
+                List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
+                string[] legLetters = { "A", "B", "C", "D" };
+                float[] legAzimuths = { 0, 90, 180, 270 };
 
-                    if (NumberofNumber == 3 || NumberofNumber == 4)
-                    {
-                        baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
-                            .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
-                                .Select(att => new BaseInstAttViews
+                if (NumberofNumber == 3 || NumberofNumber == 4)
+                {
+                    baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
+                        .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
+                            .Select(att => new BaseInstAttViews
+                            {
+                                Key = att.Key,
+                                Desc = att.Desc,
+                                Label = att.Label,
+                                Manage = att.Manage,
+                                Required = att.Required,
+                                enable = att.enable,
+                                AutoFill = att.AutoFill,
+                                DataTypeId = att.DataTypeId,
+                                DataType = att.DataType,
+                                Options = att.Options,
+                                Value = att.Label.ToLower() switch
                                 {
-                                    Key = att.Key,
-                                    Desc = att.Desc,
-                                    Label = att.Label,
-                                    Manage = att.Manage,
-                                    Required = att.Required,
-                                    enable = att.enable,
-                                    AutoFill = att.AutoFill,
-                                    DataTypeId = att.DataTypeId,
-                                    DataType = att.DataType,
-                                    Options = att.Options,
-                                    Value = att.Label.ToLower() == "legletter" ? legLetters[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] : null)
-                                }).ToList())
-                            .ToList();
-                    }
+                                    "legletter" => legLetters[i],
+                                    "legazimuth" => legAzimuths[i].ToString(),
+                                    "civilegname" => CivilWithLegsInst.Name + ' '+ legLetters[i], 
+                                    _ => null
+                                }
+                            }).ToList())
+                        .ToList();
+                }
 
-                    objectInst.LegsInfo = baseInstAttViewsList;
+                objectInst.LegsInfo = baseInstAttViewsList;
                       TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
                         .GetWhereFirst(x => x.civilWithLegsId == CivilInsId);
 

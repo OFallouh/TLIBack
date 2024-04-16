@@ -358,36 +358,11 @@ namespace TLIS_Service.Services
                             TLIcivilNonSteelLibrary CivilNonSteelEntites = _mapper.Map<TLIcivilNonSteelLibrary>(AddCivilNonSteelLibraryObject.attributesActivatedLibrary);
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
 
-                            var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(AddCivilNonSteelLibraryObject.logisticalItems.Vendor);
-                            var vendor = logisticalObject?.Name;
-
-                            //var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilNonSteelEntites.s);
-                            //var structureTypeName = structureType?.Name;
                             if (CivilNonSteelEntites.SpaceLibrary == 0)
                             {
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            //if (structureTypeName == null)
-                            //{
-                            //    return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, "structureType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //}
-                            if (vendor == null)
-                            {
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, "Vendor It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            }
-                            if (CivilNonSteelEntites.Prefix == null)
-                            {
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilNonSteelEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            }
-                            //var model = structureTypeName + ' ' + vendor + ' ' + CivilNonSteelEntites.Prefix + ' ' + CivilNonSteelEntites.Hight;
-                            //if (_unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Model == model && !x.Deleted) != null)
-                            //{
-                            //    return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //}
-
-                          
+                           
                             string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilNonSteelLibraryObject, TableName);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -2056,40 +2031,6 @@ namespace TLIS_Service.Services
                     TLIcivilNonSteelLibrary CivilNonSteelibraryEntites = _mapper.Map<TLIcivilNonSteelLibrary>(editCivilNonSteelLibraryObject.attributesActivatedLibrary);
 
                     TLIcivilNonSteelLibrary CivilNonSteelLib = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilNonSteelibraryEntites.Id);
-                    if (CivilNonSteelLib.Model != CivilNonSteelibraryEntites.Model)
-                    {
-                        return new Response<EditCivilNonSteelLibraryObject>(false, null, null, "structureType and vendor and Prefix and Height_Designed It cannot be changed", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilNonSteelLibraryObject.logisticalItems.Vendor);
-                    var vendor = logisticalObject?.Name;
-
-                    //var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
-                    //var structureTypeName = structureType?.Name;
-                    //if (CivilWithLegLib.SpaceLibrary == 0)
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-                    //if (structureTypeName == null)
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "structureType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-                    //if (vendor == null)
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "Vendor It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                    //}
-                    //if (CivilWithLegLibraryEntites.Prefix == null)
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                    //}
-                    //var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegLib.Prefix + ' ' + CivilWithLegLib.Height_Designed;
-                    //if (_unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Model == model && x.Id != CivilWithLegLibraryEntites.Id && !x.Deleted) != null)
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-
-                    //CivilWithLegLibraryEntites.Model = model;
 
                     CivilNonSteelibraryEntites.Active = CivilNonSteelLib.Active;
                     CivilNonSteelibraryEntites.Deleted = CivilNonSteelLib.Deleted;
@@ -4079,7 +4020,7 @@ namespace TLIS_Service.Services
                     .GetAttributeActivatedGetForAdd(TableName, null, null)
                     .Select(item =>
                     {
-                        if (item.DataType.ToLower() == "list" && item.Desc?.ToLower() == "civilnonsteeltype_name")
+                        if (item.DataType.ToLower() == "list" && item.Desc?.ToLower() == "civilonsteeltype_name")
                             item.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(
                                 db.TLIcivilNonSteelType.Where(x => !x.Disable && !x.Deleted).ToList());
                         return item;

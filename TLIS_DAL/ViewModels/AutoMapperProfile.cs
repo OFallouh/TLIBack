@@ -145,6 +145,7 @@ using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.AddCivilWithoutLegsL
 using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.EditCivilWithoutLegsLibraryObject;
 using static TLIS_DAL.ViewModels.CivilWithoutLegDTOs.EditCivilWithoutLegsInstallationObject;
+using static TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs.AddCivilNonSteelLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -866,6 +867,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIattributeActivated, BaseInstAttView>().ReverseMap();
 
             CreateMap<TLIdynamicListValues, EditDynamicListValuesViewModel>().ReverseMap();
+            CreateMap<CivilNonSteelLibraryAttributes, TLIcivilNonSteelLibrary>().ReverseMap();
 
 
             CreateMap<TLIattributeActivated, AttributeActivatedViewModel>().ReverseMap();
