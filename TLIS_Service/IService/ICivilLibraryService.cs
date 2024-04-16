@@ -21,6 +21,7 @@ namespace TLIS_Service.IService
 {
     public interface ICivilLibraryService
     {
+        Response<GetForAddCivilLibrarybject> GetCivilNonSteelLibraryById(int Id, string TableName);
         Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId);
         Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName);
         Response<AddCivilWithoutLegsLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId);

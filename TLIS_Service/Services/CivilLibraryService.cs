@@ -3556,7 +3556,7 @@ namespace TLIS_Service.Services
                     .ToList()
                     .Select(FKitem =>
                     {
-                        if (FKitem.Label.ToLower() == "TLIcivilNonSteelType")
+                        if (FKitem.Label.ToLower() == "civilnonsteeltype_name")
                         {
                             FKitem.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(_unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             FKitem.Value = _mapper.Map<CivilNonSteelTypeViewModel>(CivilNonSteelLibrary.civilNonSteelType);
