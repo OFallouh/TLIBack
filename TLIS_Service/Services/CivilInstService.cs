@@ -3999,7 +3999,10 @@ namespace TLIS_Service.Services
                     string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
                         ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == editCivilNonSteelInstallationObject.installationAttributes.Id : false) &&
                             !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
-        
+                    if (civilNonSteelEntity.locationType.Name.ToLower() == "roof top" && civilNonSteelEntity.locationHeight == 0)
+                    {
+                        return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
                     if (civilNonSteelEntity.SpaceInstallation != CivilNonSteelInst.SpaceInstallation && CivilNonSteelInst.SpaceInstallation != 0 && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
                     {
 
@@ -7637,7 +7640,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMast" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.dynamic)
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
                         .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -7772,7 +7775,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.dynamic)
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
                         .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -7907,7 +7910,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.dynamic)
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
                         .ToList();
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -8292,16 +8295,25 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<object> GetCivilNonSteelWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<object> GetCivilNonSteelWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-                    var attActivated = _dbContext.TLIattributeViewManagment .Include(x => x.EditableManagmentView) .Include(x => x.AttributeActivated)
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                        .ToList();
+
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
                     foreach (var key in attActivated)
@@ -8327,34 +8339,49 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x=>x.SITECODE.ToLower()==BaseFilter.SiteCode.ToLower()).AsEnumerable()
-                    .GroupBy(x => new {
-                        SITECODE = x.SITECODE,
-                        Id = x.Id,
-                        Name = x.Name,
-                        CurrentLoads = x.CurrentLoads,
-                        SpaceInstallation = x.SpaceInstallation,
-                        CIVILNONSTEELLIBRARY = x.CIVILNONSTEELLIBRARY,
-                        OWNER = x.OWNER,
-                        SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
-                        LOCATIONTYPE = x.LOCATIONTYPE,
-                        locationHeight = x.locationHeight,
-                        BuildingMaxLoad = x.BuildingMaxLoad,
-                        CivilSupportCurrentLoad = x.CivilSupportCurrentLoad,
-                        H2Height = x.H2Height,
-                        CenterHigh = x.CenterHigh,
-                        HBA = x.HBA,
-                        HieghFromLand = x.HieghFromLand,
-                        EquivalentSpace = x.EquivalentSpace,
-                        Support_Limited_Load = x.Support_Limited_Load,
-                    })
-                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
-                    int count = query.Count();
-                    query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                    if (propertyNamesDynamic.Count == 0)
+                    {
 
-                    return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                        .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                       .GroupBy(x => new
+                       {
+                           SITECODE = x.SITECODE,
+                           Id = x.Id,
+                           Name = x.Name,
+                           CurrentLoads = x.CurrentLoads,
+                           SpaceInstallation = x.SpaceInstallation,
+                           CIVILNONSTEELLIBRARY = x.CIVILNONSTEELLIBRARY,
+                           OWNER = x.OWNER,
+                           SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                           LOCATIONTYPE = x.LOCATIONTYPE,
+                           locationHeight = x.locationHeight,
+                           BuildingMaxLoad = x.BuildingMaxLoad,
+                           CivilSupportCurrentLoad = x.CivilSupportCurrentLoad,
+                           H2Height = x.H2Height,
+                           CenterHigh = x.CenterHigh,
+                           HBA = x.HBA,
+                           HieghFromLand = x.HieghFromLand,
+                           EquivalentSpace = x.EquivalentSpace,
+                           Support_Limited_Load = x.Support_Limited_Load,
+                       })
+                       .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                       .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        int count = query.Count();
+                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+
+                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
                 }
                 catch (Exception err)
                 {
@@ -8454,7 +8481,7 @@ namespace TLIS_Service.Services
 
                 MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(SiteCode, WithFilterData, null, parameterPagination, ConnectionString).Data;
                 MainOutPut.CivilWithoutLeg = GetCivilWithoutLegWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, 0).Data;
-                MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(BaseFilter, WithFilterData, null, parameterPagination, ConnectionString).Data;
+                MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(SiteCode, WithFilterData, null, parameterPagination, ConnectionString).Data;
 
                 return new Response<AllCivilsViewModel>(true, MainOutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
             }

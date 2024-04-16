@@ -23,7 +23,7 @@ using Constants = TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class CivilNonSteelLibraryController : Controller
