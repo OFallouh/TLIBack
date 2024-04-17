@@ -7669,7 +7669,7 @@ namespace TLIS_Service.Services
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
                         getEnableAttribute.Model = query;
-                        return new Response<GetEnableAttribute>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
