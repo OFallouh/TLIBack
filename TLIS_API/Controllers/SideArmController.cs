@@ -70,23 +70,23 @@ namespace TLIS_API.Controllers
             var response = _UnitOfWorkService.SideArmService.GetById(id);
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddSideArm")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode, int TaskId)
-        {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var Response = _UnitOfWorkService.SideArmService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId);
-            return Ok(Response);
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("UpdateSideArm")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel, int TaskId)
-        {
-            var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId);
-            return Ok(response);
-        }
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("AddSideArm")]
+        //[ProducesResponseType(200, Type = typeof(AllItemAttributes))]
+        //public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode, int TaskId)
+        //{
+        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //    var Response = _UnitOfWorkService.SideArmService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId);
+        //    return Ok(Response);
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("UpdateSideArm")]
+        //[ProducesResponseType(200, Type = typeof(AllItemAttributes))]
+        //public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel, int TaskId)
+        //{
+        //    var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId);
+        //    return Ok(response);
+        //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddSideArmInstallationPlace")]
         [ProducesResponseType(200, Type = typeof(AddSideArmInstallationPlaceViewModel))]

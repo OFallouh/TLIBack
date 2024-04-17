@@ -43,6 +43,8 @@ using TLIS_DAL.ViewModels.GeneratorDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -64,42 +66,45 @@ namespace TLIS_Service.Services
             _dbContext = context;
             _mapper = mapper;
         }
-        public Response<ObjectInstAtts> GetAttForAdd(int LibraryId)
+        public Response<GetForAddLoadObject> GetAttForAdd(int LibraryId)
         {
             try
             {
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c =>
                     c.TableName == TablesNames.TLIsideArm.ToString());
 
-                ObjectInstAtts objectInst = new ObjectInstAtts();
+                GetForAddLoadObject objectInst = new GetForAddLoadObject();
 
                 TLIsideArmLibrary sideArmLibrary = _unitOfWork.SideArmLibraryRepository.GetByID(LibraryId);
 
-                List<BaseAttView> LibraryAttributeActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetAttributeActivated(TablesNames.TLIsideArmLibrary.ToString(), sideArmLibrary).ToList();
+                List<BaseInstAttViews> LibraryAttributeActivated = _unitOfWork.AttributeActivatedRepository.
+                    GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), sideArmLibrary).ToList();
 
-                List<BaseAttView> AddToLibraryAttributesActivated = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
+                List<BaseInstAttViews> AddToLibraryAttributesActivated = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                     .GetLogistical(TablePartName.SideArm.ToString(), TablesNames.TLIsideArmLibrary.ToString(), sideArmLibrary.Id).ToList());
 
                 LibraryAttributeActivated.AddRange(AddToLibraryAttributesActivated);
 
                 objectInst.LibraryActivatedAttributes = LibraryAttributeActivated;
 
-                List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivated(TablesNames.TLIsideArm.ToString(), null, "Name", "sideArmLibraryId",
-                        "sideArmInstallationPlaceId", "sideArmTypeId", "ItemStatusId", "TicketId", "Draft", "Active", "ReservedSpace"/*, "EquivalentSpace"*/).ToList();
+                List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+                    GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), null, "Name", "sideArmLibraryId","ItemStatusId", "TicketId").ToList();
 
-                BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseInstAttView Swap = ListAttributesActivated[0];
+                    BaseInstAttViews Swap = ListAttributesActivated[0];
                     ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                     ListAttributesActivated[0] = NameAttribute;
                 }
-                foreach (BaseInstAttView FKitem in ListAttributesActivated)
+                foreach (BaseInstAttViews FKitem in ListAttributesActivated)
                 {
-                    if (FKitem.Desc.ToLower() == "tliowner")
-                        FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetAllWithoutCount().ToList());
+                    if (FKitem.Label.ToLower() == "owner_name")
+                        FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
+                   else if (FKitem.Label.ToLower() == "sidearminstallationplace_name")
+                        FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository.GetWhere(x=>!x.Disable && !x.Deleted).ToList());
+                   else if (FKitem.Label.ToLower() == "sidearmtype_name")
+                        FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
                 }
 
                 objectInst.AttributesActivated = ListAttributesActivated;
@@ -134,17 +139,16 @@ namespace TLIS_Service.Services
                 }
 
                 objectInst.DynamicAtts = DynamicAttributesWithoutValue;
-                objectInst.RelatedTables = _unitOfWork.SideArmRepository.GetRelatedTables();
 
                 objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository
-                    .GetInstAttributeActivated(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
+                    .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
                         "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
 
-                return new Response<ObjectInstAtts>(true, objectInst, null, null, (int)ApiReturnCode.success);
+                return new Response<GetForAddLoadObject>(true, objectInst, null, null, (int)ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
         public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId)
@@ -1399,24 +1403,44 @@ namespace TLIS_Service.Services
         //get activated attributes with values
         //get table name Entity by table name
         //get dynamic attributes
-        public Response<AllItemAttributes> GetById(int Id)
+        public Response<GetForAddLoadObject> GetById(int Id)
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
+                GetForAddLoadObject attributes = new GetForAddLoadObject();
                 TLIsideArm sideArm = _unitOfWork.SideArmRepository.GetByID(Id);
-                attributes.AttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TablesNames.TLIsideArm.ToString(), sideArm, null);
+                attributes.AttributesActivated = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), sideArm, null);
+                var foreignKeyAttributes = attributes.AttributesActivated.Select(FKitem =>
+                {
+                    switch (FKitem.Label.ToLower())
+                    {
+                        case "sidearmtype_name":
+                            FKitem.Value = _mapper.Map<SideArmTypeViewModel>(sideArm.sideArmType);
+                            FKitem.Options = _mapper.Map<List<SideArmTypeViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            break;
+                        case "owner_Name":
+                            FKitem.Value = _mapper.Map<OwnerViewModel>(sideArm.owner);
+                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            break;
+                        case "siderminstallationplace_name":
+                            FKitem.Value = _mapper.Map<SideArmInstallationPlaceViewModel>(sideArm.sideArmInstallationPlace);
+                            FKitem.Options = _mapper.Map<List<SideArmInstallationPlaceViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                            break;
+
+                    }
+                    return FKitem;
+                }).ToList();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
                 attributes.DynamicAtts = null;
-                attributes.DynamicAttInst = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)ApiReturnCode.success);
+                attributes.DynamicAtts = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
+                return new Response<GetForAddLoadObject>(true, attributes, null, null, (int)ApiReturnCode.success);
 
             }
 
             catch (Exception err)
             {
 
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                return new Response<GetForAddLoadObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
 
         }
@@ -2141,7 +2165,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<AllItemAttributes> AddSideArm(AddSideArmViewModel SideArmViewModel, string SiteCode, string ConnectionString, int? TaskId)
+        public Response<AddSideArmInstallationObject> AddSideArm(AddSideArmInstallationObject SideArmViewModel, string SiteCode, string ConnectionString, int? TaskId,int UserId)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -2156,18 +2180,16 @@ namespace TLIS_Service.Services
                             TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel);
                             SideArm.Active = true;
 
-                            string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
+                            //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
 
-                            if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                            string CheckGeneralValidation = CheckGeneralValidationFunction(SideArmViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+                            //string CheckGeneralValidation = CheckGeneralValidationFunction(SideArmViewModel.dynamicAttribute, TableNameEntity.TableName);
 
-                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                            TLIcivilSteelSupportCategory civilSteelSupportCategoryEntity = _unitOfWork.CivilSteelSupportCategoryRepository
-                                .GetByID(SideArmViewModel.TLIcivilLoads.civilSteelSupportCategoryId);
 
                             TLIsideArmInstallationPlace InstallationPlaceEntity = _unitOfWork.SideArmInstallationPlaceRepository
                                 .GetByID(SideArm.sideArmInstallationPlaceId.Value);
@@ -2178,14 +2200,14 @@ namespace TLIS_Service.Services
                                 sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower()) ?
                                     ((SideArmViewModel.TLIcivilLoads.legId == null && SideArmViewModel.TLIcivilLoads.Leg2Id == null) || (SideArmViewModel.TLIcivilLoads.Leg2Id != null && SideArmViewModel.TLIcivilLoads.legId != null)) : false)
                             {
-                                return new Response<AllItemAttributes>(true, null, null,
+                                return new Response<AddSideArmInstallationObject>(true, null, null,
                                     "Number of legs must be equal to 1 leg only when the installation place is leg and side arm type is normal", (int)ApiReturnCode.fail);
                             }
                             else if (InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
                                 sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower() ?
                                     (SideArmViewModel.TLIcivilLoads.legId == null || SideArmViewModel.TLIcivilLoads.Leg2Id == null) : false)
                             {
-                                return new Response<AllItemAttributes>(true, null, null,
+                                return new Response<AddSideArmInstallationObject>(true, null, null,
                                     "Number of legs must be equal to 2 leg only when the installation place is leg and side arm type is special", (int)ApiReturnCode.fail);
                             }
                             var civilload = _dbContext.TLIallCivilInst.Where(x => x.Id == SideArmViewModel.TLIcivilLoads.allCivilInstId).Include(x => x.civilNonSteel).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).FirstOrDefault();
@@ -2193,24 +2215,24 @@ namespace TLIS_Service.Services
                             {
                                 var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
                                 var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.legId || x.Id == SideArmViewModel.TLIcivilLoads.Leg2Id).CiviLegName;
-                                SideArm.Name = civilwithlegname + LegName + SideArmViewModel.HeightBase + SideArmViewModel.Azimuth;
+                                SideArm.Name = civilwithlegname + LegName + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
                             }
                             if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower())
                             {
                                 var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
                                 var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.legId).CiviLegName;
                                 var LegName2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.Leg2Id).CiviLegName;
-                                SideArm.Name = civilwithlegname + LegName + LegName2 + SideArmViewModel.HeightBase + SideArmViewModel.Azimuth;
+                                SideArm.Name = civilwithlegname + LegName + LegName2 + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
                             }
                             if (civilload.civilWithoutLegId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
                             {
                                 var civilwithlegname = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == civilload.civilWithoutLegId).Name;
-                                SideArm.Name = civilwithlegname + SideArmViewModel.HeightBase + SideArmViewModel.Azimuth;
+                                SideArm.Name = civilwithlegname + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
                             }
                             if (civilload.civilNonSteelId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
                             {
                                 var civilwithlegname = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == civilload.civilNonSteelId).Name;
-                                SideArm.Name = civilwithlegname + SideArmViewModel.HeightBase + SideArmViewModel.Azimuth;
+                                SideArm.Name = civilwithlegname + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
                             }
                             TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
                              (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
@@ -2218,9 +2240,9 @@ namespace TLIS_Service.Services
                                  x => x.sideArm);
 
                             if (CheckName != null)
-                                return new Response<AllItemAttributes>(true, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                return new Response<AddSideArmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
 
-                            _unitOfWork.SideArmRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, SideArm);
+                            _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                             _unitOfWork.SaveChanges();
 
                             TLIcivilLoads civilLoad = new TLIcivilLoads
@@ -2237,25 +2259,16 @@ namespace TLIS_Service.Services
                                 Leg2Id = SideArmViewModel.TLIcivilLoads.Leg2Id
                             };
 
-                            _unitOfWork.CivilLoadsRepository.Add(civilLoad);
+                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId,civilLoad);
                             _unitOfWork.SaveChangesAsync();
 
-                            //foreach (LegViewModel leg in SideArmViewModel.legs)
-                            // {
-                            //     TLIcivilLoadLegs civilLoadLeg = new TLIcivilLoadLegs
-                            //     {
-                            //         civilLoadsId = civilLoad.Id,
-                            //         legId = leg.Id
-                            //     };
-                            //     _unitOfWork.CivilLoadLegsRepository.Add(civilLoadLeg);
-                            //     _unitOfWork.SaveChanges();
-                            // }
+        
 
-                            if (SideArmViewModel.TLIdynamicAttInstValue != null ? SideArmViewModel.TLIdynamicAttInstValue.Count > 0 : false)
+                            if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count > 0 : false)
                             {
-                                foreach (var DynamicAttInstValue in SideArmViewModel.TLIdynamicAttInstValue)
+                                foreach (var DynamicAttInstValue in SideArmViewModel.dynamicAttribute)
                                 {
-                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
                                 }
                             }
                             if (TaskId != null)
@@ -2270,7 +2283,7 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     transaction.Dispose();
-                                    return new Response<AllItemAttributes>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                                    return new Response<AddSideArmInstallationObject>(false, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
                                 }
                             }
                             else
@@ -2278,12 +2291,12 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
-                            return new Response<AllItemAttributes>();
+                            return new Response<AddSideArmInstallationObject>();
                         }
                         catch (Exception err)
                         {
                             tran.Rollback();
-                            return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                            return new Response<AddSideArmInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                         }
                     }
                 }
@@ -2292,13 +2305,13 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //map ViewModel to Entity
         //update Entity
-        public async Task<Response<AllItemAttributes>> UpdateSideArm(EditSideArmViewModel SideArmViewModel, int? TaskId)
+        public async Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId,int UserId)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
                 try
                 {
-                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.sideArmId == SideArmViewModel.Id && !x.Dismantle);
+                    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.sideArmId == SideArmViewModel.installationAttributes.Id && !x.Dismantle);
 
                     string SiteCode = "";
                     if (CivilLoads != null)
@@ -2307,30 +2320,29 @@ namespace TLIS_Service.Services
                         SiteCode = null;
 
                     TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle
-                    && x.sideArmId != SideArmViewModel.Id && (x.sideArmId != null ?
-                        !x.sideArm.Draft && (x.allLoadInst.power.Name.ToLower() == SideArmViewModel.Name.ToLower()) : false) &&
+                    && x.sideArmId != SideArmViewModel.installationAttributes.Id && (x.sideArmId != null ?
+                        !x.sideArm.Draft && (x.allLoadInst.power.Name.ToLower() == SideArmViewModel.installationAttributes.Name.ToLower()) : false) &&
                         x.SiteCode.ToLower() == SiteCode.ToLower(),
                             x => x.sideArm);
 
 
                     if (CheckName != null)
-                        return new Response<AllItemAttributes>(true, null, null, $"This name {SideArmViewModel.Name} is already exists", (int)ApiReturnCode.fail);
+                        return new Response<EditSidearmInstallationObject>(true, null, null, $"This name {SideArmViewModel.installationAttributes.Name} is already exists", (int)ApiReturnCode.fail);
 
 
+                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SideArmViewModel.DynamicInstAttsValue, TablesNames.TLIsideArm.ToString());
 
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SideArmViewModel.DynamicInstAttsValue, TablesNames.TLIsideArm.ToString());
+                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                    //string CheckDependencyValidation = CheckDependencyValidationEditVersion(SideArmViewModel, SiteCode);
 
-                    string CheckDependencyValidation = CheckDependencyValidationEditVersion(SideArmViewModel, SiteCode);
-
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
                     TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel);
                     TLIsideArm SideArmInst = _unitOfWork.SideArmRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SideArm.Id);
-                    _unitOfWork.SideArmRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, SideArmInst, SideArm);
+                    _unitOfWork.SideArmRepository.UpdateWithHistory(UserId, SideArmInst, SideArm);
 
                     int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
 
@@ -2347,8 +2359,8 @@ namespace TLIS_Service.Services
                     _unitOfWork.SaveChanges();
 
 
-                    if (SideArmViewModel.DynamicInstAttsValue != null ? SideArmViewModel.DynamicInstAttsValue.Count() > 0 : false)
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SideArmViewModel.DynamicInstAttsValue, TableNameId, SideArm.Id);
+                    if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count() > 0 : false)
+                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id);
 
                     await _unitOfWork.SaveChangesAsync();
                     if (TaskId != null)
@@ -2363,7 +2375,7 @@ namespace TLIS_Service.Services
                         else
                         {
                             transactionScope.Dispose();
-                            return new Response<AllItemAttributes>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                            return new Response<EditSidearmInstallationObject>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
                         }
                     }
                     else
@@ -2371,11 +2383,11 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    return new Response<AllItemAttributes>();
+                    return new Response<EditSidearmInstallationObject>();
                 }
                 catch (Exception err)
                 {
-                    return new Response<AllItemAttributes>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                    return new Response<EditSidearmInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                 }
             }
         }

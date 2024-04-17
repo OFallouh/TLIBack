@@ -17,9 +17,9 @@ namespace TLIS_Service.IService
         void SeedDataForTest();
         Task<Response<IEnumerable<SideArmLibraryViewModel>>> GetSideArmLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<List<KeyValuePair<string, int>>> GetSideArmLibs();
-        Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString);
-       // Task<Response<SideArmLibraryViewModel>> EditSideArmLibrary(EditSideArmLibraryViewModel editSideArmLibraryViewModel);
-        Response<AllItemAttributes> GetSideArmLibraryById(int id);
+        Response<AddSideArmLibraryObject> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString, int UserId);
+        Task<Response<EditSideArmLibraryObject>> EditSideArmLibrary(EditSideArmLibraryObject editSideArmLibraryViewModel, int UserId);
+        Response<GetForAddCivilLibrarybject> GetSideArmLibraryById(int Id);
         Task<Response<SideArmLibraryViewModel>> Disable(int id);
         Task<Response<SideArmLibraryViewModel>> Delete(int id);
         Response<GetForAddCivilLibrarybject> GetForAdd();

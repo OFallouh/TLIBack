@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace TLIS_Service.Helpers
@@ -2147,7 +2149,9 @@ namespace TLIS_Service.Helpers
             Vendor = 1,
             Designer = 2,
             Supplier = 3,
-            Manufacturer = 4
+            Manufacturer = 4,
+            Contractor=5,
+            Consultant=6
         }
         public enum TablePartName
         {

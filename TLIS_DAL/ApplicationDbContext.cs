@@ -170,7 +170,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIintegrationAccessLog> TLIintegrationAccessLog { get; set; }
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
-        public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW{ get; set; }
+        public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW { get; set; }
         public virtual DbSet<CivilWithLegView> CIVIL_WITHLEGS_VIEW { get; set; }
         public virtual DbSet<ViewWithLegsLibrary> CIVIL_WITHLEG_LIBRARY_VIEW { get; set; }
         public virtual DbSet<CIVIL_WITHOUTLEG_LIBRARY_VIEW> CIVIL_WITHOUTLEG_LIBRARY_VIEW { get; set; }

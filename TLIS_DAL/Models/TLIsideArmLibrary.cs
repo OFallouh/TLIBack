@@ -12,14 +12,13 @@ namespace TLIS_DAL.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-       // [Index(IsUnique = true)]
         public string Model { get; set; }
         public float Width { get; set; }
-        public float? Weight { get; set; }
+        public float Weight { get; set; }
         public float Length { get; set; }
         public float Height { get; set; }
         public float SpaceLibrary { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
         public IEnumerable<TLIsideArm> sideArms { get; set; }

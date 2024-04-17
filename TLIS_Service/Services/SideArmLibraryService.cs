@@ -32,6 +32,12 @@ using AutoMapper;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using Org.BouncyCastle.Asn1.Cms;
+using TLIS_DAL.ViewModels.SectionsLegTypeDTOs;
+using TLIS_DAL.ViewModels.StructureTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeDesignedDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
+using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 
 namespace TLIS_Service.Services
 {
@@ -130,7 +136,7 @@ namespace TLIS_Service.Services
                 throw;
             }
         }
-        public Response<SideArmLibraryViewModel> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString)
+        public Response<AddSideArmLibraryObject> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString,int UserId)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -148,17 +154,17 @@ namespace TLIS_Service.Services
                             string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArmLibraryViewModel);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                return new Response<SideArmLibraryViewModel>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                                return new Response<AddSideArmLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
                             string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.TableName);
 
                             if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                return new Response<SideArmLibraryViewModel>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                                return new Response<AddSideArmLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
                             var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && !x.Deleted);
                             if (CheckModel != null)
                             {
-                                return new Response<SideArmLibraryViewModel>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
                             _unitOfWork.SideArmLibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, tLIsideArmLibrary);
@@ -169,19 +175,19 @@ namespace TLIS_Service.Services
 
                             AddLogisticalItemWithSideArm(LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id);
 
-                            //if (addSideArmLibraryViewModel.dynamicAttribute.Count > 0)
-                            //{
-                            //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
-                            //}
+                            if (addSideArmLibraryViewModel.dynamicAttribute.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
+                            }
                             transaction.Complete();
                             tran.Commit();
-                            return new Response<SideArmLibraryViewModel>();
+                            return new Response<AddSideArmLibraryObject>();
                         }
                         catch (Exception err)
                         {
 
                             tran.Rollback();
-                            return new Response<SideArmLibraryViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AddSideArmLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                 }
@@ -587,121 +593,130 @@ namespace TLIS_Service.Services
         //check validation
         //update Entity
         //update dynamic library attributes values
-        //public async Task<Response<SideArmLibraryViewModel>> EditSideArmLibrary(EditSideArmLibraryViewModel editSideArmLibraryViewModel)
-        //{
-        //    try
-        //    {
-        //        int resultId = 0;
-        //        var TableNames = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower());
-        //        TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(editSideArmLibraryViewModel);
-        //        var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && x.Id != tLIsideArmLibrary.Id);
-        //        var SidArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == tLIsideArmLibrary.Id);
-        //        tLIsideArmLibrary.Active = SidArm.Active;
-        //        tLIsideArmLibrary.Deleted = SidArm.Deleted;
+        public async Task<Response<EditSideArmLibraryObject>> EditSideArmLibrary(EditSideArmLibraryObject editSideArmLibraryViewModel,int UserId)
+        {
+            try
+            {
+                int resultId = 0;
+                var TableNames = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower());
+                TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(editSideArmLibraryViewModel.attributesActivatedLibrary);
+                var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && x.Id != tLIsideArmLibrary.Id);
+                var SidArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == tLIsideArmLibrary.Id);
+                tLIsideArmLibrary.Active = SidArm.Active;
+                tLIsideArmLibrary.Deleted = SidArm.Deleted;
 
-        //        if (CheckModel != null)
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
-        //        else if (tLIsideArmLibrary.Width < 0)
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, "Width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
-        //        else if (tLIsideArmLibrary.Length < 0)
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, "Width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
-        //        else if (tLIsideArmLibrary.Height < 0)
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, "Height Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
-        //        else if (tLIsideArmLibrary.SpaceLibrary < 0)
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, "SpaceLibrary Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
-        //        //var TestUpdate = _unitOfWork.TablesHistoryRepository.CheckUpdateObject(SidArm, tLIsideArmLibrary);
-        //        //if (TestUpdate.Details != null && TestUpdate.Details.Count != 0)
-        //        //{
-        //        _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, SidArm, tLIsideArmLibrary);
+                if (CheckModel != null)
+                {
+                    return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else if (tLIsideArmLibrary.Width < 0)
+                {
+                    return new Response<EditSideArmLibraryObject>(true, null, null, "Width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else if (tLIsideArmLibrary.Length < 0)
+                {
+                    return new Response<EditSideArmLibraryObject>(true, null, null, "Width Should be bigger than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+               
+                _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, SidArm, tLIsideArmLibrary);
+                //string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
+                //if (!string.IsNullOrEmpty(CheckDependency))
+                //{
+                //    return new Response<EditSideArmLibraryObject>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
+                //}
 
-        //        //resultId = _unitOfWork.TablesHistoryRepository.AddHistoryForEdit(editSideArmLibraryViewModel.Id, TableNames.Id, "Update", TestUpdate.Details.ToList());
-        //        //}
+                //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersion(editSideArmLibraryViewModel.dynamicAttributes, TableNames.TableName);
+                //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                //{
+                //    return new Response<EditSideArmLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                //}
 
-        //        string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
-        //        if (!string.IsNullOrEmpty(CheckDependency))
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
+                dynamic LogisticalItemIds = new ExpandoObject();
+                LogisticalItemIds = editSideArmLibraryViewModel;
 
-        //        string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersion(editSideArmLibraryViewModel.DynamicAtts, TableNames.TableName);
-        //        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-        //        {
-        //            return new Response<SideArmLibraryViewModel>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-        //        }
+                LogisticalObject OldLogisticalItemIds = new LogisticalObject();
 
-        //        dynamic LogisticalItemIds = new ExpandoObject();
-        //        LogisticalItemIds = editSideArmLibraryViewModel;
+                var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
 
-        //        AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+                if (CheckVendorId != null)
+                    OldLogisticalItemIds.Vendor = CheckVendorId.logisticalId;
 
-        //        var CheckVendorId = _unitOfWork.LogisticalitemRepository
-        //            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
-        //                x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
-        //                    x => x.logistical.logisticalType);
+                else
+                    OldLogisticalItemIds.Vendor = 0;
 
-        //        if (CheckVendorId != null)
-        //            OldLogisticalItemIds.VendorId = CheckVendorId.logisticalId;
+                var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
 
-        //        else
-        //            OldLogisticalItemIds.VendorId = 0;
+                if (CheckSupplierId != null)
+                    OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
 
-        //        var CheckSupplierId = _unitOfWork.LogisticalitemRepository
-        //            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
-        //                x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
-        //                    x => x.logistical.logisticalType);
+                else
+                    OldLogisticalItemIds.Supplier = 0;
 
-        //        if (CheckSupplierId != null)
-        //            OldLogisticalItemIds.SupplierId = CheckSupplierId.logisticalId;
+                var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
 
-        //        else
-        //            OldLogisticalItemIds.SupplierId = 0;
+                if (CheckDesignerId != null)
+                    OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
 
-        //        var CheckDesignerId = _unitOfWork.LogisticalitemRepository
-        //            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
-        //                x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
-        //                    x => x.logistical.logisticalType);
+                else
+                    OldLogisticalItemIds.Designer = 0;
 
-        //        if (CheckDesignerId != null)
-        //            OldLogisticalItemIds.DesignerId = CheckDesignerId.logisticalId;
+                var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == LogisticalType.Manufacturer.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
 
-        //        else
-        //            OldLogisticalItemIds.DesignerId = 0;
+                if (CheckManufacturerId != null)
+                    OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
 
-        //        var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
-        //            .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == LogisticalType.Manufacturer.ToString().ToLower() &&
-        //                x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
-        //                    x => x.logistical.logisticalType);
+                else
+                    OldLogisticalItemIds.Manufacturer = 0;
 
-        //        if (CheckManufacturerId != null)
-        //            OldLogisticalItemIds.ManufacturerId = CheckManufacturerId.logisticalId;
 
-        //        else
-        //            OldLogisticalItemIds.ManufacturerId = 0;
+                var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == LogisticalType.Contractor.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
 
-        //        EditLogisticalItem(LogisticalItemIds, tLIsideArmLibrary, TableNames.Id, OldLogisticalItemIds);
+                if (CheckContractorId != null)
+                    OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
 
-        //        if (editSideArmLibraryViewModel.DynamicAtts.Count > 0)
-        //        {
-        //            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistory(editSideArmLibraryViewModel.DynamicAtts, TableNames.Id, tLIsideArmLibrary.Id, Helpers.LogFilterAttribute.UserId, resultId, SidArm.Id);
-        //        }
-        //        await _unitOfWork.SaveChangesAsync();
-        //        return new Response<SideArmLibraryViewModel>();
-        //    }
-        //    catch (Exception err)
-        //    {
-        //        return new Response<SideArmLibraryViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-        //    }
-        //}
+                else
+                    OldLogisticalItemIds.Contractor = 0;
+
+                var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == LogisticalType.Consultant.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNames.Id && x.RecordId == tLIsideArmLibrary.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
+
+                if (CheckConsultantId != null)
+                    OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+                else
+                    OldLogisticalItemIds.Consultant = 0;
+
+                EditLogisticalItem(LogisticalItemIds, tLIsideArmLibrary, TableNames.Id, OldLogisticalItemIds);
+
+                if (editSideArmLibraryViewModel.dynamicAttributes.Count > 0)
+                {
+                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editSideArmLibraryViewModel.dynamicAttributes, TableNames.Id, tLIsideArmLibrary.Id, UserId, resultId, SidArm.Id);
+                }
+                await _unitOfWork.SaveChangesAsync();
+                return new Response<EditSideArmLibraryObject>();
+            }
+            catch (Exception err)
+            {
+                return new Response<EditSideArmLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
         #region Helper Methods..
         public void EditLogisticalItem(dynamic LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, dynamic OldLogisticalItemIds)
         {
@@ -1145,6 +1160,7 @@ namespace TLIS_Service.Services
 
             return string.Empty;
         }
+       
         #endregion
         //Function take 2 parameters
         //Function return all records depened on filters and parameters
@@ -1697,41 +1713,41 @@ namespace TLIS_Service.Services
         //get activated attributes with values
         //get table name Entity
         //get dynamic attributes
-        public Response<AllItemAttributes> GetSideArmLibraryById(int id)
+        public Response<GetForAddCivilLibrarybject> GetSideArmLibraryById(int Id)
         {
             try
             {
-                AllItemAttributes attributes = new AllItemAttributes();
+                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
 
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c =>
                     c.TableName == TablesNames.TLIsideArmLibrary.ToString());
 
                 TLIsideArmLibrary SideArmLibrary = _unitOfWork.SideArmLibraryRepository.GetIncludeWhereFirst(x =>
-                    x.Id == id);
+                    x.Id == Id);
 
-                List<BaseAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableNameEntity.TableName, SideArmLibrary, null).ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
+            
+                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.SideArm.ToString(), TablesNames.TLIsideArmLibrary.ToString(), Id);
+                attributes.LogisticalItems = LogisticalItems;
+                attributes.AttributesActivatedLibrary = listofAttributesActivated;
 
-                ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.SideArm.ToString(), TableNameEntity.TableName, id));
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
 
-                attributes.AttributesActivated = ListAttributesActivated;
-                attributes.DynamicAtts = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtts(TableNameEntity.Id, id, null);
-                attributes.DynamicAttInst = null;
-
-                List<BaseAttView> Test = attributes.AttributesActivated.ToList();
-                BaseAttView NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
                 if (NameAttribute != null)
                 {
-                    BaseAttView Swap = Test.ToList()[0];
+                    BaseInstAttViews Swap = Test.ToList()[0];
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
-                    attributes.AttributesActivated = Test;
+                    attributes.AttributesActivatedLibrary = Test;
                 }
 
-                return new Response<AllItemAttributes>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         //get table name Entity by table name
@@ -1741,14 +1757,44 @@ namespace TLIS_Service.Services
         {
             try
             {
-                GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
+                GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArmLibrary.ToString());
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), null, null).ToList();
-                var Logistical=_unitOfWork.LogistcalRepository.GetLogistical("SideArm");
-                attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
-              
-                return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), null, null, "Model").ToList();
+                var LogisticalAttributes = _unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.SideArm.ToString());
+                Attributes.LogisticalItems = LogisticalAttributes;
+                Attributes.AttributesActivatedLibrary = listofAttributesActivated;
+
+                IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                    .GetDynamicLibAtt(TableNameEntity.Id, null)
+                    .AsParallel()
+                    .Select(DynamicAttribute =>
+                    {
+                        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+
+                        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                        {
+                            DynamicAttribute.Value = DynamicAttribute.DataType.ToLower() switch
+                            {
+                                "string" => DynamicAttributeEntity.DefaultValue,
+                                "int" => int.Parse(DynamicAttributeEntity.DefaultValue),
+                                "double" => double.Parse(DynamicAttributeEntity.DefaultValue),
+                                "boolean" => bool.Parse(DynamicAttributeEntity.DefaultValue),
+                                "datetime" => DateTime.Parse(DynamicAttributeEntity.DefaultValue),
+                                _ => DynamicAttribute.Value
+                            };
+                        }
+                        else
+                        {
+                            DynamicAttribute.Value = " ".Split(' ')[0];
+                        }
+
+                        return DynamicAttribute;
+                    });
+
+                Attributes.DynamicAttributes = DynamicAttributesWithoutValue.ToList();
+
+
+                return new Response<GetForAddCivilLibrarybject>(true, Attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {

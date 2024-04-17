@@ -45,7 +45,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
-       [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithOutLegInstallation_Capsule")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCivilWithOutLegInstallation_Capsule(int CivilLibraryId, string SiteCode)
@@ -102,7 +102,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetLoadsOnSideArm(SideArmId);
             return Ok(response);
         }
-        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMastWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMastWithEnableAttt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -129,7 +129,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, WithFilterData, CombineFilters, parameterPagination, ConnectionString);
             return Ok(response);
         }
-        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilNonSteelWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilNonSteelWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] string SiteCode, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
@@ -282,7 +282,7 @@ namespace TLIS_API.Controllers
                 
            
         }
-        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilWithLegsById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilWithLegsInstallationById(int CivilId)
@@ -307,13 +307,13 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        //[HttpGet("GetCivilNonSteelById")]
-        //[ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        //public IActionResult GetCivilNonSteelById(int CivilId)
-        //{
-        //    var response = _unitOfWorkService.CivilInstService.GetById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
-        //    return Ok(response);
-        //}
+        [HttpGet("GetCivilNonSteelById")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCivilNonSteelById(int CivilId)
+        {
+            var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+            return Ok(response);
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]

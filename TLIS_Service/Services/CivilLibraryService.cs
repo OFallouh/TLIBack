@@ -344,7 +344,7 @@ namespace TLIS_Service.Services
                     }   }
             }
         }
-        public Response<AddCivilWithoutLegsLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId)
+        public Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -361,19 +361,19 @@ namespace TLIS_Service.Services
 
                             if (CivilNonSteelEntites.SpaceLibrary == 0)
                             {
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddCivilNonSteelLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                            
                             string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilNonSteelLibraryObject, TableName);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddCivilNonSteelLibraryObject>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
 
                             string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.TableName);
 
                             if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddCivilNonSteelLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                             _unitOfWork.CivilNonSteelLibraryRepository.AddWithHistory(UserId, CivilNonSteelEntites);
 
@@ -390,11 +390,11 @@ namespace TLIS_Service.Services
 
                             transaction.Complete();
                             tran.Commit();
-                            return new Response<AddCivilWithoutLegsLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                            return new Response<AddCivilNonSteelLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
                         catch (Exception err)
                         {
-                            return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AddCivilNonSteelLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                 }
@@ -1620,7 +1620,7 @@ namespace TLIS_Service.Services
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
 
-                    _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegLib, CivilWithLegLibraryEntites);
+                    _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(userId, CivilWithLegLib, CivilWithLegLibraryEntites);
 
 
                     string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
@@ -1674,7 +1674,7 @@ namespace TLIS_Service.Services
 
                     if (editCivilWithLegsLibrary.dynamicAttributes != null ? editCivilWithLegsLibrary.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, Helpers.LogFilterAttribute.UserId, resultId, CivilWithLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id,userId, resultId, CivilWithLegLib.Id);
                     }
                     civilLibId = CivilWithLegLibraryEntites.Id;
                     tablesNameId = TableNameEntity.Id;
@@ -1943,7 +1943,7 @@ namespace TLIS_Service.Services
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
 
-                    _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithLegLib, CivilWithLegLibraryEntites);
+                    _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(userId, CivilWithLegLib, CivilWithLegLibraryEntites);
 
 
                     string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithoutLegsLibraryObject, TableName);
@@ -1997,7 +1997,7 @@ namespace TLIS_Service.Services
 
                     if (editCivilWithoutLegsLibraryObject.dynamicAttributes != null ? editCivilWithoutLegsLibraryObject.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, Helpers.LogFilterAttribute.UserId, resultId, CivilWithLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, userId, resultId, CivilWithLegLib.Id);
                     }
                     civilLibId = CivilWithLegLibraryEntites.Id;
                     tablesNameId = TableNameEntity.Id;
@@ -2036,7 +2036,7 @@ namespace TLIS_Service.Services
                     CivilNonSteelibraryEntites.Active = CivilNonSteelLib.Active;
                     CivilNonSteelibraryEntites.Deleted = CivilNonSteelLib.Deleted;
 
-                    _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CivilNonSteelLib, CivilNonSteelibraryEntites);
+                    _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(userId, CivilNonSteelLib, CivilNonSteelibraryEntites);
 
 
                     string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilNonSteelLibraryObject, TableName);
@@ -2090,7 +2090,7 @@ namespace TLIS_Service.Services
 
                     if (editCivilNonSteelLibraryObject.dynamicAttributes != null ? editCivilNonSteelLibraryObject.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilNonSteelibraryEntites.Id, Helpers.LogFilterAttribute.UserId, resultId, CivilNonSteelLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilNonSteelibraryEntites.Id, userId, resultId, CivilNonSteelLib.Id);
                     }
                     civilLibId = CivilNonSteelibraryEntites.Id;
                     tablesNameId = TableNameEntity.Id;
@@ -4061,7 +4061,7 @@ namespace TLIS_Service.Services
                 {
                     List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, null, null, "Model").ToList();
                     listofAttributesActivated
-                      .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                      .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
                       .ToList()
                       .Select(FKitem =>
                       {

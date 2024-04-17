@@ -33,6 +33,7 @@ using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using TLIS_DAL.ViewModels.CivilSteelSupportCategoryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegCategoryDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
@@ -7330,17 +7331,17 @@ namespace TLIS_Service.Services
                     {
                         switch (FKitem.Label.ToLower())
                         {
-                            case "locationType_Name":
+                            case "locationtype_name":
                                 FKitem.Value = _mapper.Map<LocationTypeViewModel>(CivilNonSteelInst.locationType);
                                 FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
-                            case "owner_Name":
+                            case "owner_name":
                                 FKitem.Value = _mapper.Map<OwnerViewModel>(CivilNonSteelInst.owner);
-                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
-                            case "supportTypeImplemented_Name":
+                            case "supporttypeimplemented_name":
                                 FKitem.Value = _mapper.Map<SupportTypeImplementedViewModel>(CivilNonSteelInst.supportTypeImplemented);
-                                FKitem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                FKitem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 break;
                            
                         }
@@ -8277,12 +8278,13 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<object> GetCivilNonSteelWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     string storedProcedureName = "CREATE_DYNAMIC_PIVOT_NONSTEEL ";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
@@ -8329,8 +8331,8 @@ namespace TLIS_Service.Services
                         .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
-
-                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
@@ -8361,13 +8363,13 @@ namespace TLIS_Service.Services
                        .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
-
-                        return new Response<object>(true, query, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                 }
                 catch (Exception err)
                 {
-                    return new Response<object>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
 
