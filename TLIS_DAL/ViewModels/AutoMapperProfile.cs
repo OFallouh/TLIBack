@@ -147,6 +147,7 @@ using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.EditCivilWithoutLegs
 using static TLIS_DAL.ViewModels.CivilWithoutLegDTOs.EditCivilWithoutLegsInstallationObject;
 using static TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs.AddCivilNonSteelLibraryObject;
 using static TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs.EditCivilNonSteelLibraryObject;
+using static TLIS_DAL.ViewModels.AddCivilNonSteelObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -205,6 +206,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIleg, EditLegViewModel>().ReverseMap();
             CreateMap<TLIcivilWithoutLeg, installationAttributesCivilWithoutLegs>().ReverseMap();
             CreateMap<TLIcivilNonSteel, installationAttributesCivilNonSteelLegs>().ReverseMap();
+            CreateMap<TLIcivilNonSteel, installationAttributesCivilNonSteel>().ReverseMap();
 
             CreateMap<TLIcivilNonSteelType, CivilNonSteelTypeViewModel>().ReverseMap();
 

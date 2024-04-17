@@ -3125,8 +3125,8 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
-                    
-                    if (civilNonSteel.locationType.Name.ToLower() == "roof top" && civilNonSteel.locationHeight == 0)
+                    var LocationType = _dbContext.TLIlocationType.FirstOrDefault(x => x.Id == civilNonSteel.locationTypeId)?.Name ?? null;
+                    if (LocationType !=null && LocationType.ToLower() == "roof top" && civilNonSteel.locationHeight == 0)
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
