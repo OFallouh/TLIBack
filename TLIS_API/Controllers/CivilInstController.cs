@@ -298,7 +298,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetRelationshipBetweenloads(loadid, Loadname);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilNonSteelById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilNonSteelById(int CivilId)

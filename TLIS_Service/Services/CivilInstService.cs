@@ -7307,16 +7307,16 @@ namespace TLIS_Service.Services
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                      .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary, null).ToList();
 
-                    var sectionsLegTypeItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "tlicivilnonsteeltype");
-                    if (sectionsLegTypeItem != null)
-                    {
-                        sectionsLegTypeItem.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(_unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                        sectionsLegTypeItem.Value = _unitOfWork.CivilNonSteelTypeRepository != null && CivilNonSteelLibrary.civilNonSteelTypeId != null ?
-                            _mapper.Map<CivilNonSteelTypeViewModel>(_unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilNonSteelLibrary.civilNonSteelTypeId)) :
-                            null;
-                    }
+                var civilnonsteeltype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilnonsteeltype_name");
+                if (civilnonsteeltype_name != null)
+                {
+                    civilnonsteeltype_name.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(_unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                    civilnonsteeltype_name.Value = _unitOfWork.SectionsLegTypeRepository != null && CivilNonSteelLibrary.civilNonSteelTypeId != null ?
+                        _mapper.Map<CivilNonSteelTypeViewModel>(_unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == CivilNonSteelLibrary.civilNonSteelTypeId)) :
+                        null;
+                }
 
-                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilNonSteelLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
@@ -7324,7 +7324,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(), CivilNonSteelInst, "CivilNonSteelLibraryId").ToList();
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(), CivilNonSteelInst, "CivilNonSteelLibraryId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -7361,7 +7361,7 @@ namespace TLIS_Service.Services
                         GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
 
                     TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
-                      .GetWhereFirst(x => x.civilWithLegsId == CivilInsId);
+                      .GetWhereFirst(x => x.civilNonSteelId == CivilInsId);
 
                     TLIcivilSiteDate CivilSiteDateInfo = _unitOfWork.CivilSiteDateRepository
                         .GetWhereFirst(x => x.allCivilInstId == AllCivilInst.Id);
@@ -13815,11 +13815,11 @@ namespace TLIS_Service.Services
 
                 List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary, null).ToList();
-                var sectionsLegTypeItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilnonsteeltype_name");
-                if (sectionsLegTypeItem != null)
+                var civilnonsteeltype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilnonsteeltype_name");
+                if (civilnonsteeltype_name != null)
                 {
-                    sectionsLegTypeItem.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(_unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                    sectionsLegTypeItem.Value = _unitOfWork.SectionsLegTypeRepository != null && CivilNonSteelLibrary.civilNonSteelTypeId != null ?
+                    civilnonsteeltype_name.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(_unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                    civilnonsteeltype_name.Value = _unitOfWork.SectionsLegTypeRepository != null && CivilNonSteelLibrary.civilNonSteelTypeId != null ?
                         _mapper.Map<CivilNonSteelTypeViewModel>(_unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == CivilNonSteelLibrary.civilNonSteelTypeId)) :
                         null;
                 }
