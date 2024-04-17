@@ -65,6 +65,7 @@ using System.Text.Json.Nodes;
 using Microsoft.IdentityModel.Tokens;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics.Contracts;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace TLIS_Service.Services
 {
@@ -364,7 +365,10 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<AddCivilNonSteelLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                           
+                            if (_unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Model == CivilNonSteelEntites.Model && !x.Deleted) != null)
+                            {
+                                return new Response<AddCivilNonSteelLibraryObject>(true, null, null, $"This model {CivilNonSteelEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
                             string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilNonSteelLibraryObject, TableName);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -1550,6 +1554,11 @@ namespace TLIS_Service.Services
                 {
                     if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                     {
+                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        if (UsedCivil != null)
+                        {
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Disable this item because is used", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
                         TLIcivilWithLegLibrary OldCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilWithLegLibrary NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -1560,6 +1569,11 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                     {
+                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        if (UsedCivil != null)
+                        {
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Disable this item because is used", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
                         TLIcivilWithoutLegLibrary OldCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilWithoutLegLibrary NewCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -1570,7 +1584,11 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
                     {
-
+                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        if (UsedCivil != null)
+                        {
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Disable this item because is used", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
                         TLIcivilNonSteelLibrary OldCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilNonSteelLibrary NewCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -1705,6 +1723,27 @@ namespace TLIS_Service.Services
 
                     if (CheckManufacturerId != null)
                         OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+
+                    var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                 .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                     x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                         x => x.logistical.logisticalType);
+
+                    if (CheckContractorId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckContractorId.logisticalId;
+
+
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckConsultantId.logisticalId;
+
 
                     EditLogisticalItem(userId,editCivilWithLegsLibrary.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
 
@@ -5014,6 +5053,11 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == CivilType);
                     if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == CivilType)
                     {
+                        var UsedCivil = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.CivilWithLegsLibId == Id);
+                        if(UsedCivil != null)
+                        {
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
                         TLIcivilWithLegLibrary OldCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilWithLegLibrary NewCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -5027,6 +5071,11 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == CivilType)
                     {
+                        var UsedCivil = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.CivilWithoutlegsLibId == Id);
+                        if (UsedCivil != null)
+                        {
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
                         TLIcivilWithoutLegLibrary OldCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIcivilWithoutLegLibrary NewCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCivilWithoutLegLibrary.Deleted = true;
@@ -5041,6 +5090,11 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == CivilType)
                     {
+                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        if (UsedCivil != null)
+                        {
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.success);
+                        }
                         TLIcivilNonSteelLibrary OldCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIcivilNonSteelLibrary NewCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCivilNonSteelLibrary.Deleted = true;
@@ -5059,7 +5113,7 @@ namespace TLIS_Service.Services
                 }
                 catch (Exception err)
                 {
-                    return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<AllItemAttributes>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
         }
