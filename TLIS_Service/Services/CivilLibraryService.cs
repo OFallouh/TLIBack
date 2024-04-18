@@ -2242,7 +2242,7 @@ namespace TLIS_Service.Services
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelLibrary"
                         && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5318,7 +5318,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5414,7 +5414,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMonopole" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5510,7 +5510,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryCapsule" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
