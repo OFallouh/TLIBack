@@ -2068,6 +2068,26 @@ namespace TLIS_Service.Services
                     if (CheckManufacturerId != null)
                         OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
 
+
+                    var CheckContractortId = _unitOfWork.LogisticalitemRepository
+                     .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                         x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                             x => x.logistical.logisticalType);
+
+                    if (CheckContractortId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractortId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+
+
                     EditLogisticalItem(userId,editCivilWithoutLegsLibraryObject.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
 
                     if (editCivilWithoutLegsLibraryObject.dynamicAttributes != null ? editCivilWithoutLegsLibraryObject.dynamicAttributes.Count > 0 : false)
@@ -2161,6 +2181,24 @@ namespace TLIS_Service.Services
                     if (CheckManufacturerId != null)
                         OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
 
+
+                    var CheckContractortId = _unitOfWork.LogisticalitemRepository
+                    .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                        x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilNonSteelibraryEntites.Id, x => x.logistical,
+                            x => x.logistical.logisticalType);
+
+                    if (CheckContractortId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractortId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilNonSteelibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
                     EditLogisticalItem(userId, editCivilNonSteelLibraryObject.logisticalItems, CivilNonSteelibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
 
                     if (editCivilNonSteelLibraryObject.dynamicAttributes != null ? editCivilNonSteelLibraryObject.dynamicAttributes.Count > 0 : false)
@@ -2203,7 +2241,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelLibrary"
                         && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -4007,8 +4046,8 @@ namespace TLIS_Service.Services
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
                           FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==2).ToList());
-                      else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
-                          FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                      else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
+                       FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
@@ -4088,8 +4127,8 @@ namespace TLIS_Service.Services
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
                           FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type==2).ToList());
-                      else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
-                          FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                      else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
+                          FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
@@ -4170,8 +4209,8 @@ namespace TLIS_Service.Services
                   {
                       if (FKitem.Label.ToLower() == "structuretype_name")
                           FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type == 2).ToList());
-                      else if (FKitem.Label.ToLower() == "instcivilwithoutlegstype_name")
-                          FKitem.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                      else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
+                          FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
                           FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
                       else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
@@ -5182,7 +5221,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" 
                         &&((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key,dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                        .OrderByDescending(x=>x.attribute.ToLower().StartsWith("null")).OrderByDescending(x=>x.attribute.ToLower().StartsWith("model")).ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5277,7 +5317,8 @@ namespace TLIS_Service.Services
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5371,9 +5412,9 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" 
-                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMonopole" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5402,7 +5443,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -5467,9 +5508,9 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule"
-                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key }).ToList();
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryCapsule" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();.ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5498,7 +5539,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.Active).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();

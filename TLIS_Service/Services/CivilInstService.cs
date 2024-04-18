@@ -3755,7 +3755,7 @@ namespace TLIS_Service.Services
                         return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
-                    if (civilWithoutLegsEntity.ConcreteBaseThicknessm == 0 && civilWithoutLegsEntity.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
+                    if (civilWithoutLegsEntity.ConcreteBaseThicknessm == 0 && CivilWithoutLegLibary.Model.ToLower().Contains("located"))
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }

@@ -7769,7 +7769,7 @@ namespace TLIS_Service.Services
                                     addDependencyViewModel.DoubleDefaultValue.ToString() : "0";
                             }
 
-                            else if (DataTypeName.ToLower() == "boolean".ToLower())
+                            else if (DataTypeName.ToLower() == "bool".ToLower())
                             {
                                 DynamicAttEntity.DefaultValue = addDependencyViewModel.BooleanDefaultValue != null ?
                                     addDependencyViewModel.BooleanDefaultValue.ToString() : "false";
