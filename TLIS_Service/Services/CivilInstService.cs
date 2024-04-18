@@ -7682,9 +7682,14 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW
+                        .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         _dbContext.TLIcivilWithoutLegLibrary.Include(x=>x.CivilWithoutLegCategory).Any(y =>
+                         y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower()== "mast")).AsEnumerable()
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                        .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        
                         int count = query.Count();
                         query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
                         getEnableAttribute.Model = query;
@@ -7692,7 +7697,9 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
+                         y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "mast")).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -7819,7 +7826,9 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
+                         y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "capsule")).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -7829,7 +7838,10 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                          &&
+                         _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
+                         y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "capsule")).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -7956,7 +7968,10 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable().OrderBy(x => x.Name)
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        &&
+                         _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
+                         y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "monopole")).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -7966,7 +7981,9 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        && _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
+                        y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "monopole")).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,

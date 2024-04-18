@@ -1731,9 +1731,7 @@ namespace TLIS_Service.Services
                          x => x.logistical.logisticalType);
 
                     if (CheckContractorId != null)
-                        OldLogisticalItemIds.Manufacturer = CheckContractorId.logisticalId;
-
-
+                        OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
 
 
                     var CheckConsultantId = _unitOfWork.LogisticalitemRepository
@@ -1742,7 +1740,7 @@ namespace TLIS_Service.Services
                                x => x.logistical.logisticalType);
 
                     if (CheckConsultantId != null)
-                        OldLogisticalItemIds.Manufacturer = CheckConsultantId.logisticalId;
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
 
 
                     EditLogisticalItem(userId,editCivilWithLegsLibrary.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
@@ -4078,7 +4076,7 @@ namespace TLIS_Service.Services
                                 case "double":
                                     DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
                                     break;
-                                case "boolean":
+                                case "bool":
                                     DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
                                     break;
                                 case "datetime":
@@ -4160,7 +4158,7 @@ namespace TLIS_Service.Services
                                 case "double":
                                     DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
                                     break;
-                                case "boolean":
+                                case "bool":
                                     DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
                                     break;
                                 case "datetime":
@@ -4242,7 +4240,7 @@ namespace TLIS_Service.Services
                                 case "double":
                                     DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
                                     break;
-                                case "boolean":
+                                case "bool":
                                     DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
                                     break;
                                 case "datetime":
@@ -4321,7 +4319,7 @@ namespace TLIS_Service.Services
                                     "string" => DynamicAttributeEntity.DefaultValue,
                                     "int" => int.Parse(DynamicAttributeEntity.DefaultValue),
                                     "double" => double.Parse(DynamicAttributeEntity.DefaultValue),
-                                    "boolean" => bool.Parse(DynamicAttributeEntity.DefaultValue),
+                                    "bool" => bool.Parse(DynamicAttributeEntity.DefaultValue),
                                     "datetime" => DateTime.Parse(DynamicAttributeEntity.DefaultValue),
                                     _ => DynamicAttribute.Value
                                 };
@@ -4364,7 +4362,7 @@ namespace TLIS_Service.Services
                                 "string" => DynamicAttributeEntity.DefaultValue,
                                 "int" => int.Parse(DynamicAttributeEntity.DefaultValue),
                                 "double" => double.Parse(DynamicAttributeEntity.DefaultValue),
-                                "boolean" => bool.Parse(DynamicAttributeEntity.DefaultValue),
+                                "bool" => bool.Parse(DynamicAttributeEntity.DefaultValue),
                                 "datetime" => DateTime.Parse(DynamicAttributeEntity.DefaultValue),
                                 _ => " ".Split(' ')[0]
                             } :
@@ -5347,7 +5345,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast").AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -5357,7 +5355,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast").AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -5443,7 +5441,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole").AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -5453,7 +5451,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole").AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -5539,7 +5537,8 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted
+                       && x.CIVILWITHOUTLEGCATEGORY.ToLower()== "capsule").AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                     .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
                         int count = query.Count();
@@ -5549,7 +5548,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule").AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
