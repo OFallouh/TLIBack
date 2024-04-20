@@ -15,4 +15,14 @@ namespace TLIS_DAL.ViewModels.LogisticalDTOs
         public int? Consultant { get; set; }
         public int? Contractor { get; set; }
     }
+    public class AddLogisticalViewModels
+    {
+        [Required]
+        public int? Vendor { get; set; }
+        public int? Supplier { get; set; }
+        public int? Designer { get; set; }
+        public int? Manufacturer { get; set; }
+        public int? Consultant { get; set; }
+        public int? Contractor { get; set; }
+    }
 }

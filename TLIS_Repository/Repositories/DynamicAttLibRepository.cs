@@ -287,7 +287,7 @@ namespace TLIS_Repository.Repositories
                         NewDynamicLibraryValue.Value = DynamicAttValue.ValueDouble.ToString();
 
                     else if (DynamicAttValue.ValueBoolean != null)
-                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueBoolean.ToString().ToLower();
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueBoolean;
                 }
                 else
                 {
@@ -882,8 +882,8 @@ namespace TLIS_Repository.Repositories
                                 TLItablesHistory tablesHistory = new TLItablesHistory();
                                 int? TablehistoryId = null;
                                 tablesHistory.TablesNameId = TablesNameId;
-                                string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Name).FirstOrDefault();
-                                tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Update").Select(x => x.Id).FirstOrDefault();
+                                string HistoryTybeName = _context.TLIhistoryType.Where(x => x.Name == "Edit").Select(x => x.Name).FirstOrDefault();
+                                tablesHistory.HistoryTypeId = _context.TLIhistoryType.Where(x => x.Name == "Edit").Select(x => x.Id).FirstOrDefault();
 
                                 tablesHistory.RecordId = EntitesId.ToString();
                                 tablesHistory.UserId = UserId.Value;

@@ -249,7 +249,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_sideArmLibraryService == null)
-                    _sideArmLibraryService = new SideArmLibraryService(_unitOfWork, _services,_mapper);
+                    _sideArmLibraryService = new SideArmLibraryService(_unitOfWork,db, _services,_mapper);
                 return _sideArmLibraryService;
             }
         }

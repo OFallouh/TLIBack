@@ -10,10 +10,10 @@ namespace TLIS_DAL.ViewModels.SideArmLibraryDTOs
 {
     public class AddSideArmLibraryObject
     {
-        public AideArmLibraryAttributes LibraryAttribute { get; set; }
+        public SideArmLibraryAttributes LibraryAttribute { get; set; }
         public AddLogisticalViewModel LogisticalItems { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class AideArmLibraryAttributes
+        public class SideArmLibraryAttributes
         {
             public string Model { get; set; }
             public float Width { get; set; }

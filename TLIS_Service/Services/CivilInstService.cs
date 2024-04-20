@@ -13368,7 +13368,7 @@ namespace TLIS_Service.Services
                 }
                    
                 List<BaseInstAttViews> AddToLibraryAttributesActivated = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary.Id).ToList());
+                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary.Id).ToList());
 
                 LibraryAttributes.AddRange(AddToLibraryAttributesActivated);
 
@@ -13546,7 +13546,7 @@ namespace TLIS_Service.Services
                         null;
                 }
                 List<BaseInstAttViews> AddToLibraryAttributesActivated = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary.Id).ToList());
+                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary.Id).ToList());
 
                 LibraryAttributes.AddRange(AddToLibraryAttributesActivated);
 
@@ -13722,7 +13722,7 @@ namespace TLIS_Service.Services
                         null;
                 }
                 List<BaseInstAttViews> AddToLibraryAttributesActivated = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary.Id).ToList());
+                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary.Id).ToList());
 
                 LibraryAttributes.AddRange(AddToLibraryAttributesActivated);
 
@@ -13860,7 +13860,7 @@ namespace TLIS_Service.Services
                         null;
                 }
                 List<BaseInstAttViews> LibraryLogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                    .GetLogistical(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary.Id).ToList());
+                    .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary.Id).ToList());
 
                 LibraryAttributes.AddRange(LibraryLogisticalAttributes);
                 objectInst.LibraryAttribute = LibraryAttributes;

@@ -29,7 +29,6 @@ namespace TLIS_DAL.ViewModels.SideArmLibraryDTOs
         }
         public class LogisticalObject
         {
-            [Required]
             public int? Vendor { get; set; }
             public int? Supplier { get; set; }
             public int? Designer { get; set; }

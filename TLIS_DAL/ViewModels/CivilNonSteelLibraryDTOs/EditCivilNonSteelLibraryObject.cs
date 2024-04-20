@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs.EditCivilWithoutLegsLibraryObject;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
+using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 
 namespace TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs
 {
@@ -13,7 +14,7 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs
     {
         public EditCivilNonSteelLibraryAttributes attributesActivatedLibrary { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
-        public AddLogisticalViewModel logisticalItems { get; set; }
+        public LogisticalObject logisticalItems { get; set; }
         public class EditCivilNonSteelLibraryAttributes
         {
             public int  Id { get; set; }

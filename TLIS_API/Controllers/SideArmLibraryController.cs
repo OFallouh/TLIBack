@@ -18,7 +18,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
 
@@ -153,6 +153,12 @@ namespace TLIS_API.Controllers
         public IActionResult GetSideArmLibs()
         {
             var response = _unitOfWorkService.SideArmLibraryService.GetSideArmLibs();
+            return Ok(response);
+        }
+        [HttpGet("GetForAddSideArmLibrary")]
+        public IActionResult GetForAddCivilWithLegsLibrary()
+        {
+            var response = _unitOfWorkService.SideArmLibraryService.GetForAdd();
             return Ok(response);
         }
     }

@@ -149,6 +149,8 @@ using static TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs.AddCivilNonSteelLibrar
 using static TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs.EditCivilNonSteelLibraryObject;
 using static TLIS_DAL.ViewModels.AddCivilNonSteelObject;
 using static TLIS_DAL.ViewModels.CivilNonSteelDTOs.EditCivilNonSteelInstallationObject;
+using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.AddSideArmLibraryObject;
+using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -224,6 +226,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIcivilWithoutLegLibrary, EditCivilWithoutLegLibraryViewModel>().ReverseMap();
 
             CreateMap<TLIcivilWithoutLegLibrary, LibraryNamesViewModel>().ReverseMap();
+            CreateMap<TLIsideArmLibrary, SideArmLibraryAttributes>().ReverseMap();
+            CreateMap<TLIsideArmLibrary, EditCivilSideArmlLibraryAttributes>().ReverseMap();
 
             CreateMap<TLIcivilWithLegLibrary, CivilWithLegLibraryViewModel>()
                 .ForMember(c => c.SupportTypeDesigned_Name, c => c.MapFrom(s => s.supportTypeDesigned.Name))
