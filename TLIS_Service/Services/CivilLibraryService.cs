@@ -1555,7 +1555,7 @@ namespace TLIS_Service.Services
                 {
                     if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                     {
-                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        var UsedCivil = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.CivilWithLegsLibId == Id);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1570,7 +1570,7 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                     {
-                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        var UsedCivil = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.CivilWithoutlegsLibId == Id);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
