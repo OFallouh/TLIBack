@@ -40,7 +40,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public int Id { get; set; }
         public string Key { get; set; }
         public object Value { get; set; }
-        public string Desc { get; set; }
+        public string? Desc { get; set; }
         public string Label { get; set; }
         public bool Manage { get; set; }
         public bool Required { get; set; }

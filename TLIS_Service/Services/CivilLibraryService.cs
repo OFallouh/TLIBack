@@ -4169,7 +4169,7 @@ namespace TLIS_Service.Services
                           x.Id == Id, x => x.CivilSteelSupportCategory, x => x.CivilWithoutLegCategory, x => x.InstCivilwithoutLegsType, x => x.structureType);
                 CatId = (int)CivilWithoutLegLibrary.CivilWithoutLegCategoryId;
                 
-                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CivilWithoutLegLibrary, null).ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CivilWithoutLegLibrary, null, "CivilWithoutLegCategoryId").ToList();
                 listofAttributesActivated
                     .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
                     .ToList()

@@ -7158,7 +7158,7 @@ namespace TLIS_Service.Services
                             if (CivilWithLoutInst.subType != null)
                             {
                                 FKitem.Value = _mapper.Map<SubTypeViewModel>(CivilWithLoutInst.subType);
-                                FKitem.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             }
                             else
                             {
@@ -13500,7 +13500,7 @@ namespace TLIS_Service.Services
                         x => x.InstCivilwithoutLegsType, x => x.structureType));
 
                 List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), null,null, "UpperPartLengthm").ToList();
+                    .GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLegLibrary, null, "UpperPartLengthm").ToList();
                 if (CivilWithoutLegLibrary.structureTypeId != null || CivilWithoutLegLibrary.structureTypeId != 0)
                 {
                     structureType = _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.structureTypeId);
@@ -13924,22 +13924,6 @@ namespace TLIS_Service.Services
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
-                DynamicAttributesWithoutValue = DynamicAttributesWithoutValue.Select((DynamicAttribute, index) =>
-                {
-                    TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                    if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                    {
-                        DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-                    }
-                    else
-                    {
-                        DynamicAttribute.Value = " ".Split(' ')[0];
-                    }
-                    DynamicAttribute.Options = new object[0];
-
-                    return DynamicAttribute;
-                });
 
                 objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
 

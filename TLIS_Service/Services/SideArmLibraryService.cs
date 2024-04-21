@@ -152,7 +152,7 @@ namespace TLIS_Service.Services
                         {
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower());
-                            TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(addSideArmLibraryViewModel.LibraryAttribute);
+                            TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(addSideArmLibraryViewModel.attributesActivatedLibrary);
                             var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && !x.Deleted);
                             if (CheckModel != null)
                             {
@@ -2258,7 +2258,7 @@ namespace TLIS_Service.Services
             {
                 GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArmLibrary.ToString());
-                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), null, null, "Model").ToList();
+                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), null, null).ToList();
                 var LogisticalAttributes = _unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.SideArm.ToString());
                 Attributes.LogisticalItems = LogisticalAttributes;
                 Attributes.AttributesActivatedLibrary = listofAttributesActivated;
