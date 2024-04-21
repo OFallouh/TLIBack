@@ -13,6 +13,7 @@ namespace TLIS_Repository.IRepository
     public interface IDynamicAttInstValueRepository:IRepositoryBase<TLIdynamicAttInstValue, DynamicAttInstValueViewModel,int>
     {
         List<DynaminAttInstViewModel> GetDynamicInstAtts(int TableNameId, int Id, int? CategoryId);
+        void AddDdynamicAttributeInstallations(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicInstAttValue, int TableNameId, int Id);
         void AddDynamicInstAtts(AddDynamicAttInstValueViewModel addDynamicInstAttValue, int TableNameId, int Id);
         void UpdateDynamicValue(List<BaseInstAttView> DynamicInstAttsValue, int TableNameId, int InstId);
         void AddDdynamicAttributeInstallation(int UserId,AddDdynamicAttributeInstallationValueViewModel addDynamicInstAttValue, int TableNameId, int Id);

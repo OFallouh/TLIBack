@@ -2643,10 +2643,9 @@ namespace TLIS_Service.Services
                         }
 
 
-                        foreach (var addDynamicAttsInstValue in AddCivilWithLegsViewModel.dynamicAttribute)
-                        {
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId,addDynamicAttsInstValue, TableNameEntity.Id, civilWithLegs.Id);
-                        }
+                      
+                          _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
+                        
                         
                     
                     //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
@@ -3067,10 +3066,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                     }
           
-                    foreach (var addDynamicAttsInstValue in addCivilWithoutLegViewModel.dynamicAttribute)
-                    {
-                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation( UserId,addDynamicAttsInstValue, TableNameEntity.Id, civilwithoutlegs.Id);
-                    }
+                
+                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations( UserId, addCivilWithoutLegViewModel.dynamicAttribute, TableNameEntity.Id, civilwithoutlegs.Id);
+                    
 
                     if (TaskId != null)
                     {
@@ -3183,10 +3181,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                     }
 
-                    foreach (var addDynamicAttsInstValue in addCivilNonSteelObject.dynamicAttribute)
-                    {
-                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, addDynamicAttsInstValue, TableNameEntity.Id, civilNonSteel.Id);
-                    }
+                   
+                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCivilNonSteelObject.dynamicAttribute, TableNameEntity.Id, civilNonSteel.Id);
+                    
  
                     if (TaskId != null)
                     {

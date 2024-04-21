@@ -162,6 +162,92 @@ namespace TLIS_Repository.Repositories
             }
             return dynamicAttInstViewModels;
         }
+        public void AddDdynamicAttributeInstallations(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicInstAttValue, int TableNameId, int Id)
+        {
+            var dynamicAttLibValueEntities = addDynamicInstAttValue.Select(DynamicLibAttValue =>
+            {
+                var DynamicAtt = _context.TLIdynamicAtt
+                   .Where(x => x.Id == DynamicLibAttValue.id)
+                   .Include(x => x.DataType)
+                   .FirstOrDefault();
+                TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
+                dynamicAttInstValue.InventoryId = Id;
+                dynamicAttInstValue.tablesNamesId = TableNameId;
+                dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
+                dynamic value = DynamicLibAttValue.value.ToString();
+                if (value != null)
+                {
+                    string dataType = DynamicAtt.DataType.Name.ToLower();
+
+                    switch (dataType)
+                    {
+                        case "bool":
+                            bool boolValue;
+                            if (bool.TryParse(value, out boolValue))
+                            {
+                                dynamicAttInstValue.ValueBoolean = boolValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid boolean value.");
+                            }
+                            break;
+                        case "datetime":
+                            DateTime dateTimeValue;
+                            if (DateTime.TryParse(value, out dateTimeValue))
+                            {
+                                dynamicAttInstValue.ValueDateTime = dateTimeValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDateTime = null;
+
+                                throw new ArgumentException("Invalid datetime value.");
+                            }
+                            break;
+                        case "double":
+                            double doubleValue;
+                            if (double.TryParse(value, out doubleValue))
+                            {
+                                dynamicAttInstValue.ValueDouble = doubleValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid double value.");
+                            }
+                            break;
+                        case "int":
+                            int intValue;
+                            if (int.TryParse(value, out intValue))
+                            {
+                                dynamicAttInstValue.ValueDouble = intValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid int value.");
+                            }
+                            break;
+                        case "string":
+                            dynamicAttInstValue.ValueString = value;
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+                dynamicAttInstValue.disable = false;
+                return dynamicAttInstValue;
+            }).ToList();
+
+            AddRangeWithHistory(UserId, dynamicAttLibValueEntities);
+            _context.SaveChanges();
+        }
         public List<BaseInstAttViewDynamic> GetDynamicInstAtt(int TableNameId, int Id, int? CategoryId = null)
         {
             List<BaseInstAttViewDynamic> dynamicAttInstViewModels = new List<BaseInstAttViewDynamic>();
@@ -217,7 +303,8 @@ namespace TLIS_Repository.Repositories
                         DataTypeId = DynamicAtt.DataTypeId,
                         DataType = DynamicAtt.DataType.Name,
                         Value = value, 
-                        Required = DynamicAtt.Required
+                        Required = DynamicAtt.Required,
+                        Label= DynamicAtt.Key
                     });
                 }
 
