@@ -213,7 +213,7 @@ namespace TLIS_Service.Services
                                     addDependencyInstViewModel.DoubleDefaultValue.ToString() : "0";
                             }
 
-                            else if (DataTypeName.ToLower() == "boolean".ToLower())
+                            else if (DataTypeName.ToLower() == "bool".ToLower())
                             {
                                 DynamicAttEntity.DefaultValue = addDependencyInstViewModel.BooleanDefaultValue != null ?
                                     addDependencyInstViewModel.BooleanDefaultValue.ToString() : "false";
@@ -307,7 +307,7 @@ namespace TLIS_Service.Services
                                     {
                                         dependency.ValueDouble = Convert.ToDouble(Dependencie.ValueDouble);
                                     }
-                                    else if (DataType.Name.ToLower() == "boolean")
+                                    else if (DataType.Name.ToLower() == "bool")
                                     {
                                         dependency.ValueBoolean = Convert.ToBoolean(Dependencie.ValueBoolean);
                                     }
@@ -7954,7 +7954,7 @@ namespace TLIS_Service.Services
                                         {
                                             validation.ValueDouble = Convert.ToDouble(GeneralValidation.OperationValue);
                                         }
-                                        else if (DataType.Name.ToLower() == "boolean")
+                                        else if (DataType.Name.ToLower() == "bool")
                                         {
                                             validation.ValueBoolean = Convert.ToBoolean(GeneralValidation.OperationValue);
                                         }
@@ -7986,7 +7986,7 @@ namespace TLIS_Service.Services
                                     {
                                         dependency.ValueDouble = Convert.ToDouble(Dependencie.ValueDouble);
                                     }
-                                    else if (DataType.Name.ToLower() == "boolean")
+                                    else if (DataType.Name.ToLower() == "bool")
                                     {
                                         dependency.ValueBoolean = Convert.ToBoolean(Dependencie.ValueBoolean);
                                     }
@@ -8281,7 +8281,7 @@ namespace TLIS_Service.Services
                                     }
                                 }
                             }
-                            else if (OldDynamicAttData.DataType.Name.ToLower() == "boolean".ToLower())
+                            else if (OldDynamicAttData.DataType.Name.ToLower() == "bool".ToLower())
                             {
                                 foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
                                 {
@@ -8317,7 +8317,7 @@ namespace TLIS_Service.Services
                                     DynamicAttValue.ValueDouble = null;
                                 }
                             }
-                            else if (OldDynamicAttData.DataType.Name.ToLower() == "boolean".ToLower())
+                            else if (OldDynamicAttData.DataType.Name.ToLower() == "bool".ToLower())
                             {
                                 foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
                                 {
@@ -8362,7 +8362,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
-                    else if (NewDataType.Name.ToLower() == "boolean".ToLower())
+                    else if (NewDataType.Name.ToLower() == "bool".ToLower())
                     {
                         if (OldDynamicAttData.LibraryAtt)
                         {
