@@ -7160,7 +7160,7 @@ namespace TLIS_Service.Services
                             if (CivilWithLoutInst.subType != null)
                             {
                                 FKitem.Value = _mapper.Map<SubTypeViewModel>(CivilWithLoutInst.subType);
-                                FKitem.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                FKitem.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
                             }
                             else
                             {
