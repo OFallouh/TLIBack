@@ -413,7 +413,8 @@ namespace TLIS_Repository.Repositories
                     else if (DynamicAttInstValue == null)
                     {
                         TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
-                        var datatype = _context.TLIdataType.Where(x => x.Id == DynamicAttInstValue.DynamicAtt.DataTypeId).Select(x => x.Name).FirstOrDefault();
+                        var datatypes = _context.TLIdynamicAtt.FirstOrDefault(x => x.Id == DynamicIns.id);
+                        var datatype = _context.TLIdataType.Where(x => x.Id == datatypes.DataTypeId).Select(x => x.Name).FirstOrDefault();
 
                         if (datatype.ToLower() == "string")
                         {

@@ -3774,6 +3774,8 @@ namespace TLIS_Service.Services
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    
+                    
                     if (civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 12 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 14 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 16
                      && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 18 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 20)
                     {
@@ -7133,7 +7135,7 @@ namespace TLIS_Service.Services
                
 
                 List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilWithoutLibrary.Id).ToList());
+                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 
@@ -7333,7 +7335,7 @@ namespace TLIS_Service.Services
                 }
 
                 List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString(), CivilNonSteelLibrary.Id).ToList());
+                        .GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 
