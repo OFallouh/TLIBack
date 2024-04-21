@@ -282,7 +282,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilWithoutLegsInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilWithoutLegsInstallationById(int CivilId)

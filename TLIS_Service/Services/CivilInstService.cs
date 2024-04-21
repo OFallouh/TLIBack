@@ -7154,11 +7154,11 @@ namespace TLIS_Service.Services
                 {
                     switch (FKitem.Label.ToLower())
                     {
-                        case "subType_Name":
+                        case "subtype_name":
                             if (CivilWithLoutInst.subType != null)
                             {
                                 FKitem.Value = _mapper.Map<SubTypeViewModel>(CivilWithLoutInst.subType);
-                            FKitem.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                FKitem.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             }
                             else
                             {
@@ -7166,42 +7166,42 @@ namespace TLIS_Service.Services
                                 FKitem.Options = new List<object>();
                             }
                             break;
-                      
+
                         case "owner_name":
                             FKitem.Value = _mapper.Map<OwnerViewModel>(CivilWithLoutInst.Owner);
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             break;
-                        
+
                         case "laddersteps":
-                            List<EnumOutPut> ladderSteps = new List<EnumOutPut>
-                                {
-                                    new EnumOutPut { Id = (int)LadderSteps.Ladder, Name = LadderSteps.Ladder.ToString() },
-                                    new EnumOutPut { Id = (int)LadderSteps.Steps, Name = LadderSteps.Steps.ToString() }
-                                  
-                                };
+                                        List<EnumOutPut> ladderSteps = new List<EnumOutPut>
+                        {
+                            new EnumOutPut { Id = (int)LadderSteps.Ladder, Name = LadderSteps.Ladder.ToString() },
+                            new EnumOutPut { Id = (int)LadderSteps.Steps, Name = LadderSteps.Steps.ToString() }
+                        };
 
                             FKitem.Options = ladderSteps;
-                            FKitem.Value = ladderSteps.FirstOrDefault(shape => shape.Id == (int)CivilWithLoutInst.ladderSteps);
+                            FKitem.Value = CivilWithLoutInst?.ladderSteps != null ? ladderSteps.FirstOrDefault(shape => shape.Id == (int)CivilWithLoutInst.ladderSteps) : null;
                             break;
+
                         case "equipmentslocation":
                             List<EnumOutPut> equipmentslocation = new List<EnumOutPut>
-                            {
-                                    new EnumOutPut { Id = (int)EquipmentsLocation.Body, Name = EquipmentsLocation.Body.ToString() },
-                                    new EnumOutPut { Id = (int)EquipmentsLocation.Platform, Name = EquipmentsLocation.Platform.ToString() },
-                                    new EnumOutPut { Id = (int)EquipmentsLocation.Together, Name = EquipmentsLocation.Together.ToString() }
-
-                            };
+                        {
+                            new EnumOutPut { Id = (int)EquipmentsLocation.Body, Name = EquipmentsLocation.Body.ToString() },
+                            new EnumOutPut { Id = (int)EquipmentsLocation.Platform, Name = EquipmentsLocation.Platform.ToString() },
+                            new EnumOutPut { Id = (int)EquipmentsLocation.Together, Name = EquipmentsLocation.Together.ToString() }
+                        };
 
                             FKitem.Options = equipmentslocation;
-                            FKitem.Value = equipmentslocation.FirstOrDefault(shape => shape.Id == (int)CivilWithLoutInst.equipmentsLocation);
+                            FKitem.Value = CivilWithLoutInst?.equipmentsLocation != null ? equipmentslocation.FirstOrDefault(shape => shape.Id == (int)CivilWithLoutInst.equipmentsLocation) : null;
                             break;
+
                         default:
                             break;
                     }
                     return FKitem;
                 }).ToList();
 
-                
+
                 objectInst.InstallationAttributes = ListAttributesActivated;
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
