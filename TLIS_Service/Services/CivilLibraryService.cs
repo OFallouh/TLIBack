@@ -4249,7 +4249,7 @@ namespace TLIS_Service.Services
                         return FKitem;
                     })
                     .ToList();
-                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.CivilSupport.ToString(), TableName, Id);
+                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel(Helpers.Constants.TablePartName.CivilSupport.ToString(), TableName, Id);
                 attributes.LogisticalItems = LogisticalItems;
                 attributes.AttributesActivatedLibrary = listofAttributesActivated;
 
@@ -4710,7 +4710,7 @@ namespace TLIS_Service.Services
                         return item;
                     })
                     .ToList();
-                    var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("CivilSupport");
+                    var LogisticalAttributes=_unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel("CivilSupport");
                     Attributes.LogisticalItems = LogisticalAttributes;
                     Attributes.AttributesActivatedLibrary = activatedAttributes;
 
