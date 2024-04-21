@@ -7106,7 +7106,7 @@ namespace TLIS_Service.Services
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                      .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString(), CivilWithoutLibrary, null).ToList();
 
-                    var sectionsLegTypeItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "InstallationcivilwithoutLlegstype_name");
+                    var sectionsLegTypeItem = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "installationcivilwithoutLlegstype_name");
                     if (sectionsLegTypeItem != null)
                     {
                         sectionsLegTypeItem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
