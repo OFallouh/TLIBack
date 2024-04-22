@@ -191,7 +191,7 @@ namespace TLIS_Service.Services
 
                             AddLogisticalItemWithSideArms(UserId,LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id);
 
-                            if (addSideArmLibraryViewModel.dynamicAttribute.Count > 0)
+                            if (addSideArmLibraryViewModel.dynamicAttribute !=null)
                             {
                                 _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
                             }
@@ -2277,7 +2277,7 @@ namespace TLIS_Service.Services
                                 "string" => DynamicAttributeEntity.DefaultValue,
                                 "int" => int.Parse(DynamicAttributeEntity.DefaultValue),
                                 "double" => double.Parse(DynamicAttributeEntity.DefaultValue),
-                                "boolean" => bool.Parse(DynamicAttributeEntity.DefaultValue),
+                                "bool" => bool.Parse(DynamicAttributeEntity.DefaultValue),
                                 "datetime" => DateTime.Parse(DynamicAttributeEntity.DefaultValue),
                                 _ => DynamicAttribute.Value
                             };
