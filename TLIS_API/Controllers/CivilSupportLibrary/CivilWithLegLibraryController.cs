@@ -48,10 +48,10 @@ namespace TLIS_API.Controllers
         
         [HttpPost("GetCivilWithLegLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithLegLibrariesEnabledAtt([FromBody] CombineFilters CombineOutPut, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetCivilWithLegLibrariesEnabledAtt()
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegLibrariesEnabledAtt(CombineOutPut, WithFilterData, parameters, ConnectionString);
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegLibrariesEnabledAtt( ConnectionString);
             return Ok(response);
         }
         [HttpGet("getCivilWithLegsLibraryById")]

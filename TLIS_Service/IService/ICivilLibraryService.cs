@@ -40,10 +40,10 @@ namespace TLIS_Service.IService
         Task<Response<AllItemAttributes>> Delete(int Id, string CivilType);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
-        Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
-        Response<GetEnableAttribute> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt( string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt( string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt( string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(string ConnectionString);
+        Response<GetEnableAttribute> GetCivilNonSteelLibrariesEnabledAtt(string ConnectionString);
     }
 }

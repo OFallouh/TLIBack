@@ -2220,7 +2220,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilNonSteelLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilNonSteelLibrariesEnabledAtt(string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -2271,10 +2271,9 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = db.CIVIL_NONSTEEL_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                       
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -2300,10 +2299,9 @@ namespace TLIS_Service.Services
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                       
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5562,7 +5560,7 @@ namespace TLIS_Service.Services
             }
         }
         #endregion
-        public Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination,string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt( string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -5612,42 +5610,40 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).AsEnumerable()
-                    .Select(item =>_unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                      
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).AsEnumerable()
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
-                        Model=x.Model,
-                        Note=x.Note,
-                        Prefix=x.Prefix,
-                        Height_Designed=x.Height_Designed,
-                        Max_load_M2=x.Max_load_M2,
-                        SpaceLibrary=x.SpaceLibrary,
+                        Model = x.Model,
+                        Note = x.Note,
+                        Prefix = x.Prefix,
+                        Height_Designed = x.Height_Designed,
+                        Max_load_M2 = x.Max_load_M2,
+                        SpaceLibrary = x.SpaceLibrary,
                         Active = x.Active,
                         Deleted = x.Deleted,
-                        SUPPORTTYPEDESIGNED =x.SUPPORTTYPEDESIGNED,
-                        SECTIONSLEGTYPE=x.SECTIONSLEGTYPE,
-                        STRUCTURETYPE=x.STRUCTURETYPE,
-                        CIVILSTEELSUPPORTCATEGORY=x.CIVILSTEELSUPPORTCATEGORY,
-                        Manufactured_Max_Load=x.Manufactured_Max_Load,
-                        WidthVariation=x.WidthVariation,
-                        NumberOfLegs=x.NumberOfLegs
+                        SUPPORTTYPEDESIGNED = x.SUPPORTTYPEDESIGNED,
+                        SECTIONSLEGTYPE = x.SECTIONSLEGTYPE,
+                        STRUCTURETYPE = x.STRUCTURETYPE,
+                        CIVILSTEELSUPPORTCATEGORY = x.CIVILSTEELSUPPORTCATEGORY,
+                        Manufactured_Max_Load = x.Manufactured_Max_Load,
+                        WidthVariation = x.WidthVariation,
+                        NumberOfLegs = x.NumberOfLegs
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item =>_unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                        
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5659,7 +5655,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt(  string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -5709,10 +5705,9 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast").AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                      
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5740,10 +5735,9 @@ namespace TLIS_Service.Services
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                       
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5755,7 +5749,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleLibrariesEnabledAtt( string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -5805,10 +5799,9 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole").AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                       
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5836,10 +5829,9 @@ namespace TLIS_Service.Services
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                        
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5851,7 +5843,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -5901,11 +5893,10 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = db.CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted
-                       && x.CIVILWITHOUTLEGCATEGORY.ToLower()== "capsule").AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                       && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule").AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                        
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -5933,10 +5924,9 @@ namespace TLIS_Service.Services
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
-                    .Where(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicQuery(CombineFilters.filters, item));
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
-                        query = query.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize).Take(parameterPagination.PageSize);
+                      
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
