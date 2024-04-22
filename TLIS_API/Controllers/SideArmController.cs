@@ -38,12 +38,13 @@ namespace TLIS_API.Controllers
             var response = _UnitOfWorkService.SideArmService.getSideArms(BaseFilter, WithFilterData, filters);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getSideArmsWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
-        public IActionResult getSideArmsWithEnabledAtt([FromBody] CombineFilters CombineFilters, CivilLoadsFilter BaseFilter, bool WithFilterData, int? CivilRecordId, string CivilType, [FromQuery] ParameterPagination parameters)
+        public IActionResult getSideArmsWithEnabledAtt([FromQuery] string SiteCode)
         {
-            var response = _UnitOfWorkService.SideArmService.GetSideArmsWithEnabledAtt(BaseFilter, WithFilterData, parameters, CombineFilters, CivilRecordId, CivilType);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _UnitOfWorkService.SideArmService.GetSideArmInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

@@ -191,9 +191,9 @@ namespace TLIS_Service.Services
 
                             AddLogisticalItemWithSideArms(UserId,LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id);
 
-                            if (addSideArmLibraryViewModel.dynamicAttribute !=null)
+                            if (addSideArmLibraryViewModel.dynamicAttributes !=null)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.Id, tLIsideArmLibrary.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,addSideArmLibraryViewModel.dynamicAttributes, TableNameEntity.Id, tLIsideArmLibrary.Id);
                             }
                             transaction.Complete();
                             tran.Commit();

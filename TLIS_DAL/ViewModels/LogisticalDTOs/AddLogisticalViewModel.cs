@@ -17,7 +17,6 @@ namespace TLIS_DAL.ViewModels.LogisticalDTOs
     }
     public class AddLogisticalViewModels
     {
-        [Required]
         public int? Vendor { get; set; }
         public int? Supplier { get; set; }
         public int? Designer { get; set; }

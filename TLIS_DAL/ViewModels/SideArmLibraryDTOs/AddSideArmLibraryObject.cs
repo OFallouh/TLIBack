@@ -11,8 +11,8 @@ namespace TLIS_DAL.ViewModels.SideArmLibraryDTOs
     public class AddSideArmLibraryObject
     {
         public SideArmLibraryAttributes attributesActivatedLibrary { get; set; }
-        public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
+        public AddLogisticalViewModels LogisticalItems { get; set; }
+        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
         public class SideArmLibraryAttributes
         {
             public string Model { get; set; }

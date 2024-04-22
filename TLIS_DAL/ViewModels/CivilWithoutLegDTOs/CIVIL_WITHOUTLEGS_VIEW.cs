@@ -65,7 +65,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float SpaceInstallation { get; set; }
         public string CIVILWITHOUTLEGSLIB { get; set; }
         public string OWNER { get; set; }
-        public string SUBTYPE { get; set; }
+        public string? SUBTYPE { get; set; }
         public float Support_Limited_Load { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }

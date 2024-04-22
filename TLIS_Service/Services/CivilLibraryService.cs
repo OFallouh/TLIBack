@@ -2127,8 +2127,12 @@ namespace TLIS_Service.Services
 
                     TLIcivilNonSteelLibrary CivilNonSteelLib = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilNonSteelibraryEntites.Id);
 
-                    CivilNonSteelibraryEntites.Active = CivilNonSteelLib.Active;
-                    CivilNonSteelibraryEntites.Deleted = CivilNonSteelLib.Deleted;
+                    var CheckModel = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Model == CivilNonSteelibraryEntites.Model && x.Id != CivilNonSteelibraryEntites.Id && !x.Deleted);
+                  
+                    if (CheckModel != null)
+                    {
+                        return new Response<EditCivilNonSteelLibraryObject>(true, null, null, $"This model {CivilNonSteelibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
 
                     _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(userId, CivilNonSteelLib, CivilNonSteelibraryEntites);
 
