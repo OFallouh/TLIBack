@@ -1176,7 +1176,7 @@ namespace TLIS_Service.Services
                            HieghFromLand = x.HieghFromLand,
                            EquivalentSpace = x.EquivalentSpace,
                            FIRST_LEG_ID=x.FIRST_LEG_ID,
-                           SECOND_LEG_ID=x.SECOND_LEG_IDs
+                           SECOND_LEG_ID=x.SECOND_LEG_ID
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
