@@ -2251,7 +2251,7 @@ namespace TLIS_Service.Services
                             .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
-                    List<string> propertyNamesDynamic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -2271,7 +2271,8 @@ namespace TLIS_Service.Services
                         else
                         {
                             string name = key.dynamic;
-                            propertyNamesDynamic.Add(name);
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
                         }
 
                     }
@@ -5594,7 +5595,7 @@ namespace TLIS_Service.Services
                             .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
-                    List<string> propertyNamesDynamic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -5614,7 +5615,8 @@ namespace TLIS_Service.Services
                         else
                         {
                             string name = key.dynamic;
-                            propertyNamesDynamic.Add(name);
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
                         }
 
                     }
@@ -5684,14 +5686,14 @@ namespace TLIS_Service.Services
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
+                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                           .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
                             .ThenBy(x => x.attribute == null)
                             .ThenBy(x => x.attribute)
                             .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
-                    List<string> propertyNamesDynamic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -5711,7 +5713,8 @@ namespace TLIS_Service.Services
                         else
                         {
                             string name = key.dynamic;
-                            propertyNamesDynamic.Add(name);
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
                         }
 
                     }
@@ -5781,14 +5784,14 @@ namespace TLIS_Service.Services
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMonopole" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
+                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                           .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
                             .ThenBy(x => x.attribute == null)
                             .ThenBy(x => x.attribute)
                             .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
-                    List<string> propertyNamesDynamic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -5808,7 +5811,8 @@ namespace TLIS_Service.Services
                         else
                         {
                             string name = key.dynamic;
-                            propertyNamesDynamic.Add(name);
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
                         }
 
                     }
@@ -5878,14 +5882,14 @@ namespace TLIS_Service.Services
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryCapsule" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                           .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
                             .ThenBy(x => x.attribute == null)
                             .ThenBy(x => x.attribute)
                             .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
-                    List<string> propertyNamesDynamic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -5905,7 +5909,8 @@ namespace TLIS_Service.Services
                         else
                         {
                             string name = key.dynamic;
-                            propertyNamesDynamic.Add(name);
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
                         }
 
                     }

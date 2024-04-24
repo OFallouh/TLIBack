@@ -223,7 +223,7 @@ namespace TLIS_Service.Services
                             .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
-                    List<string> propertyNamesDynamic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -243,7 +243,8 @@ namespace TLIS_Service.Services
                         else
                         {
                             string name = key.dynamic;
-                            propertyNamesDynamic.Add(name);
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
                         }
 
                     }

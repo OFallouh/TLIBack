@@ -77,7 +77,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithLegsWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string SiteCode)

@@ -15,7 +15,7 @@ namespace TLIS_Repository.IRepository
 {
     public interface ICivilWithLegsRepository : IRepositoryBase<TLIcivilWithLegs,CivilWithLegsViewModel,int>
     {
-        IDictionary<string, object> BuildDynamicSelect(object obj, Dictionary<string, string>? dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic);
+        IDictionary<string, object> BuildDynamicSelect(object obj, Dictionary<string, string>? dynamic, List<string> propertyNamesStatic, Dictionary<string, string> propertyNamesDynamic);
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
         bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item);
         Response<float> CheckloadsOnCivil(int allcivilinstId,int? loadid,float Azimuth, float CenterHigh);

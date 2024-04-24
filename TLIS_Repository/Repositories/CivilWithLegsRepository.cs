@@ -249,7 +249,7 @@ namespace TLIS_Repository.Repositories
             }
             return x;
         }
-        public IDictionary<string, object> BuildDynamicSelect(object obj, Dictionary<string, string>? dynamic, List<string> propertyNamesStatic, List<string> propertyNamesDynamic)
+        public IDictionary<string, object> BuildDynamicSelect(object obj, Dictionary<string, string>? dynamic, List<string> propertyNamesStatic, Dictionary<string, string> propertyNamesDynamic)
         {
             Dictionary<string, object> item = new Dictionary<string, object>();
             Type type = obj.GetType();
@@ -277,30 +277,28 @@ namespace TLIS_Repository.Repositories
                     
                 }
             }
-            foreach (var propertyName in propertyNamesDynamic)
+            foreach (var propertyName in propertyNamesDynamic.Keys)
             {
+                string datatype = propertyNamesDynamic[propertyName];
 
-                var datatype = _context.CIVIL_WITHLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Key == propertyName);
-                if (datatype != null)
+                if (datatype.ToLower() == "bool")
                 {
-                    if (datatype.dataType.ToString().ToLower() == "bool")
+                    var types = dynamic?.GetValueOrDefault(propertyName);
+                    if (types == "1")
                     {
-                        var types = dynamic.GetValueOrDefault(propertyName);
-                        if (types == "1")
-                        {
-                            item.Add(propertyName, true);
-                        }
-                        if (types == "0")
-                        {
-                            item.Add(propertyName, false);
-                        }
+                        item.Add(propertyName, true);
                     }
-                    else
+                    else if (types == "0")
                     {
-                        item.Add(propertyName, dynamic.GetValueOrDefault(propertyName));
+                        item.Add(propertyName, false);
                     }
                 }
-               
+                              
+                else
+                {
+                    var value = dynamic?.GetValueOrDefault(propertyName);
+                    item.Add(propertyName, value);
+                }
             }
             return item;
         }
