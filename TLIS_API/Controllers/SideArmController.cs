@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +13,7 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.ViewModels.SideArmInstallationPlaceDTOs;
 using TLIS_DAL.ViewModels.SideArmTypeDTOs;
@@ -71,15 +74,7 @@ namespace TLIS_API.Controllers
             var response = _UnitOfWorkService.SideArmService.GetById(id);
             return Ok(response);
         }
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("AddSideArm")]
-        //[ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        //public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode, int TaskId)
-        //{
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    var Response = _UnitOfWorkService.SideArmService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId);
-        //    return Ok(Response);
-        //}
+       
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
         //[HttpPost("UpdateSideArm")]
         //[ProducesResponseType(200, Type = typeof(AllItemAttributes))]
@@ -96,6 +91,7 @@ namespace TLIS_API.Controllers
             var response = await _UnitOfWorkService.SideArmService.AddSideArmInstallationPlace(SideArmInstallationPlaceViewModel);
             return Ok(response);
         }
+        
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("UpdateSideArmInstallationPlace")]
         [ProducesResponseType(200, Type = typeof(EditSideArmInstallationPlaceViewModel))]
@@ -167,5 +163,59 @@ namespace TLIS_API.Controllers
             var response = _UnitOfWorkService.SideArmService.GetSideArmsByFilters(AllCivilInstId, MaxAzimuth, MinAzimuth, MaxHeightBase, MinHeightBase);
             return Ok(response);
         }
+        //[HttpPost("AddSideArm")]
+        //[ProducesResponseType(200, Type = typeof(AddSideArms))]
+        //public IActionResult AddSideArmInstallations([FromBody] AddSideArms SideArmViewModel,[FromQuery] string SiteCode, int? TaskId)
+        //{
+        //    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+        //    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+        //    {
+        //        return Unauthorized();
+        //    }
+
+        //    var token = authHeader.Substring("Bearer ".Length).Trim();
+        //    var handler = new JwtSecurityTokenHandler();
+        //    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+        //    if (jsonToken == null)
+        //    {
+        //        return Unauthorized();
+        //    }
+
+        //    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+        //    var userId = Convert.ToInt32(userInfo);
+        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //    var Response = _UnitOfWorkService.SideArmService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId, userId);
+        //    return Ok(Response);
+        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("UpdateSideArmInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditSidearmInstallationObject))]
+        public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel, int TaskId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId, userId);
+            return Ok(response);
+        }
+
+
     }
 }

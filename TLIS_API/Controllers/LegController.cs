@@ -94,9 +94,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetLegsByAllCivilInstId/{AllCivilInstId}")]
         [ProducesResponseType(200, Type = typeof(List<LegViewModel>))]
-        public IActionResult GetLegsByAllCivilInstId(int AllCivilInstId)
+        public IActionResult GetLegsByAllCivilInstId(int civilid)
         {
-            var response = _unitOfWorkService.LegService.GetLegsByAllCivilInstId(AllCivilInstId);
+            var response = _unitOfWorkService.LegService.GetLegsByAllCivilInstId(civilid);
             return Ok(response);
         }
     }

@@ -22,14 +22,14 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         {
             public int Id { get; set; }
             public string Name { get; set; }
-            public string Notes { get; set; }
-            public float? HeightBase { get; set; }
+            public string? Notes { get; set; }
+            public float HeightBase { get; set; }
             public float? Azimuth { get; set; }
-            public float? ReservedSpace { get; set; }
+            public float ReservedSpace { get; set; }
             public bool Active { get; set; }
-            public string VisibleStatus { get; set; }
+            public string? VisibleStatus { get; set; }
             public float SpaceInstallation { get; set; }
-            public int? sideArmInstallationPlaceId { get; set; }
+            public int sideArmInstallationPlaceId { get; set; }
             public int? ownerId { get; set; }
             public int sideArmTypeId { get; set; }
             public int? ItemStatusId { get; set; }

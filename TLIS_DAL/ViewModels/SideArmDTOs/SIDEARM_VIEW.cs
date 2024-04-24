@@ -21,7 +21,9 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public string? CIVILNAME { get; set; }
         public int? CIVILID { get; set; }
         public string? FIRST_LEG { get; set; }
+        public int? FIRST_LEG_ID { get; set; }
         public string? SECOND_LEG { get; set; }
+        public int? SECOND_LEG_ID { get; set; }
         public string Notes { get; set; }
         public float? HeightBase { get; set; }
         public float? Azimuth { get; set; }
@@ -74,6 +76,8 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             outputData.Add("HieghFromLand", HieghFromLand);
             outputData.Add("EquivalentSpace", EquivalentSpace);
             outputData.Add("SIDEARMLIBRARY", SIDEARMLIBRARY);
+            outputData.Add("SECOND_LEG_ID", SECOND_LEG_ID);
+            outputData.Add("FIRST_LEG_ID", FIRST_LEG_ID);
 
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))

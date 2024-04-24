@@ -242,8 +242,16 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsite, SiteForGetViewModel>().ReverseMap();
             CreateMap<TLIsite, GetSiteNameBySitCode>().ReverseMap();
             CreateMap<TLIcivilWithLegLibrary, LibraryNamesViewModel>().ReverseMap();
+            CreateMap<SupportTypeImplementedViewModel, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<SupportTypeImplementedViewModel, TLIcivilWithoutLeg>().ReverseMap();
+            CreateMap<SupportTypeImplementedViewModel, TLIcivilNonSteel>().ReverseMap();
+            CreateMap<SupportTypeImplementedViewModel, TLIallCivilInst>().ReverseMap();
 
             CreateMap<CivilWithLegLibraryViewModel, EditCivilWithLegLibraryViewModels>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilSiteDate>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithoutLeg>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilNonSteel>().ReverseMap();
 
             CreateMap<TLIcivilNonSteelLibrary, CivilNonSteelLibraryViewModel>()
                 .ForMember(c => c.civilNonSteelType_Name, c => c.MapFrom(x => x.civilNonSteelType.Name));

@@ -77,7 +77,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public int SupportTypeImplementedId { get; set; }
         public int? enforcmentCategoryId { get; set; }
         public string? SpecialEnforcementCategory { get; set; }
-        public string? Remarks { get; set; }
+        public string? Remark { get; set; }
         public float Support_Limited_Load { get; set; } = 0;
         public float CenterHigh { get; set; }
         public float HBA { get; set; }

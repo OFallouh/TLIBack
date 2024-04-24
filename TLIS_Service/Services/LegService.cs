@@ -66,12 +66,13 @@ namespace TLIS_Service.Services
                 return new Response<List<LegViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<List<LegViewModel>> GetLegsByAllCivilInstId(int AllCivilInstId)
+        public Response<List<LegViewModel>> GetLegsByAllCivilInstId(int civilid)
         {
             try
             {
+
                 TLIallCivilInst CivilWithLegInstallation = _unitOfWork.AllCivilInstRepository
-                    .GetIncludeWhereFirst(x => x.Id == AllCivilInstId && x.civilWithLegsId != null);
+                    .GetIncludeWhereFirst(x => x.civilWithLegsId == civilid && x.civilWithLegsId != null);
 
                 if (CivilWithLegInstallation == null)
                     return new Response<List<LegViewModel>>(true, new List<LegViewModel>(), null, null, (int)Helpers.Constants.ApiReturnCode.success);

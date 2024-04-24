@@ -39,6 +39,7 @@ using TLIS_DAL.ViewModels.SupportTypeDesignedDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL;
+using System.Data;
 
 namespace TLIS_Service.Services
 {
@@ -158,21 +159,6 @@ namespace TLIS_Service.Services
                             {
                                 return new Response<AddSideArmLibraryObject>(false, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                            if(tLIsideArmLibrary.SpaceLibrary== 0)
-                            {
-                                if(tLIsideArmLibrary .Length <= 0)
-                                {
-                                    return new Response<AddSideArmLibraryObject>(false, null, null, $"must length bigger from zero or must input spacelibrary", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (tLIsideArmLibrary.Width <= 0)
-                                {
-                                    return new Response<AddSideArmLibraryObject>(false, null, null, $"must width bigger from zero or must input spacelibrary", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    var SpaceLibrary = tLIsideArmLibrary.Length * tLIsideArmLibrary.Width;
-                                }
-                            }
                             //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArmLibraryViewModel);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -210,6 +196,98 @@ namespace TLIS_Service.Services
             }
         }
         #region Helper Methods
+        public Response<GetEnableAttribute> GetSideArmLibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_sidearm_library ";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "SideArmLibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    List<string> propertyNamesDynamic = new List<string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            propertyNamesDynamic.Add(name);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.SIDEARM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Note = x.Note,
+                        Width = x.Width,
+                        Weight = x.Weight,
+                        Length = x.Length,
+                        SpaceLibrary = x.SpaceLibrary,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        Height = x.Height,
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         public string CheckDependencyValidationForSideArm(object Input)
         {
             AddSideArmLibraryViewModel AddSideArmLibraryViewModel = _mapper.Map<AddSideArmLibraryViewModel>(Input);
@@ -742,22 +820,7 @@ namespace TLIS_Service.Services
                 if (CheckModel != null)
                 {
                     return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                }
-                if (tLIsideArmLibrary.SpaceLibrary == 0)
-                {
-                    if (tLIsideArmLibrary.Length <= 0)
-                    {
-                        return new Response<EditSideArmLibraryObject>(false, null, null, $"must length bigger from zero or must input spacelibrary", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (tLIsideArmLibrary.Width <= 0)
-                    {
-                        return new Response<EditSideArmLibraryObject>(false, null, null, $"must width bigger from zero or must input spacelibrary", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    else
-                    {
-                        var SpaceLibrary = tLIsideArmLibrary.Length * tLIsideArmLibrary.Width;
-                    }
-                }
+                } 
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, SidArm, tLIsideArmLibrary);
                 //string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
                 //if (!string.IsNullOrEmpty(CheckDependency))

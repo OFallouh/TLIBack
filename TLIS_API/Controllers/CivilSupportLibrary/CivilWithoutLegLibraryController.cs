@@ -68,9 +68,9 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetCivilWithoutLegsLibraryById/{id}")]
         [ProducesResponseType(200, Type = typeof(CivilWithoutLegLibraryViewModel))]
-        public IActionResult GetCivilWithoutLegsLibraryById(int id)
+        public IActionResult GetCivilWithoutLegsLibraryById(int id, int category)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegsLibraryById(id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegsLibraryById(id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), category);
             return Ok(response);
 
         }

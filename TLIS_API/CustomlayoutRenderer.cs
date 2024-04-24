@@ -17,6 +17,7 @@ namespace TLIS_API
     public class CustomlayoutRenderer : LayoutRenderer
     {
         protected override void Append(StringBuilder builder, LogEventInfo logEvent)
+        
         {
             // 1. Date Time.. 
             // Done in NLog.config File..

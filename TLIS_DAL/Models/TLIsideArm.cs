@@ -12,17 +12,17 @@ namespace TLIS_DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Notes { get; set; }
-        public float? HeightBase { get; set; }
-        public float? Azimuth{ get; set; }
-        public float? ReservedSpace { get; set; }
+        public string? Notes { get; set; }
+        public float HeightBase { get; set; }
+        public float Azimuth{ get; set; }
+        public float ReservedSpace { get; set; }
         public bool Active { get; set; }
-        public string VisibleStatus { get; set; }
+        public string? VisibleStatus { get; set; }
         public float SpaceInstallation { get; set; }
         public TLIsideArmLibrary sideArmLibrary { get; set; }
         public int sideArmLibraryId { get; set; }
         public TLIsideArmInstallationPlace sideArmInstallationPlace { get; set; }
-        public int? sideArmInstallationPlaceId { get; set; }
+        public int sideArmInstallationPlaceId { get; set; }
         public TLIowner owner { get; set; }
         public int? ownerId { get; set; }
         public TLIsideArmType sideArmType { get; set; }

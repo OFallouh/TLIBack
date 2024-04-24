@@ -23,6 +23,7 @@ namespace TLIS_Service.IService
         Task<Response<SideArmLibraryViewModel>> Disable(int id);
         Task<Response<SideArmLibraryViewModel>> Delete(int id);
         Response<GetForAddCivilLibrarybject> GetForAdd();
+        Response<GetEnableAttribute> GetSideArmLibrariesEnabledAtt(string ConnectionString);
         Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }
 }

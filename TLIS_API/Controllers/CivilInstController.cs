@@ -61,7 +61,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Mast(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithOutLegInstallation_Monople")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCivilWithOutLegInstallation_Monople(int CivilLibraryId, string SiteCode)

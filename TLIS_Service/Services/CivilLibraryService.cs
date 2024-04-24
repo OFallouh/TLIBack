@@ -2245,7 +2245,10 @@ namespace TLIS_Service.Services
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelLibrary"
                         && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
+                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -4157,7 +4160,7 @@ namespace TLIS_Service.Services
         //First TableName to specify the table i deal with
         //Second CivilWithoutLegCategoryId to specify the category of civil Without Leg Library 
         //Function return all records depened on TableName
-        public Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName)
+        public Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName,int CategoryId)
         {
             int CatId = 0;
             try
@@ -4204,7 +4207,7 @@ namespace TLIS_Service.Services
                 attributes.LogisticalItems = LogisticalItems;
                 attributes.AttributesActivatedLibrary = listofAttributesActivated;
 
-                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, CategoryId);
 
                 List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
                 BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
@@ -5585,7 +5588,10 @@ namespace TLIS_Service.Services
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegsLibrary" 
                         &&((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
-                        .OrderByDescending(x=>x.attribute.ToLower().StartsWith("null")).OrderByDescending(x=>x.attribute.ToLower().StartsWith("model")).ToList();
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5679,7 +5685,10 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMast" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5773,7 +5782,10 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryMonopole" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();
@@ -5867,7 +5879,10 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegsLibraryCapsule" && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("null")).OrderByDescending(x => x.attribute.ToLower().StartsWith("model")).ToList();
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     List<string> propertyNamesDynamic = new List<string>();

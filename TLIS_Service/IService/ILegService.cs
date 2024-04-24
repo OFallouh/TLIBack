@@ -13,9 +13,9 @@ namespace TLIS_Service.IService
     {
         Task<IEnumerable<TLIleg>> GetCivilNonSteelLibrary(ParameterPagination parameterPagination, LegFilter legFilter);
         Task<LegViewModel> GetById(int Id);
+        Response<List<LegViewModel>> GetLegsByAllCivilInstId(int civilid);
         Task AddLeg(AddLegViewModel addLegViewModel);
         Task EditLeg(EditLegViewModel EditLegViewModel);
         Response<List<LegViewModel>> GetLegsByCivilId(int CivilId);
-        Response<List<LegViewModel>> GetLegsByAllCivilInstId(int AllCivilInstId);
     }
 }
