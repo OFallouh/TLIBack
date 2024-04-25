@@ -233,7 +233,7 @@ namespace TLIS_Service.Services
                 objectInst.LibraryAttribute = LibraryAttributeActivated;
 
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), null, "Name", "sideArmLibraryId","ItemStatusId", "TicketId").ToList();
+                    GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), null, "Name", "sideArmLibraryId","ItemStatusId", "TicketId", "sideArmInstallationPlaceId", "sideArmTypeId").ToList();
 
                 BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                 if (NameAttribute != null)
@@ -1663,19 +1663,12 @@ namespace TLIS_Service.Services
                 {
                     switch (FKitem.Label.ToLower())
                     {
-                        case "sidearmtype_name":
-                            FKitem.Value = _mapper.Map<SideArmTypeViewModel>(sideArm.sideArmType);
-                            FKitem.Options = _mapper.Map<List<SideArmTypeViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                            break;
+                     
                         case "owner_Name":
                             FKitem.Value = _mapper.Map<OwnerViewModel>(sideArm.owner);
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                             break;
-                        case "siderminstallationplace_name":
-                            FKitem.Value = _mapper.Map<SideArmInstallationPlaceViewModel>(sideArm.sideArmInstallationPlace);
-                            FKitem.Options = _mapper.Map<List<SideArmInstallationPlaceViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                            break;
-
+                  
                     }
                     return FKitem;
                 }).ToList();

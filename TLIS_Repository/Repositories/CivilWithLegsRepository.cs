@@ -294,21 +294,20 @@ namespace TLIS_Repository.Repositories
                         item.Add(propertyName, false);
                     }
                 }
-                //else if (datatype.ToLower() == "datetime")
-                //{
-                //    var value = dynamic?.GetValueOrDefault(propertyName);
-                //    var formattedValue = value.Split(" ");
-
-                //    if (value != null)
-                //    {
-                //        DateTime dateObject = DateTime.ParseExact(formattedValue[0], "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                //        item.Add(propertyName, dateObject);
-                //    }
-                //    else
-                //    {
-                //        throw new ArgumentException($"Cannot convert {value} to DateTime for property {propertyName}");
-                //    }
-                //}
+                else if (datatype.ToLower() == "datetime")
+                {
+                    var value = dynamic?.GetValueOrDefault(propertyName);
+                    if (value != null)
+                    {
+                        DateTime dateObject = DateTime.ParseExact(value, "dd-MMM-yy hh.mm.ss.fffffff tt", System.Globalization.CultureInfo.InvariantCulture);
+                        item.Add(propertyName, dateObject);
+                    }
+                    else
+                    {
+                        item.Add(propertyName, value);
+                    }
+                    
+                }
 
                 else
                 {
