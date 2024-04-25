@@ -17,13 +17,13 @@ namespace TLIS_Service.IService
 {
     public interface ISideArmService
     {
-        
+
+        Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, string ConnectionString, int? TaskId, int UserId);
         Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string SiteCode, string ConnectionString);
         Response<ReturnWithFilters<SideArmDisplayedOnTableViewModel>> getSideArms(CivilLoadsFilter BaseFilter, bool WithFilterData, List<FilterObjectList> filters);
         Response<ReturnWithFilters<object>> GetSideArmsWithEnabledAtt(CivilLoadsFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, CombineFilters CombineFilters, int? CivilId, string CivilType);
         Response<List<KeyValuePair<string, int>>> getSideArmsForAdd(string SiteCode, int CivilId, int? LegId, int? MinHeight, int? MaxHeight, int? NumberOfLoadsOnSideArm, int? MinAzimuth, int? MaxAzimuth);
         Response<GetForAddLoadObject> GetById(int Id);
-        Response<AddSideArms> AddSideArm(AddSideArms SideArmViewModel , string SiteCode, string connectionString, int? TaskId, int UserId);
         public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskI);
         Response<ObjectInstAttsForSideArm> GetSideArmById(int SideArmId, string TableName);
  

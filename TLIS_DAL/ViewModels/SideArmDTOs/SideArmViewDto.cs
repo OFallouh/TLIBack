@@ -5,20 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.LogisticalDTOs;
 
 namespace TLIS_DAL.ViewModels.SideArmDTOs
 {
-    public class AddSideArms
+    public class SideArmViewDto
     {
-        public LibraryAttributesSideArm civilType { get; set; }
-        public installationAttributesSideArm installationAttributes { get; set; }
+        public LibraryAttributesSideArms civilType { get; set; }
+        public installationAttributesSideArms installationAttributes { get; set; }
         public AddCivilLoadsViewModel TLIcivilLoads { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class LibraryAttributesSideArm
+        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
+        public class LibraryAttributesSideArms
         {
             public int sideArmLibraryId { get; set; }
         }
-        public class installationAttributesSideArm
+        public class installationAttributesSideArms
         {
             public string Name { get; set; }
             public string? Notes { get; set; }

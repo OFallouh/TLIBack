@@ -91,7 +91,33 @@ namespace TLIS_API.Controllers
             var response = await _UnitOfWorkService.SideArmService.AddSideArmInstallationPlace(SideArmInstallationPlaceViewModel);
             return Ok(response);
         }
-        
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddSideArm")]
+        [ProducesResponseType(200, Type = typeof(SideArmViewDto))]
+        public IActionResult AddSideArm([FromBody] SideArmViewDto addSideArms,string SiteCode, int? TaskId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var Response = _UnitOfWorkService.SideArmService.AddSideArm(addSideArms, SiteCode, ConnectionString, TaskId, userId);
+            return Ok(Response);
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("UpdateSideArmInstallationPlace")]
         [ProducesResponseType(200, Type = typeof(EditSideArmInstallationPlaceViewModel))]
@@ -108,7 +134,7 @@ namespace TLIS_API.Controllers
             var response = await _UnitOfWorkService.SideArmService.GetSideArmInstallationPlace(civilInstallationPlaceType);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAdd")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibId)

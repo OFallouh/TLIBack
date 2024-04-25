@@ -7091,7 +7091,7 @@ namespace TLIS_Service.Services
                return new Response<GetForAddCivilWithLegObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName,int CategoryId)
         {
             try
             {
@@ -7214,7 +7214,7 @@ namespace TLIS_Service.Services
                 objectInst.InstallationAttributes = ListAttributesActivated;
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
-                        GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
+                        GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, CategoryId);
                     
                     objectInst.LibraryAttribute = LibraryAttributes;
 
@@ -10373,7 +10373,7 @@ namespace TLIS_Service.Services
 
             }
         }
-        public Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, string CivilName, int? TaskId)
+        public Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -10452,7 +10452,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId, string CivilName, int? TaskId)
+        public Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -10531,7 +10531,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId, string CivilName, int? TaskId)
+        public Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {

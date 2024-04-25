@@ -69,149 +69,148 @@ namespace TLIS_Service.Services
             _dbContext = context;
             _mapper = mapper;
         }
-        public Response<AddSideArms> AddSideArm(AddSideArms SideArmViewModel,  string SiteCode, string connectionString, int? TaskId, int UserId)
-        {   
-            using (TransactionScope transaction = new TransactionScope())
-            {
-                try
-                {
-                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString());
-                    TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel);
-                    SideArm.Active = true;
+        //public Response<AllItemAttributes> AddSideArm(AddSideArmLibraryObject SideArmViewModel, string SiteCode, string ConnectionString, int? TaskId,int UserId)
+        //{
+        //    //using (TransactionScope transaction = new TransactionScope())
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString());
+        //    //        TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel);
+        //    //        SideArm.Active = true;
 
 
-                    //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
+        //    //        //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
 
-                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+        //    //        //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //    //        //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                    //string CheckGeneralValidation = CheckGeneralValidationFunction(SideArmViewModel.dynamicAttribute, TableNameEntity.TableName);
+        //    //        //string CheckGeneralValidation = CheckGeneralValidationFunction(SideArmViewModel.dynamicAttribute, TableNameEntity.TableName);
 
-                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-
-                    TLIsideArmInstallationPlace InstallationPlaceEntity = _unitOfWork.SideArmInstallationPlaceRepository
-                        .GetByID(SideArm.sideArmInstallationPlaceId);
-
-                    TLIsideArmType sideArmTypeEntity = _unitOfWork.SideArmTypeRepository.GetByID(SideArm.sideArmTypeId);
-
-                    if ((InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
-                        sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower()) ?
-                            ((SideArmViewModel.TLIcivilLoads.legId == null && SideArmViewModel.TLIcivilLoads.Leg2Id == null) || (SideArmViewModel.TLIcivilLoads.Leg2Id != null && SideArmViewModel.TLIcivilLoads.legId != null)) : false)
-                    {
-                        return new Response<AddSideArms>(false, null, null,
-                            "Number of legs must be equal to 1 leg only when the installation place is leg and side arm type is normal", (int)ApiReturnCode.fail);
-                    }
-                    else if (InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
-                        sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower() ?
-                            (SideArmViewModel.TLIcivilLoads.legId == null || SideArmViewModel.TLIcivilLoads.Leg2Id == null) : false)
-                    {
-                        return new Response<AddSideArms>(false, null, null,
-                            "Number of legs must be equal to 2 leg only when the installation place is leg and side arm type is special", (int)ApiReturnCode.fail);
-                    }
-                    if (SideArm.Azimuth <= 0)
-                    {
-                        return new Response<AddSideArms>(false, null, null,
-                            "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-
-                    }
-                    if (SideArm.HeightBase <= 0)
-                    {
-                        return new Response<AddSideArms>(false, null, null,
-                            "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                    }
-                    var civilload = _dbContext.TLIallCivilInst.Where(x => x.Id == SideArmViewModel.TLIcivilLoads.allCivilInstId).Include(x => x.civilNonSteel).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).FirstOrDefault();
-                    if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
-                    {
-                        var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
-                        var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.legId || x.Id == SideArmViewModel.TLIcivilLoads.Leg2Id).CiviLegName;
-                        SideArm.Name = civilwithlegname + LegName + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
-                    }
-                    if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower())
-                    {
-                        var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
-                        var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.legId).CiviLegName;
-                        var LegName2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.Leg2Id).CiviLegName;
-                        SideArm.Name = civilwithlegname + LegName + LegName2 + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
-                    }
-                    if (civilload.civilWithoutLegId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
-                    {
-                        var civilwithlegname = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == civilload.civilWithoutLegId).Name;
-                        SideArm.Name = civilwithlegname + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
-                    }
-                    if (civilload.civilNonSteelId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
-                    {
-                        var civilwithlegname = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == civilload.civilNonSteelId).Name;
-                        SideArm.Name = civilwithlegname + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
-                    }
-                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                        (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                            x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                            x => x.sideArm);
-
-                    if (CheckName != null)
-                        return new Response<AddSideArms>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
-
-                    _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
-                    _unitOfWork.SaveChanges();
-
-                    TLIcivilLoads civilLoad = new TLIcivilLoads
-                    {
-                        InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate,
-                        allCivilInstId = SideArmViewModel.TLIcivilLoads.allCivilInstId,
-                        civilSteelSupportCategoryId = SideArmViewModel.TLIcivilLoads.civilSteelSupportCategoryId,
-                        ItemOnCivilStatus = SideArmViewModel.TLIcivilLoads.ItemOnCivilStatus,
-                        ItemStatus = SideArmViewModel.TLIcivilLoads.ItemStatus,
-                        ReservedSpace = SideArmViewModel.TLIcivilLoads.ReservedSpace,
-                        sideArmId = SideArm.Id,
-                        SiteCode = SiteCode,
-                        legId = SideArmViewModel.TLIcivilLoads.legId,
-                        Leg2Id = SideArmViewModel.TLIcivilLoads.Leg2Id
-                    };
-
-                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                    _unitOfWork.SaveChangesAsync();
+        //    //        //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //    //        //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
 
+        //    //        TLIsideArmInstallationPlace InstallationPlaceEntity = _unitOfWork.SideArmInstallationPlaceRepository
+        //    //            .GetByID(SideArm.sideArmInstallationPlaceId);
 
-                    if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count > 0 : false)
-                    {
-                        foreach (var DynamicAttInstValue in SideArmViewModel.dynamicAttribute)
-                        {
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
-                        }
-                    }
-                    if (TaskId != null)
-                    {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                        var result = Submit.Result;
-                        if (result.result == true && result.errorMessage == null)
-                        {
-                            _unitOfWork.SaveChanges();
-                            transaction.Complete();
-                        }
-                        else
-                        {
-                            transaction.Dispose();
-                            return new Response<AddSideArms>(false, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
-                        }
-                    }
-                    else
-                    {
-                        _unitOfWork.SaveChanges();
-                        transaction.Complete();
-                    }
-                    return new Response<AddSideArms>();
-                }
-                catch (Exception err)
-                {
-                    return new Response<AddSideArms>(false, null, null, err.Message, (int)ApiReturnCode.fail);
-                }
-            }
-                
-            
-        }
+        //    //        TLIsideArmType sideArmTypeEntity = _unitOfWork.SideArmTypeRepository.GetByID(SideArm.sideArmTypeId);
+
+        //    //        if ((InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
+        //    //            sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower()) ?
+        //    //                ((SideArmViewModel.TLIcivilLoads.legId == null && SideArmViewModel.TLIcivilLoads.Leg2Id == null) || (SideArmViewModel.TLIcivilLoads.Leg2Id != null && SideArmViewModel.TLIcivilLoads.legId != null)) : false)
+        //    //        {
+        //    //            return new Response<AllItemAttributes>(false, null, null,
+        //    //                "Number of legs must be equal to 1 leg only when the installation place is leg and side arm type is normal", (int)ApiReturnCode.fail);
+        //    //        }
+        //    //        else if (InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
+        //    //            sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower() ?
+        //    //                (SideArmViewModel.TLIcivilLoads.legId == null || SideArmViewModel.TLIcivilLoads.Leg2Id == null) : false)
+        //    //        {
+        //    //            return new Response<AllItemAttributes>(false, null, null,
+        //    //                "Number of legs must be equal to 2 leg only when the installation place is leg and side arm type is special", (int)ApiReturnCode.fail);
+        //    //        }
+        //    //        if (SideArm.Azimuth <= 0)
+        //    //        {
+        //    //            return new Response<AllItemAttributes>(false, null, null,
+        //    //                "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+
+        //    //        }
+        //    //        if (SideArm.HeightBase <= 0)
+        //    //        {
+        //    //            return new Response<AllItemAttributes>(false, null, null,
+        //    //                "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+        //    //        }
+        //    //        var civilload = _dbContext.TLIallCivilInst.Where(x => x.Id == SideArmViewModel.TLIcivilLoads.allCivilInstId).Include(x => x.civilNonSteel).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).FirstOrDefault();
+        //    //        if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
+        //    //        {
+        //    //            var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
+        //    //            var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.legId || x.Id == SideArmViewModel.TLIcivilLoads.Leg2Id).CiviLegName;
+        //    //            SideArm.Name = civilwithlegname + LegName + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
+        //    //        }
+        //    //        if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower())
+        //    //        {
+        //    //            var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
+        //    //            var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.legId).CiviLegName;
+        //    //            var LegName2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.TLIcivilLoads.Leg2Id).CiviLegName;
+        //    //            SideArm.Name = civilwithlegname + LegName + LegName2 + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
+        //    //        }
+        //    //        if (civilload.civilWithoutLegId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
+        //    //        {
+        //    //            var civilwithlegname = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == civilload.civilWithoutLegId).Name;
+        //    //            SideArm.Name = civilwithlegname + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
+        //    //        }
+        //    //        if (civilload.civilNonSteelId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
+        //    //        {
+        //    //            var civilwithlegname = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == civilload.civilNonSteelId).Name;
+        //    //            SideArm.Name = civilwithlegname + SideArmViewModel.installationAttributes.HeightBase + SideArmViewModel.installationAttributes.Azimuth;
+        //    //        }
+        //    //        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
+        //    //            (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
+        //    //                x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
+        //    //                x => x.sideArm);
+
+        //    //        if (CheckName != null)
+        //    //            return new Response<AllItemAttributes>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //    //        _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
+        //    //        _unitOfWork.SaveChanges();
+
+        //    //        TLIcivilLoads civilLoad = new TLIcivilLoads
+        //    //        {
+        //    //            InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate,
+        //    //            allCivilInstId = SideArmViewModel.TLIcivilLoads.allCivilInstId,
+        //    //            civilSteelSupportCategoryId = SideArmViewModel.TLIcivilLoads.civilSteelSupportCategoryId,
+        //    //            ItemOnCivilStatus = SideArmViewModel.TLIcivilLoads.ItemOnCivilStatus,
+        //    //            ItemStatus = SideArmViewModel.TLIcivilLoads.ItemStatus,
+        //    //            ReservedSpace = SideArmViewModel.TLIcivilLoads.ReservedSpace,
+        //    //            sideArmId = SideArm.Id,
+        //    //            SiteCode = SiteCode,
+        //    //            legId = SideArmViewModel.TLIcivilLoads.legId,
+        //    //            Leg2Id = SideArmViewModel.TLIcivilLoads.Leg2Id
+        //    //        };
+
+        //    //        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+        //    //        _unitOfWork.SaveChangesAsync();
+
+
+
+        //    //        if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count > 0 : false)
+        //    //        {
+        //    //            foreach (var DynamicAttInstValue in SideArmViewModel.dynamicAttribute)
+        //    //            {
+        //    //                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+        //    //            }
+        //    //        }
+        //    //        if (TaskId != null)
+        //    //        {
+        //    //            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+        //    //            var result = Submit.Result;
+        //    //            if (result.result == true && result.errorMessage == null)
+        //    //            {
+        //    //                _unitOfWork.SaveChanges();
+        //    //                transaction.Complete();
+        //    //            }
+        //    //            else
+        //    //            {
+        //    //                transaction.Dispose();
+        //    //                return new Response<AllItemAttributes>(false, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+        //    //            }
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            _unitOfWork.SaveChanges();
+        //    //            transaction.Complete();
+        //    //        }
+        //    //        return new Response<AllItemAttributes>();
+        //    //    }
+        //    //    catch (Exception err)
+        //    //    {
+        //    //        return new Response<AllItemAttributes>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+        //    //    }
+        //    //}
+        //    return new Response<AllItemAttributes>();
+        //}
         public Response<GetForAddLoadObject> GetAttForAdd(int LibraryId)
         {
             try
@@ -3207,6 +3206,148 @@ namespace TLIS_Service.Services
             catch (Exception err)
             {
                 return new Response<List<SideArmViewModel>>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+            }
+        }
+
+        public Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString());
+                    TLIsideArm SideArm = _mapper.Map<TLIsideArm>(addSideArms);
+                    SideArm.Active = true;
+
+
+                    //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
+
+                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                    //string CheckGeneralValidation = CheckGeneralValidationFunction(addSideArms.dynamicAttribute, TableNameEntity.TableName);
+
+                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+
+                    TLIsideArmInstallationPlace InstallationPlaceEntity = _unitOfWork.SideArmInstallationPlaceRepository
+                        .GetByID(SideArm.sideArmInstallationPlaceId);
+
+                    TLIsideArmType sideArmTypeEntity = _unitOfWork.SideArmTypeRepository.GetByID(SideArm.sideArmTypeId);
+
+                    if ((InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
+                        sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower()) ?
+                            ((addSideArms.TLIcivilLoads.legId == null && addSideArms.TLIcivilLoads.Leg2Id == null) || (addSideArms.TLIcivilLoads.Leg2Id != null && addSideArms.TLIcivilLoads.legId != null)) : false)
+                    {
+                        return new Response<SideArmViewDto>(false, null, null,
+                            "Number of legs must be equal to 1 leg only when the installation place is leg and side arm type is normal", (int)ApiReturnCode.fail);
+                    }
+                    else if (InstallationPlaceEntity.Name.ToLower() == SideArmInstallationPlace.Leg.ToString().ToLower() &&
+                        sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower() ?
+                            (addSideArms.TLIcivilLoads.legId == null || addSideArms.TLIcivilLoads.Leg2Id == null) : false)
+                    {
+                        return new Response<SideArmViewDto>(false, null, null,
+                            "Number of legs must be equal to 2 leg only when the installation place is leg and side arm type is special", (int)ApiReturnCode.fail);
+                    }
+                    if (SideArm.Azimuth <= 0)
+                    {
+                        return new Response<SideArmViewDto>(false, null, null,
+                            "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+
+                    }
+                    if (SideArm.HeightBase <= 0)
+                    {
+                        return new Response<SideArmViewDto>(false, null, null,
+                            "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                    }
+                    var civilload = _dbContext.TLIallCivilInst.Where(x => x.Id == addSideArms.TLIcivilLoads.allCivilInstId).Include(x => x.civilNonSteel).Include(x => x.civilWithLegs).Include(x => x.civilWithoutLeg).FirstOrDefault();
+                    if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
+                    {
+                        var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
+                        var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.TLIcivilLoads.legId || x.Id == addSideArms.TLIcivilLoads.Leg2Id).CiviLegName;
+                        SideArm.Name = civilwithlegname + LegName + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
+                    }
+                    if (civilload.civilWithLegsId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Special.ToString().ToLower())
+                    {
+                        var civilwithlegname = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == civilload.civilWithLegsId).Name;
+                        var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.TLIcivilLoads.legId).CiviLegName;
+                        var LegName2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.TLIcivilLoads.Leg2Id).CiviLegName;
+                        SideArm.Name = civilwithlegname + LegName + LegName2 + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
+                    }
+                    if (civilload.civilWithoutLegId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
+                    {
+                        var civilwithlegname = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == civilload.civilWithoutLegId).Name;
+                        SideArm.Name = civilwithlegname + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
+                    }
+                    if (civilload.civilNonSteelId != null && sideArmTypeEntity.Name.ToLower() == SideArmTypes.Normal.ToString().ToLower())
+                    {
+                        var civilwithlegname = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == civilload.civilNonSteelId).Name;
+                        SideArm.Name = civilwithlegname + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
+                    }
+                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
+                        (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
+                            x => x.sideArm);
+
+                    if (CheckName != null)
+                        return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+
+                    _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
+                    _unitOfWork.SaveChanges();
+
+                    TLIcivilLoads civilLoad = new TLIcivilLoads
+                    {
+                        InstallationDate = addSideArms.TLIcivilLoads.InstallationDate,
+                        allCivilInstId = addSideArms.TLIcivilLoads.allCivilInstId,
+                        civilSteelSupportCategoryId = addSideArms.TLIcivilLoads.civilSteelSupportCategoryId,
+                        ItemOnCivilStatus = addSideArms.TLIcivilLoads.ItemOnCivilStatus,
+                        ItemStatus = addSideArms.TLIcivilLoads.ItemStatus,
+                        ReservedSpace = addSideArms.TLIcivilLoads.ReservedSpace,
+                        sideArmId = SideArm.Id,
+                        SiteCode = SiteCode,
+                        legId = addSideArms.TLIcivilLoads.legId,
+                        Leg2Id = addSideArms.TLIcivilLoads.Leg2Id
+                    };
+
+                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                    _unitOfWork.SaveChangesAsync();
+
+
+
+                    if (addSideArms.dynamicAttributes != null ? addSideArms.dynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var DynamicAttInstValue in addSideArms.dynamicAttributes)
+                        {
+                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+                        }
+                    }
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
+                            return new Response<SideArmViewDto>(false, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
+                    return new Response<SideArmViewDto>();
+                }
+                catch (Exception err)
+                {
+                    return new Response<SideArmViewDto>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+                }
             }
         }
     }

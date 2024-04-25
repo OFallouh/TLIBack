@@ -194,7 +194,7 @@ namespace TLIS_API.Controllers
               
 
         }
-
+        
         [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
         public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
@@ -285,9 +285,9 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetCivilWithoutLegsInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithoutLegsInstallationById(int CivilId)
+        public IActionResult GetCivilWithoutLegsInstallationById(int CivilId,int CategoryId)
         {
-            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CategoryId);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -449,7 +449,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, CivilName, TaskId);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId);
             return Ok(response);
 
         }
@@ -476,7 +476,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, CivilName, TaskId);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId);
             return Ok(response);
 
         }
@@ -503,7 +503,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, CivilName, TaskId);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId);
             return Ok(response);
 
         }
