@@ -428,7 +428,7 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleCivilWithLegsInstallation")]
-        public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, string CivilName, int? TaskId)
+        public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -453,9 +453,9 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleCivilWithoutLegsInstallation")]
-        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, string CivilName, int? TaskId)
+        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -482,7 +482,7 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleCivilNonSteelInstallation")]
-        public IActionResult DismantleCivilNonSteelInstallation(string SiteCode, int CivilId, string CivilName, int? TaskId)
+        public IActionResult DismantleCivilNonSteelInstallation(string SiteCode, int CivilId, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];

@@ -11,12 +11,12 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
 {
     public class GetForAddLoadObject
     {
-        public IEnumerable<BaseInstAttViews> LibraryActivatedAttributes { get; set; } = new List<BaseInstAttViews>();
+        public IEnumerable<BaseInstAttViews> LibraryAttribute { get; set; } = new List<BaseInstAttViews>();
 
-        public IEnumerable<BaseInstAttViews> AttributesActivated { get; set; } = new List<BaseInstAttViews>();
+        public IEnumerable<BaseInstAttViews> InstallationAttributes { get; set; } = new List<BaseInstAttViews>();
 
         public IEnumerable<BaseInstAttViews> CivilLoads { get; set; } = new List<BaseInstAttViews>();
 
-        public IEnumerable<DynaminAttInstViewModel> DynamicAtts { get; set; } = new List<DynaminAttInstViewModel>();
+        public IEnumerable<DynaminAttInstViewModel> DynamicAttribute { get; set; } = new List<DynaminAttInstViewModel>();
     }
 }

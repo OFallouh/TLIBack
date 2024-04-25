@@ -10392,31 +10392,45 @@ namespace TLIS_Service.Services
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithLegs.SpaceInstallation;
                             _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteReservedSpace, civilSiteDate);
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
+                                tLIcivilLoads.Dismantle = true;
+                                _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            }
 
+                            var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                            if (Site != null)
+                            {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                                Site.ReservedSpace -= (float)Freespace;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, Site);
+                                _dbContext.SaveChanges();
+                            }
                         }
                         var civilSiteDate1 = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                         if (civilSiteDate1 != null)
                         {
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
-                            _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate);
-                        }
+                            _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate1);
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
+                                tLIcivilLoads.Dismantle = true;
+                                _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            }
 
-                        var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var tLIcivilLoads in allcivilload)
-                        {
-                            var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
-                            tLIcivilLoads.Dismantle = true;
-                            _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
-                        }
-
-                        var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
-                        if (Site != null)
-                        {
-                            var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
-                            Site.ReservedSpace -= (float)Freespace;
-                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldValueSite, Site);
-                            _dbContext.SaveChanges();
+                            var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                            if (Site != null)
+                            {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                                Site.ReservedSpace -= (float)Freespace;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, Site);
+                                _dbContext.SaveChanges();
+                            }
                         }
                         if (TaskId != null)
                         {
@@ -10471,32 +10485,47 @@ namespace TLIS_Service.Services
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithLegs.SpaceInstallation;
                             _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteReservedSpace, civilSiteDate);
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
+                                tLIcivilLoads.Dismantle = true;
+                                _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            }
 
+                            var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                            if (Site != null)
+                            {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                                Site.ReservedSpace -= (float)Freespace;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, Site);
+                                _dbContext.SaveChanges();
+                            }
                         }
                         var civilSiteDate1 = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                         if (civilSiteDate1 != null)
                         {
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
-                            _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate);
-                        }
+                            _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate1);
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
+                                tLIcivilLoads.Dismantle = true;
+                                _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            }
 
-                        var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var tLIcivilLoads in allcivilload)
-                        {
-                            var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
-                            tLIcivilLoads.Dismantle = true;
-                            _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                            if (Site != null)
+                            {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                                Site.ReservedSpace -= (float)Freespace;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, Site);
+                                _dbContext.SaveChanges();
+                            }
                         }
-
-                        var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
-                        if (Site != null)
-                        {
-                            var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
-                            Site.ReservedSpace -= (float)Freespace;
-                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldValueSite, Site);
-                            _dbContext.SaveChanges();
-                        }
+                       
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -10550,32 +10579,48 @@ namespace TLIS_Service.Services
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithLegs.SpaceInstallation;
                             _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteReservedSpace, civilSiteDate);
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
+                                tLIcivilLoads.Dismantle = true;
+                                _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            }
 
+                            var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                            if (Site != null)
+                            {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                                Site.ReservedSpace -= (float)Freespace;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, Site);
+                                _dbContext.SaveChanges();
+                            }
                         }
                         var civilSiteDate1 = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                         if (civilSiteDate1 != null)
                         {
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
-                            _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate);
+                            _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate1);
+                            var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
+                            foreach (var tLIcivilLoads in allcivilload)
+                            {
+                                var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
+                                tLIcivilLoads.Dismantle = true;
+                                _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
+                            }
+
+                            var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
+                            if (Site != null)
+                            {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
+                                Site.ReservedSpace -= (float)Freespace;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, Site);
+                                _dbContext.SaveChanges();
+                            }
                         }
 
-                        var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                        foreach (var tLIcivilLoads in allcivilload)
-                        {
-                            var OldValueCivilLoad = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.Id == tLIcivilLoads.Id);
-                            tLIcivilLoads.Dismantle = true;
-                            _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
-                        }
-
-                        var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
-                        if (Site != null)
-                        {
-                            var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
-                            Site.ReservedSpace -= (float)Freespace;
-                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldValueSite, Site);
-                            _dbContext.SaveChanges();
-                        }
+                        
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);

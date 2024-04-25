@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -293,7 +294,22 @@ namespace TLIS_Repository.Repositories
                         item.Add(propertyName, false);
                     }
                 }
-                              
+                //else if (datatype.ToLower() == "datetime")
+                //{
+                //    var value = dynamic?.GetValueOrDefault(propertyName);
+                //    var formattedValue = value.Split(" ");
+
+                //    if (value != null)
+                //    {
+                //        DateTime dateObject = DateTime.ParseExact(formattedValue[0], "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                //        item.Add(propertyName, dateObject);
+                //    }
+                //    else
+                //    {
+                //        throw new ArgumentException($"Cannot convert {value} to DateTime for property {propertyName}");
+                //    }
+                //}
+
                 else
                 {
                     var value = dynamic?.GetValueOrDefault(propertyName);

@@ -230,7 +230,7 @@ namespace TLIS_Service.Services
 
                 LibraryAttributeActivated.AddRange(AddToLibraryAttributesActivated);
 
-                objectInst.LibraryActivatedAttributes = LibraryAttributeActivated;
+                objectInst.LibraryAttribute = LibraryAttributeActivated;
 
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
                     GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), null, "Name", "sideArmLibraryId","ItemStatusId", "TicketId").ToList();
@@ -246,13 +246,9 @@ namespace TLIS_Service.Services
                 {
                     if (FKitem.Label.ToLower() == "owner_name")
                         FKitem.Value = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
-                   else if (FKitem.Label.ToLower() == "sidearminstallationplace_name")
-                        FKitem.Value = _mapper.Map<List<SideArmInstallationPlaceViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository.GetWhere(x=>!x.Disable && !x.Deleted).ToList());
-                   else if (FKitem.Label.ToLower() == "sidearmtype_name")
-                        FKitem.Value = _mapper.Map<List<SideArmTypeViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Disable && !x.Deleted).ToList());
                 }
 
-                objectInst.AttributesActivated = ListAttributesActivated;
+                objectInst.InstallationAttributes = ListAttributesActivated;
                 IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                         .GetDynamicInstAtts(TableNameEntity.Id, null);
 
@@ -283,7 +279,7 @@ namespace TLIS_Service.Services
                     }
                 }
 
-                objectInst.DynamicAtts = DynamicAttributesWithoutValue;
+                objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
 
                 objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
@@ -1662,8 +1658,8 @@ namespace TLIS_Service.Services
             {
                 GetForAddLoadObject attributes = new GetForAddLoadObject();
                 TLIsideArm sideArm = _unitOfWork.SideArmRepository.GetByID(Id);
-                attributes.AttributesActivated = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), sideArm, null);
-                var foreignKeyAttributes = attributes.AttributesActivated.Select(FKitem =>
+                attributes.InstallationAttributes = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), sideArm, null);
+                var foreignKeyAttributes = attributes.InstallationAttributes.Select(FKitem =>
                 {
                     switch (FKitem.Label.ToLower())
                     {
@@ -1684,8 +1680,8 @@ namespace TLIS_Service.Services
                     return FKitem;
                 }).ToList();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
-                attributes.DynamicAtts = null;
-                attributes.DynamicAtts = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
+                attributes.DynamicAttribute = null;
+                attributes.DynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
                 return new Response<GetForAddLoadObject>(true, attributes, null, null, (int)ApiReturnCode.success);
 
             }
