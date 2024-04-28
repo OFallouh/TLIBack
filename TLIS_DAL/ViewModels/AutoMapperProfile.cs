@@ -151,6 +151,7 @@ using static TLIS_DAL.ViewModels.AddCivilNonSteelObject;
 using static TLIS_DAL.ViewModels.CivilNonSteelDTOs.EditCivilNonSteelInstallationObject;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.AddSideArmLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
+using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -164,6 +165,8 @@ namespace TLIS_DAL.ViewModels
            // ---------------------------------------------------------------------------------------
 
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
+            CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
+            CreateMap<TLIsideArm, SideArmViewDto>().ReverseMap();
             CreateMap<StructureTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
             CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAttLibValue>().ReverseMap();
             CreateMap<AddDdynamicAttributeInstallationValueViewModel, TLIdynamicAtt>().ReverseMap();

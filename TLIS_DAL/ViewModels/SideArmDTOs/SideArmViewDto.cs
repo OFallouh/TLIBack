@@ -11,12 +11,20 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
 {
     public class SideArmViewDto
     {
-        public LibraryAttributesSideArms civilType { get; set; }
+        public InstallationConfigObject installationConfig { get; set; }
         public installationAttributesSideArms installationAttributes { get; set; }
-        public AddCivilLoadsViewModel TLIcivilLoads { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
-        public class LibraryAttributesSideArms
+        public AddCivilLoads civilLoads { get; set; }
+        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
+        public class InstallationConfigObject
         {
+            public int installationPlaceId { get; set; }
+            public int? civilSteelType { get; set; }
+            public int? civilWithLegId { get; set; }
+            public int? civilWithoutLegId { get; set; }
+            public int? civilNonSteelId { get; set; }
+            public int sideArmTypeId { get; set; }
+            public List<int>? legId { get; set; }
+            public int? branchingSideArmId { get; set; }
             public int sideArmLibraryId { get; set; }
         }
         public class installationAttributesSideArms
@@ -29,9 +37,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public bool Active { get; set; }
             public string? VisibleStatus { get; set; }
             public float SpaceInstallation { get; set; }
-            public int sideArmInstallationPlaceId { get; set; }
             public int? ownerId { get; set; }
-            public int sideArmTypeId { get; set; }
             public int? ItemStatusId { get; set; }
             public int? TicketId { get; set; }
             public bool Draft { get; set; }
@@ -39,6 +45,17 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public float HBA { get; set; }
             public float HieghFromLand { get; set; }
             public float EquivalentSpace { get; set; }
+        }
+        public class AddCivilLoads
+        {
+            public DateTime InstallationDate { get; set; }
+            public string? ItemOnCivilStatus { get; set; }
+            public string? ItemStatus { get; set; }
+            public bool Dismantle { get; set; }
+            public bool ReservedSpace { get; set; } = false;
+            public int allCivilInstId { get; set; }
+            public int? civilSteelSupportCategoryId { get; set; }
+
         }
     }
 }
