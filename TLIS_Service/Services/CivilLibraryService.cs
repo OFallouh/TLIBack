@@ -1628,15 +1628,13 @@ namespace TLIS_Service.Services
                     TLIcivilWithLegLibrary CivilWithLegLibraryEntites = _mapper.Map<TLIcivilWithLegLibrary>(editCivilWithLegsLibrary.attributesActivatedLibrary);
 
                     TLIcivilWithLegLibrary CivilWithLegLib = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilWithLegLibraryEntites.Id);
-                    if(CivilWithLegLib.Model != CivilWithLegLibraryEntites.Model)
-                    {
-                        return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "structureType and vendor and Prefix and Height_Designed It cannot be changed", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+                  
                     var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilWithLegsLibrary.logisticalItems.Vendor);
                     var vendor = logisticalObject?.Name;
 
                     var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
                     var structureTypeName = structureType?.Name;
+
                     if (CivilWithLegLib.SpaceLibrary == 0)
                     {
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1783,11 +1781,7 @@ namespace TLIS_Service.Services
                     TLIcivilWithoutLegLibrary CivilWithLegLibraryEntites = _mapper.Map<TLIcivilWithoutLegLibrary>(editCivilWithoutLegsLibraryObject.attributesActivatedLibrary);
 
                     TLIcivilWithoutLegLibrary CivilWithLegLib = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilWithLegLibraryEntites.Id);
-                    if (CivilWithLegLib.Model != CivilWithLegLibraryEntites.Model)
-                    {
-                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "structureType and vendor and Prefix and Height_Designed It cannot be changed", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-
+                  
                     var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilWithoutLegsLibraryObject.logisticalItems.Vendor);
                     var vendor = logisticalObject?.Name;
 
