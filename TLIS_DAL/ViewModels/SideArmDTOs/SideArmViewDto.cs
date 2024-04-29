@@ -53,7 +53,6 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public string? ItemStatus { get; set; }
             public bool Dismantle { get; set; }
             public bool ReservedSpace { get; set; } = false;
-            public int allCivilInstId { get; set; }
             public int? civilSteelSupportCategoryId { get; set; }
 
         }

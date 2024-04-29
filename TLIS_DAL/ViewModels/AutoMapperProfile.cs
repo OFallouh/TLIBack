@@ -186,6 +186,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<CivilWihtoutLegsLibraryAttributes, TLIcivilWithoutLegLibrary>().ReverseMap();
             CreateMap<AddCivilWithoutLegsLibraryObject, TLIcivilWithoutLegLibrary>().ReverseMap();
             CreateMap<EditCivilWihtoutLegsLibraryAttributes, TLIcivilWithoutLegLibrary>().ReverseMap();
+            CreateMap<EditCivilSideArmlLibraryAttributes, TLIsideArmLibrary>().ReverseMap();
 
 
             //---------------------------------------------------------------------------

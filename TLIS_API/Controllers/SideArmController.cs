@@ -66,7 +66,7 @@ namespace TLIS_API.Controllers
             var response = _UnitOfWorkService.SideArmService.GetSideArmById(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("getById/{id}")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetSideArm(int id)

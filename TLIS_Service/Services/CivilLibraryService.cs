@@ -2013,10 +2013,9 @@ namespace TLIS_Service.Services
                     }
                     
                     CivilWithLegLibraryEntites.Model = model;
-
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
-
+                    CivilWithLegLibraryEntites.CivilSteelSupportCategoryId = CivilWithLegLib.CivilSteelSupportCategoryId;
                     _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(userId, CivilWithLegLib, CivilWithLegLibraryEntites);
 
 
@@ -4196,11 +4195,7 @@ namespace TLIS_Service.Services
                             FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x =>!x.disable).ToList());
                             FKitem.Value = _mapper.Map<CivilWithoutLegCategoryViewModel>(CivilWithoutLegLibrary.CivilWithoutLegCategory);
                         }
-                        else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
-                        {
-                            FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(db.TLIcivilSteelSupportCategory.ToList());
-                            FKitem.Value = _mapper.Map<CivilSteelSupportCategoryViewModel>(CivilWithoutLegLibrary.CivilSteelSupportCategory);
-                        }
+                 
                         return FKitem;
                     })
                     .ToList();
