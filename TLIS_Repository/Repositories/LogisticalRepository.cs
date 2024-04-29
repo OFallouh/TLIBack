@@ -140,7 +140,7 @@ namespace TLIS_Repository.Repositories
                         Desc = LogisticalType.Name,
                         Manage = false,
                         Required = false,
-                        Value = "null",
+                        Value = null,
                         Options = Logisticals
 
                     });
@@ -199,7 +199,7 @@ namespace TLIS_Repository.Repositories
                         Desc = LogisticalType.Name,
                         Manage = false,
                         Required = false,
-                        Value = "null",
+                        Value = null,
                         Options = Logisticals
 
                     });
