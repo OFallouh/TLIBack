@@ -1153,9 +1153,16 @@ namespace TLIS_Service.Services
                     }
                     propertyNamesStatic.Add("CIVILNAME");
                     propertyNamesStatic.Add("CIVILID");
+                    propertyNamesStatic.Add("FIRST_LEG");
+                    propertyNamesStatic.Add("FIRST_LEG_ID");
+                    propertyNamesStatic.Add("SECOND_LEG");
+                    propertyNamesStatic.Add("SECOND_LEG_ID");
+
                     if (propertyNamesDynamic.Count == 0)
                     {
-
+                        var query1 = _dbContext.SIDEARM_VIEW
+                     .Where(s => s.SiteCode != null && s.SiteCode.ToLower() == SiteCode.ToLower())
+                     .ToList();
                         var query = _dbContext.SIDEARM_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).AsEnumerable()
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();

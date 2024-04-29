@@ -13,7 +13,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string? SiteCode { get; set; }
+        public string SiteCode { get; set; }
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
         public int Id { get; set; }
@@ -24,12 +24,12 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public int? FIRST_LEG_ID { get; set; }
         public string? SECOND_LEG { get; set; }
         public int? SECOND_LEG_ID { get; set; }
-        public string Notes { get; set; }
-        public float? HeightBase { get; set; }
-        public float? Azimuth { get; set; }
-        public float? ReservedSpace { get; set; }
+        public string? Notes { get; set; }
+        public float HeightBase { get; set; }
+        public float Azimuth { get; set; }
+        public float ReservedSpace { get; set; }
         public bool Active { get; set; }
-        public string VisibleStatus { get; set; }
+        public string? VisibleStatus { get; set; }
         public float SpaceInstallation { get; set; }
         public string SIDEARMLIBRARY { get; set; }
         public string SIDEARMINSTALLATIONPLACE { get; set; }

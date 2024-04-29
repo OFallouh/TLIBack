@@ -1658,10 +1658,6 @@ namespace TLIS_Service.Services
                     {
                         return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    if(CivilWithLegLib.Model != CivilWithLegLibraryEntites.Model)
-                    {
-                        return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"Can not Edit model", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
                     if (structureTypeName != null && structureTypeName.ToLower() == "triangular")
                         CivilWithLegLibraryEntites.NumberOfLegs = 3;
 

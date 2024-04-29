@@ -35,6 +35,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
             public int? civilSteelSupportCategoryId { get; set; }
             public float Manufactured_Max_Load { get; set; } = 0;
             public string? WidthVariation { get; set; }
+            public int NumberOfLegs { get; set; }
         }
     }
 
