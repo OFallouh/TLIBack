@@ -13297,7 +13297,7 @@ namespace TLIS_Service.Services
                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(), null, "allCivilInstId", "Dismantle", "SiteCode");
                 Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "ReferenceCivil_Name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
+                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
                     .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
 
                 };
@@ -13488,7 +13488,7 @@ namespace TLIS_Service.Services
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
                 Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "ReferenceCivil_Name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
+                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
                     .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
 
                 };
@@ -13646,7 +13646,7 @@ namespace TLIS_Service.Services
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
                 Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "ReferenceCivil_Name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
+                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
                     .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
 
                 };
@@ -13909,7 +13909,7 @@ namespace TLIS_Service.Services
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
                 Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "ReferenceCivil_Name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
+                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
                     .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
 
                 };
