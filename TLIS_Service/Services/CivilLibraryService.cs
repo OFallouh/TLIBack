@@ -1635,7 +1635,7 @@ namespace TLIS_Service.Services
                     var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
                     var structureTypeName = structureType?.Name;
 
-                    if (CivilWithLegLib.SpaceLibrary == 0)
+                    if (CivilWithLegLibraryEntites.SpaceLibrary == 0)
                     {
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
@@ -1783,7 +1783,7 @@ namespace TLIS_Service.Services
 
                     var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
                     var structureTypeName = structureType?.Name;
-                    if (CivilWithLegLib.SpaceLibrary == 0)
+                    if (CivilWithLegLibraryEntites.SpaceLibrary == 0)
                     {
                         return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }

@@ -1160,10 +1160,8 @@ namespace TLIS_Service.Services
 
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query1 = _dbContext.SIDEARM_VIEW
-                     .Where(s => s.SiteCode != null && s.SiteCode.ToLower() == SiteCode.ToLower())
-                     .ToList();
-                        var query = _dbContext.SIDEARM_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query1 = _dbContext.SIDEARM_VIEW.FirstOrDefault();
+                        var query = _dbContext.SIDEARM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
                         getEnableAttribute.Model = query;
@@ -1171,10 +1169,10 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.SIDEARM_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.SIDEARM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                        .GroupBy(x => new
                        {
-                           SiteCode = x.SiteCode,
+                           SITECODE = x.SITECODE,
                            Id = x.Id,
                            Name = x.Name,
                            CIVILNAME = x.CIVILNAME,

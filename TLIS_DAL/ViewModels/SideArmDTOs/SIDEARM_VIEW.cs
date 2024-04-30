@@ -13,22 +13,21 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string SiteCode { get; set; }
+        public string SITECODE { get; set; }
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? CIVILNAME { get; set; }
-        public int? CIVILID { get; set; }
+        public string CIVILNAME { get; set; }
+        public string CIVILID { get; set; }
         public string? FIRST_LEG { get; set; }
-        public int? FIRST_LEG_ID { get; set; }
         public string? SECOND_LEG { get; set; }
+        public int? FIRST_LEG_ID { get; set; }
         public int? SECOND_LEG_ID { get; set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
         public string? Notes { get; set; }
         public float HeightBase { get; set; }
         public float Azimuth { get; set; }
         public float ReservedSpace { get; set; }
-        public bool Active { get; set; }
         public string? VisibleStatus { get; set; }
         public float SpaceInstallation { get; set; }
         public string SIDEARMLIBRARY { get; set; }
@@ -37,6 +36,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public string SIDEARMTYPE { get; set; }
         public string? ITEMSTATUS { get; set; }
         public bool Draft { get; set; }
+        public bool Active { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
@@ -48,13 +48,11 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             Dictionary<string, object> outputData = new Dictionary<string, object>();
 
             // Add original properties
-            outputData.Add("SiteCode", SiteCode);
-            outputData.Add("dynamicKeyProperties", null);
-            outputData.Add("dynamicValueProperties", null);
+            outputData.Add("SITECODE", SITECODE);
             outputData.Add("key", Key);
-            outputData.Add("value", INPUTVALUE);
-            outputData.Add("id", Id);
-            outputData.Add("name", Name);
+            outputData.Add("INPUTVALUE", INPUTVALUE);
+            outputData.Add("Id", Id);
+            outputData.Add("Name", Name);
             outputData.Add("CIVILNAME", CIVILNAME);
             outputData.Add("CIVILID", CIVILID);
             outputData.Add("FIRST_LEG", FIRST_LEG);

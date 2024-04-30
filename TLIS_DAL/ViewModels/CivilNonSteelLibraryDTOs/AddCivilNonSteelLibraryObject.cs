@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs
     {
         public CivilNonSteelLibraryAttributes attributesActivatedLibrary { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
-        public AddLogisticalViewModel logisticalItems { get; set; }
+        public AddLogisticalViewModels logisticalItems { get; set; }
         public class CivilNonSteelLibraryAttributes
         {
             public string Model { get; set; }

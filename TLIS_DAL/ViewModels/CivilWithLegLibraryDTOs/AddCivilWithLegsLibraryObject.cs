@@ -32,10 +32,9 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
             public int supportTypeDesignedId { get; set; }
             public int sectionsLegTypeId { get; set; }
             public int structureTypeId { get; set; }
-            public int? civilSteelSupportCategoryId { get; set; }
+            public int? civilSteelSupportCategoryId { get; set; } = null;
             public float Manufactured_Max_Load { get; set; } = 0;
             public string? WidthVariation { get; set; }
-            public int NumberOfLegs { get; set; }
         }
     }
 
