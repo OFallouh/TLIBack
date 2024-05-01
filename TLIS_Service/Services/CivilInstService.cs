@@ -7351,7 +7351,7 @@ namespace TLIS_Service.Services
                         .GetIncludeWhereFirst(x => x.Id == CivilNonSteelInst.CivilNonSteelLibraryId));
 
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary, null).ToList();
+                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary, null,"Id").ToList();
 
                 var civilnonsteeltype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilnonsteeltype_name");
                 if (civilnonsteeltype_name != null)
