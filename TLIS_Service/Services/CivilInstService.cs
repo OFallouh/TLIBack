@@ -6590,6 +6590,7 @@ namespace TLIS_Service.Services
                             case "basecivilwithlegtype_name":
                                 if (CivilWithLegsInst.BaseCivilWithLegType != null)
                                 {
+                                    FKitem.Options = _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(_unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     FKitem.Value = _mapper.Map<BaseCivilWithLegsTypeViewModel>(CivilWithLegsInst.BaseCivilWithLegType);
                                 }
                               
@@ -6603,7 +6604,7 @@ namespace TLIS_Service.Services
                                 if (CivilWithLegsInst.GuyLineType != null)
                                 {
                                     FKitem.Value = _mapper.Map<GuyLineTypeViewModel>(CivilWithLegsInst.GuyLineType);
-
+                                    FKitem.Options = _mapper.Map<List<GuyLineTypeViewModel>>(_unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                    
                                 else
@@ -6620,7 +6621,7 @@ namespace TLIS_Service.Services
                                 if (CivilWithLegsInst.enforcmentCategory != null)
                                 {
                                     FKitem.Value = _mapper.Map<EnforcmentCategoryViewModel>(CivilWithLegsInst.enforcmentCategory);
-
+                                    FKitem.Options = _mapper.Map<List<EnforcmentCategoryViewModel>>(_unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                    
                                 else
@@ -7179,7 +7180,7 @@ namespace TLIS_Service.Services
                             if (CivilWithLoutInst.subType != null)
                             {
                                 FKitem.Value = _mapper.Map<SubTypeViewModel>(CivilWithLoutInst.subType);
-                                
+                                FKitem.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
                             }
                             else
                             {
@@ -7388,6 +7389,7 @@ namespace TLIS_Service.Services
                                 if (CivilNonSteelInst.locationType != null)
                                 {
                                     FKitem.Value = _mapper.Map<LocationTypeViewModel>(CivilNonSteelInst.locationType);
+                                    FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 else  
                                 {
@@ -7401,6 +7403,7 @@ namespace TLIS_Service.Services
                                 if (CivilNonSteelInst.owner != null)
                                 {
                                     FKitem.Value = _mapper.Map<OwnerViewModel>(CivilNonSteelInst.owner);
+                                    FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 else
                                 {
@@ -7411,6 +7414,7 @@ namespace TLIS_Service.Services
                                 if (CivilNonSteelInst.owner != null)
                                 {
                                     FKitem.Value = _mapper.Map<SupportTypeImplementedViewModel>(CivilNonSteelInst.supportTypeImplemented);
+                                    FKitem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 else
                                 {
