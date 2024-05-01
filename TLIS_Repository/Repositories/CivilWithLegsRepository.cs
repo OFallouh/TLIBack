@@ -293,6 +293,10 @@ namespace TLIS_Repository.Repositories
                     {
                         item.Add(propertyName, false);
                     }
+                    else
+                    {
+                        item.Add(propertyName, false);
+                    }
                 }
                 else if (datatype.ToLower() == "datetime")
                 {
@@ -307,6 +311,20 @@ namespace TLIS_Repository.Repositories
                         item.Add(propertyName, value);
                     }
                     
+                }
+                else if (datatype.ToLower() == "double")
+                {
+                    var value = dynamic?.GetValueOrDefault(propertyName);
+                    if (value != null)
+                    {
+                        var dateObject = Convert.ToDouble(value);
+                        item.Add(propertyName, dateObject);
+                    }
+                    else
+                    {
+                        item.Add(propertyName, value);
+                    }
+
                 }
 
                 else

@@ -6672,7 +6672,7 @@ namespace TLIS_Service.Services
                 if (NumberofNumber == 3 || NumberofNumber == 4)
                 {
                     baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
-                        .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
+                        .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
                             .Select(att => new BaseInstAttViews
                             {
                                 Key = att.Key,
@@ -6685,7 +6685,11 @@ namespace TLIS_Service.Services
                                 DataTypeId = att.DataTypeId,
                                 DataType = att.DataType,
                                 Options = att.Options,
-                                Value = att.Label.ToLower() == "legletter" ? legLetters[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] : null)
+                                Value = att.Label.ToLower() == "legletter" ? legLetters[i] :
+                                        (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] :
+                                        (att.Label.ToLower() == "note" ? leg.FirstOrDefault(x => x.LegAzimuth == legAzimuths[i] && x.LegLetter == legLetters[i]) :
+                                        (att.Label.ToLower() == "civilegname" ? CivilWithLegsInst.Name + ' '+ legLetters[i] :
+                                        null)))
                             }).ToList())
                         .ToList();
                 }
@@ -7266,7 +7270,7 @@ namespace TLIS_Service.Services
                                 var supportIds = support.Select(y => y.ReferenceCivilId).ToList();
 
                                 var supportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
-                                    .GetIncludeWhere(x => supportIds.Contains(x.Id),
+                                    .GetIncludeWhere(x => support.Select(x=>x.Id).Contains(x.Id),
                                         x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel).ToList();
 
                                 foreach (var item in supportReferenceAllCivilInst)
@@ -7672,6 +7676,7 @@ namespace TLIS_Service.Services
                         BaseCivilWithLegType = x.BASECIVILWITHLEGTYPE,
                         Support_Limited_Load = x.Support_Limited_Load,
                         ENFORCMENTCATEGORY = x.ENFORCMENTCATEGORY,
+                        Remark=x.Remark,
                     }).OrderBy(x => x.Key.Name)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));

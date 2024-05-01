@@ -67,7 +67,7 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
 
-
+        public string? Remark { get; set; }
         public Dictionary<string, object> GenerateOutputData()
         {
             Dictionary<string, object> outputData = new Dictionary<string, object>();
@@ -125,6 +125,7 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
             outputData.Add("HBA", HBA);
             outputData.Add("HieghFromLand", HieghFromLand);
             outputData.Add("EquivalentSpace", EquivalentSpace);
+            outputData.Add("Remark", Remark);
 
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
