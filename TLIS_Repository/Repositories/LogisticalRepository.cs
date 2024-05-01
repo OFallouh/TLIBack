@@ -129,21 +129,41 @@ namespace TLIS_Repository.Repositories
                 }
                 else
                 {
-                  
-                    result.Add(new BaseInstAttViews
+                    if (LogisticalType.Name.ToLower() == "vendor")
                     {
-                        Key = LogisticalType.Name,
-                        Label = LogisticalType.Name,
-                        enable = true,
-                        DataType = "List",
-                        AutoFill = false,
-                        Desc = LogisticalType.Name,
-                        Manage = false,
-                        Required = false,
-                        Value = null,
-                        Options = Logisticals
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = true,
+                            Value = null,
+                            Options = Logisticals
+                        });
 
-                    });
+                    }
+                    else
+                    {
+
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = false,
+                            Value = null,
+                            Options = Logisticals
+
+                        });
+                    }
                 }
             }
 

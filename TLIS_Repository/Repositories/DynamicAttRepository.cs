@@ -169,7 +169,7 @@ namespace TLIS_Repository.Repositories
                             Label = item.Key,
                             Key = item.Key,
                             Id = item.Id,
-                            Value = item.DefaultValue.ToString(),
+                            Value = item.DefaultValue?.ToString(),
                             Desc = item?.Description ?? null,
                             Required = item.Required,
                             enable = !item.disable,

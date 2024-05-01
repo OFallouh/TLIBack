@@ -174,7 +174,7 @@ namespace TLIS_Repository.Repositories
                 dynamicAttInstValue.InventoryId = Id;
                 dynamicAttInstValue.tablesNamesId = TableNameId;
                 dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
-                dynamic value = DynamicLibAttValue.value.ToString();
+                dynamic value = DynamicLibAttValue.value?.ToString();
                 if (value != null)
                 {
                     string dataType = DynamicAtt.DataType.Name.ToLower();
