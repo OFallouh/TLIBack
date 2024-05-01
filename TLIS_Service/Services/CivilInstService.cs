@@ -2951,8 +2951,8 @@ namespace TLIS_Service.Services
                     civilwithoutlegs.Name = sitename + "" + Model + "" + ownername + "" + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented;
 
                     TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                        (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false &&
-                            x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
+                        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false &&
+                            x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
 
                     if (CheckName != null)
                         return new Response<ObjectInstAtts>(false, null, null, $"The name {civilwithoutlegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6728,26 +6728,22 @@ namespace TLIS_Service.Services
                             var options = new List<SupportTypeImplementedViewModel>();
                             var Value = new List<SupportTypeImplementedViewModel>();
                             var support = _unitOfWork.CivilSupportDistanceRepository
-                                .GetWhere(x => x.CivilInstId == civilSupportDistance.CivilInstId)?.ToList();
+                                .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                            if (support != null && support.Any())
+                            if (support != null)
                             {
-                                var supportIds = support.Select(y => y.ReferenceCivilId).ToList();
 
                                 var supportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
-                                    .GetIncludeWhere(x => supportIds.Contains(x.Id),
-                                        x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel).ToList();
-
-                                foreach (var item in supportReferenceAllCivilInst)
-                                {
-
-                                  var Values = _mapper.Map<SupportTypeImplementedViewModel>(item.civilWithLegsId != null
-                                        ? item.civilWithLegs
-                                        : item.civilWithoutLegId != null
-                                            ? item.civilWithoutLeg
-                                            : item.civilNonSteel);
+                                    .GetIncludeWhereFirst(x => x.Id== support.ReferenceCivilId,x=>x.civilNonSteel
+                                    ,x=>x.civilWithLegs,x=>x.civilWithoutLeg);
+x
+                                var Values = _mapper.Map<SupportTypeImplementedViewModel>(supportReferenceAllCivilInst.civilWithLegsId != null
+                                        ? supportReferenceAllCivilInst.civilWithLegs
+                                        : supportReferenceAllCivilInst.civilWithoutLegId != null
+                                            ? supportReferenceAllCivilInst.civilWithoutLeg
+                                            : supportReferenceAllCivilInst.civilNonSteel);
                                     Value.Add(Values);
-                                }
+                                
 
                                 var allCivil = _unitOfWork.CivilSiteDateRepository
                                     .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -13415,13 +13411,7 @@ namespace TLIS_Service.Services
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(TableName, null, "Name", "CivilWithLegsLibId", "CurrentLoads").ToList();
 
-                BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
-                if (NameAttribute != null)
-                {
-                    BaseInstAttViews Swap = ListAttributesActivated[0];
-                    ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
-                    ListAttributesActivated[0] = NameAttribute;
-                }
+       
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
                     { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
@@ -13499,8 +13489,8 @@ namespace TLIS_Service.Services
                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(), null, "allCivilInstId", "Dismantle", "SiteCode");
                 Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
+                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst)
+                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst!=null).Select(x=>x.allCivilInst).ToList()) }
 
                 };
 
@@ -13631,17 +13621,7 @@ namespace TLIS_Service.Services
                 objectInst.LibraryAttribute = LibraryAttributes;
 
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivatedForCivilWithoutLegGetForAdd(1, null, "CivilWithoutlegsLibId", "CurrentLoads").ToList();
-
-                BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
-                if (NameAttribute != null)
-                {
-                    BaseInstAttViews Swap = ListAttributesActivated[0];
-                    ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
-                    ListAttributesActivated[0] = NameAttribute;
-
-                }
-                 ListAttributesActivated.Remove(NameAttribute);
+                    GetInstAttributeActivatedForCivilWithoutLegGetForAdd(1, null, "CivilWithoutlegsLibId", "CurrentLoads", "Name").ToList();
 
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
@@ -13690,8 +13670,8 @@ namespace TLIS_Service.Services
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
                 Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
                 {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
+                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst)
+                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst!=null).Select(x=>x.allCivilInst).ToList()) }
 
                 };
 
@@ -13791,16 +13771,9 @@ namespace TLIS_Service.Services
                 objectInst.LibraryAttribute = LibraryAttributes;
 
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivatedForCivilWithoutLegGetForAdd(2, null, "CivilWithoutlegsLibId", "CurrentLoads").ToList();
+                    GetInstAttributeActivatedForCivilWithoutLegGetForAdd(2, null, "CivilWithoutlegsLibId", "CurrentLoads", "Name").ToList();
 
-                BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
-                if (NameAttribute != null)
-                {
-                    BaseInstAttViews Swap = ListAttributesActivated[0];
-                    ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
-                    ListAttributesActivated[0] = NameAttribute;
-
-                }
+      
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
                     { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
@@ -13951,16 +13924,7 @@ namespace TLIS_Service.Services
                 objectInst.LibraryAttribute = LibraryAttributes;
 
                 List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                    GetInstAttributeActivatedForCivilWithoutLegGetForAdd(3, null, "CivilWithoutlegsLibId", "CurrentLoads").ToList();
-
-                BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
-                if (NameAttribute != null)
-                {
-                    BaseInstAttViews Swap = ListAttributesActivated[0];
-                    ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
-                    ListAttributesActivated[0] = NameAttribute;
-
-                }
+                   GetInstAttributeActivatedForCivilWithoutLegGetForAdd(3, null, "CivilWithoutlegsLibId", "CurrentLoads","Name").ToList();
                 Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                 {
                     { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
