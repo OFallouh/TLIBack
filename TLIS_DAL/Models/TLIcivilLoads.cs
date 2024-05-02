@@ -20,6 +20,7 @@ namespace TLIS_DAL.Models
         public TLIleg leg { get; set; }
         public int ? legId { get; set; }
         public int ? Leg2Id { get; set; }
+        public int? BranchingSideArmId { get; set; }
         public bool ReservedSpace { get; set; }
         public TLIsideArm sideArm { get; set; }
         public int? sideArmId { get; set; }

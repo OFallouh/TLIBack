@@ -3408,7 +3408,8 @@ namespace TLIS_Service.Services
                                                     ItemStatus = addSideArms.civilLoads?.ItemStatus,
                                                     ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                     sideArmId = SideArm.Id,
-                                                    SiteCode = SiteCode
+                                                    SiteCode = SiteCode,
+                                                    BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                                 };
 
                                                 if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
@@ -3659,15 +3660,36 @@ namespace TLIS_Service.Services
                                             {
                                                 InstallationDate = addSideArms.civilLoads.InstallationDate,
                                                 allCivilInstId = ALLCivilId,
-                                                civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
-                                                ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
-                                                ItemStatus = addSideArms.civilLoads.ItemStatus,
+                                                civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
+                                                ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
+                                                ItemStatus = addSideArms.civilLoads?.ItemStatus,
                                                 ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                 sideArmId = SideArm.Id,
                                                 SiteCode = SiteCode,
-                                                legId = addSideArms.installationConfig.legId[0],
-                                                Leg2Id = addSideArms.installationConfig.legId[1]
+                                                BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                             };
+
+                                            if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
+                                            {
+                                                civilLoad.legId = addSideArms.installationConfig.legId[0];
+
+                                                if (addSideArms.installationConfig.legId.Count > 1)
+                                                {
+                                                    civilLoad.Leg2Id = addSideArms.installationConfig.legId[1];
+                                                }
+                                                else
+                                                {
+                                                    civilLoad.Leg2Id = null;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                civilLoad.legId = null;
+                                                civilLoad.Leg2Id = null;
+                                            }
+
+                                            civilLoad.allLoadInstId = null;
+
                                             _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
                                             _unitOfWork.SaveChangesAsync();
                                         }
@@ -3752,7 +3774,8 @@ namespace TLIS_Service.Services
                                                 ItemStatus = addSideArms.civilLoads?.ItemStatus,
                                                 ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                 sideArmId = SideArm.Id,
-                                                SiteCode = SiteCode
+                                                SiteCode = SiteCode,
+                                                BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                             };
 
                                             if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
@@ -3867,7 +3890,8 @@ namespace TLIS_Service.Services
                                             ItemStatus = addSideArms.civilLoads?.ItemStatus,
                                             ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                             sideArmId = SideArm.Id,
-                                            SiteCode = SiteCode
+                                            SiteCode = SiteCode,
+                                            BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                         };
 
                                         if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
@@ -3894,8 +3918,6 @@ namespace TLIS_Service.Services
                                         _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
                                         _unitOfWork.SaveChangesAsync();
                                     }
-
-
                                     if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
                                     {
                                         foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
@@ -3971,7 +3993,8 @@ namespace TLIS_Service.Services
                                         ItemStatus = addSideArms.civilLoads?.ItemStatus,
                                         ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                         sideArmId = SideArm.Id,
-                                        SiteCode = SiteCode
+                                        SiteCode = SiteCode,
+                                        BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                     };
 
                                     if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
@@ -3998,7 +4021,6 @@ namespace TLIS_Service.Services
                                     _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
                                     _unitOfWork.SaveChangesAsync();
                                 }
-
                                 if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
                                 {
                                     foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
