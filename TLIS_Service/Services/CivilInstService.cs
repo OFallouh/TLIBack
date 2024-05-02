@@ -6731,29 +6731,29 @@ namespace TLIS_Service.Services
                             var support = _unitOfWork.CivilSupportDistanceRepository
                                 .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
 
-                            if (support != null)
+                            if (support != null && support.ReferenceCivilId !=null)
                             {
                                 var supportReferenceAllCivilInst = _unitOfWork.AllCivilInstRepository
                                     .GetIncludeWhereFirst(x => x.Id == support.ReferenceCivilId,
                                         x => x.civilNonSteel,
                                         x => x.civilWithLegs,
                                         x => x.civilWithoutLeg);
+                                
+                                    var referencesValue = _mapper.Map<SupportTypeImplementedViewModel>(
+                                        supportReferenceAllCivilInst.civilWithLegsId != null
+                                            ? supportReferenceAllCivilInst.civilWithLegs
+                                            : supportReferenceAllCivilInst.civilWithoutLegId != null
+                                                ? supportReferenceAllCivilInst.civilWithoutLeg
+                                                : supportReferenceAllCivilInst.civilNonSteel);
+                                    attr.Value = referencesValue;
+                                    var allCivil = _unitOfWork.CivilSiteDateRepository
+                                        .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                            x => x.allCivilInst,
+                                            x => x.allCivilInst.civilWithLegs,
+                                            x => x.allCivilInst.civilWithoutLeg,
+                                            x => x.allCivilInst.civilNonSteel)?.ToList();
 
-                                var referencesValue = _mapper.Map<SupportTypeImplementedViewModel>(
-                                    supportReferenceAllCivilInst.civilWithLegsId != null
-                                        ? supportReferenceAllCivilInst.civilWithLegs
-                                        : supportReferenceAllCivilInst.civilWithoutLegId != null
-                                            ? supportReferenceAllCivilInst.civilWithoutLeg
-                                            : supportReferenceAllCivilInst.civilNonSteel);
-                                attr.Value = referencesValue;
-                                var allCivil = _unitOfWork.CivilSiteDateRepository
-                                    .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
-                                        x => x.allCivilInst,
-                                        x => x.allCivilInst.civilWithLegs,
-                                        x => x.allCivilInst.civilWithoutLeg,
-                                        x => x.allCivilInst.civilNonSteel)?.ToList();
-                            
-
+                                
                                 if (allCivil != null && allCivil.Any())
                                 {
                                     options = allCivil.SelectMany(item =>

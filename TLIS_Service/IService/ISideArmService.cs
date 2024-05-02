@@ -31,7 +31,7 @@ namespace TLIS_Service.IService
         Task<Response<IEnumerable<SideArmInstallationPlaceViewModel>>> GetSideArmInstallationPlace(int civilInstallationPlaceType);
         Task<Response<TLIsideArmInstallationPlace>> AddSideArmInstallationPlace(AddSideArmInstallationPlaceViewModel SideArmInstallationPlace);
         Task<Response<TLIsideArmInstallationPlace>> UpdateSideArmInstallationPlace(EditSideArmInstallationPlaceViewModel SideArmInstallationPlace);
-        Response<GetForAddLoadObject> GetAttForAdd(int LibraryId);
+        Response<GetForAddCivilLoadObject> GetAttForAdd(int LibraryId);
         Response<IEnumerable<SideArmTypeViewModel>> GetSideArmType();
         Response<List<SideArmInstallationPlaceViewModel>> GetSideArmInstallationPlace(string CivilType, int SideArmTypeId);
         Response<List<SideArmTypeViewModel>> GetSideArmTypes(string tablename);

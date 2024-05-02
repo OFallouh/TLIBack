@@ -1653,7 +1653,7 @@ namespace TLIS_Service.Services
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
-                    var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegLib.Prefix + ' ' + CivilWithLegLib.Height_Designed;
+                    var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + CivilWithLegLibraryEntites.Height_Designed;
                     if (_unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Model == model && x.Id != CivilWithLegLibraryEntites.Id && !x.Deleted) != null)
                     {
                         return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1801,7 +1801,7 @@ namespace TLIS_Service.Services
                         return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
-                    var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegLib.Prefix + ' ' + CivilWithLegLib.Height_Designed;
+                    var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + CivilWithLegLibraryEntites.Height_Designed;
                     if (_unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Model == model && x.Id != CivilWithLegLibraryEntites.Id && !x.Deleted) != null)
                     {
                         return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);

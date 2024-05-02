@@ -218,14 +218,14 @@ namespace TLIS_Service.Services
         //    //}
         //    return new Response<AllItemAttributes>();
         //}
-        public Response<GetForAddLoadObject> GetAttForAdd(int LibraryId)
+        public Response<GetForAddCivilLoadObject> GetAttForAdd(int LibraryId)
         {
             try
             {
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c =>
                     c.TableName == TablesNames.TLIsideArm.ToString());
 
-                GetForAddLoadObject objectInst = new GetForAddLoadObject();
+                GetForAddCivilLoadObject objectInst = new GetForAddCivilLoadObject();
 
                 TLIsideArmLibrary sideArmLibrary = _unitOfWork.SideArmLibraryRepository.GetByID(LibraryId);
 
@@ -305,12 +305,12 @@ namespace TLIS_Service.Services
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
                             "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
 
-                    return new Response<GetForAddLoadObject>(true, objectInst, null, null, (int)ApiReturnCode.success);
+                    return new Response<GetForAddCivilLoadObject>(true, objectInst, null, null, (int)ApiReturnCode.success);
                 
             }
             catch (Exception err)
             {
-                return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                return new Response<GetForAddCivilLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
         public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId)
@@ -1713,10 +1713,14 @@ namespace TLIS_Service.Services
                         }
                         return FKitem;
                     }).ToList();
+
+
                     var selectedAttributes = attributes.InstallationAttributes
-                    .Where(x => new[] { "sidearminstallationplace_name", "sidearmtype_name" }
-                                 .Contains(x.Label.ToLower()))
-                    .ToList();
+                   .Where(x => new[] { "sidearminstallationplace_name", "sidearmtype_name" }
+                                .Contains(x.Label.ToLower()))
+                   .ToList();
+                    
+
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
@@ -1748,19 +1752,24 @@ namespace TLIS_Service.Services
                             {
                                 baseInstAttViews.Key = "civilWithoutLegId";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
+                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
+                                baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
                             else if (AllCivilInst.civilNonSteelId != null)
                             {
                                 baseInstAttViews.Key = "civilNonSteelId";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
+                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
+                                baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
                             if (AllCivilInst.civilWithLegsId != null)
                             {
                                 baseInstAttViews.Key = "civilWithLegId";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
-
+                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
+                                baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
                         }
@@ -1771,18 +1780,23 @@ namespace TLIS_Service.Services
                             if (Leg1 != null)
                             {
                                 baseInstAttViews.Value = _mapper.Map<List<SectionsLegTypeViewModel>>(CivilLoad.leg);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(CivilLoad.leg);
+                                baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
                             var Leg2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.legId);
                             if (Leg2 != null)
                             {
                                 baseInstAttViews.Value = _mapper.Map<List<SectionsLegTypeViewModel>>(CivilLoad.Leg2Id);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(CivilLoad.Leg2Id);
+                                baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
                         }
 
                     }
                     attributes.installationConfig = Config;
+                    attributes.InstallationAttributes = attributes.InstallationAttributes.Except(selectedAttributes).ToList();
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
 
                     attributes.dynamicAttribute = null;
