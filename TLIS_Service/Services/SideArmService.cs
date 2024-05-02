@@ -53,6 +53,8 @@ using TLIS_DAL.ViewModels.StructureTypeDTOs;
 using TLIS_DAL.ViewModels.SupportTypeDesignedDTOs;
 using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.EditCivilWithLegsLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
+using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -297,7 +299,7 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
+                    objectInst.dynamicAttribute = DynamicAttributesWithoutValue;
 
                     objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
@@ -1680,51 +1682,120 @@ namespace TLIS_Service.Services
         {
             try
             {
+              
+                BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                 GetForAddLoadObject attributes = new GetForAddLoadObject();
-                TLIsideArm sideArm = _unitOfWork.SideArmRepository.GetIncludeWhereFirst(x=>x.Id==Id,x=>x.owner,x=>x.sideArmType, x => x.sideArmInstallationPlace);
+                List<BaseInstAttViews> Config = new List<BaseInstAttViews>();
+                TLIsideArm sideArm = _unitOfWork.SideArmRepository.GetIncludeWhereFirst(x => x.Id == Id, x => x.owner, x => x.sideArmType, x => x.sideArmInstallationPlace);
+                var SideArm= _unitOfWork.SideArmLibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == sideArm.sideArmLibraryId);
+                if (SideArm != null) {
+                    EditCivilSideArmlLibraryAttributes SideArmLibrary = _mapper.Map<EditCivilSideArmlLibraryAttributes>(SideArm);
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                         .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
 
-                EditCivilSideArmlLibraryAttributes SideArmLibrary = _mapper.Map<EditCivilSideArmlLibraryAttributes>(_unitOfWork.SideArmLibraryRepository
-                    .GetIncludeWhereFirst(x => x.Id == sideArm.sideArmLibraryId));
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                            .GetLogisticals(Helpers.Constants.TablePartName.SideArm.ToString(), Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary.Id).ToList());
 
-                List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
-            
-                List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(Helpers.Constants.TablePartName.SideArm.ToString(), Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary.Id).ToList());
+                    LibraryAttributes.AddRange(LogisticalAttributes);
 
-                LibraryAttributes.AddRange(LogisticalAttributes);
-
-                attributes.LibraryAttribute = LibraryAttributes;
-                attributes.InstallationAttributes = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), sideArm, null, "sideArmLibraryId", "ItemStatusId", "TicketId");
-                var foreignKeyAttributes = attributes.InstallationAttributes.Select(FKitem =>
-                {
-                    switch (FKitem.Label.ToLower())
+                    attributes.LibraryAttribute = LibraryAttributes;
+                    attributes.InstallationAttributes = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIsideArm.ToString(), sideArm, null, "sideArmLibraryId", "ItemStatusId", "TicketId");
+                    var foreignKeyAttributes = attributes.InstallationAttributes.Select(FKitem =>
                     {
-                     
-                        case "owner_name":
-                            FKitem.Value = _mapper.Map<OwnerViewModel>(sideArm.owner);
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                            break;
-                        case "sidearminstallationplace_name":
-                            FKitem.Value = _mapper.Map<SideArmInstallationPlaceViewModel>(sideArm.sideArmInstallationPlace);
-                            FKitem.Options = _mapper.Map<List<SideArmInstallationPlaceViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                            break;
-                        case "sidearmtype_name":
-                            FKitem.Value = _mapper.Map<SideArmTypeViewModel>(sideArm.sideArmType);
-                            FKitem.Options = _mapper.Map<List<SideArmTypeViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                            break;
+                        switch (FKitem.Label.ToLower())
+                        {
+
+                            case "owner_name":
+                                FKitem.Value = _mapper.Map<OwnerViewModel>(sideArm.owner);
+                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+                        }
+                        return FKitem;
+                    }).ToList();
+                    var selectedAttributes = attributes.InstallationAttributes
+                    .Where(x => new[] { "sidearminstallationplace_name", "sidearmtype_name" }
+                                 .Contains(x.Label.ToLower()))
+                    .ToList();
+                    var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "sidearminstallationplace_name":
+                                FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmInstallationPlace);
+                                FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmInstallationPlace);
+                                break;
+
+                            case "sidearmtype_name":
+                                FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmType);
+                                FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmType);
+                                break;
+                        }
+                        return FKitem;
+                    }).ToList();
+
+
+                    Config.AddRange(foreignKeyAttribute);
+
+                    var CivilLoad = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.sideArmId == Id && !x.Dismantle);
+                    if (CivilLoad != null)
+                    {
+                        var AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.Id == CivilLoad.allCivilInstId, x => x.civilNonSteel
+                        , x => x.civilWithLegs, x => x.civilWithoutLeg);
+                        if (AllCivilInst != null)
+                        {
+                            if (AllCivilInst.civilWithoutLegId != null)
+                            {
+                                baseInstAttViews.Key = "civilWithoutLegId";
+                                baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
+                                Config.Add(baseInstAttViews);
+                            }
+                            else if (AllCivilInst.civilNonSteelId != null)
+                            {
+                                baseInstAttViews.Key = "civilNonSteelId";
+                                baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
+                                Config.Add(baseInstAttViews);
+                            }
+                            if (AllCivilInst.civilWithLegsId != null)
+                            {
+                                baseInstAttViews.Key = "civilWithLegId";
+                                baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
+
+                                Config.Add(baseInstAttViews);
+                            }
+                        }
+                        if ((CivilLoad.legId != 0 && CivilLoad.legId != null) || (CivilLoad.Leg2Id != 0 && CivilLoad.Leg2Id != null))
+                        {
+                            baseInstAttViews.Key = "legId";
+                            var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.legId);
+                            if (Leg1 != null)
+                            {
+                                baseInstAttViews.Value = _mapper.Map<List<SectionsLegTypeViewModel>>(CivilLoad.leg);
+                                Config.Add(baseInstAttViews);
+                            }
+                            var Leg2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.legId);
+                            if (Leg2 != null)
+                            {
+                                baseInstAttViews.Value = _mapper.Map<List<SectionsLegTypeViewModel>>(CivilLoad.Leg2Id);
+                                Config.Add(baseInstAttViews);
+                            }
+                        }
 
                     }
-                    return FKitem;
-                }).ToList();
-                var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
-               
-                attributes.DynamicAttribute = null;
-                attributes.DynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
+                    attributes.installationConfig = Config;
+                    var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
+
+                    attributes.dynamicAttribute = null;
+                    attributes.dynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
 
 
-                return new Response<GetForAddLoadObject>(true, attributes, null, null, (int)ApiReturnCode.success);
+                    return new Response<GetForAddLoadObject>(true, attributes, null, null, (int)ApiReturnCode.success);
 
+                }
+                else
+                {
+                    return new Response<GetForAddLoadObject>(false, null, null, "this id is not found", (int)ApiReturnCode.fail);
+                }
             }
 
             catch (Exception err)
@@ -2466,14 +2537,12 @@ namespace TLIS_Service.Services
                 try
                 {
                     TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.sideArmId == SideArmViewModel.installationAttributes.Id && !x.Dismantle);
-
                     string SiteCode = "";
                     if (CivilLoads != null)
                         SiteCode = CivilLoads.SiteCode;
                     else
                         SiteCode = null;
 
-                
                     //string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SideArmViewModel.DynamicInstAttsValue, TablesNames.TLIsideArm.ToString());
 
                     //if (!string.IsNullOrEmpty(CheckGeneralValidation))
@@ -2491,24 +2560,23 @@ namespace TLIS_Service.Services
                         return new Response<EditSidearmInstallationObject>(false, null, null, $"Azimuth and HeightBase cannot be changed", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     _unitOfWork.SideArmRepository.UpdateWithHistory(UserId, SideArmInst, SideArm);
-
-                    int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
-                    CivilLoads.InstallationDate = SideArmViewModel.TLIcivilLoads.InstallationDate;
-                    CivilLoads.ItemOnCivilStatus = SideArmViewModel.TLIcivilLoads.ItemOnCivilStatus;
-                    CivilLoads.ItemStatus = SideArmViewModel.TLIcivilLoads.ItemStatus;
-                    CivilLoads.ReservedSpace = SideArmViewModel.TLIcivilLoads.ReservedSpace;
-                    CivilLoads.sideArmId = SideArmViewModel.TLIcivilLoads.sideArmId;
-                    CivilLoads.allCivilInstId = SideArmViewModel.TLIcivilLoads.allCivilInstId;
-                    CivilLoads.legId = SideArmViewModel.TLIcivilLoads.legId;
-                    CivilLoads.Leg2Id = SideArmViewModel.TLIcivilLoads.Leg2Id;
-
                     _unitOfWork.SaveChanges();
-
-
+                    int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
+                    if (SideArmViewModel.civilLoads != null)
+                    {
+                        CivilLoads.InstallationDate = SideArmViewModel.civilLoads.InstallationDate;
+                        CivilLoads.ItemOnCivilStatus = SideArmViewModel.civilLoads.ItemOnCivilStatus;
+                        CivilLoads.ItemStatus = SideArmViewModel.civilLoads.ItemStatus;
+                        CivilLoads.ReservedSpace = SideArmViewModel.civilLoads.ReservedSpace;
+                        CivilLoads.sideArmId = SideArmViewModel.civilLoads.sideArmId;
+                        CivilLoads.allCivilInstId = SideArmViewModel.civilLoads.allCivilInstId;
+                        CivilLoads.legId = SideArmViewModel.civilLoads.legId;
+                        CivilLoads.Leg2Id = SideArmViewModel.civilLoads.Leg2Id;
+                        _unitOfWork.CivilLoadsRepository.Update(CivilLoads);
+                        _unitOfWork.SaveChanges();
+                    }
                     if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count() > 0 : false)
                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id);
-
-                    await _unitOfWork.SaveChangesAsync();
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3329,25 +3397,44 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                                             _unitOfWork.SaveChanges();
 
-                                            TLIcivilLoads civilLoad = new TLIcivilLoads
+                                            if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
                                             {
-                                                InstallationDate = addSideArms.civilLoads.InstallationDate,
-                                                allCivilInstId = ALLCivilId,
-                                                civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
-                                                ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
-                                                ItemStatus = addSideArms.civilLoads.ItemStatus,
-                                                ReservedSpace = addSideArms.civilLoads.ReservedSpace,
-                                                sideArmId = SideArm.Id,
-                                                SiteCode = SiteCode,
-                                                legId = addSideArms.installationConfig.legId[0],
-                                                Leg2Id = addSideArms.installationConfig.legId[1]
-                                            };
+                                                TLIcivilLoads civilLoad = new TLIcivilLoads
+                                                {
+                                                    InstallationDate = addSideArms.civilLoads.InstallationDate,
+                                                    allCivilInstId = ALLCivilId,
+                                                    civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
+                                                    ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
+                                                    ItemStatus = addSideArms.civilLoads?.ItemStatus,
+                                                    ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                    sideArmId = SideArm.Id,
+                                                    SiteCode = SiteCode
+                                                };
 
-                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                                            _unitOfWork.SaveChangesAsync();
+                                                if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
+                                                {
+                                                    civilLoad.legId = addSideArms.installationConfig.legId[0];
 
+                                                    if (addSideArms.installationConfig.legId.Count > 1)
+                                                    {
+                                                        civilLoad.Leg2Id = addSideArms.installationConfig.legId[1];
+                                                    }
+                                                    else
+                                                    {
+                                                        civilLoad.Leg2Id = null;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    civilLoad.legId = null;
+                                                    civilLoad.Leg2Id = null;
+                                                }
 
+                                                civilLoad.allLoadInstId = null;
 
+                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                                _unitOfWork.SaveChangesAsync();
+                                            }
                                             if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
                                             {
                                                 foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
@@ -3437,23 +3524,44 @@ namespace TLIS_Service.Services
                                         _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                                         _unitOfWork.SaveChanges();
 
-                                        TLIcivilLoads civilLoad = new TLIcivilLoads
+                                        if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
                                         {
-                                            InstallationDate = addSideArms.civilLoads.InstallationDate,
-                                            allCivilInstId = ALLCivilId,
-                                            civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
-                                            ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
-                                            ItemStatus = addSideArms.civilLoads.ItemStatus,
-                                            ReservedSpace = addSideArms.civilLoads.ReservedSpace,
-                                            sideArmId = SideArm.Id,
-                                            SiteCode = SiteCode,
-                                            legId = addSideArms.installationConfig.legId[0],
-                                            Leg2Id = addSideArms.installationConfig.legId[1]
-                                        };
+                                            TLIcivilLoads civilLoad = new TLIcivilLoads
+                                            {
+                                                InstallationDate = addSideArms.civilLoads.InstallationDate,
+                                                allCivilInstId = ALLCivilId,
+                                                civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
+                                                ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
+                                                ItemStatus = addSideArms.civilLoads?.ItemStatus,
+                                                ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                sideArmId = SideArm.Id,
+                                                SiteCode = SiteCode
+                                            };
 
-                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                                        _unitOfWork.SaveChangesAsync();
+                                            if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
+                                            {
+                                                civilLoad.legId = addSideArms.installationConfig.legId[0];
 
+                                                if (addSideArms.installationConfig.legId.Count > 1)
+                                                {
+                                                    civilLoad.Leg2Id = addSideArms.installationConfig.legId[1];
+                                                }
+                                                else
+                                                {
+                                                    civilLoad.Leg2Id = null;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                civilLoad.legId = null;
+                                                civilLoad.Leg2Id = null;
+                                            }
+
+                                            civilLoad.allLoadInstId = null;
+
+                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                            _unitOfWork.SaveChangesAsync();
+                                        }
 
 
                                         if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
@@ -3545,23 +3653,24 @@ namespace TLIS_Service.Services
                                         _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                                         _unitOfWork.SaveChanges();
 
-                                        TLIcivilLoads civilLoad = new TLIcivilLoads
+                                        if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
                                         {
-                                            InstallationDate = addSideArms.civilLoads.InstallationDate,
-                                            allCivilInstId = ALLCivilId,
-                                            civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
-                                            ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
-                                            ItemStatus = addSideArms.civilLoads.ItemStatus,
-                                            ReservedSpace = addSideArms.civilLoads.ReservedSpace,
-                                            sideArmId = SideArm.Id,
-                                            SiteCode = SiteCode,
-                                            legId = addSideArms.installationConfig.legId[0],
-                                            Leg2Id = addSideArms.installationConfig.legId[1]
-                                        };
-
-                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                                        _unitOfWork.SaveChangesAsync();
-
+                                            TLIcivilLoads civilLoad = new TLIcivilLoads
+                                            {
+                                                InstallationDate = addSideArms.civilLoads.InstallationDate,
+                                                allCivilInstId = ALLCivilId,
+                                                civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
+                                                ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
+                                                ItemStatus = addSideArms.civilLoads.ItemStatus,
+                                                ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                sideArmId = SideArm.Id,
+                                                SiteCode = SiteCode,
+                                                legId = addSideArms.installationConfig.legId[0],
+                                                Leg2Id = addSideArms.installationConfig.legId[1]
+                                            };
+                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                            _unitOfWork.SaveChangesAsync();
+                                        }
 
 
                                         if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
@@ -3625,31 +3734,51 @@ namespace TLIS_Service.Services
                                             return new Response<SideArmViewDto>(false, null, null,
                                                 "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                             SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
-                                    SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
-                                    SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
+
+                                        SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
+                                        SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
+                                        SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
                                         _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                                         _unitOfWork.SaveChanges();
 
-                                        TLIcivilLoads civilLoad = new TLIcivilLoads
+                                        if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
                                         {
-                                            InstallationDate = addSideArms.civilLoads.InstallationDate,
-                                            allCivilInstId = ALLCivilId,
-                                            civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
-                                            ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
-                                            ItemStatus = addSideArms.civilLoads.ItemStatus,
-                                            ReservedSpace = addSideArms.civilLoads.ReservedSpace,
-                                            sideArmId = SideArm.Id,
-                                            SiteCode = SiteCode,
-                                            legId = addSideArms.installationConfig.legId[0],
-                                            Leg2Id = addSideArms.installationConfig.legId[1]
-                                        };
+                                            TLIcivilLoads civilLoad = new TLIcivilLoads
+                                            {
+                                                InstallationDate = addSideArms.civilLoads.InstallationDate,
+                                                allCivilInstId = ALLCivilId,
+                                                civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
+                                                ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
+                                                ItemStatus = addSideArms.civilLoads?.ItemStatus,
+                                                ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                sideArmId = SideArm.Id,
+                                                SiteCode = SiteCode
+                                            };
 
-                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                                        _unitOfWork.SaveChangesAsync();
+                                            if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
+                                            {
+                                                civilLoad.legId = addSideArms.installationConfig.legId[0];
 
+                                                if (addSideArms.installationConfig.legId.Count > 1)
+                                                {
+                                                    civilLoad.Leg2Id = addSideArms.installationConfig.legId[1];
+                                                }
+                                                else
+                                                {
+                                                    civilLoad.Leg2Id = null;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                civilLoad.legId = null;
+                                                civilLoad.Leg2Id = null;
+                                            }
 
+                                            civilLoad.allLoadInstId = null;
 
+                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                            _unitOfWork.SaveChangesAsync();
+                                        }
                                         if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
                                         {
                                             foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
@@ -3727,24 +3856,44 @@ namespace TLIS_Service.Services
 
                                     _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                                     _unitOfWork.SaveChanges();
-
-                                    TLIcivilLoads civilLoad = new TLIcivilLoads
+                                    if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
                                     {
-                                        InstallationDate = addSideArms.civilLoads.InstallationDate,
-                                        allCivilInstId = ALLCivilId,
-                                        civilSteelSupportCategoryId = addSideArms.civilLoads.civilSteelSupportCategoryId,
-                                        ItemOnCivilStatus = addSideArms.civilLoads.ItemOnCivilStatus,
-                                        ItemStatus = addSideArms.civilLoads.ItemStatus,
-                                        ReservedSpace = addSideArms.civilLoads.ReservedSpace,
-                                        sideArmId = SideArm.Id,
-                                        SiteCode = SiteCode,
-                                        legId = addSideArms.installationConfig.legId[0],
-                                        Leg2Id = addSideArms.installationConfig.legId[1]
-                                    };
+                                        TLIcivilLoads civilLoad = new TLIcivilLoads
+                                        {
+                                            InstallationDate = addSideArms.civilLoads.InstallationDate,
+                                            allCivilInstId = ALLCivilId,
+                                            civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
+                                            ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
+                                            ItemStatus = addSideArms.civilLoads?.ItemStatus,
+                                            ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                            sideArmId = SideArm.Id,
+                                            SiteCode = SiteCode
+                                        };
 
-                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                                    _unitOfWork.SaveChangesAsync();
+                                        if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
+                                        {
+                                            civilLoad.legId = addSideArms.installationConfig.legId[0];
 
+                                            if (addSideArms.installationConfig.legId.Count > 1)
+                                            {
+                                                civilLoad.Leg2Id = addSideArms.installationConfig.legId[1];
+                                            }
+                                            else
+                                            {
+                                                civilLoad.Leg2Id = null;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            civilLoad.legId = null;
+                                            civilLoad.Leg2Id = null;
+                                        }
+
+                                        civilLoad.allLoadInstId = null;
+
+                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                        _unitOfWork.SaveChangesAsync();
+                                    }
 
 
                                     if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
@@ -3811,25 +3960,44 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
                                 _unitOfWork.SaveChanges();
 
-                                TLIcivilLoads civilLoad = new TLIcivilLoads
+                                if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
                                 {
-                                    InstallationDate = addSideArms?.civilLoads?.InstallationDate ?? DateTime.MinValue,
-                                    allCivilInstId = ALLCivilId,
-                                    civilSteelSupportCategoryId = null, // Assuming this property can be null
-                                    ItemOnCivilStatus = addSideArms?.civilLoads?.ItemOnCivilStatus ?? "",
-                                    ItemStatus = addSideArms?.civilLoads?.ItemStatus ?? "",
-                                    ReservedSpace = addSideArms?.civilLoads?.ReservedSpace ?? false, // Assuming this property is numeric
-                                    sideArmId = SideArm?.Id ?? 0, // Assuming Id is numeric
-                                    SiteCode = SiteCode ?? "", // Assuming SiteCode is a string
-                                    legId = addSideArms?.installationConfig?.legId?.FirstOrDefault() ?? 0, // Assuming legId is a collection
-                                    Leg2Id = addSideArms?.installationConfig?.legId?.ElementAtOrDefault(1) ?? 0 // Assuming legId is a collection
-                                };
-                                
+                                    TLIcivilLoads civilLoad = new TLIcivilLoads
+                                    {
+                                        InstallationDate = addSideArms.civilLoads.InstallationDate,
+                                        allCivilInstId = ALLCivilId,
+                                        civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
+                                        ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
+                                        ItemStatus = addSideArms.civilLoads?.ItemStatus,
+                                        ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                        sideArmId = SideArm.Id,
+                                        SiteCode = SiteCode
+                                    };
 
-                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
-                                _unitOfWork.SaveChangesAsync();
+                                    if (addSideArms.installationConfig.legId != null && addSideArms.installationConfig.legId.Count > 0)
+                                    {
+                                        civilLoad.legId = addSideArms.installationConfig.legId[0];
 
+                                        if (addSideArms.installationConfig.legId.Count > 1)
+                                        {
+                                            civilLoad.Leg2Id = addSideArms.installationConfig.legId[1];
+                                        }
+                                        else
+                                        {
+                                            civilLoad.Leg2Id = null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        civilLoad.legId = null;
+                                        civilLoad.Leg2Id = null;
+                                    }
 
+                                    civilLoad.allLoadInstId = null;
+
+                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
 
                                 if (addSideArms.dynamicAttribute != null ? addSideArms.dynamicAttribute.Count > 0 : false)
                                 {

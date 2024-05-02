@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
     {
         public LibraryAttributesSideArm civilType { get; set; }
         public EditinstallationAttributesSideArm installationAttributes { get; set; }
-        public AddCivilLoadsViewModel TLIcivilLoads { get; set; }
+        public AddCivilLoadsViewModel civilLoads { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
         public class LibraryAttributesSideArm
         {

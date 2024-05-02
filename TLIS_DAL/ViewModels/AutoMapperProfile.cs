@@ -189,6 +189,18 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditCivilSideArmlLibraryAttributes, TLIsideArmLibrary>().ReverseMap();
 
 
+            CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, TLIcivilWithoutLeg>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, TLIcivilNonSteel>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, TLIleg>()
+                  .ForMember(c => c.CiviLegName, c => c.MapFrom(s => s.Name))
+                  .ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, TLIsideArmLibrary>().ReverseMap();
+
+
+
             //---------------------------------------------------------------------------
 
 
