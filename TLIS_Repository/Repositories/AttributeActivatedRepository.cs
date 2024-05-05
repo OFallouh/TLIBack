@@ -360,7 +360,7 @@ namespace TLIS_Repository.Repositories
                 List<TLIattActivatedCategory> Excepted = _context.TLIattActivatedCategory.Where(x => ExceptAtrributes.Contains(x.attributeActivated.Key) && x.attributeActivated.Tabel == Type && x.civilWithoutLegCategoryId == CategoryId).ToList();
                 List<TLIattActivatedCategory> AttActivatedCategoryStatus = _context.TLIattActivatedCategory
                     .Where(x => (x.civilWithoutLegCategoryId != null ? (x.civilWithoutLegCategoryId.Value == CategoryId.Value) : false) && x.attributeActivated.Tabel == Type && x.enable &&
-                         x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted" && x.attributeActivated.Key.ToLower() != "id")
+                         x.attributeActivated.Key.ToLower() != "active" && x.attributeActivated.Key.ToLower() != "deleted")
                     .Include(a => a.attributeActivated)
                     .AsEnumerable().Except(Excepted).ToList();
 

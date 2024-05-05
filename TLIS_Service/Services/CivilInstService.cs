@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Linq;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
@@ -6669,12 +6670,22 @@ namespace TLIS_Service.Services
                 string[] legLetters = { "A", "B", "C", "D" };
                 float[] legAzimuths = { 0, 90, 180, 270 };
 
-
                 if (NumberofNumber == 3 || NumberofNumber == 4)
                 {
-                    baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
-                        .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
-                            .Select(att => new BaseInstAttViews
+                    var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).Select(x=>x.Notes).ToList();
+
+                    foreach (var i in Enumerable.Range(0, NumberofNumber))
+                    {
+                        List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
+
+                      
+                        var attributes = _unitOfWork.AttributeActivatedRepository
+                            .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
+                            .ToList();
+
+                        foreach (var att in attributes)
+                        {
+                            BaseInstAttViews baseInstAttView = new BaseInstAttViews
                             {
                                 Key = att.Key,
                                 Desc = att.Desc,
@@ -6686,14 +6697,35 @@ namespace TLIS_Service.Services
                                 DataTypeId = att.DataTypeId,
                                 DataType = att.DataType,
                                 Options = att.Options,
-                                Value = att.Label.ToLower() == "legletter" ? legLetters[i] :
-                                        (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] :
-                                        (att.Label.ToLower() == "note" ? leg.FirstOrDefault(x => x.LegAzimuth == legAzimuths[i] && x.LegLetter == legLetters[i]) :
-                                        (att.Label.ToLower() == "civilegname" ? CivilWithLegsInst.Name + ' '+ legLetters[i] :
-                                        null)))
-                            }).ToList())
-                        .ToList();
+                                Value = null
+                            };
+
+                            switch (att.Label.ToLower())
+                            {
+                                case "legletter":
+                                    baseInstAttView.Value = legLetters[i];
+                                    break;
+                                case "legazimuth":
+                                    baseInstAttView.Value = legAzimuths[i];
+                                    break;
+                                case "civilegname":
+                                    baseInstAttView.Value = CivilWithLegsInst.Name + " " + legLetters[i];
+                                    break;
+                                case "notes":
+                                
+                                    baseInstAttView.Value = tliLegData[i];
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            instanceAttributes.Add(baseInstAttView);
+                        }
+
+                        baseInstAttViewsList.Add(instanceAttributes); 
+                    }
                 }
+
 
                 objectInst.LegsInfo = baseInstAttViewsList;
                 TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository

@@ -152,6 +152,7 @@ using static TLIS_DAL.ViewModels.CivilNonSteelDTOs.EditCivilNonSteelInstallation
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.AddSideArmLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
+using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -201,6 +202,10 @@ namespace TLIS_DAL.ViewModels
                   .ForMember(c => c.CiviLegName, c => c.MapFrom(s => s.Name))
                   .ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmLibrary>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilNonSteel>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<LocationTypeViewModel, TLIcivilWithoutLeg>().ReverseMap();
+            CreateMap<EditinstallationAttributesSideArm, TLIsideArm>().ReverseMap();
 
 
 

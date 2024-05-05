@@ -78,7 +78,7 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
         //[HttpPost("UpdateSideArm")]
         //[ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        //public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel, int TaskId)
+        //public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel, int? TaskId)
         //{
         //    var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId);
         //    return Ok(response);
@@ -144,7 +144,7 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantlesideArm")]
-        public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int TaskId)
+        public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int? TaskId)
         {
             var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId);
             return Ok(response);
@@ -218,7 +218,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("UpdateSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(EditSidearmInstallationObject))]
-        public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel, int TaskId)
+        public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
