@@ -15,7 +15,6 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
     {
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
-        public string? dataType { get; set; }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -43,7 +42,6 @@ namespace TLIS_DAL.ViewModels.AllCivilInstDTOs
             outputData.Add("dynamicValueProperties", null);
             outputData.Add("key", Key);
             outputData.Add("value", INPUTVALUE);
-            outputData.Add("value", dataType);
             outputData.Add("id", Id);
             outputData.Add("Model", Model);
             outputData.Add("Note", Note);

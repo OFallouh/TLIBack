@@ -11481,7 +11481,7 @@ namespace TLIS_Service.Services
 
                                     NewSideArmEntity.Notes = SideArmDataTable.Rows[j]["Side Arm Notes"].ToString();
                                     NewSideArmEntity.VisibleStatus = SideArmDataTable.Rows[j]["Current Status"].ToString();
-                                    NewSideArmEntity.ReservedSpace = 0;
+                                    NewSideArmEntity.ReservedSpace = false;
                                     NewSideArmEntity.CenterHigh = 0;
                                     NewSideArmEntity.HBA = 0;
                                     NewSideArmEntity.HieghFromLand = 0;

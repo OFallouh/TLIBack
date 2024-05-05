@@ -33,7 +33,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public string? Notes { get; set; } = " ";
             public float HeightBase { get; set; } = 0;
             public float Azimuth { get; set; } = 0;
-            public float ReservedSpace { get; set; } = 0;
+            public bool ReservedSpace { get; set; } = false;
             public bool Active { get; set; } = true;
             public string? VisibleStatus { get; set; } = " ";
             public float SpaceInstallation { get; set; } = 0;
@@ -52,7 +52,6 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public string? ItemOnCivilStatus { get; set; } = null;
             public string? ItemStatus { get; set; } = " ";
             public bool Dismantle { get; set; }
-            public bool ReservedSpace { get; set; } = false;
             public int? BranchingSideArmId { get; set; } = null;
             public int? civilSteelSupportCategoryId { get; set; } = null;
 

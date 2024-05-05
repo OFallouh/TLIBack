@@ -304,7 +304,7 @@ namespace TLIS_Service.Services
 
                     objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
-                            "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
+                            "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId", "ReservedSpace").ToList();
 
                     return new Response<GetForAddCivilLoadObject>(true, objectInst, null, null, (int)ApiReturnCode.success);
                 
@@ -3640,7 +3640,7 @@ namespace TLIS_Service.Services
                                                         civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                         ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                         ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                        ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                        ReservedSpace = false,
                                                         sideArmId = SideArm.Id,
                                                         SiteCode = SiteCode,
                                                         legId = addSideArms.installationConfig.legId[0],
@@ -3754,7 +3754,7 @@ namespace TLIS_Service.Services
                                                     civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                     ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                     ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                    ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                    ReservedSpace = false,
                                                     sideArmId = SideArm.Id,
                                                     SiteCode = SiteCode
                                                 };
@@ -3888,7 +3888,7 @@ namespace TLIS_Service.Services
                                                     civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                     ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                     ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                    ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                    ReservedSpace = false,
                                                     sideArmId = SideArm.Id,
                                                     SiteCode = SiteCode,
                                                     legId= addSideArms.installationConfig.legId[0],
@@ -3988,7 +3988,7 @@ namespace TLIS_Service.Services
                                                     civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                     ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                     ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                    ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                    ReservedSpace = false,
                                                     sideArmId = SideArm.Id,
                                                     SiteCode = SiteCode,
                                                     legId= addSideArms.installationConfig.legId[0],
@@ -4089,7 +4089,7 @@ namespace TLIS_Service.Services
                                                 civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                 ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                 ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                ReservedSpace = false,
                                                 sideArmId = SideArm.Id,
                                                 SiteCode = SiteCode,
                                                 BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
@@ -4204,7 +4204,7 @@ namespace TLIS_Service.Services
                                             civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                             ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                             ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                            ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                            ReservedSpace = false,
                                             sideArmId = SideArm.Id,
                                             SiteCode = SiteCode,
                                             BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId

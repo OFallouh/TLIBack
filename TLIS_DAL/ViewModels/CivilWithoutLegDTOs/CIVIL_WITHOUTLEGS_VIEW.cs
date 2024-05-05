@@ -64,6 +64,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public string? Visiable_Status { get; set; }
         public float SpaceInstallation { get; set; }
         public string CIVILWITHOUTLEGSLIB { get; set; }
+        public string CIVILWITHOUTLEGCATEGORY { get; set; }
         public string OWNER { get; set; }
         public string? SUBTYPE { get; set; }
         public float Support_Limited_Load { get; set; }
@@ -72,7 +73,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
 
-
+        public bool Dismantle { get; set; }
         public Dictionary<string, object> GenerateOutputData()
         {
             Dictionary<string, object> outputData = new Dictionary<string, object>();
@@ -138,6 +139,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
             outputData.Add("CIVILWITHOUTLEGSLIB", CIVILWITHOUTLEGSLIB);
             outputData.Add("OWNER", OWNER);
             outputData.Add("SUBTYPE", SUBTYPE);
+            outputData.Add("Dismantle", Dismantle);
 
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))

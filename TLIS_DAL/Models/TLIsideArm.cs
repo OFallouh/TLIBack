@@ -15,7 +15,7 @@ namespace TLIS_DAL.Models
         public string? Notes { get; set; }
         public float HeightBase { get; set; }
         public float Azimuth{ get; set; }
-        public float ReservedSpace { get; set; }
+        public bool ReservedSpace { get; set; }
         public bool Active { get; set; }
         public string? VisibleStatus { get; set; }
         public float SpaceInstallation { get; set; }
