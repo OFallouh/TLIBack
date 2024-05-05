@@ -2527,7 +2527,9 @@ namespace TLIS_Service.Services
                         string ownername = null;
                         string sitename = null;
                         string Model = null;
-                     
+                    var civilwithleglibrary = _dbContext.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.civilType.civilWithLegsLibId && x.Active);
+                    if (civilwithleglibrary != null)
+                    {
                         TLIcivilWithLegs civilWithLegs = _mapper.Map<TLIcivilWithLegs>(AddCivilWithLegsViewModel.installationAttributes);
 
                         if (AddCivilWithLegsViewModel.civilSiteDate.ReservedSpace == true)
@@ -2542,7 +2544,7 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        var civilwithleglibrary = _dbContext.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.civilType.civilWithLegsLibId);
+
                         sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
                         if (civilWithLegs.OwnerId == 0 || civilWithLegs.OwnerId == null)
                         {
@@ -2561,11 +2563,11 @@ namespace TLIS_Service.Services
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithLegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                         var locatiionType = _dbContext.TLIlocationType.FirstOrDefault(x => x.Id == civilWithLegs.locationTypeId)?.Name;
-                        if(locatiionType.ToLower()== "roof top" && civilWithLegs.LocationHeight == 0) 
+                        if (locatiionType.ToLower() == "roof top" && civilWithLegs.LocationHeight == 0)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        if (civilWithLegs .IsEnforeced== true && civilWithLegs.SupportMaxLoadAfterInforcement==0) 
+                        if (civilWithLegs.IsEnforeced == true && civilWithLegs.SupportMaxLoadAfterInforcement == 0)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"SupportMaxLoadAfterInforcement must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -2574,12 +2576,12 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"GuylineType It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        if (civilWithLegs.IsEnforeced == true && civilWithLegs.enforcmentCategoryId == null )
+                        if (civilWithLegs.IsEnforeced == true && civilWithLegs.enforcmentCategoryId == null)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"enforcmentCategory It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         var enforcmentCategory = _dbContext.TLIenforcmentCategory.FirstOrDefault(x => x.Id == civilWithLegs.enforcmentCategoryId)?.Name;
-                        if (enforcmentCategory == "special solution" && civilWithLegs.SpecialEnforcementCategory==null)
+                        if (enforcmentCategory == "special solution" && civilWithLegs.SpecialEnforcementCategory == null)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"SpecialEnforcementCategory It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -2591,7 +2593,7 @@ namespace TLIS_Service.Services
                         string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithLegsViewModel, TableName, SiteCode, null);
 
                         if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);                                          
+                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                         civilWithLegs.CivilWithLegsLibId = AddCivilWithLegsViewModel.civilType.civilWithLegsLibId;
                         _unitOfWork.CivilWithLegsRepository.AddWithHistory(UserId, civilWithLegs);
@@ -2600,7 +2602,7 @@ namespace TLIS_Service.Services
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
                         allCivilInst.civilWithLegsId = civilWithLegs.Id;
                         allCivilInst.Draft = false;
-                        _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId,allCivilInst);
+                        _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId, allCivilInst);
                         _unitOfWork.SaveChanges();
                         allCivilInstId = allCivilInst.Id;
 
@@ -2613,7 +2615,7 @@ namespace TLIS_Service.Services
                             civilSiteDate.LongitudinalSpindleLengthm = AddCivilWithLegsViewModel.civilSiteDate.LongitudinalSpindleLengthm;
                             civilSiteDate.HorizontalSpindleLengthm = AddCivilWithLegsViewModel.civilSiteDate.HorizontalSpindleLengthm;
                             civilSiteDate.ReservedSpace = AddCivilWithLegsViewModel.civilSiteDate.ReservedSpace;
-                            _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId,civilSiteDate);
+                            _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId, civilSiteDate);
                             _unitOfWork.SaveChanges();
                         }
                         if (AddCivilWithLegsViewModel.civilSupportDistance != null)
@@ -2632,274 +2634,49 @@ namespace TLIS_Service.Services
                         {
                             var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
                             {
-                                CiviLegName = civilWithLegs.Name +' '+ item.LegLetter,
+                                CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
                                 LegAzimuth = item.LegAzimuth,
                                 LegLetter = item.LegLetter,
                                 Notes = item.Notes,
                                 CivilWithLegInstId = civilWithLegs.Id
                             });
 
-                            _unitOfWork.LegRepository.AddRangeWithHistory(UserId,legEntities);
+                            _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
 
                             _unitOfWork.SaveChanges();
                         }
 
 
-                      
-                          _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
-                        
-                        
-                    
-                    //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableName)
-                    //{
 
-                    //    AddCivilWithoutLegViewModel AddCivilWithoutLeg = _mapper.Map<AddCivilWithoutLegViewModel>(CivilInstallationViewModel);
+                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
 
-                    //    TLIcivilWithoutLeg CivilWithoutLeg = _mapper.Map<TLIcivilWithoutLeg>(AddCivilWithoutLeg.installationAttributes);
-                    //    if (AddCivilWithoutLeg.civilSiteDate.ReservedSpace == true)
-                    //    {
-                    //        var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, AddCivilWithoutLeg.civilType.civilWithOutLegsLibId, AddCivilWithoutLeg.installationAttributes.SpaceInstallation, null).Message;
-                    //        if (CheckSpace != "Success")
-                    //        {
-                    //            return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
-                    //    var CivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetByID(CivilWithoutLeg.CivilWithoutlegsLibId);
-                    //    string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(CivilInstallationViewModel, TableName, SiteCode, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
 
-                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    //    string CheckGeneralValidation = CheckGeneralValidationFunction(AddCivilWithoutLeg.dynamicAttribute, TableName, CivilWithoutLegLibrary.CivilWithoutLegCategoryId);
-                    //    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                    //        var CivilSteelSupportCategory = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibrary.CivilWithoutLegCategoryId).Name;
-                    //        if (CivilSteelSupportCategory.ToLower() == "mast")
-                    //        {
-                    //            var site = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == SiteCode);
-                    //            var owner = _unitOfWork.OwnerRepository.GetByID((int)AddCivilWithoutLeg.installationAttributes.OwnerId);
-
-                    //            var siteName = site?.SiteName;
-                    //            var ownerName = owner?.OwnerName;
-
-                    //            var model = CivilWithoutLegLibrary.Model;
-                    //            var HeightImplemented = AddCivilWithoutLeg.installationAttributes.HeightImplemented;
-
-                    //            if (!string.IsNullOrEmpty(siteName) && string.IsNullOrEmpty(ownerName))
-                    //            {
-                    //                CivilWithoutLeg.Name = $"{siteName}{model}{HeightImplemented}";
-                    //            }
-                    //            else if (string.IsNullOrEmpty(siteName) && !string.IsNullOrEmpty(ownerName))
-                    //            {
-                    //                CivilWithoutLeg.Name = $"{model}{ownerName}{HeightImplemented}";
-                    //            }
-                    //            else if (string.IsNullOrEmpty(siteName) && string.IsNullOrEmpty(ownerName))
-                    //            {
-                    //                CivilWithoutLeg.Name = $"{model}{HeightImplemented}";
-                    //            }
-                    //            else
-                    //            {
-                    //                CivilWithoutLeg.Name = $"{siteName} {model} {ownerName} {HeightImplemented}";
-
-                    //            }
-                    //            if (CivilWithoutLeg.HeightImplemented < 6)
-                    //            {
-                    //                CivilWithoutLeg.NumberOfCivilParts = 1;
-                    //                CivilWithoutLeg.BottomPartLengthm = CivilWithoutLeg.HeightImplemented;
-                    //            }
-                    //            else
-                    //            {
-                    //                CivilWithoutLeg.NumberOfCivilParts = 2;
-                    //                CivilWithoutLeg.UpperPartLengthm = CivilWithoutLeg.HeightImplemented - CivilWithoutLeg.BottomPartLengthm;
-                    //            }
-                    //            if (CivilWithoutLeg.NumberOfCivilParts == 2)
-                    //            {
-                    //                if (CivilWithoutLeg.UpperPartDiameterm == null)
-                    //                {
-                    //                    return new Response<ObjectInstAtts>(true, null, null, "Upper part diameterm shouldn't be null.", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //                }
-                    //            }
-                    //            if (CivilWithoutLegLibrary.Model.ToLower().Contains("located"))
-                    //            {
-                    //                if (CivilWithoutLeg.BasePlateLengthcm == 0 || CivilWithoutLeg.BasePlateThicknesscm == 0 || CivilWithoutLeg.BasePlateWidthcm == 0)
-                    //                {
-                    //                    return new Response<ObjectInstAtts>(true, null, null, "Base Plate Length and Base Plate Thickness and Base Plate Width Shouldn't be null if Model Contains located", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //                }
-                    //            }
-                    //            if (CivilWithoutLegLibrary.Model.ToLower().Contains("anchored"))
-                    //            {
-                    //                if (CivilWithoutLeg.SpindlesBasePlateLengthcm == 0 || CivilWithoutLeg.SpindlesBasePlateWidthcm == 0)
-                    //                {
-                    //                    return new Response<ObjectInstAtts>(true, null, null, "Spindles Base Plate Length and Spindles Base Plate Width Shouldn't be null if Model Contains anchored", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //                }
-                    //            }
-                    //        }
-       
-                    //        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                    //            (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == CivilWithoutLeg.Name.ToLower() : false) &&
-                    //            x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategoryId == CivilWithoutLegLibrary.CivilWithoutLegCategoryId &&
-                    //            x.SiteCode.ToLower() == SiteCode.ToLower(),
-                    //                x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-
-                    //        if (CheckName != null)
-                    //            return new Response<ObjectInstAtts>(true, null, null, $"The name {CivilWithoutLeg.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                    //        _unitOfWork.CivilWithoutLegRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilWithoutLeg);
-                    //        _unitOfWork.SaveChanges();
-                    //        TLIallCivilInst allCivilInst = new TLIallCivilInst();
-                    //        allCivilInst.civilWithoutLegId = CivilWithoutLeg.Id;
-                    //        allCivilInst.Draft = false;
-                    //        _unitOfWork.AllCivilInstRepository.Add(allCivilInst);
-                    //        _unitOfWork.SaveChanges();
-                    //        allCivilInstId = allCivilInst.Id;
-                    //        if (AddCivilWithoutLeg.civilSiteDate != null)
-                    //        {
-                    //            TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
-                    //            civilSiteDate.SiteCode = SiteCode;
-                    //            civilSiteDate.allCivilInstId = allCivilInst.Id;
-                    //            civilSiteDate.InstallationDate = AddCivilWithoutLeg.civilSiteDate.InstallationDate;
-                    //            civilSiteDate.LongitudinalSpindleLengthm = AddCivilWithoutLeg.civilSiteDate.LongitudinalSpindleLengthm;
-                    //            civilSiteDate.HorizontalSpindleLengthm = AddCivilWithoutLeg.civilSiteDate.HorizontalSpindleLengthm;
-                    //            civilSiteDate.ReservedSpace = AddCivilWithoutLeg.civilSiteDate.ReservedSpace;
-                    //            _unitOfWork.CivilSiteDateRepository.Add(civilSiteDate);
-                    //            _unitOfWork.SaveChanges();
-                    //        }
-                          
-                    //        var SiteCivils = _unitOfWork.CivilSiteDateRepository.GetWhere(x => x.SiteCode == SiteCode && x.allCivilInst.civilWithLegsId == null && x.allCivilInst.civilWithoutLegId != null && x.allCivilInst.civilNonSteelId == null).ToList();
-                         
-                    //        if (AddCivilWithoutLeg.civilSupportDistance != null)
-                    //        {
-                    //            TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
-                    //            civilSupportDistance.Distance = AddCivilWithoutLeg.civilSupportDistance.Distance;
-                    //            civilSupportDistance.Azimuth = AddCivilWithoutLeg.civilSupportDistance.Azimuth;
-                    //            civilSupportDistance.SiteCode = SiteCode;
-                    //            civilSupportDistance.ReferenceCivilId = AddCivilWithoutLeg.civilSupportDistance.ReferenceCivilId;
-                    //            civilSupportDistance.CivilInstId = allCivilInst.Id;
-                    //            _unitOfWork.CivilSupportDistanceRepository.Add(civilSupportDistance);
-                    //            _unitOfWork.SaveChanges();
-                    //        }
-                      
-                    //        if (AddCivilWithoutLeg.dynamicAttribute.Count > 0)
-                    //        {
-                    //            foreach (var addDynamicAttsInstValue in AddCivilWithoutLeg.dynamicAttribute)
-                    //            {
-                    //                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(addDynamicAttsInstValue, TableNameEntity.Id, CivilWithoutLeg.Id);
-                    //            }
-                    //        }
-                        
-                    //}
-                    //else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == TableName)
-                    //{
-                        
-                    //    AddCivilNonSteelViewModel AddCivilNonSteel = _mapper.Map<AddCivilNonSteelViewModel>(CivilInstallationViewModel);
-
-                    //    TLIcivilNonSteel CivilNonSteel = _mapper.Map<TLIcivilNonSteel>(AddCivilNonSteel.installationAttributes);
-                    //    if (AddCivilNonSteel.civilSiteDate.ReservedSpace == true)
-                    //    {
-                    //        var CheckSpace = _unitOfWork.SiteRepository.CheckSpace(SiteCode, TableName, AddCivilNonSteel.civilType.civilNonSteelLegsLibId, AddCivilNonSteel.installationAttributes.SpaceInstallation, null).Message;
-                    //        if (CheckSpace != "Success")
-                    //        {
-                    //            return new Response<ObjectInstAtts>(false, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
-                    //    //Check Validations
-                    //    string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(CivilInstallationViewModel, TableName, SiteCode, null);
-
-                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                    //    string CheckGeneralValidation = CheckGeneralValidationFunction(AddCivilNonSteel.dynamicAttribute, TableName);
-
-                    //    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                    //    //Check if there is other recodes has the same name
-                    //    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                    //        (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == CivilNonSteel.Name.ToLower() : false &&
-                    //        x.SiteCode.ToLower() == SiteCode.ToLower()),
-                    //        x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
-
-                    //    //if CheckName is true then return error message that the name is already exists
-                    //    if (CheckName != null)
-                    //    {
-                    //        return new Response<ObjectInstAtts>(false, null, null, $"The name {CivilNonSteel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //    }
-                            
-                    //    _unitOfWork.CivilNonSteelRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, CivilNonSteel);
-                    //    _unitOfWork.SaveChanges();
-                         
-                    //    TLIallCivilInst allCivilInst = new TLIallCivilInst();
-                    //    allCivilInst.civilNonSteelId = CivilNonSteel.Id;
-                    //    _unitOfWork.AllCivilInstRepository.Add(allCivilInst);
-                    //    _unitOfWork.SaveChanges();
-                    //    allCivilInstId = allCivilInst.Id;
-                    //    //if Site object is not null then add record to TLIcivilSiteDate table 
-                    //    if (AddCivilNonSteel.civilSiteDate != null)
-                    //    {
-                    //        TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
-                    //        civilSiteDate.SiteCode = SiteCode;
-                    //        civilSiteDate.allCivilInstId = allCivilInst.Id;
-                    //        civilSiteDate.InstallationDate = AddCivilNonSteel.civilSiteDate.InstallationDate;
-                    //        civilSiteDate.LongitudinalSpindleLengthm = AddCivilNonSteel.civilSiteDate.LongitudinalSpindleLengthm;
-                    //        civilSiteDate.HorizontalSpindleLengthm = AddCivilNonSteel.civilSiteDate.HorizontalSpindleLengthm;
-                    //        civilSiteDate.ReservedSpace = AddCivilNonSteel.civilSiteDate.ReservedSpace;
-                    //        _unitOfWork.CivilSiteDateRepository.Add(civilSiteDate);
-                    //        _unitOfWork.SaveChanges();
-
-                    //    }
-                    //    //Check if there are other civils in that site
-                    //    var SiteCivils = _unitOfWork.CivilSiteDateRepository.GetWhere(x =>
-                    //        x.SiteCode == SiteCode && x.allCivilInst.civilNonSteelId != null).ToList();
-                    //    //check if there are other civils in that site and CivilSupportDistance not null
-                    //    if (SiteCivils.Count > 0 && AddCivilNonSteel.civilSupportDistance != null)
-                    //    {
-                    //        TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
-                    //        civilSupportDistance.Distance = AddCivilNonSteel.civilSupportDistance.Distance;
-                    //        civilSupportDistance.Azimuth = AddCivilNonSteel.civilSupportDistance.Azimuth;
-                    //        civilSupportDistance.SiteCode = SiteCode;
-                    //        civilSupportDistance.ReferenceCivilId = AddCivilNonSteel.civilSupportDistance.ReferenceCivilId;
-                    //        civilSupportDistance.CivilInstId = allCivilInst.Id;
-                    //        _unitOfWork.CivilSupportDistanceRepository.Add(civilSupportDistance);
-                    //        _unitOfWork.SaveChanges();
-                    //    }
-                    //    //if ReservedSpace is true then update ReservedSpace in Sited table
-                    //    //if (AddCivilNonSteel.TLIcivilSiteDate.ReservedSpace == true)
-                    //    //{
-                    //    //    _unitOfWork.SiteRepository.UpdateReservedSpace(SiteCode, AddCivilNonSteel.SpaceInstallation);
-                    //    //}
-                    //    //Add Dynamic Attributes
-                    //    if (AddCivilNonSteel.dynamicAttribute.Count > 0)
-                    //    {
-                    //        foreach (var addDynamicAttsInstValue in AddCivilNonSteel.dynamicAttribute)
-                    //        {
-                    //            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(addDynamicAttsInstValue, TableNameEntity.Id, CivilNonSteel.Id);
-                    //        }
-                    //    }
-
-                    //    //AddCivilHistory(AddCivilNonSteel.ticketAtt, allCivilInstId, "Insert");
-                      
-                    //}
-                    if (TaskId != null)
-                    {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                        var result = Submit.Result;
-                        if (result.result == true && result.errorMessage == null)
+                        if (TaskId != null)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                            var result = Submit.Result;
+                            if (result.result == true && result.errorMessage == null)
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
+                            else
+                            {
+                                transaction.Dispose();
+                            }
+                        }
+                        else
                         {
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        else
-                        {
-                            transaction.Dispose();
-                        }
+                        return new Response<ObjectInstAtts>();
                     }
                     else
                     {
-                        _unitOfWork.SaveChanges();
-                        transaction.Complete();
+                       return new Response<ObjectInstAtts>(false, null, null, "It is not possible to select a civilwithlegslibrary that does not exist or is in a disable state", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
                 {
@@ -2924,174 +2701,182 @@ namespace TLIS_Service.Services
                     string ownername = null;
                     string sitename = null;
                     string Model = null;
-
-                    TLIcivilWithoutLeg civilwithoutlegs = _mapper.Map<TLIcivilWithoutLeg>(addCivilWithoutLegViewModel.installationAttributes);
-
-                    if (addCivilWithoutLegViewModel.civilSiteDate.ReservedSpace == true)
+                    var CvilWithoutlegsLibrary = _dbContext.TLIcivilWithoutLegLibrary.FirstOrDefault(x => x.Id == addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId
+                    && x.Active);
+                    if (CvilWithoutlegsLibrary != null)
                     {
-                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId, civilwithoutlegs.SpaceInstallation, null).Message;
-                        if (CheckSpace != "Success")
+                        TLIcivilWithoutLeg civilwithoutlegs = _mapper.Map<TLIcivilWithoutLeg>(addCivilWithoutLegViewModel.installationAttributes);
+
+                        if (addCivilWithoutLegViewModel.civilSiteDate.ReservedSpace == true)
                         {
-                            return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId, civilwithoutlegs.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
                         }
-                    }
-                    if (civilwithoutlegs.HeightBase <= 0)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    var CvilWithoutlegsLibrary = _dbContext.TLIcivilWithoutLegLibrary.FirstOrDefault(x => x.Id == addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId);
-                    sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
-                    if (civilwithoutlegs.OwnerId == 0 || civilwithoutlegs.OwnerId == null)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == addCivilWithoutLegViewModel.installationAttributes.OwnerId)?.OwnerName;
-                    if (CvilWithoutlegsLibrary.Model != null)
-                        Model = CvilWithoutlegsLibrary.Model;
+                        if (civilwithoutlegs.HeightBase <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
 
-                    civilwithoutlegs.Name = sitename + "" + Model + "" + ownername + "" + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented;
+                        sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
+                        if (civilwithoutlegs.OwnerId == 0 || civilwithoutlegs.OwnerId == null)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == addCivilWithoutLegViewModel.installationAttributes.OwnerId)?.OwnerName;
+                        if (CvilWithoutlegsLibrary.Model != null)
+                            Model = CvilWithoutlegsLibrary.Model;
 
-                    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                        (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false &&
-                            x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
+                        civilwithoutlegs.Name = sitename + "" + Model + "" + ownername + "" + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented;
 
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(false, null, null, $"The name {civilwithoutlegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    if(civilwithoutlegs.HeightImplemented < 6)
-                    {
-                        civilwithoutlegs.NumberOfCivilParts = 1;
-                    }
-                    else
-                    {
-                        civilwithoutlegs.NumberOfCivilParts = 2;
-                    }
-                    if(civilwithoutlegs.BottomPartDiameterm != 51 && civilwithoutlegs.BottomPartDiameterm != 76 && civilwithoutlegs.BottomPartDiameterm!=88
-                      && civilwithoutlegs.BottomPartDiameterm !=101 && civilwithoutlegs.BottomPartDiameterm!=114 && civilwithoutlegs.BottomPartDiameterm != 127)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartDiameterm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if(civilwithoutlegs.NumberOfCivilParts == 2 && civilwithoutlegs.UpperPartDiameterm == 0)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The UpperPartDiameterm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if(civilwithoutlegs.NumberOfCivilParts ==1 && civilwithoutlegs.BottomPartLengthm != civilwithoutlegs.HeightImplemented)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartLengthm must be equal to value HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.NumberOfCivilParts == 2)
-                    {
-                        civilwithoutlegs.UpperPartLengthm = civilwithoutlegs.HeightImplemented - civilwithoutlegs.BottomPartLengthm;
-                    }
-                    if (civilwithoutlegs.LongitudinalSpinDiameterrmm != 51 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 76 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 88
-                     && civilwithoutlegs.LongitudinalSpinDiameterrmm != 101)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if(civilwithoutlegs.ConcreteBaseLengthm==0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.ConcreteBaseWidthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                            (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false &&
+                                x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
 
-                    }
-                    if (civilwithoutlegs.ConcreteBaseThicknessm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.BaseBeamSectionmm != 100 && civilwithoutlegs.BaseBeamSectionmm != 120 && civilwithoutlegs.BaseBeamSectionmm != 140
-                      && civilwithoutlegs.BaseBeamSectionmm != 160 && civilwithoutlegs.BaseBeamSectionmm != 180 && civilwithoutlegs.BaseBeamSectionmm != 200)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (100,120,140,160,180,200)", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.BPlateBoltsAnchorDiametermm != 12 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 14 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 16
-                     && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 18 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 20)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.SpindlesBasePlateLengthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.SpindlesBasePlateWidthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    if (civilwithoutlegs.SpinBasePlateAnchorDiametercm != 12 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 14 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 16
-                     && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 18 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 20)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilWithoutLegViewModel.dynamicAttribute, TableName);
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(false, null, null, $"The name {civilwithoutlegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (civilwithoutlegs.HeightImplemented < 6)
+                        {
+                            civilwithoutlegs.NumberOfCivilParts = 1;
+                        }
+                        else
+                        {
+                            civilwithoutlegs.NumberOfCivilParts = 2;
+                        }
+                        if (civilwithoutlegs.BottomPartDiameterm != 51 && civilwithoutlegs.BottomPartDiameterm != 76 && civilwithoutlegs.BottomPartDiameterm != 88
+                          && civilwithoutlegs.BottomPartDiameterm != 101 && civilwithoutlegs.BottomPartDiameterm != 114 && civilwithoutlegs.BottomPartDiameterm != 127)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartDiameterm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.NumberOfCivilParts == 2 && civilwithoutlegs.UpperPartDiameterm == 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The UpperPartDiameterm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.NumberOfCivilParts == 1 && civilwithoutlegs.BottomPartLengthm != civilwithoutlegs.HeightImplemented)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartLengthm must be equal to value HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.NumberOfCivilParts == 2)
+                        {
+                            civilwithoutlegs.UpperPartLengthm = civilwithoutlegs.HeightImplemented - civilwithoutlegs.BottomPartLengthm;
+                        }
+                        if (civilwithoutlegs.LongitudinalSpinDiameterrmm != 51 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 76 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 88
+                         && civilwithoutlegs.LongitudinalSpinDiameterrmm != 101)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.ConcreteBaseLengthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.ConcreteBaseWidthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.ConcreteBaseThicknessm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.BaseBeamSectionmm != 100 && civilwithoutlegs.BaseBeamSectionmm != 120 && civilwithoutlegs.BaseBeamSectionmm != 140
+                          && civilwithoutlegs.BaseBeamSectionmm != 160 && civilwithoutlegs.BaseBeamSectionmm != 180 && civilwithoutlegs.BaseBeamSectionmm != 200)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (100,120,140,160,180,200)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.BPlateBoltsAnchorDiametermm != 12 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 14 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 16
+                         && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 18 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 20)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.SpindlesBasePlateLengthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.SpindlesBasePlateWidthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilwithoutlegs.SpinBasePlateAnchorDiametercm != 12 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 14 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 16
+                         && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 18 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 20)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilWithoutLegViewModel.dynamicAttribute, TableName);
 
-                    string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(addCivilWithoutLegViewModel, TableName, SiteCode, null);
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(addCivilWithoutLegViewModel, TableName, SiteCode, null);
 
-                    civilwithoutlegs.CivilWithoutlegsLibId = addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId;
-                    _unitOfWork.CivilWithoutLegRepository.AddWithHistory(UserId, civilwithoutlegs);
-                    _unitOfWork.SaveChanges();
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    TLIallCivilInst allCivilInst = new TLIallCivilInst();
-                    allCivilInst.civilWithoutLegId = civilwithoutlegs.Id;
-                    allCivilInst.Draft = false;
-                    _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId, allCivilInst);
-                    _unitOfWork.SaveChanges();
-                    allCivilInstId = allCivilInst.Id;
-
-                    if (addCivilWithoutLegViewModel.civilSiteDate != null && string.IsNullOrEmpty(SiteCode) == false)
-                    {
-                        TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
-                        civilSiteDate.SiteCode = SiteCode;
-                        civilSiteDate.allCivilInstId = allCivilInst.Id;
-                        civilSiteDate.InstallationDate = addCivilWithoutLegViewModel.civilSiteDate.InstallationDate;
-                        civilSiteDate.LongitudinalSpindleLengthm = addCivilWithoutLegViewModel.civilSiteDate.LongitudinalSpindleLengthm;
-                        civilSiteDate.HorizontalSpindleLengthm = addCivilWithoutLegViewModel.civilSiteDate.HorizontalSpindleLengthm;
-                        civilSiteDate.ReservedSpace = addCivilWithoutLegViewModel.civilSiteDate.ReservedSpace;
-                        _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId, civilSiteDate);
+                        civilwithoutlegs.CivilWithoutlegsLibId = addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId;
+                        _unitOfWork.CivilWithoutLegRepository.AddWithHistory(UserId, civilwithoutlegs);
                         _unitOfWork.SaveChanges();
-                    }
-                    if (addCivilWithoutLegViewModel.civilSupportDistance != null)
-                    {
-                        TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
-                        civilSupportDistance.Distance = addCivilWithoutLegViewModel.civilSupportDistance.Distance;
-                        civilSupportDistance.Azimuth = addCivilWithoutLegViewModel.civilSupportDistance.Azimuth;
-                        civilSupportDistance.SiteCode = SiteCode;
-                        civilSupportDistance.ReferenceCivilId = addCivilWithoutLegViewModel.civilSupportDistance?.ReferenceCivilId;
-                        civilSupportDistance.CivilInstId = allCivilInst.Id;
-                        _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
-                        _unitOfWork.SaveChanges();
-                    }
-          
-                
-                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations( UserId, addCivilWithoutLegViewModel.dynamicAttribute, TableNameEntity.Id, civilwithoutlegs.Id);
-                    
 
-                    if (TaskId != null)
-                    {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                        var result = Submit.Result;
-                        if (result.result == true && result.errorMessage == null)
+                        TLIallCivilInst allCivilInst = new TLIallCivilInst();
+                        allCivilInst.civilWithoutLegId = civilwithoutlegs.Id;
+                        allCivilInst.Draft = false;
+                        _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId, allCivilInst);
+                        _unitOfWork.SaveChanges();
+                        allCivilInstId = allCivilInst.Id;
+
+                        if (addCivilWithoutLegViewModel.civilSiteDate != null && string.IsNullOrEmpty(SiteCode) == false)
+                        {
+                            TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
+                            civilSiteDate.SiteCode = SiteCode;
+                            civilSiteDate.allCivilInstId = allCivilInst.Id;
+                            civilSiteDate.InstallationDate = addCivilWithoutLegViewModel.civilSiteDate.InstallationDate;
+                            civilSiteDate.LongitudinalSpindleLengthm = addCivilWithoutLegViewModel.civilSiteDate.LongitudinalSpindleLengthm;
+                            civilSiteDate.HorizontalSpindleLengthm = addCivilWithoutLegViewModel.civilSiteDate.HorizontalSpindleLengthm;
+                            civilSiteDate.ReservedSpace = addCivilWithoutLegViewModel.civilSiteDate.ReservedSpace;
+                            _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId, civilSiteDate);
+                            _unitOfWork.SaveChanges();
+                        }
+                        if (addCivilWithoutLegViewModel.civilSupportDistance != null)
+                        {
+                            TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
+                            civilSupportDistance.Distance = addCivilWithoutLegViewModel.civilSupportDistance.Distance;
+                            civilSupportDistance.Azimuth = addCivilWithoutLegViewModel.civilSupportDistance.Azimuth;
+                            civilSupportDistance.SiteCode = SiteCode;
+                            civilSupportDistance.ReferenceCivilId = addCivilWithoutLegViewModel.civilSupportDistance?.ReferenceCivilId;
+                            civilSupportDistance.CivilInstId = allCivilInst.Id;
+                            _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
+                            _unitOfWork.SaveChanges();
+                        }
+
+
+                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCivilWithoutLegViewModel.dynamicAttribute, TableNameEntity.Id, civilwithoutlegs.Id);
+
+
+                        if (TaskId != null)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                            var result = Submit.Result;
+                            if (result.result == true && result.errorMessage == null)
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
+                            else
+                            {
+                                transaction.Dispose();
+                            }
+                        }
+                        else
                         {
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        else
-                        {
-                            transaction.Dispose();
-                        }
+                        return new Response<ObjectInstAtts>();
                     }
                     else
                     {
-                        _unitOfWork.SaveChanges();
-                        transaction.Complete();
+                        return new Response<ObjectInstAtts>(false, null, null, "It is not possible to select a civilwithoutlegslibrary that does not exist or is in a disable state", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
                 {
@@ -3113,100 +2898,108 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                     string ErrorMessage = string.Empty;
                     string ownername = null;
-               
-
-                    TLIcivilNonSteel civilNonSteel = _mapper.Map<TLIcivilNonSteel>(addCivilNonSteelObject.installationAttributes);
-
-                    if (addCivilNonSteelObject.civilSiteDate.ReservedSpace == true)
+                    var civilnonsteellibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == addCivilNonSteelObject.civilType.CivilNonSteelLibraryId
+                    && x.Active);
+                    if (civilnonsteellibrary != null)
                     {
-                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCivilNonSteelObject.civilType.CivilNonSteelLibraryId, civilNonSteel.SpaceInstallation, null).Message;
-                        if (CheckSpace != "Success")
+                        TLIcivilNonSteel civilNonSteel = _mapper.Map<TLIcivilNonSteel>(addCivilNonSteelObject.installationAttributes);
+
+                        if (addCivilNonSteelObject.civilSiteDate.ReservedSpace == true)
                         {
-                            return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCivilNonSteelObject.civilType.CivilNonSteelLibraryId, civilNonSteel.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
+                            {
+                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
                         }
-                    }
-                    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                       (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteel.Name.ToLower() : false &&
-                           x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
+                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                           (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteel.Name.ToLower() : false &&
+                               x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
 
-                    if (CheckName != null)
-                        return new Response<ObjectInstAtts>(false, null, null, $"The name {civilNonSteel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (CheckName != null)
+                            return new Response<ObjectInstAtts>(false, null, null, $"The name {civilNonSteel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    var LocationType = _dbContext.TLIlocationType.FirstOrDefault(x => x.Id == civilNonSteel.locationTypeId)?.Name ?? null;
-                    if (LocationType !=null && LocationType.ToLower() == "roof top" && civilNonSteel.locationHeight == 0)
-                    {
-                        return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                   
-                    string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilNonSteelObject.dynamicAttribute, TableName);
+                        var LocationType = _dbContext.TLIlocationType.FirstOrDefault(x => x.Id == civilNonSteel.locationTypeId)?.Name ?? null;
+                        if (LocationType != null && LocationType.ToLower() == "roof top" && civilNonSteel.locationHeight == 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
 
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                        return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                        string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilNonSteelObject.dynamicAttribute, TableName);
 
-                    string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(addCivilNonSteelObject, TableName, SiteCode, null);
+                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                        return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(addCivilNonSteelObject, TableName, SiteCode, null);
 
-                    civilNonSteel.CivilNonSteelLibraryId = addCivilNonSteelObject.civilType.CivilNonSteelLibraryId;
-                    _unitOfWork.CivilNonSteelRepository.AddWithHistory(UserId, civilNonSteel);
-                    _unitOfWork.SaveChanges();
+                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    TLIallCivilInst allCivilInst = new TLIallCivilInst();
-                    allCivilInst.civilNonSteelId = civilNonSteel.Id;
-                    allCivilInst.Draft = false;
-                    _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId, allCivilInst);
-                    _unitOfWork.SaveChanges();
-                    allCivilInstId = allCivilInst.Id;
-
-                    if (addCivilNonSteelObject.civilSiteDate != null && string.IsNullOrEmpty(SiteCode) == false)
-                    {
-                        TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
-                        civilSiteDate.SiteCode = SiteCode;
-                        civilSiteDate.allCivilInstId = allCivilInst.Id;
-                        civilSiteDate.InstallationDate = addCivilNonSteelObject.civilSiteDate.InstallationDate;
-                        civilSiteDate.LongitudinalSpindleLengthm = addCivilNonSteelObject.civilSiteDate.LongitudinalSpindleLengthm;
-                        civilSiteDate.HorizontalSpindleLengthm = addCivilNonSteelObject.civilSiteDate.HorizontalSpindleLengthm;
-                        civilSiteDate.ReservedSpace = addCivilNonSteelObject.civilSiteDate.ReservedSpace;
-                        _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId, civilSiteDate);
+                        civilNonSteel.CivilNonSteelLibraryId = addCivilNonSteelObject.civilType.CivilNonSteelLibraryId;
+                        _unitOfWork.CivilNonSteelRepository.AddWithHistory(UserId, civilNonSteel);
                         _unitOfWork.SaveChanges();
-                    }
-                    if (addCivilNonSteelObject.civilSupportDistance != null)
-                    {
-                        TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
-                        civilSupportDistance.Distance = addCivilNonSteelObject.civilSupportDistance.Distance;
-                        civilSupportDistance.Azimuth = addCivilNonSteelObject.civilSupportDistance.Azimuth;
-                        civilSupportDistance.SiteCode = SiteCode;
-                        civilSupportDistance.ReferenceCivilId = addCivilNonSteelObject.civilSupportDistance?.ReferenceCivilId;
-                        civilSupportDistance.CivilInstId = allCivilInst.Id;
-                        _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
-                        _unitOfWork.SaveChanges();
-                    }
 
-                   
+                        TLIallCivilInst allCivilInst = new TLIallCivilInst();
+                        allCivilInst.civilNonSteelId = civilNonSteel.Id;
+                        allCivilInst.Draft = false;
+                        _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId, allCivilInst);
+                        _unitOfWork.SaveChanges();
+                        allCivilInstId = allCivilInst.Id;
+
+                        if (addCivilNonSteelObject.civilSiteDate != null && string.IsNullOrEmpty(SiteCode) == false)
+                        {
+                            TLIcivilSiteDate civilSiteDate = new TLIcivilSiteDate();
+                            civilSiteDate.SiteCode = SiteCode;
+                            civilSiteDate.allCivilInstId = allCivilInst.Id;
+                            civilSiteDate.InstallationDate = addCivilNonSteelObject.civilSiteDate.InstallationDate;
+                            civilSiteDate.LongitudinalSpindleLengthm = addCivilNonSteelObject.civilSiteDate.LongitudinalSpindleLengthm;
+                            civilSiteDate.HorizontalSpindleLengthm = addCivilNonSteelObject.civilSiteDate.HorizontalSpindleLengthm;
+                            civilSiteDate.ReservedSpace = addCivilNonSteelObject.civilSiteDate.ReservedSpace;
+                            _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId, civilSiteDate);
+                            _unitOfWork.SaveChanges();
+                        }
+                        if (addCivilNonSteelObject.civilSupportDistance != null)
+                        {
+                            TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
+                            civilSupportDistance.Distance = addCivilNonSteelObject.civilSupportDistance.Distance;
+                            civilSupportDistance.Azimuth = addCivilNonSteelObject.civilSupportDistance.Azimuth;
+                            civilSupportDistance.SiteCode = SiteCode;
+                            civilSupportDistance.ReferenceCivilId = addCivilNonSteelObject.civilSupportDistance?.ReferenceCivilId;
+                            civilSupportDistance.CivilInstId = allCivilInst.Id;
+                            _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
+                            _unitOfWork.SaveChanges();
+                        }
+
+
                         _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCivilNonSteelObject.dynamicAttribute, TableNameEntity.Id, civilNonSteel.Id);
-                    
- 
-                    if (TaskId != null)
-                    {
-                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                        var result = Submit.Result;
-                        if (result.result == true && result.errorMessage == null)
+
+
+                        if (TaskId != null)
+                        {
+                            var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                            var result = Submit.Result;
+                            if (result.result == true && result.errorMessage == null)
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
+                            else
+                            {
+                                transaction.Dispose();
+                            }
+                        }
+                        else
                         {
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        else
-                        {
-                            transaction.Dispose();
-                        }
+                        return new Response<ObjectInstAtts>();
                     }
+
                     else
                     {
-                        _unitOfWork.SaveChanges();
-                        transaction.Complete();
+                        return new Response<ObjectInstAtts>(false, null, null, "It is not possible to select a civilnonsteellibrary that does not exist or is in a disable state", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
                 {
@@ -7416,7 +7209,8 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0) 
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        && !x.Dismantle).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
                      
@@ -7425,7 +7219,8 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                         && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
 
@@ -7549,7 +7344,7 @@ namespace TLIS_Service.Services
 
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW
                         .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                         x.CIVILWITHOUTLEGCATEGORY.ToLower()  == "mast")
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower()  == "mast" && !x.Dismantle)
                         .AsEnumerable().Select(x =>
 
                              new
@@ -7624,7 +7419,7 @@ namespace TLIS_Service.Services
                     else
                     {
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast").Select(x =>
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle).Select(x =>
 
                              new
                              {
@@ -7823,7 +7618,7 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                         x.CIVILWITHOUTLEGCATEGORY.ToLower()== "capsule").AsEnumerable().OrderBy(x => x.Name)
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower()== "capsule" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
                        
@@ -7833,7 +7628,7 @@ namespace TLIS_Service.Services
                     else
                     {
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule").AsEnumerable()
+                        && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
                         HieghFromLand = x.HieghFromLand,
@@ -7966,8 +7761,7 @@ namespace TLIS_Service.Services
                     {
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                         &&
-                         _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
-                         y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "monopole")).AsEnumerable().OrderBy(x => x.Name)
+                        x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
                        
@@ -7977,8 +7771,7 @@ namespace TLIS_Service.Services
                     else
                     {
                         var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        && _dbContext.TLIcivilWithoutLegLibrary.Include(x => x.CivilWithoutLegCategory).Any(y =>
-                        y.Model.ToLower() == x.CIVILWITHOUTLEGSLIB.ToLower() && y.CivilWithoutLegCategory.Name.ToLower() == "monopole")).AsEnumerable()
+                        && x.CIVILWITHOUTLEGCATEGORY.ToLower()== "monopole" && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
                         HieghFromLand = x.HieghFromLand,
@@ -8375,7 +8168,8 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
 
-                        var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                         && !x.Dismantle).AsEnumerable()
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
                         getEnableAttribute.Model = query;
@@ -8383,7 +8177,8 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
+                        var query = _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                         && !x.Dismantle).AsEnumerable()
                        .GroupBy(x => new
                        {
                            SITECODE = x.SITECODE,

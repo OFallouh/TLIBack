@@ -40,6 +40,7 @@ using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL;
 using System.Data;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 
 namespace TLIS_Service.Services
 {
@@ -797,29 +798,33 @@ namespace TLIS_Service.Services
         //update Entity
         public async Task<Response<SideArmLibraryViewModel>> Disable(int id)
         {
-            try
+            using (TransactionScope transaction = new TransactionScope())
             {
-                var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
-                 x.Dismantle, x => x.sideArm);
-                if (SideArmInstllation != null)
+                try
                 {
-                    return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                    var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
+                     x.Dismantle, x => x.sideArm);
+                    TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
+                    if (SideArmInstllation != null && NewSideWithArm.Active == true)
+                    {
+                        return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    else if ((SideArmInstllation != null && NewSideWithArm.Active == false) || SideArmInstllation == null)
+                    {
+                        TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
+                        NewSideWithArm.Active = !(NewSideWithArm.Active);
+
+                        _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    transaction.Complete();
+                    return new Response<SideArmLibraryViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+
                 }
-                else
+                catch (Exception err)
                 {
-                    TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
-
-                    TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
-                    NewSideWithArm.Active = !(NewSideWithArm.Active);
-
-                    _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
-                    await _unitOfWork.SaveChangesAsync();
-                    return new Response<SideArmLibraryViewModel>();
+                    return new Response<SideArmLibraryViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-            }
-            catch (Exception err)
-            {
-                return new Response<SideArmLibraryViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         //Function take 1 parameter

@@ -1557,58 +1557,66 @@ namespace TLIS_Service.Services
                     {
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
-                        if (UsedCivil != null)
+                        var NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
+
+                        if (UsedCivil != null && NewCivilWithLeg.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                       
-                        TLIcivilWithLegLibrary OldCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        else if ((UsedCivil != null && NewCivilWithLeg.Active == false) || UsedCivil == null) 
+                        { 
 
-                        TLIcivilWithLegLibrary NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        NewCivilWithLeg.Active = !(NewCivilWithLeg.Active);
+                            TLIcivilWithLegLibrary OldCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
-                        _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithLeg, NewCivilWithLeg);
-                        //await _unitOfWork.SaveChangesAsync();
+                            NewCivilWithLeg.Active = !(NewCivilWithLeg.Active);
+
+                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithLeg, NewCivilWithLeg);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                     {
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
-                        if (UsedCivil != null)
+                        TLIcivilWithoutLegLibrary NewCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
+                        if (UsedCivil != null && NewCivilWithoutLeg != null && NewCivilWithoutLeg.Active == true )
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-
-                        TLIcivilWithoutLegLibrary OldCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-
-                        TLIcivilWithoutLegLibrary NewCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        NewCivilWithoutLeg.Active = !(NewCivilWithoutLeg.Active);
-
-                        _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithoutLeg, NewCivilWithoutLeg);
-                        //await _unitOfWork.SaveChangesAsync();
+                        
+                        else if ((UsedCivil != null && NewCivilWithoutLeg !=null && NewCivilWithoutLeg.Active == false) || UsedCivil == null)
+                        {
+                            TLIcivilWithoutLegLibrary OldCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                            NewCivilWithoutLeg.Active = !(NewCivilWithoutLeg.Active);
+                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithoutLeg, NewCivilWithoutLeg);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
                     {
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.CivilNonSteelLibraryId
                          == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
-                        if (UsedCivil != null)
+                        TLIcivilNonSteelLibrary NewCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == Id);
+                        if (UsedCivil != null && NewCivilNonSteel != null && NewCivilNonSteel.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
 
-                        TLIcivilNonSteelLibrary OldCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        else if ((UsedCivil != null && NewCivilNonSteel != null && NewCivilNonSteel.Active == false) || UsedCivil == null)
+                        {
 
-                        TLIcivilNonSteelLibrary NewCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        NewCivilNonSteel.Active = !(NewCivilNonSteel.Active);
-                        _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilNonSteel, NewCivilNonSteel);
-                        //await _unitOfWork.SaveChangesAsync();
+                            TLIcivilNonSteelLibrary OldCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                            NewCivilNonSteel.Active = !(NewCivilNonSteel.Active);
+                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilNonSteel, NewCivilNonSteel);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
                     }
                     transaction.Complete();
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
                 {
-                    return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<AllItemAttributes>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
 
