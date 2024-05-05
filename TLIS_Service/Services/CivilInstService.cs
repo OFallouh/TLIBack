@@ -10598,7 +10598,7 @@ namespace TLIS_Service.Services
                                 {
                                     var OldValue = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                     item.ReferenceCivilId = null;
-                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, item, OldValue);
+                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, OldValue, item);
                                     _unitOfWork.SaveChanges();
                                 }
                                 _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
@@ -10629,7 +10629,7 @@ namespace TLIS_Service.Services
                                 {
                                     var OldValue = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                     item.ReferenceCivilId = null;
-                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, item, OldValue);
+                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, OldValue, item);
                                     _unitOfWork.SaveChanges();
                                 }
                                 _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
@@ -10695,7 +10695,7 @@ namespace TLIS_Service.Services
                         {
                             civilSiteDate.Dismantle = true;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
-                            Freespace += allcivil.civilWithLegs.SpaceInstallation;
+                            Freespace += allcivil.civilWithoutLeg.SpaceInstallation;
                             _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteReservedSpace, civilSiteDate);
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
@@ -10707,7 +10707,7 @@ namespace TLIS_Service.Services
                                 {
                                     var OldValue = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                     item.ReferenceCivilId = null;
-                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, item, OldValue);
+                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, OldValue, item);
                                     _unitOfWork.SaveChanges();
                                 }
                                 _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
@@ -10738,7 +10738,7 @@ namespace TLIS_Service.Services
                                 {
                                     var OldValue = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                     item.ReferenceCivilId = null;
-                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, item, OldValue);
+                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, OldValue, item);
                                     _unitOfWork.SaveChanges();
                                 }
                                 _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
@@ -10799,13 +10799,12 @@ namespace TLIS_Service.Services
 
                     if (allcivil != null)
                     {
-
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {
                             civilSiteDate.Dismantle = true;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
-                            Freespace += allcivil.civilWithLegs.SpaceInstallation;
+                            Freespace += allcivil.civilNonSteel.SpaceInstallation;
                             _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteReservedSpace, civilSiteDate);
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
@@ -10817,7 +10816,7 @@ namespace TLIS_Service.Services
                                 {
                                     var OldValue = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                     item.ReferenceCivilId = null;
-                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, item, OldValue);
+                                    _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, OldValue, item);
                                     _unitOfWork.SaveChanges();
                                 }
                                 _unitOfWork.CivilLoadsRepository.UpdateSiteWithHistory(UserId, OldValueCivilLoad, tLIcivilLoads);
@@ -10842,7 +10841,7 @@ namespace TLIS_Service.Services
                             {
                                 var OldValue = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                 item.ReferenceCivilId = null;
-                                _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, item, OldValue);
+                                _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(UserId, OldValue, item);
                                 _unitOfWork.SaveChanges();
                             }
                             _unitOfWork.CivilSiteDateRepository.UpdateSiteWithHistory(UserId, OldValueSiteNotReservedSpace, civilSiteDate1);
@@ -13526,27 +13525,31 @@ namespace TLIS_Service.Services
                 objectInst.InstallationAttributes = ListAttributesActivated;
                 objectInst.CivilSiteDate = _unitOfWork.AttributeActivatedRepository
                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(), null, "allCivilInstId", "Dismantle", "SiteCode");
-                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
+                var query = _dbContext.TLIcivilSiteDate
+                .Include(x => x.allCivilInst)
+                .Where(x => x.SiteCode == SiteCode && x.allCivilInst != null)
+                .Select(x => new List<object>
                 {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst!=null).Select(x=>x.allCivilInst).ToList()) }
+                    x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs : null,
+                    x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg : null,
+                    x.allCivilInst.civilNonSteel
+                })
+                .ToList() 
+                .SelectMany(list => list)
+                .Where(civil => civil != null)
+                .ToList();
 
-                };
 
-                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
-                   .Select(FKitem =>
-                   {
-                       if (repositoryM.ContainsKey(FKitem.Label.ToLower()))
-                       {
-                           FKitem.Options = repositoryM[FKitem.Label.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
+                var mappedResult = _mapper.Map<IEnumerable<LocationTypeViewModel>>(query);
+                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
+                {
+                    if (x.Label.ToLower() == "referencecivil_name")
+                    {
+                        x.Options = mappedResult.ToList();
+                    }
+                    return x;
+                });
+
 
                 List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
                 string[] legLetters = { "A", "B", "C", "D" };
@@ -13707,27 +13710,31 @@ namespace TLIS_Service.Services
 
                 objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
-                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
+                   var query = _dbContext.TLIcivilSiteDate
+                .Include(x => x.allCivilInst)
+                .Where(x => x.SiteCode == SiteCode && x.allCivilInst != null)
+                .Select(x => new List<object>
                 {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst!=null).Select(x=>x.allCivilInst).ToList()) }
+                    x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs : null,
+                    x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg : null,
+                    x.allCivilInst.civilNonSteel
+                })
+                .ToList() 
+                .SelectMany(list => list)
+                .Where(civil => civil != null)
+                .ToList();
 
-                };
 
-                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
-                   .Select(FKitem =>
-                   {
-                       if (repositoryM.ContainsKey(FKitem.Label.ToLower()))
-                       {
-                           FKitem.Options = repositoryM[FKitem.Label.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
+                var mappedResult = _mapper.Map<IEnumerable<LocationTypeViewModel>>(query);
+                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
+                {
+                    if (x.Label.ToLower() == "referencecivil_name")
+                    {
+                        x.Options = mappedResult.ToList();
+                    }
+                    return x;
+                });
+
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
@@ -13858,27 +13865,31 @@ namespace TLIS_Service.Services
 
                 objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
-                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
-                {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
+                var query = _dbContext.TLIcivilSiteDate
+                 .Include(x => x.allCivilInst)
+                 .Where(x => x.SiteCode == SiteCode && x.allCivilInst != null)
+                 .Select(x => new List<object>
+                 {
+                        x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs : null,
+                        x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg : null,
+                        x.allCivilInst.civilNonSteel
+                 })
+                 .ToList()
+                 .SelectMany(list => list)
+                 .Where(civil => civil != null)
+                 .ToList();
 
-                };
 
-                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
-                   .Select(FKitem =>
-                   {
-                       if (repositoryM.ContainsKey(FKitem.Label.ToLower()))
-                       {
-                           FKitem.Options = repositoryM[FKitem.Label.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
+                    var mappedResult = _mapper.Map<IEnumerable<LocationTypeViewModel>>(query);
+                    objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "referencecivil_name")
+                        {
+                            x.Options = mappedResult.ToList();
+                        }
+                        return x;
+                    });
+
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);
@@ -14009,27 +14020,31 @@ namespace TLIS_Service.Services
 
                 objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
-                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
-                {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
+                var query = _dbContext.TLIcivilSiteDate
+                 .Include(x => x.allCivilInst)
+                 .Where(x => x.SiteCode == SiteCode && x.allCivilInst != null)
+                 .Select(x => new List<object>
+                 {
+                        x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs : null,
+                        x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg : null,
+                        x.allCivilInst.civilNonSteel
+                 })
+                 .ToList()
+                 .SelectMany(list => list)
+                 .Where(civil => civil != null)
+                 .ToList();
 
-                };
 
-                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
-                   .Select(FKitem =>
-                   {
-                       if (repositoryM.ContainsKey(FKitem.Label.ToLower()))
-                       {
-                           FKitem.Options = repositoryM[FKitem.Label.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
+                    var mappedResult = _mapper.Map<IEnumerable<LocationTypeViewModel>>(query);
+                    objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "referencecivil_name")
+                        {
+                            x.Options = mappedResult.ToList();
+                        }
+                        return x;
+                    });
+
 
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);
@@ -14112,27 +14127,30 @@ namespace TLIS_Service.Services
 
                 objectInst.CivilSupportDistance = _unitOfWork.AttributeActivatedRepository
                     .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilSupportDistance.ToString(), null, "CivilInstId", "SiteCode");
-                Dictionary<string, Func<IEnumerable<object>>> repositoryM = new Dictionary<string, Func<IEnumerable<object>>>
+                var query = _dbContext.TLIcivilSiteDate
+                 .Include(x => x.allCivilInst)
+                 .Where(x => x.SiteCode == SiteCode && x.allCivilInst != null)
+                 .Select(x => new List<object>
+                 {
+                        x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs : null,
+                        x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg : null,
+                        x.allCivilInst.civilNonSteel
+                 })
+                 .ToList()
+                 .SelectMany(list => list)
+                 .Where(civil => civil != null)
+                 .ToList();
+
+
+                var mappedResult = _mapper.Map<IEnumerable<LocationTypeViewModel>>(query);
+                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
                 {
-                    { "referencecivil_name", () => _mapper.Map<List<LocationTypeViewModel>>(_dbContext.TLIcivilSiteDate.Include(x=>x.allCivilInst).ThenInclude(x=>x.civilWithoutLeg)
-                    .Where(x => x.SiteCode==SiteCode && x.allCivilInst.civilWithoutLeg !=null).Select(x=>x.allCivilInst.civilWithoutLeg).ToList()) }
-
-                };
-
-                objectInst.CivilSupportDistance = objectInst.CivilSupportDistance
-                   .Select(FKitem =>
-                   {
-                       if (repositoryM.ContainsKey(FKitem.Label.ToLower()))
-                       {
-                           FKitem.Options = repositoryM[FKitem.Label.ToLower()]();
-                       }
-                       else
-                       {
-                           FKitem.Options = new object[0];
-                       }
-                       return FKitem;
-                   })
-                   .ToList();
+                    if (x.Label.ToLower() == "referencecivil_name")
+                    {
+                        x.Options = mappedResult.ToList();
+                    }
+                    return x;
+                });
                 IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                 .GetDynamicInstAttInst(TableNameEntity.Id, null);
 

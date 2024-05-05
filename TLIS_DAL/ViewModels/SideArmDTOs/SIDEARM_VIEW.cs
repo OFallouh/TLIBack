@@ -19,6 +19,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public string CIVILNAME { get; set; }
         public string CIVILID { get; set; }
         public string? FIRST_LEG { get; set; }
+        public string? BRANCHING_SIDEARM { get; set; }
         public string? SECOND_LEG { get; set; }
         public int? FIRST_LEG_ID { get; set; }
         public int? SECOND_LEG_ID { get; set; }
@@ -76,6 +77,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             outputData.Add("SIDEARMLIBRARY", SIDEARMLIBRARY);
             outputData.Add("SECOND_LEG_ID", SECOND_LEG_ID);
             outputData.Add("FIRST_LEG_ID", FIRST_LEG_ID);
+            outputData.Add("BRANCHING_SIDEARM", BRANCHING_SIDEARM);
 
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))

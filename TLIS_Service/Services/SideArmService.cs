@@ -1160,6 +1160,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("FIRST_LEG_ID");
                     propertyNamesStatic.Add("SECOND_LEG");
                     propertyNamesStatic.Add("SECOND_LEG_ID");
+                    propertyNamesStatic.Add("BRANCHING_SIDEARM");
 
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -1199,7 +1200,8 @@ namespace TLIS_Service.Services
                            HieghFromLand = x.HieghFromLand,
                            EquivalentSpace = x.EquivalentSpace,
                            FIRST_LEG_ID=x.FIRST_LEG_ID,
-                           SECOND_LEG_ID=x.SECOND_LEG_ID
+                           SECOND_LEG_ID=x.SECOND_LEG_ID,
+                           BRANCHING_SIDEARM = x.BRANCHING_SIDEARM
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
@@ -1687,6 +1689,7 @@ namespace TLIS_Service.Services
                 
                 GetForAddLoadObject attributes = new GetForAddLoadObject();
                 List<BaseInstAttViews> Config = new List<BaseInstAttViews>();
+                List<BaseInstAttViews> Civilloads = new List<BaseInstAttViews>();
                 TLIsideArm sideArm = _unitOfWork.SideArmRepository.GetIncludeWhereFirst(x => x.Id == Id, x => x.owner, x => x.sideArmType, x => x.sideArmInstallationPlace);
                 var SideArm= _unitOfWork.SideArmLibraryRepository
                     .GetIncludeWhereFirst(x => x.Id == sideArm.sideArmLibraryId);
@@ -1728,12 +1731,14 @@ namespace TLIS_Service.Services
                         {
                             case "sidearminstallationplace_name":
                                 FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmInstallationPlace);
-                                FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmInstallationPlace);
+                                FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository
+                                    .GetWhere(x=>x.Id== sideArm.sideArmInstallationPlaceId));
                                 break;
 
                             case "sidearmtype_name":
                                 FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmType);
-                                FKitem.Options = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArmType);
+                                FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SideArmTypeRepository
+                                    .GetWhere(x => x.Id == sideArm.sideArmTypeId));
                                 break;
                         }
                         return FKitem;
@@ -1755,7 +1760,8 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Key = "civilWithoutLegId";
                                 baseInstAttViews.Label = "civilWithoutLeg_name";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
-                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithoutLegRepository
+                                     .GetWhere(x => x.Id == AllCivilInst.civilWithoutLegId));
                                 baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
@@ -1764,7 +1770,8 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Key = "civilNonSteelId";
                                 baseInstAttViews.Label = "civilNonSteel_name";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
-                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilNonSteelRepository
+                                       .GetWhere(x => x.Id == AllCivilInst.civilNonSteelId));
                                 baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
@@ -1773,7 +1780,8 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Key = "civilWithLegId";
                                 baseInstAttViews.Label = "civilWithLeg_name";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
-                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithLegsRepository
+                                    .GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
                                 baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                             }
@@ -1788,18 +1796,20 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Key = "legId";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(Leg1);
                                 baseInstAttViews.Label = "leg_name";
-                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(Leg1);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.LegRepository
+                                   .GetWhere(x => x.Id == CivilLoad.legId));
                                 baseInstAttViews.DataType = "list";
                                 Config.Add(baseInstAttViews);
                             }
-                            var Leg2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.legId);
+                            var Leg2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.Leg2Id);
                             if (Leg2 != null)
                             {
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                                 baseInstAttViews.Key = "leg2Id";
                                 baseInstAttViews.Label = "leg_name";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(Leg2);
-                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(Leg2);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.LegRepository
+                               .GetWhere(x => x.Id == CivilLoad.Leg2Id));
                                 baseInstAttViews.DataType = "list";
                                 Config.Add(baseInstAttViews);
                             }
@@ -1814,15 +1824,46 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Key = "BranchingSideArmId";
                                 baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(BranchingSideArm);
                                 baseInstAttViews.Label = "BranchingSideArm_name";
-                                baseInstAttViews.Options = _mapper.Map<SectionsLegTypeViewModel>(BranchingSideArm);
+                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SideArmRepository
+                                .GetWhere(x => x.Id == CivilLoad.BranchingSideArmId));
                                 baseInstAttViews.DataType = "list";
                                 Config.Add(baseInstAttViews);
                             }
                         }
+                        attributes.installationConfig = Config;
+                        var InstallationDate = new BaseInstAttViews()
+                        {
+                            Key = "InstallationDate",
+                            Value = CivilLoad.InstallationDate,
+                            DataType = "datetime",
+                            Label = "InstallationDate",
 
 
+                        };
+                        Civilloads.Add(InstallationDate);
+                        var ItemOnCivilStatus = new BaseInstAttViews()
+                        {
+                            Key = "ItemOnCivilStatus",
+                            Value = CivilLoad.ItemOnCivilStatus,
+                            DataType = "string",
+                            Label = "ItemOnCivilStatus",
+
+
+                        };
+                        Civilloads.Add(ItemOnCivilStatus);
+                        var ItemStatus = new BaseInstAttViews()
+                        {
+                            Key = "ItemStatus",
+                            Value = CivilLoad.InstallationDate,
+                            DataType = "string",
+                            Label = "ItemStatus",
+
+
+                        };
+                        Civilloads.Add(ItemStatus);
+                       
                     }
-                    attributes.installationConfig = Config;
+                    attributes.CivilLoads = Civilloads;
                     attributes.InstallationAttributes = attributes.InstallationAttributes.Except(selectedAttributes).ToList();
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
 
@@ -2605,7 +2646,7 @@ namespace TLIS_Service.Services
 
                                             }
                                             TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
+                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
                                                     x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
                                                     x => x.sideArm);
 
@@ -2633,9 +2674,9 @@ namespace TLIS_Service.Services
                                         SideArm.Name = CivilLoads.allCivilInst.civilWithoutLeg.Name + SideArm.HeightBase + SideArm.Azimuth;
 
                                         TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                            (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                x => x.sideArm);
+                                                 (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
+                                                     x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
+                                                     x => x.sideArm);
 
                                         if (CheckName != null)
                                             return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
@@ -2668,9 +2709,9 @@ namespace TLIS_Service.Services
 
                                         }
                                         TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                            (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                x => x.sideArm);
+                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
+                                                    x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
+                                                    x => x.sideArm);
 
                                         if (CheckName != null)
                                             return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
@@ -2690,9 +2731,9 @@ namespace TLIS_Service.Services
 
                                         }
                                         TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                           (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                               x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                               x => x.sideArm);
+                                               (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
+                                                   x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
+                                                   x => x.sideArm);
 
                                         if (CheckName != null)
                                             return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
@@ -2709,9 +2750,9 @@ namespace TLIS_Service.Services
 
 
                                     TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                         (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                             x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                             x => x.sideArm);
+                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
+                                                    x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
+                                                    x => x.sideArm);
 
                                     if (CheckName != null)
                                         return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
@@ -2737,7 +2778,7 @@ namespace TLIS_Service.Services
                                     SideArm.Name = CivilLoads.allCivilInst.civilNonSteel.Name + SideArm.HeightBase + SideArm.Azimuth;
 
                                     TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
+                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
                                                     x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
                                                     x => x.sideArm);
 
@@ -2767,6 +2808,13 @@ namespace TLIS_Service.Services
                         SideArm.sideArmLibraryId = SideArmViewModel.civilType.sideArmLibraryId;
                         _unitOfWork.SideArmRepository.UpdateWithHistory(UserId, SideArmInst, SideArm);
                         _unitOfWork.SaveChanges();
+
+                        if(SideArmViewModel.CivilLoads != null)
+                        {
+                            CivilLoads.ItemOnCivilStatus = SideArmViewModel.CivilLoads?.ItemOnCivilStatus;
+                            CivilLoads.InstallationDate = SideArmViewModel.CivilLoads.InstallationDate;
+                            CivilLoads.ItemStatus = SideArmViewModel.CivilLoads?.ItemStatus;
+                        }
                         int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
                         if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count() > 0 : false)
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id);

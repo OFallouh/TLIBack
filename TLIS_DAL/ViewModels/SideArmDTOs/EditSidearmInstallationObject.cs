@@ -12,6 +12,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
     {
         public LibraryAttributesSideArm civilType { get; set; }
         public EditinstallationAttributesSideArm installationAttributes { get; set; }
+        public EditCivilLoad CivilLoads { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
         public class LibraryAttributesSideArm
         {
@@ -36,6 +37,13 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public float HBA { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;
             public float EquivalentSpace { get; set; } = 0;
+        }
+        public class EditCivilLoad
+        {
+            public DateTime InstallationDate { get; set; }=DateTime.Now;
+
+            public string? ItemOnCivilStatus { get; set; } = " ";
+            public string? ItemStatus { get; set; } = " ";
         }
     }
 }

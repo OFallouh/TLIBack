@@ -14,6 +14,7 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
         public IEnumerable<BaseInstAttViews> installationConfig { get; set; } = new List<BaseInstAttViews>();
         public IEnumerable<BaseInstAttViews> LibraryAttribute { get; set; } = new List<BaseInstAttViews>();
         public IEnumerable<BaseInstAttViews> InstallationAttributes { get; set; } = new List<BaseInstAttViews>();
+        public IEnumerable<BaseInstAttViews> CivilLoads { get; set; } = new List<BaseInstAttViews>();
 
         public IEnumerable<DynaminAttInstViewModel> dynamicAttribute { get; set; } = new List<DynaminAttInstViewModel>();
     }

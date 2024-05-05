@@ -1555,11 +1555,13 @@ namespace TLIS_Service.Services
                 {
                     if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
                     {
-                        var UsedCivil = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.CivilWithLegsLibId == Id);
+                        var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId
+                        == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
+                       
                         TLIcivilWithLegLibrary OldCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilWithLegLibrary NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -1570,11 +1572,13 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
                     {
-                        var UsedCivil = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.CivilWithoutlegsLibId == Id);
+                        var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId
+                        == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
+
                         TLIcivilWithoutLegLibrary OldCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilWithoutLegLibrary NewCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -1585,11 +1589,13 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
                     {
-                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.CivilNonSteelLibraryId
+                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
+
                         TLIcivilNonSteelLibrary OldCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIcivilNonSteelLibrary NewCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -5171,7 +5177,8 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == CivilType);
                     if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == CivilType)
                     {
-                        var UsedCivil = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.CivilWithLegsLibId == Id);
+                        var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId
+                        == Id && !x.Dismantle,x=>x.allCivilInst,x=>x.allCivilInst.civilWithLegs);
                         if(UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5189,7 +5196,8 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == CivilType)
                     {
-                        var UsedCivil = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.CivilWithoutlegsLibId == Id);
+                        var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId
+                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5208,11 +5216,14 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == CivilType)
                     {
-                        var UsedCivil = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.CivilNonSteelLibraryId == Id);
+                        var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.CivilNonSteelLibraryId
+                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
                         if (UsedCivil != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
+
+                        
                         TLIcivilNonSteelLibrary OldCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIcivilNonSteelLibrary NewCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCivilNonSteelLibrary.Deleted = true;
