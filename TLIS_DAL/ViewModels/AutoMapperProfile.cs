@@ -155,6 +155,7 @@ using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
 using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
 using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.AddMWDishLibraryObject;
 using static TLIS_DAL.ViewModels.CivilLoadsDTOs.CivilLoads;
+using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.EditMWDishLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
