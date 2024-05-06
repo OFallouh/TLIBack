@@ -272,9 +272,86 @@ namespace TLIS_Repository.Repositories
                 PropertyInfo propertyInfo = type.GetProperty(name);
                 if (propertyInfo != null)
                 {
-                    var value = propertyInfo.GetValue(obj);
-                 
+                    if (name.ToLower() == "baseplateshape")
+                    {
+                        var values = propertyInfo.GetValue(obj);
+                        if (values.ToString() == "0")
+                        {
+                            values = "Circular";
+                            item.Add(name, values);
+                        }
+                        else if (values.ToString() == "1")
+                        {
+                            values = "Rectangular";
+                            item.Add(name, values);
+                        }
+                        else if(values.ToString() == "2")
+                        {
+                            values = "Square";
+                            item.Add(name, values);
+
+                        }
+                        else if (values.ToString() == "3")
+                        {
+                            values = "NotMeasurable";
+                            item.Add(name, values);
+                        }
+                    }
+                    else if (name.ToLower() == "laddersteps")
+                    {
+                        var values = propertyInfo.GetValue(obj);
+                        if (values != null)
+                        {
+                            if (values.ToString() == "0")
+                            {
+                                values = "Ladder";
+                                item.Add(name, values);
+                            }
+                            else if (values.ToString() == "1")
+                            {
+                                values = "Steps";
+                                item.Add(name, values);
+                            }
+                            
+                        }
+                        else
+                        {
+                            item.Add(name, propertyInfo.GetValue(obj));
+                        }
+                    }
+                    else if (name.ToLower() == "equipmentslocation")
+                    {
+                        var values = propertyInfo.GetValue(obj);
+                        if (values != null)
+                        {
+                            if (values.ToString() == "0")
+                            {
+                                values = "Body";
+                                item.Add(name, values);
+                            }
+                            else if (values.ToString() == "1")
+                            {
+                                values = "Platform";
+                                item.Add(name, values);
+                            }
+                            else if (values.ToString() == "2")
+                            {
+                                values = "Together";
+                                item.Add(name, values);
+                            }
+
+                        }
+                        else
+                        {
+                            item.Add(name, propertyInfo.GetValue(obj));
+                        }
+                    }
+                    else
+                    {
+                        var value = propertyInfo.GetValue(obj);
+
                         item.Add(name, propertyInfo.GetValue(obj));
+                    }
                     
                 }
             }
