@@ -12,9 +12,9 @@ namespace TLIS_DAL.ViewModels.MW_DishLbraryDTOs
 {
     public class AddMWDishLibraryObject
     {
-        public MWDishLibraryAttributes LibraryAttribute { get; set; }
+        public MWDishLibraryAttributes AttributesActivatedLibrary { get; set; }
         public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
+        public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
         public class MWDishLibraryAttributes
         {
             public string Model { get; set; }

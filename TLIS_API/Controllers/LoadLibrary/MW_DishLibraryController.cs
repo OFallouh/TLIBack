@@ -39,11 +39,12 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.MWLibraryService.get_MW_Dish_LibrariesAsync(filters, WithFilterData, parameters);
             return Ok(response);
         }
-        [HttpPost("GetMW_DishLibraries")]
+        [HttpPost("GetMWDishLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_DishLibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetMW_DishLibraries()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_DishLibraries(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWDishLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

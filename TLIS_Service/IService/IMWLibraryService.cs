@@ -22,6 +22,7 @@ namespace TLIS_Service.IService
         Task MW_OtherLibrarySeedDataForTest();
         Task MW_ODULibrarySeedDataForTest();
         Task MW_DishLibrarySeedDataForTest();
+        Response<GetEnableAttribute> GetMWDishLibrariesEnabledAtt(string ConnectionString);
         Response<ReturnWithFilters<MW_BULibraryViewModel>> get_MW_BU_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_DishLibraryViewModel>> get_MW_Dish_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_ODULibraryViewModel>> get_MW_ODU_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);

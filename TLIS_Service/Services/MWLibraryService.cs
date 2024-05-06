@@ -49,6 +49,7 @@ using TLIS_DAL.ViewModels.LocationTypeDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL;
 using static TLIS_Service.Helpers.Constants;
+using System.Data;
 
 namespace TLIS_Service.Services
 {
@@ -543,6 +544,106 @@ namespace TLIS_Service.Services
             catch (Exception err)
             {
                 return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        public Response<GetEnableAttribute> GetMWDishLibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    string storedProcedureName = "create_dynamic_pivot_withleg_library ";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    {
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
+                    }
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "MW_DishLibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MWDISH_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MWDISH_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Note = x.Note,
+                        Description = x.Description,
+                        Weight = x.Weight,
+                        dimensions = x.dimensions,
+                        Length = x.Length,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        Width = x.Width,
+                        Height = x.Height,
+                        diameter = x.diameter,
+                        frequency_band = x.frequency_band,
+                        SpaceLibrary = x.SpaceLibrary,
+                        ASTYPE = x.ASTYPE,
+                        POLARITYTYPE = x.POLARITYTYPE
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
         //Function take 3 parameters filters, WithFilterData, parameters
@@ -3274,51 +3375,6 @@ namespace TLIS_Service.Services
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_BULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwBULibrary.ToString().ToLower());
                                
                             }
-                            else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
-                            {
-                                AddMWDishLibraryObject MW_DishLibraryViewModel = _mapper.Map<AddMWDishLibraryObject>(LoadLibraryViewModel);
-                                TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(MW_DishLibraryViewModel.LibraryAttribute);
-                               if(MW_DishLibraryEntity.SpaceLibrary <= 0)
-                               {
-                                    if(MW_DishLibraryEntity.diameter <= 0)
-                                    {
-                                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "diamete must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                    else
-                                    {
-                                        MW_DishLibraryEntity.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MW_DishLibraryEntity.diameter / 2, 2); ;
-                                    }
-                               }
-                                string CheckDependencyValidation = CheckDependencyValidationForMWTypes(LoadLibraryViewModel, TableName);
-
-                                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                    return new Response<GetForAddCivilLibrarybject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                string CheckGeneralValidation = CheckGeneralValidationFunctionLib(MW_DishLibraryViewModel.dynamicAttribute, TableNameEntity.TableName);
-
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<GetForAddCivilLibrarybject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                                var CheckModel = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Model == MW_DishLibraryEntity.Model && !x.Deleted);
-                                if (CheckModel != null)
-                                {
-                                    return new Response<GetForAddCivilLibrarybject>(true, null, null, $"This model {MW_DishLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                   
-                                _unitOfWork.MW_DishLibraryRepository.AddWithHistory(UserId, MW_DishLibraryEntity);
-                                _unitOfWork.SaveChanges();
-
-                                dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = LoadLibraryViewModel;
-
-                                AddLogisticalItemWithMW(LogisticalItemIds, MW_DishLibraryEntity, TableNameEntity.Id);
-
-                                if (MW_DishLibraryViewModel.dynamicAttribute.Count > 0)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, MW_DishLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_DishLibraryEntity.Id);
-                                }
-                                _unitOfWork.TablesHistoryRepository.AddHistory(MW_DishLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
-                              
-                            }
                             else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                             {
                                 AddMWOtherLibraryObject AddMW_ODULibrary = _mapper.Map<AddMWOtherLibraryObject>(LoadLibraryViewModel);
@@ -3452,7 +3508,7 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                             
-                                TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject.LibraryAttribute);
+                                TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject.AttributesActivatedLibrary);
                                 if (MW_DishLibraryEntity.SpaceLibrary <= 0)
                                 {
                                     if (MW_DishLibraryEntity.diameter <= 0)
@@ -3488,9 +3544,9 @@ namespace TLIS_Service.Services
 
                                 AddLogisticalItemWithCivil(UserId,LogisticalItemIds, MW_DishLibraryEntity, TableNameEntity.Id);
 
-                                if (addMWDishLibraryObject.dynamicAttribute.Count > 0)
+                                if (addMWDishLibraryObject.DynamicAttributes.Count > 0)
                                 {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWDishLibraryObject.dynamicAttribute, TableNameEntity.Id, MW_DishLibraryEntity.Id);
+                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWDishLibraryObject.DynamicAttributes, TableNameEntity.Id, MW_DishLibraryEntity.Id);
                                 }
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_DishLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
 
