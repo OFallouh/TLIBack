@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -53,24 +54,42 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
 
-        //[HttpPost("AddMW_DishLibrary")]
-        //[ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
-        //public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
-        //{
-        //    if(TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWDishLibraryObject)))
-        //    {
-        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //        var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("AddMW_DishLibrary")]
+        [ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
+        public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMWDishLibraryObject)
+        {
+            if (TryValidateModel(addMWDishLibraryObject, nameof(AddMWDishLibraryObject)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.MWLibraryService.AddMWDishLibrary(userId, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMWDishLibraryObject, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
 
         //[HttpPost("EditMW_DishLibrary")]
         //[ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]

@@ -153,6 +153,7 @@ using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.AddSideArmLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
 using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
+using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.AddMWDishLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
