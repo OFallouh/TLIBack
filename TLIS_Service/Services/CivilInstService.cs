@@ -6113,7 +6113,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(), CivilWithLegsInst, "CivilWithLegsLibId").ToList();
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString(), CivilWithLegsInst.allCivilInst.civilWithLegs, "CivilWithLegsLibId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -6451,7 +6451,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(), CivilWithLoutInst, "CivilWithoutlegsLibId").ToList();
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(), CivilWithLoutInst.allCivilInst.civilWithoutLeg, "CivilWithoutlegsLibId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -6670,7 +6670,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(), CivilNonSteelInst, "CivilNonSteelLibraryId").ToList();
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString(), CivilNonSteelInst.allCivilInst.civilNonSteel, "CivilNonSteelLibraryId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
