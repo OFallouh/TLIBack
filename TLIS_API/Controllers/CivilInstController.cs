@@ -86,7 +86,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetLoadsAndSideArmsForCivil")]
         [ProducesResponseType(200, Type = typeof(CivilLoads))]
         public IActionResult GetLoadsAndSideArmsForCivil(int CivilId, string CivilType)

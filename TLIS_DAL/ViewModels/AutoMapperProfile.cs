@@ -154,6 +154,7 @@ using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
 using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
 using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.AddMWDishLibraryObject;
+using static TLIS_DAL.ViewModels.CivilLoadsDTOs.CivilLoads;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -168,6 +169,20 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIallCivilInst>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIsideArm>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLImwBU>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLImwDish>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLImwODU>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLImwRFU>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLImwOther>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIradioAntenna>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIradioOther>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIRadioRRU>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIloadOther>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIcivilWithLegs>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIcivilWithoutLeg>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIcivilNonSteel>().ReverseMap();
+           
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
             CreateMap<TLIsideArm, SideArmViewDto>().ReverseMap();

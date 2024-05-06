@@ -15,6 +15,7 @@ using System.Data;
 using System.Data.Linq;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -75,6 +76,7 @@ using TLIS_Repository.IRepository;
 using TLIS_Repository.Repositories;
 using TLIS_Service.IService;
 using static Dapper.SqlMapper;
+using static TLIS_DAL.ViewModels.CivilLoadsDTOs.CivilLoads;
 using static TLIS_DAL.ViewModels.CivilNonSteelDTOs.EditCivilNonSteelInstallationObject;
 using static TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs.EditCivilNonSteelLibraryObject;
 using static TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs.AddCivilWithLegsLibraryObject;
@@ -152,57 +154,42 @@ namespace TLIS_Service.Services
             try
             {
                 CivilLoads OutPut = new CivilLoads();
-                TLIallCivilInst AllCivilInst = new TLIallCivilInst();
+                int? civilInstId = null;
 
                 if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString().ToLower())
                 {
-                    AllCivilInst = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithLegsId == CivilId);
+                    civilInstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithLegsId == CivilId)?.Id;
                 }
                 else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
                 {
-                    AllCivilInst = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId == CivilId);
+                    civilInstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithoutLegId == CivilId)?.Id;
                 }
                 else if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilNonSteel.ToString().ToLower())
                 {
-                    AllCivilInst = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilNonSteelId == CivilId);
+                    civilInstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilNonSteelId == CivilId)?.Id;
                 }
 
-                List<TLIcivilLoads> CivilSiteDates = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id && !x.Dismantle,
-                    x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwRFU,
-                    x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU, x => x.allLoadInst.loadOther).ToList();
+                if (civilInstId != null)
+                {
+                    var civilSiteDates = _unitOfWork.CivilLoadsRepository
+                        .GetIncludeWhere(x => x.allCivilInstId == civilInstId && !x.Dismantle,
+                            x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwDish,
+                            x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwRFU,
+                            x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther,
+                            x => x.allLoadInst.radioRRU, x => x.allLoadInst.loadOther).ToList();
 
-                OutPut.SideArms = _mapper.Map<List<SideArmViewModel>>(CivilSiteDates.Where(x => x.sideArmId != null && x.allLoadInstId == null)
-                    .Select(x => x.sideArm).Distinct().ToList());
-
-                OutPut.MW_ODUs = _mapper.Map<List<MW_ODUViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwODUId != null : false)
-                    .Select(x => x.allLoadInst.mwODU).Distinct().ToList());
-
-                OutPut.MW_Dishes = _mapper.Map<List<MW_DishViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwDishId != null : false)
-                    .Select(x => x.allLoadInst.mwDish).Distinct().ToList());
-
-                OutPut.MW_RFUs = _mapper.Map<List<MW_RFUViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwRFUId != null : false)
-                    .Select(x => x.allLoadInst.mwRFU).Distinct().ToList());
-
-                OutPut.MW_BUs = _mapper.Map<List<MW_BUViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwBUId != null : false)
-                    .Select(x => x.allLoadInst.mwBU).Distinct().ToList());
-
-                OutPut.MW_Others = _mapper.Map<List<Mw_OtherViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.mwOtherId != null : false)
-                    .Select(x => x.allLoadInst.mwOther).Distinct().ToList());
-
-                OutPut.RadioAntennas = _mapper.Map<List<RadioAntennaViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.radioAntennaId != null : false)
-                    .Select(x => x.allLoadInst.radioAntenna).Distinct().ToList());
-
-                OutPut.RadioRRUs = _mapper.Map<List<RadioRRUViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.radioRRUId != null : false)
-                    .Select(x => x.allLoadInst.radioRRU).Distinct().ToList());
-
-                OutPut.RadioOthers = _mapper.Map<List<RadioOtherViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.radioOtherId != null : false)
-                    .Select(x => x.allLoadInst.radioOther).Distinct().ToList());
-
-                OutPut.Powers = _mapper.Map<List<PowerViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.powerId != null : false)
-                    .Select(x => x.allLoadInst.power).Distinct().ToList());
-
-                OutPut.LoadOthers = _mapper.Map<List<LoadOtherViewModel>>(CivilSiteDates.Where(x => x.allLoadInstId != null ? x.allLoadInst.loadOtherId != null : false)
-                    .Select(x => x.allLoadInst.loadOther).Distinct().ToList());
+                    OutPut.SideArms = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.sideArmId != null && x.allLoadInstId == null);
+                    OutPut.MW_ODUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwODUId != null);
+                    OutPut.MW_Dishes = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwDishId != null);
+                    OutPut.MW_RFUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwRFUId != null);
+                    OutPut.MW_BUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwBUId != null);
+                    OutPut.MW_Others = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwOtherId != null);
+                    OutPut.RadioAntennas = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioAntennaId != null);
+                    OutPut.RadioRRUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioRRUId != null);
+                    OutPut.RadioOthers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioOtherId != null);
+                    OutPut.Powers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.powerId != null);
+                    OutPut.LoadOthers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null);
+                }
 
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
@@ -211,6 +198,12 @@ namespace TLIS_Service.Services
                 return new Response<CivilLoads>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+        private List<LoadandsidearmViewDto> GetMappedLocationTypeViewModelList(List<TLIcivilLoads> civilSiteDates, Func<TLIcivilLoads, bool> predicate)
+        {
+            return _mapper.Map<List<LoadandsidearmViewDto>>(civilSiteDates.Where(predicate).Select(x => x.sideArm).Distinct().ToList());
+        }
+
 
         // GetAttForAdd return data needed to add record of any type of civil depened on TableName
         //This Function take 
@@ -6658,7 +6651,7 @@ namespace TLIS_Service.Services
                             .GetIncludeWhereFirst(x => x.Id == CivilNonSteelInst.allCivilInst.civilNonSteel.CivilNonSteelLibraryId));
 
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary, null, "Id").ToList();
+                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString(), CivilNonSteelLibrary, null).ToList();
 
                     var civilnonsteeltype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "civilnonsteeltype_name");
                     if (civilnonsteeltype_name != null)
@@ -9731,19 +9724,19 @@ namespace TLIS_Service.Services
                 {
                     var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == loadid).Select(x => x.Id).FirstOrDefault();
 
-                    OutPut.MW_RFUs = _mapper.Map<List<MW_RFUViewModel>>(_dbContext.TLImwRFU.Where
+                    OutPut.MW_RFUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLImwRFU.Where
                                        (x => x.MwPortId == mwport).Distinct().ToList());
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLImwDish.ToString())
                 {
-                    OutPut.MW_ODUs = _mapper.Map<List<MW_ODUViewModel>>(_dbContext.TLImwODU.Where
+                    OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLImwODU.Where
                                            (x => x.Mw_DishId == loadid).Distinct().ToList());
-                    OutPut.MW_BUs = _mapper.Map<List<MW_BUViewModel>>(_dbContext.TLImwBU.Where
+                    OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLImwBU.Where
                         (x => x.MainDishId == loadid).Distinct().ToList());
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
-                    OutPut.RadioRRUs = _mapper.Map<List<RadioRRUViewModel>>(_dbContext.TLIRadioRRU.Where
+                    OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLIRadioRRU.Where
                                            (x => x.radioAntennaId == loadid).Distinct().ToList());
                 }
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);

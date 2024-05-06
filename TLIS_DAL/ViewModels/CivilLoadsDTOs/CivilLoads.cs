@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TLIS_DAL.ViewModels.LoadOtherDTOs;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
 using TLIS_DAL.ViewModels.MW_BUDTOs;
 using TLIS_DAL.ViewModels.MW_DishDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
@@ -19,28 +20,32 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
     {
         public CivilLoads()
         {
-            SideArms = new List<SideArmViewModel>();
-            MW_ODUs = new List<MW_ODUViewModel>();
-            MW_Dishes = new List<MW_DishViewModel>();
-            MW_RFUs = new List<MW_RFUViewModel>();
-            MW_BUs = new List<MW_BUViewModel>();
-            MW_Others = new List<Mw_OtherViewModel>();
-            RadioAntennas = new List<RadioAntennaViewModel>();
-            RadioRRUs = new List<RadioRRUViewModel>();
-            RadioOthers = new List<RadioOtherViewModel>();
-            Powers = new List<PowerViewModel>();
-            LoadOthers = new List<LoadOtherViewModel>();
+            SideArms = new List<LoadandsidearmViewDto>();
+            MW_ODUs = new List<LoadandsidearmViewDto>();
+            MW_Dishes = new List<LoadandsidearmViewDto>();
+            MW_RFUs = new List<LoadandsidearmViewDto>();
+            MW_BUs = new List<LoadandsidearmViewDto>();
+            MW_Others = new List<LoadandsidearmViewDto>();
+            RadioAntennas = new List<LoadandsidearmViewDto>();
+            RadioRRUs = new List<LoadandsidearmViewDto>();
+            RadioOthers = new List<LoadandsidearmViewDto>();
+            Powers = new List<LoadandsidearmViewDto>();
+            LoadOthers = new List<LoadandsidearmViewDto>();
         }
-        public List<SideArmViewModel> SideArms { get; set; }
-        public List<MW_ODUViewModel> MW_ODUs { get; set; }
-        public List<MW_DishViewModel> MW_Dishes { get; set; }
-        public List<MW_RFUViewModel> MW_RFUs { get; set; }
-        public List<MW_BUViewModel> MW_BUs { get; set; }
-        public List<Mw_OtherViewModel> MW_Others { get; set; }
-        public List<RadioAntennaViewModel> RadioAntennas { get; set; }
-        public List<RadioRRUViewModel> RadioRRUs { get; set; }
-        public List<RadioOtherViewModel> RadioOthers { get; set; }
-        public List<PowerViewModel> Powers { get; set; }
-        public List<LoadOtherViewModel> LoadOthers { get; set; }
+        public List<LoadandsidearmViewDto> SideArms { get; set; }
+        public List<LoadandsidearmViewDto> MW_ODUs { get; set; }
+        public List<LoadandsidearmViewDto> MW_Dishes { get; set; }
+        public List<LoadandsidearmViewDto> MW_RFUs { get; set; }
+        public List<LoadandsidearmViewDto> MW_BUs { get; set; }
+        public List<LoadandsidearmViewDto> MW_Others { get; set; }
+        public List<LoadandsidearmViewDto> RadioAntennas { get; set; }
+        public List<LoadandsidearmViewDto> RadioRRUs { get; set; }
+        public List<LoadandsidearmViewDto> RadioOthers { get; set; }
+        public List<LoadandsidearmViewDto> Powers { get; set; }
+        public List<LoadandsidearmViewDto> LoadOthers { get; set; }
+        public class LoadandsidearmViewDto
+        {
+            public string Name { get; set; }
+        }
     }
 }

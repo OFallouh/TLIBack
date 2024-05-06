@@ -451,21 +451,32 @@ namespace TLIS_Service.Services
                         {
                             if (FKitem.Label.ToLower() == "polaritytype_name")
                             {
-                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(MWDishLibrary.polarityType);
+                                FKitem.Options = _mapper.Map<List<PolarityTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                FKitem.Value = _mapper.Map<PolarityTypeViewModel>(MWDishLibrary.polarityType);
                             }
                             else if (FKitem.Label.ToLower() == "astype_name")
                             {
-                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.AsTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(MWDishLibrary.asType);
+                                FKitem.Options = _mapper.Map<List<AsTypeViewModel>>(_unitOfWork.AsTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                FKitem.Value = _mapper.Map<AsTypeViewModel>(MWDishLibrary.asType);
                             }
 
                             return FKitem;
                         })
                         .ToList();
+                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                    attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                    List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                    BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = Test.ToList()[0];
+                        Test[Test.IndexOf(NameAttribute)] = Swap;
+                        Test[0] = NameAttribute;
+                        attributes.AttributesActivatedLibrary = Test;
+                    }
 
 
-                   
                 }
                 else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                 {
@@ -526,19 +537,7 @@ namespace TLIS_Service.Services
                 
                 }
 
-                ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id));
-                attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
-                List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
-                if (NameAttribute != null)
-                {
-                    BaseInstAttViews Swap = Test.ToList()[0];
-                    Test[Test.IndexOf(NameAttribute)] = Swap;
-                    Test[0] = NameAttribute;
-                    attributes.AttributesActivatedLibrary = Test;
-                }
-
+               
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -3453,7 +3452,7 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                             
-                                TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject);
+                                TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject.LibraryAttribute);
                                 if (MW_DishLibraryEntity.SpaceLibrary <= 0)
                                 {
                                     if (MW_DishLibraryEntity.diameter <= 0)
