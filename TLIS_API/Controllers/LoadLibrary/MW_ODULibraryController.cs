@@ -57,24 +57,24 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString());
             return Ok(response);
         }
-        [HttpPost("AddMW_ODULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
-        public IActionResult AddMW_ODULibrary([FromBody] AddMWOtherLibraryObject addMW_ODULibraryViewModel)
-        {
-            if(TryValidateModel(addMW_ODULibraryViewModel, nameof(AddMWOtherLibraryObject)))
-            {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, ConnectionString);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_ODULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("AddMW_ODULibrary")]
+        //[ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
+        //public IActionResult AddMW_ODULibrary([FromBody] AddMWOtherLibraryObject addMW_ODULibraryViewModel)
+        //{
+        //    if(TryValidateModel(addMW_ODULibraryViewModel, nameof(AddMWOtherLibraryObject)))
+        //    {
+        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //        var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, ConnectionString);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_ODULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         //[HttpPost("EditMW_ODULibrary")]
         //[ProducesResponseType(200, Type = typeof(EditMW_ODULibraryViewModel))]
         //public async Task<IActionResult> EditMW_ODULibrary([FromBody]EditMW_ODULibraryViewModel editMW_RFULibraryViewModel)

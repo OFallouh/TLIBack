@@ -206,6 +206,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LocationTypeViewModel, TLIcivilWithLegs>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIcivilWithoutLeg>().ReverseMap();
             CreateMap<EditinstallationAttributesSideArm, TLIsideArm>().ReverseMap();
+            CreateMap<MWDishLibraryAttributes, TLImwDishLibrary>().ReverseMap();
 
 
 

@@ -368,7 +368,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_MWLibraryService == null)
-                    _MWLibraryService = new MWLibraryService(_unitOfWork, _services,_mapper);
+                    _MWLibraryService = new MWLibraryService(_unitOfWork, _services,_mapper,db);
                 return _MWLibraryService;
             }
         }

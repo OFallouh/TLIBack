@@ -27,9 +27,9 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<MW_ODULibraryViewModel>> get_MW_ODU_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_RFULibraryViewModel>> get_MW_RFU_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_OtherLibraryViewModel>> get_MW_Other_LibrariesAsync(List<FilterObjectList> filters, ParameterPagination parameters);
-        Response<AllItemAttributes> GetById(int Id, string TableName);
-        Response<AllItemAttributes> AddMWLibrary(string TableName, object LoadLibraryViewModel, string connectionString);
-        //Task<Response<AllItemAttributes>> EditMWLibrary(string TableName, object LoadLibraryViewModel);
+        Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName);
+        Response<GetForAddCivilLibrarybject> AddMWLibrary(int UserId, string TableName, object LoadLibraryViewModel, string connectionString);
+        Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName);
         Task<Response<AllItemAttributes>> Disable(int Id, string TableName);
         Task<Response<AllItemAttributes>> Delete(int Id, string TableName);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);

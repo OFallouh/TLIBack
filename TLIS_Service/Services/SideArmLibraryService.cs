@@ -770,7 +770,7 @@ namespace TLIS_Service.Services
             {
                 var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArm.sideArmLibraryId== id && !
                 x.Dismantle,x=>x.sideArm);
-                if (SideArmInstllation != null)
+                if (SideArmInstllation != null )
                 {
                     return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                 }

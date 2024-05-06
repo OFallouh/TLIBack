@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -12,6 +13,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
@@ -88,13 +90,31 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
         [HttpPost("AddMW_BULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWBULibraryObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilLibrarybject))]
         public IActionResult AddMW_BULibrary([FromBody] AddMWBULibraryObject addMW_BULibraryViewModel)
         {
-            if(TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWBULibraryObject)))
+            if (TryValidateModel(addMW_BULibraryViewModel, nameof(EditCivilWithLegsLibraryObject)))
             {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
+                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
                 return Ok(response);
             }
             else
@@ -106,23 +126,41 @@ namespace TLIS_API.Controllers.LoadLibrary
             }
         }
 
-        //[HttpPost("EditMW_BULibrary")]
-        //[ProducesResponseType(200, Type = typeof(EditMW_BULibraryViewModel))]
-        //public async Task<IActionResult> EditMW_BULibrary([FromBody]EditMW_BULibraryViewModel editMW_BULibraryViewModel)
-        //{
-        //    if(TryValidateModel(editMW_BULibraryViewModel, nameof(EditMW_BULibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), editMW_BULibraryViewModel);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditMW_BULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("EditMW_BULibrary")]
+        [ProducesResponseType(200, Type = typeof(EditMWBULibraryObject))]
+        public async Task<IActionResult> EditMW_BULibrary([FromBody] EditMWBULibraryObject  editMWBULibraryObject)
+        {
+            if(TryValidateModel(editMWBULibraryObject, nameof(EditCivilWithLegsLibraryObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.MWLibraryService.EditMWBULibrary(userId, editMWBULibraryObject, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString());
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMW_BULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
 
         [HttpPost("DisableMW_BULibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(EditMW_BULibraryViewModel))]

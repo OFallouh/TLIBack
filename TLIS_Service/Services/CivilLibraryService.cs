@@ -1627,8 +1627,7 @@ namespace TLIS_Service.Services
         public async Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName,int userId)
         {
             int resultId = 0;
-            int civilLibId = 0;
-            int tablesNameId = 0;
+;
             dynamic DtestUpdate = new ExpandoObject();
 
             using (TransactionScope transaction =
@@ -1758,8 +1757,6 @@ namespace TLIS_Service.Services
                     {
                         _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id,userId, resultId, CivilWithLegLib.Id);
                     }
-                    civilLibId = CivilWithLegLibraryEntites.Id;
-                    tablesNameId = TableNameEntity.Id;
 
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();

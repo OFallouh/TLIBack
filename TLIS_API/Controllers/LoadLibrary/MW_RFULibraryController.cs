@@ -57,24 +57,24 @@ namespace TLIS_API.Controllers.Load
             var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
             return Ok(response);
         }
-        [HttpPost("AddMW_RFULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWRFULibraryObject))]
-        public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
-        {
-            if(TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMWRFULibraryObject)))
-            {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("AddMW_RFULibrary")]
+        //[ProducesResponseType(200, Type = typeof(AddMWRFULibraryObject))]
+        //public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
+        //{
+        //    if(TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMWRFULibraryObject)))
+        //    {
+        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //        var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         //[HttpPost("EditMW_RFULibrary")]
         //[ProducesResponseType(200, Type = typeof(EditMW_RFULibraryViewModel))]

@@ -19,7 +19,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.LoadLibrary
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     public class MW_DishLibraryController : ControllerBase
@@ -53,24 +53,24 @@ namespace TLIS_API.Controllers.LoadLibrary
             return Ok(response);
         }
 
-        [HttpPost("AddMW_DishLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
-        public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
-        {
-            if(TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWDishLibraryObject)))
-            {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("AddMW_DishLibrary")]
+        //[ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
+        //public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
+        //{
+        //    if(TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWDishLibraryObject)))
+        //    {
+        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //        var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         //[HttpPost("EditMW_DishLibrary")]
         //[ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]
