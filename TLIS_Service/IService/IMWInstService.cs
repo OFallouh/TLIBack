@@ -19,6 +19,7 @@ namespace TLIS_Service.IService
 {
     public interface IMWInstService
     {
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode);
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode);
         public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
         Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId);

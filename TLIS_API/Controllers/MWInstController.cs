@@ -53,12 +53,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetAttForAddForMW_ODUOnly(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, AllCivilInstId);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_Dish")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddMW_DishInstallation")]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMW_Dish(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode);
+            var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

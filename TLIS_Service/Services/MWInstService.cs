@@ -47,6 +47,16 @@ using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using AutoMapper;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
+using TLIS_DAL.ViewModels.StructureTypeDTOs;
+using TLIS_DAL.ViewModels.AsTypeDTOs;
+using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
+using TLIS_DAL.ViewModels.BaseTypeDTOs;
+using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
+using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
+using TLIS_DAL.ViewModels.PolarityTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -71,6 +81,97 @@ namespace TLIS_Service.Services
         //Get activated attributes for installation table
         //Get dynamic attributes for table name
         //Get related tables
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
+                    x.TableName == TableName);
+
+                GetForAddMWDishInstallationObject objectInst = new GetForAddMWDishInstallationObject();
+                List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
+
+                MW_DishLibraryViewModel mwDishLibrary = _mapper.Map<MW_DishLibraryViewModel>(_unitOfWork.MW_DishLibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.asType, x => x.polarityType));
+                if (mwDishLibrary != null)
+                {
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLImwDishLibrary.ToString(), mwDishLibrary, null).ToList();
+
+                    var asType_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "astype_name");
+                    if (asType_name != null)
+                    {
+                        asType_name.Options = _mapper.Map<List<AsTypeViewModel>>(_unitOfWork.AsTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                        asType_name.Value = _unitOfWork.AsTypeRepository != null && mwDishLibrary.asTypeId != null ?
+                            _mapper.Map<AsTypeViewModel>(_unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == mwDishLibrary.asTypeId)) :
+                            null;
+                    }
+                    var polaritytype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "polaritytype_name");
+                    if (polaritytype_name != null)
+                    {
+                        polaritytype_name.Options = _mapper.Map<List<PolarityTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                        polaritytype_name.Value = _unitOfWork.PolarityTypeRepository != null && mwDishLibrary.polarityTypeId != null ?
+                            _mapper.Map<PolarityTypeViewModel>(_unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == mwDishLibrary.polarityTypeId)) :
+                            null;
+                    }
+
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                        .GetLogisticals(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwDishLibrary.ToString(), mwDishLibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwDish.ToString(), null, "DishName", "InstallationPlaceId", "MwDishLibraryId"/*, "EquivalentSpace"*/).ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                    }
+
+
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "polarityonLocation_name", () => _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
+                        { "repeatertype_name", () => _mapper.Map<List<RepeaterTypeViewModel>>(_unitOfWork.RepeaterTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                        { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                    };
+
+                    ListAttributesActivated = ListAttributesActivated
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+
+                            return FKitem;
+                        })
+                        .ToList();
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+                    return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else
+                {
+                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this mwdishlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                return new Response<GetForAddMWDishInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+            catch (Exception err)
+            {
+                return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+            }
+        }
+            
         public Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode)
         {
             try
