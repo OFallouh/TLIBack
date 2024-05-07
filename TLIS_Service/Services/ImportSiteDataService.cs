@@ -12922,7 +12922,7 @@ namespace TLIS_Service.Services
                                     NewMW_DishEntity.DishName = MW_DishName;
                                     NewMW_DishEntity.MwDishLibraryId = MW_DishLibraryId;
                                     NewMW_DishEntity.Far_End_Site_Code = MW_DishDataTable.Rows[j]["Far End Site Code"].ToString();
-                                    NewMW_DishEntity.HBA_Surface = MW_DishDataTable.Rows[j]["HBA From Surface"].ToString();
+                                  //  NewMW_DishEntity.HBA_Surface = MW_DishDataTable.Rows[j]["HBA From Surface"].ToString();
                                     NewMW_DishEntity.Notes = MW_DishDataTable.Rows[j]["Notes"].ToString();
 
                                     string MW_DishSerialNumber = MW_DishDataTable.Rows[j]["Serial Number"].ToString();

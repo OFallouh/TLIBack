@@ -22,6 +22,8 @@ using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_PortDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_API.Middleware.WorkFlow;
+using System.IdentityModel.Tokens.Jwt;
+using TLIS_DAL.ViewModels.SiteDTOs;
 
 namespace TLIS_API.Controllers
 {
@@ -79,58 +81,75 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
 
-        [HttpPost("AddMW_BU")]
-        [ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
-        public IActionResult AddMW_BU([FromBody]AddMW_BUViewModel AddMW_BUViewModel, string SiteCode, int TaskId)
-        {
-            if (AddMW_BUViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_BUViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
-            {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddMW_ODU")]
-        [ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
-        public IActionResult AddMW_ODU([FromBody]AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int TaskId)
-        {
-            if (AddMW_ODUViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_ODUViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
-            {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("AddMW_BU")]
+        //[ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
+        //public IActionResult AddMW_BU([FromBody]AddMW_BUViewModel AddMW_BUViewModel, string SiteCode, int? TaskId)
+        //{
+        //    if (AddMW_BUViewModel.TLIcivilLoads.sideArmId == 0)
+        //        AddMW_BUViewModel.TLIcivilLoads.sideArmId = null;
+        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //    if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
+        //    {
+        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("AddMW_ODU")]
+        //[ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
+        //public IActionResult AddMW_ODU([FromBody]AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int? TaskId)
+        //{
+        //    if (AddMW_ODUViewModel.TLIcivilLoads.sideArmId == 0)
+        //        AddMW_ODUViewModel.TLIcivilLoads.sideArmId = null;
+        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //    if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
+        //    {
+        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_Dish")]
         [ProducesResponseType(200, Type = typeof(AddMW_DishViewModel))]
-        public IActionResult AddMW_Dish([FromBody]AddMW_DishViewModel AddMW_DishViewModel, string SiteCode, int TaskId)
+        public IActionResult AddMW_Dish([FromBody]AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int? TaskId)
         {
-            if (AddMW_DishViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_DishViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+           
             if (TryValidateModel(AddMW_DishViewModel, nameof(AddMW_DishViewModel)))
             {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId);
                 return Ok(response);
             }
             else
@@ -141,56 +160,56 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddMW_RFU")]
-        [ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
-        public IActionResult AddMW_RFU([FromBody]AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int TaskId)
-        {
-            if (AddMW_RFUViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_RFUViewModel.TLIcivilLoads.sideArmId = null;
-            if (AddMW_RFUViewModel.MwPortId == 0)
-                AddMW_RFUViewModel.MwPortId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
-            {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddMW_Other")]
-        [ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
-        public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int TaskId)
-        {
-            if (AddMw_OtherViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMw_OtherViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
-            {
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("AddMW_RFU")]
+        //[ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
+        //public IActionResult AddMW_RFU([FromBody]AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int? TaskId)
+        //{
+        //    if (AddMW_RFUViewModel.TLIcivilLoads.sideArmId == 0)
+        //        AddMW_RFUViewModel.TLIcivilLoads.sideArmId = null;
+        //    if (AddMW_RFUViewModel.MwPortId == 0)
+        //        AddMW_RFUViewModel.MwPortId = null;
+        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //    if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
+        //    {
+        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("AddMW_Other")]
+        //[ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
+        //public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int? TaskId)
+        //{
+        //    if (AddMw_OtherViewModel.TLIcivilLoads.sideArmId == 0)
+        //        AddMw_OtherViewModel.TLIcivilLoads.sideArmId = null;
+        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+        //    if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
+        //    {
+        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
 
         [ServiceFilter(typeof(WorkFlowMiddleware))]
 
         [HttpPost("EditMW_BU")]
         [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
-        public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU,int TaskId)
+        public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU,int? TaskId)
         {
             if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
             {
@@ -208,7 +227,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_Dish")]
         [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
-        public async Task<IActionResult> EditMW_Dish([FromBody]EditMW_DishViewModel MW_Dish,int TaskId)
+        public async Task<IActionResult> EditMW_Dish([FromBody]EditMW_DishViewModel MW_Dish,int? TaskId)
         {
             if (TryValidateModel(MW_Dish, nameof(EditMW_DishViewModel)))
             {
@@ -226,7 +245,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_ODU")]
         [ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
-        public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int TaskId)
+        public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int? TaskId)
         {
             if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
             {
@@ -244,7 +263,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_RFU")]
         [ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
-        public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int TaskId)
+        public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int? TaskId)
         {
             if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
             {
@@ -262,7 +281,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMw_Other")]
         [ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
-        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int TaskId)
+        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int? TaskId)
         {
             if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
             {
@@ -279,14 +298,14 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_BU")]
-        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
+        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int? TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_ODU")]
-        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
@@ -294,7 +313,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_RFU")]
 
-        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
@@ -302,7 +321,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Dish")]
 
-        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
@@ -310,7 +329,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Other")]
 
-        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
             return Ok(response);
@@ -463,6 +482,15 @@ namespace TLIS_API.Controllers
         public IActionResult GetPortCascadedByBUId(int BUId, int? MainBUId)
         {
             var response = _unitOfWorkService.MWInstService.GetPortCascadedByBUId(BUId, MainBUId);
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetMWDishInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] string SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

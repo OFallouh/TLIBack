@@ -292,14 +292,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetMW_DishOnSiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] LoadsOnSiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameterPagination)
-        {
-            var response = _unitOfWorkService.SiteService.GetMW_DishOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
-            return Ok(response);
-        }
+        
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetMW_BUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]

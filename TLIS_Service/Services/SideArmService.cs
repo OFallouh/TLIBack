@@ -1170,7 +1170,7 @@ namespace TLIS_Service.Services
 
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query1 = _dbContext.SIDEARM_VIEW.FirstOrDefault();
+                    
                         var query = _dbContext.SIDEARM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()).AsEnumerable()
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();

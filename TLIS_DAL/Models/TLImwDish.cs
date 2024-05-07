@@ -12,7 +12,7 @@ namespace TLIS_DAL.Models
         public float Azimuth { get; set; }
         public string? Notes { get; set; }
         public string? Far_End_Site_Code { get; set; }
-        public string HBA_Surface { get; set; }
+        public float HBA_Surface { get; set; }
         public bool Is_Repeator { get; set; }
         public string Serial_Number { get; set; }
         public string DishName { get; set; }
@@ -21,7 +21,7 @@ namespace TLIS_DAL.Models
         public float SpaceInstallation { get; set; }
         public float HeightBase { get; set; }
         public float HeightLand { get; set; }
-        public string Temp { get; set; }
+        public string? Temp { get; set; }
         public TLIowner owner { get; set; }
         public int? ownerId { get; set; }
         public TLIrepeaterType RepeaterType { get; set; }

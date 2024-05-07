@@ -14,15 +14,18 @@ using TLIS_DAL.ViewModels.MW_RFUDTOs;
 using TLIS_DAL.ViewModels.MW_PortDTOs;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
+using TLIS_DAL.Models;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 
 namespace TLIS_Service.IService
 {
     public interface IMWInstService
     {
         Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode);
+        Response<GetForAddMWDishInstallationObject> AddMWDishInstallation(int UserId, AddMWDishInstallationObject MWInstallationViewModel, TLImwDish mwDish, int AllCivilId, int TableNameId, string SiteCode, string ConnectionString, int? TaskId);
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode);
         public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
-        Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId);
+        Response<ObjectInstAtts> AddMWInstallation(int UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId);
         Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int? TaskId);
         Response<ReturnWithFilters<MW_ODUViewModel>> getMW_ODU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_BUViewModel>> getMW_BU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
@@ -33,6 +36,7 @@ namespace TLIS_Service.IService
         Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName, string LoadType);
         Response<List<MW_PortViewModel>> GetMW_PortsForMW_RFUInstallation(int AllCivilInstId);
         Response<List<MW_BULibraryViewModel>> GetMW_BULibrariesForMW_BUInstallation();
+        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string SiteCode, string ConnectionString);
 
         Response<List<MW_Free_BUInstDto>> GetMw_Free_BuInst(int AllCivilInstId);
 
