@@ -44,6 +44,8 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
 
             public string? ItemOnCivilStatus { get; set; } = " ";
             public string? ItemStatus { get; set; } = " ";
+            public bool ReservedSpace { get; set; }
+            public bool Dismantle { get; set; } = false;
         }
     }
 }

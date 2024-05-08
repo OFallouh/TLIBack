@@ -19,7 +19,7 @@ namespace TLIS_Repository.IRepository
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
         bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item);
         Response<float> CheckloadsOnCivil(int allcivilinstId,int? loadid,float Azimuth, float CenterHigh);
-        Response<float> CheckAvailableSpaceOnCivil(int allcivilinstId);
+        Response<float> CheckAvailableSpaceOnCivil(TLIallCivilInst AllCivilInst);
         Response<float> Checkspaceload(int allcivilinstId, string TableName, float SpaceInstallation, float CenterHigh, int libraryId, float HBA);
      
     }

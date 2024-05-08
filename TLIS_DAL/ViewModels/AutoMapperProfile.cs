@@ -156,6 +156,7 @@ using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
 using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.AddMWDishLibraryObject;
 using static TLIS_DAL.ViewModels.CivilLoadsDTOs.CivilLoads;
 using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.EditMWDishLibraryObject;
+using static TLIS_DAL.ViewModels.MW_DishDTOs.AddMWDishInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -225,6 +226,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LocationTypeViewModel, TLIcivilWithoutLeg>().ReverseMap();
             CreateMap<EditinstallationAttributesSideArm, TLIsideArm>().ReverseMap();
             CreateMap<MWDishLibraryAttributes, TLImwDishLibrary>().ReverseMap();
+            CreateMap<installationAttributesMWDish, TLImwDish>().ReverseMap();
 
 
 

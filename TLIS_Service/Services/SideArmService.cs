@@ -305,7 +305,7 @@ namespace TLIS_Service.Services
 
                     objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
-                            "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId", "ReservedSpace").ToList();
+                            "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
 
                     return new Response<GetForAddCivilLoadObject>(true, objectInst, null, null, (int)ApiReturnCode.success);
 
@@ -1867,6 +1867,15 @@ namespace TLIS_Service.Services
 
                         };
                         Civilloads.Add(ItemStatus);
+                        var ReservedSpace = new BaseInstAttViews()
+                        {
+                            Key = "ReservedSpace",
+                            Value = CivilLoad.ReservedSpace,
+                            DataType = "bool",
+                            Label = "ReservedSpace",
+
+                        };
+                        Civilloads.Add(ReservedSpace);
                        
                     }
                     attributes.CivilLoads = Civilloads;
@@ -2820,6 +2829,9 @@ namespace TLIS_Service.Services
                             CivilLoads.ItemOnCivilStatus = SideArmViewModel.CivilLoads?.ItemOnCivilStatus;
                             CivilLoads.InstallationDate = SideArmViewModel.CivilLoads.InstallationDate;
                             CivilLoads.ItemStatus = SideArmViewModel.CivilLoads?.ItemStatus;
+                            CivilLoads.ReservedSpace = SideArmViewModel.CivilLoads.ReservedSpace;
+                            CivilLoads.Dismantle =false;
+
                         }
                         int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
                         if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count() > 0 : false)
@@ -3663,8 +3675,9 @@ namespace TLIS_Service.Services
                                                             civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                             ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                             ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                            ReservedSpace = false,
+                                                            ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                             sideArmId = SideArm.Id,
+                                                            Dismantle = false,
                                                             SiteCode = SiteCode,
                                                             legId = addSideArms.installationConfig.legId[0],
                                                             BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
@@ -3790,7 +3803,8 @@ namespace TLIS_Service.Services
                                                         civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                         ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                         ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                        ReservedSpace = false,
+                                                        ReservedSpace = addSideArms.civilLoads.ReservedSpace,
+                                                        Dismantle = false,
                                                         sideArmId = SideArm.Id,
                                                         SiteCode = SiteCode
                                                     };
@@ -3938,9 +3952,10 @@ namespace TLIS_Service.Services
                                                         civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                         ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                         ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                        ReservedSpace = false,
+                                                        ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                         sideArmId = SideArm.Id,
                                                         SiteCode = SiteCode,
+                                                        Dismantle = false,
                                                         legId = addSideArms.installationConfig.legId[0],
                                                         BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                                     };
@@ -4052,9 +4067,10 @@ namespace TLIS_Service.Services
                                                         civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                         ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                         ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                        ReservedSpace = false,
+                                                        ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                         sideArmId = SideArm.Id,
                                                         SiteCode = SiteCode,
+                                                        Dismantle = false,
                                                         legId = addSideArms.installationConfig.legId[0],
                                                         Leg2Id = addSideArms.installationConfig.legId[1],
                                                         BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
@@ -4153,8 +4169,9 @@ namespace TLIS_Service.Services
                                                     civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                     ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                     ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                    ReservedSpace = false,
+                                                    ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                     sideArmId = SideArm.Id,
+                                                    Dismantle = false,
                                                     SiteCode = SiteCode,
                                                     BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                                 };
@@ -4268,8 +4285,9 @@ namespace TLIS_Service.Services
                                                 civilSteelSupportCategoryId = addSideArms.civilLoads?.civilSteelSupportCategoryId,
                                                 ItemOnCivilStatus = addSideArms.civilLoads?.ItemOnCivilStatus,
                                                 ItemStatus = addSideArms.civilLoads?.ItemStatus,
-                                                ReservedSpace = false,
+                                                ReservedSpace = addSideArms.civilLoads.ReservedSpace,
                                                 sideArmId = SideArm.Id,
+                                                Dismantle = false,
                                                 SiteCode = SiteCode,
                                                 BranchingSideArmId = addSideArms.installationConfig?.branchingSideArmId
                                             };

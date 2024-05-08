@@ -12,8 +12,8 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
     public class AddMWDishInstallationObject
     {
         public InstallationMWDishConfigObject installationConfig { get; set; }
-        public installationAttributesMWDish installationAttributes { get; set; }
         public AddCivilLoad civilLoads { get; set; }
+        public installationAttributesMWDish installationAttributes { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
         public class installationAttributesMWDish
         {     
@@ -35,7 +35,6 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             public int PolarityOnLocationId { get; set; }
             public int ItemConnectToId { get; set; }
             public float CenterHigh { get; set; } = 0;
-            public float HBA { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;
             public float EquivalentSpace { get; set; } = 0;
 
@@ -56,10 +55,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             public DateTime InstallationDate { get; set; } = DateTime.Now;
             public string? ItemOnCivilStatus { get; set; } = null;
             public string? ItemStatus { get; set; } = " ";
-            public bool Dismantle { get; set; }
             public bool ReservedSpace { get; set; }
-            public int? BranchingSideArmId { get; set; } = null;
-            public int? civilSteelSupportCategoryId { get; set; } = null;
 
         }
     }

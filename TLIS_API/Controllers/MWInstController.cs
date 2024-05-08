@@ -124,7 +124,7 @@ namespace TLIS_API.Controllers
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_Dish")]
-        [ProducesResponseType(200, Type = typeof(AddMW_DishViewModel))]
+        [ProducesResponseType(200, Type = typeof(AddMWDishInstallationObject))]
         public IActionResult AddMW_Dish([FromBody]AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int? TaskId)
         {
            

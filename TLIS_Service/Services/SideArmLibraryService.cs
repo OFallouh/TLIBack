@@ -251,8 +251,8 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        var query = db.SIDEARM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
                         getEnableAttribute.Model = query;
