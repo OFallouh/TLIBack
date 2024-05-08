@@ -470,71 +470,146 @@ namespace TLIS_Repository.Repositories
                 return new Response<float>(true, 0, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<float> CheckAvailableSpaceOnCivil(TLIallCivilInst AllCivilInst)
+        public Response<float> CheckAvailableSpaceOnCivil(int AllCivilInst)
         {
             try
             {
                 double Availablespace = 0;
                 
                 
-                    if (AllCivilInst.civilWithLegsId != null)
-                    {
-                       if (AllCivilInst.civilWithLegs.CurrentLoads == null)
-                        {
-                        AllCivilInst.civilWithLegs.CurrentLoads = 0;
-                        }
-                        if (AllCivilInst.civilWithLegs.IsEnforeced == true)
-                        {
-                            Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
-                            if (Availablespace == 0 || Availablespace < 0)
-                            {
-                                return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                        }
+                    //if (AllCivilInst.civilWithLegsId != null)
+                    //{
+                    //   if (AllCivilInst.civilWithLegs.CurrentLoads == null)
+                    //    {
+                    //    AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                    //    }
+                    //    if (AllCivilInst.civilWithLegs.IsEnforeced == true)
+                    //    {
+                    //        Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
+                    //        if (Availablespace == 0 || Availablespace < 0)
+                    //        {
+                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    //        }
+                    //    }
 
-                        else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
-                        {
-                            Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                            if (Availablespace == 0 || Availablespace < 0)
-                            {
-                                return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                        }
-                        else
-                        {
-                            Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                            if (Availablespace == 0 || Availablespace < 0)
-                            {
-                                return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                        }
-                    }
-                    else if (AllCivilInst.civilWithoutLegId != null)
-                    {
-                        if (AllCivilInst.civilWithoutLeg.CurrentLoads == null)
-                        {
-                        AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
-                        }
-                        if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
-                        {
-                            Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
-                            if (Availablespace == 0 || Availablespace < 0)
-                            {
-                                return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                        }
-                        else
-                        {
-                            Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
-                            if (Availablespace == 0 || Availablespace < 0)
-                            {
-                                return new Response<float>(true, 0, null, $"No available space on the civill ", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                        }
+                    //    else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
+                    //    {
+                    //        Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                    //        if (Availablespace == 0 || Availablespace < 0)
+                    //        {
+                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                    //        if (Availablespace == 0 || Availablespace < 0)
+                    //        {
+                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    //        }
+                    //    }
+                    //}
+                    //else if (AllCivilInst.civilWithoutLegId != null)
+                    //{
+                    //    if (AllCivilInst.civilWithoutLeg.CurrentLoads == null)
+                    //    {
+                    //    AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                    //    }
+                    //    if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
+                    //    {
+                    //        Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                    //        if (Availablespace == 0 || Availablespace < 0)
+                    //        {
+                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                    //        if (Availablespace == 0 || Availablespace < 0)
+                    //        {
+                    //            return new Response<float>(true, 0, null, $"No available space on the civill ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    //        }
+                    //    }
 
 
-                    }
+                    //}
                 
+                return new Response<float>(true, 0, null, "Success", (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+
+                return new Response<float>(true, 0, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+
+
+        }
+        public Response<float> CheckAvailableSpaceOnCivils(TLIallCivilInst AllCivilInst)
+        {
+            try
+            {
+                double Availablespace = 0;
+
+
+                if (AllCivilInst.civilWithLegsId != null)
+                {
+                    if (AllCivilInst.civilWithLegs.CurrentLoads == null)
+                    {
+                        AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                    }
+                    if (AllCivilInst.civilWithLegs.IsEnforeced == true)
+                    {
+                        Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
+                        if (Availablespace == 0 || Availablespace < 0)
+                        {
+                            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+
+                    else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
+                    {
+                        Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                        if (Availablespace == 0 || Availablespace < 0)
+                        {
+                            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                        if (Availablespace == 0 || Availablespace < 0)
+                        {
+                            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
+                else if (AllCivilInst.civilWithoutLegId != null)
+                {
+                    if (AllCivilInst.civilWithoutLeg.CurrentLoads == null)
+                    {
+                        AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                    }
+                    if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
+                    {
+                        Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                        if (Availablespace == 0 || Availablespace < 0)
+                        {
+                            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                        if (Availablespace == 0 || Availablespace < 0)
+                        {
+                            return new Response<float>(true, 0, null, $"No available space on the civill ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+
+
+                }
+
                 return new Response<float>(true, 0, null, "Success", (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)

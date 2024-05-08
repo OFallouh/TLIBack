@@ -3099,7 +3099,7 @@ namespace TLIS_Service.Services
                                 TLImwBU mwBU = _mapper.Map<TLImwBU>(addMW_BU);
                                 //if (addMW_BU.TLIcivilLoads.ReservedSpace == true)
                                 //{
-                                //    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(addMW_BU.TLIcivilLoads.allCivilInstId).Message;
+                                //    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(addMW_BU.TLIcivilLoads.allCivilInstId).Message;
                                 //    if (Message != "Success")
                                 //    {
                                 //        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
@@ -3278,12 +3278,12 @@ namespace TLIS_Service.Services
                                                         //AllCivilInst.civilWithLegs.CurrentLoads = AllCivilInst.civilWithLegs.CurrentLoads + EquivalentSpace;
                                                         //_dbContext.TLIcivilWithLegs.Update(AllCivilInst.civilWithLegs);
 
-                                                        //var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AllcivilinstId.allCivilInst).Message;
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
 
-                                                        //if (Message != "Success")
-                                                        //{
-                                                        //    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                        //}
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -3369,7 +3369,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (AddMW_Dish.civilLoads.ReservedSpace == true)
                                                     {
-                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AllcivilinstId.allCivilInst).Message;
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
 
                                                         if (Message != "Success")
                                                         {
@@ -3433,7 +3433,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (AddMW_Dish.civilLoads.ReservedSpace == true)
                                                     {
-                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AllcivilinstId.allCivilInst).Message;
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
 
                                                         if (Message != "Success")
                                                         {
@@ -3596,7 +3596,7 @@ namespace TLIS_Service.Services
                                 TLImwOther mwOther = _mapper.Map<TLImwOther>(AddMW_Other);
                                 //if (AddMW_Other.TLIcivilLoads.ReservedSpace == true)
                                 //{
-                                //    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivil(AddMW_Other.TLIcivilLoads.allCivilInstId).Message;
+                                //    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AddMW_Other.TLIcivilLoads.allCivilInstId).Message;
                                 //    if (Message != "Success")
                                 //    {
                                 //        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
