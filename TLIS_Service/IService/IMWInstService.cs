@@ -25,7 +25,7 @@ namespace TLIS_Service.IService
         Response<GetForAddMWDishInstallationObject> AddMWDishInstallation(int UserId, AddMWDishInstallationObject MWInstallationViewModel, TLImwDish mwDish, int AllCivilId, int TableNameId, string SiteCode, string ConnectionString, int? TaskId);
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode);
         public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
-        Response<ObjectInstAtts> AddMWInstallation(int UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId);
+        Response<GetForAddMWDishInstallationObject> AddMWDishInstallation(int UserId, AddMWDishInstallationObject MWInstallationViewModel, TLImwDish mwDish, int AllCivilId, int TableNameId, string SiteCode, string ConnectionString, int? TaskId);
         Task<Response<ObjectInstAtts>> EditMWInstallation(object MWInstallationViewModel, string TableName, int? TaskId);
         Response<ReturnWithFilters<MW_ODUViewModel>> getMW_ODU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_BUViewModel>> getMW_BU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
