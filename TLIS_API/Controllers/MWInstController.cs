@@ -24,6 +24,7 @@ using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_API.Middleware.WorkFlow;
 using System.IdentityModel.Tokens.Jwt;
 using TLIS_DAL.ViewModels.SiteDTOs;
+using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 
 namespace TLIS_API.Controllers
 {
@@ -350,12 +351,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetMW_DishById")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetMWDishInstallationById")]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMW_DishById(int MW_Dish)
         {
-            var response = _unitOfWorkService.MWInstService.GetById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
+            var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

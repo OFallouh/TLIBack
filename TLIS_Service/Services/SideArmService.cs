@@ -1705,7 +1705,7 @@ namespace TLIS_Service.Services
                          .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                            .GetLogisticals(Helpers.Constants.TablePartName.SideArm.ToString(), Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary.Id).ToList());
+                            .GetLogisticalsNonSteel(Helpers.Constants.TablePartName.SideArm.ToString(), Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 

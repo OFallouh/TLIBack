@@ -22,7 +22,6 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public string? Notes { get; set; }
         public string? Far_End_Site_Code { get; set; }
         public float HBA_Surface { get; set; }
-        public bool Is_Repeator { get; set; }
         public string Serial_Number { get; set; }
         public string? MW_LINK { get; set; }
         public string? Visiable_Status { get; set; }
@@ -41,12 +40,13 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
         public float Dismantle { get; set; }
-        public string LEG_NAME { get; set; }
+        public string? LEG_NAME { get; set; }
         public string CIVILNAME { get; set; }
         public int CIVIL_ID { get; set; }
-        public string SIDEARMNAME { get; set; }
-        public int SIDEARM_ID { get; set; }
+        public string? SIDEARMNAME { get; set; }
+        public int? SIDEARM_ID { get; set; }
         public int ALLCIVILINST_ID { get; set; }
+        public int? LEG_ID { get; set; }
      
         public Dictionary<string, object> GenerateOutputData()
         {
@@ -63,7 +63,6 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             outputData.Add("Notes", Notes);
             outputData.Add("Far_End_Site_Code", Far_End_Site_Code);
             outputData.Add("HBA_Surface", HBA_Surface);
-            outputData.Add("Is_Repeator", Is_Repeator);
             outputData.Add("Serial_Number", Serial_Number);
             outputData.Add("DishName", DishName);
             outputData.Add("MW_LINK", MW_LINK);
@@ -89,6 +88,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             outputData.Add("SIDEARM_ID", SIDEARM_ID);      
             outputData.Add("ALLCIVILINST_ID", ALLCIVILINST_ID);      
             outputData.Add("Dismantle", Dismantle);      
+            outputData.Add("LEG_ID", LEG_ID);      
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
             {

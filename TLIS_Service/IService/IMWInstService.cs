@@ -16,12 +16,14 @@ using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 
 namespace TLIS_Service.IService
 {
     public interface IMWInstService
     {
         Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode);
+        Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName);
         Response<GetForAddMWDishInstallationObject> AddMWDishInstallation(int UserId, AddMWDishInstallationObject MWInstallationViewModel, TLImwDish mwDish, int AllCivilId, int TableNameId, string SiteCode, string ConnectionString, int? TaskId);
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode);
         public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
@@ -31,7 +33,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<MW_BUViewModel>> getMW_BU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_DishViewModel>> getMW_Dish(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_RFUViewModel>> getMW_RFU(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
-        public Response<ObjectInstAttsForSideArm> GetById(int MWInsId, string TableName);
+        Response<GetForAddLoadObject> GetById(int MWInsId, string TableName);
         public Response<List<InstallationPlaceViewModel>> GetInstallationType(string TableName);
         Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName, string LoadType);
         Response<List<MW_PortViewModel>> GetMW_PortsForMW_RFUInstallation(int AllCivilInstId);

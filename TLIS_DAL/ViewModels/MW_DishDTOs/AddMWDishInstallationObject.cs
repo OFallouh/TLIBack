@@ -21,7 +21,6 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             public string? Notes { get; set; } = " ";
             public string? Far_End_Site_Code { get; set; } = " ";
             public float HBA_Surface { get; set; } = 0;
-            public bool Is_Repeator { get; set; }
             public string Serial_Number { get; set; }
             public string DishName { get; set; }
             public int? MW_LinkId { get; set; }
@@ -46,7 +45,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             public int? civilWithLegId { get; set; }
             public int? civilWithoutLegId { get; set; }
             public int? civilNonSteelId { get; set; }
-            public int? sideArmId { get; set; }
+            public List<int>? sideArmId { get; set; }
             public int? legId { get; set; }
             public int MwDishLibraryId { get; set; }
         }

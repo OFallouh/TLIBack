@@ -13,7 +13,6 @@ namespace TLIS_DAL.Models
         public string? Notes { get; set; }
         public string? Far_End_Site_Code { get; set; }
         public float HBA_Surface { get; set; }
-        public bool Is_Repeator { get; set; }
         public string Serial_Number { get; set; }
         public string DishName { get; set; }
         public int? MW_LinkId { get; set; }
