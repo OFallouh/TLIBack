@@ -157,6 +157,10 @@ using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.AddMWDishLibraryObject;
 using static TLIS_DAL.ViewModels.CivilLoadsDTOs.CivilLoads;
 using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.EditMWDishLibraryObject;
 using static TLIS_DAL.ViewModels.MW_DishDTOs.AddMWDishInstallationObject;
+using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.EditMWBULibraryObject;
+using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.ADDMWODULibraryObject;
+using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.EditMWODULibraryObject;
+using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.AddMWBULibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -210,7 +214,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditCivilWihtoutLegsLibraryAttributes, TLIcivilWithoutLegLibrary>().ReverseMap();
             CreateMap<EditCivilSideArmlLibraryAttributes, TLIsideArmLibrary>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIcivilLoads>().ReverseMap();
-
+            CreateMap<EditMWBULibraryAttributes, TLImwBULibrary>().ReverseMap();
+            CreateMap<EditMWODULibraryAttributes, TLImwODULibrary>().ReverseMap();
+            CreateMap<MWBULibraryAttributes, TLImwBULibrary>().ReverseMap();
+            CreateMap<MWODULibraryAttributes, TLImwODULibrary>().ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();

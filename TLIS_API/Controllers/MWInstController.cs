@@ -206,25 +206,25 @@ namespace TLIS_API.Controllers
         //    }
         //}
 
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
 
-        [HttpPost("EditMW_BU")]
-        [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
-        public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU,int? TaskId)
-        {
-            if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
-            {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[HttpPost("EditMW_BU")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
+        //public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU,int? TaskId)
+        //{
+        //    if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_Dish")]
         [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
@@ -232,7 +232,27 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(MW_Dish, nameof(EditMW_DishViewModel)))
             {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
                 return Ok(response);
             }
             else
@@ -243,60 +263,60 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditMW_ODU")]
-        [ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
-        public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int? TaskId)
-        {
-            if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
-            {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditMW_RFU")]
-        [ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
-        public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int? TaskId)
-        {
-            if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
-            {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditMw_Other")]
-        [ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
-        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int? TaskId)
-        {
-            if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
-            {
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMw_OtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditMW_ODU")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
+        //public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int? TaskId)
+        //{
+        //    if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditMW_RFU")]
+        //[ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
+        //public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int? TaskId)
+        //{
+        //    if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditMw_Other")]
+        //[ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
+        //public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int? TaskId)
+        //{
+        //    if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditMw_OtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_BU")]
         public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int? TaskId)

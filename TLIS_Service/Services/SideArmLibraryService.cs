@@ -768,16 +768,15 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArm.sideArmLibraryId== id && !
-                x.Dismantle,x=>x.sideArm);
-                if (SideArmInstllation != null )
+                var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArmId !=null && x.sideArm.sideArmLibraryId== id && 
+                !x.Dismantle,x=>x.sideArm,x=>x.sideArm.sideArmLibrary).ToList();
+                TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
+                if (SideArmInstllation != null || SideArmInstllation.Count>0)
                 {
                     return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
-                {
-                    TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
-
+                {          
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                     NewSideWithArm.Deleted = true;
                     NewSideWithArm.Model = NewSideWithArm.Model + "_" + DateTime.Now.ToString();
@@ -803,13 +802,13 @@ namespace TLIS_Service.Services
                 try
                 {
                     var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
-                     x.Dismantle, x => x.sideArm);
+                     x.Dismantle, x => x.sideArm).ToList();
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
-                    if (SideArmInstllation != null && NewSideWithArm.Active == true)
+                    if ((SideArmInstllation != null || SideArmInstllation.Count > 0) || NewSideWithArm.Active == true)
                     {
-                        return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<SideArmLibraryViewModel>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    else if ((SideArmInstllation != null && NewSideWithArm.Active == false) || SideArmInstllation == null)
+                    else 
                     {
                         TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                         NewSideWithArm.Active = !(NewSideWithArm.Active);

@@ -12,6 +12,7 @@ using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
+using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
 
@@ -20,8 +21,12 @@ namespace TLIS_Service.IService
     public interface IMWLibraryService
     {
         Task MW_OtherLibrarySeedDataForTest();
+        Response<AddMWBULibraryObject> AddMWBULibrary(int UserId, string TableName, AddMWBULibraryObject addMWBULibraryObject, string connectionString);
+        Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName);
         Task MW_ODULibrarySeedDataForTest();
         Task MW_DishLibrarySeedDataForTest();
+        Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName);
+        Response<ADDMWODULibraryObject> AddMWODULibrary(int UserId, string TableName, ADDMWODULibraryObject aDDMWODULibraryObject, string connectionString);
         Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName);
         Response<GetEnableAttribute> GetMWDishLibrariesEnabledAtt(string ConnectionString);
         Response<ReturnWithFilters<MW_BULibraryViewModel>> get_MW_BU_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
@@ -31,7 +36,6 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<MW_OtherLibraryViewModel>> get_MW_Other_LibrariesAsync(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName);
         Response<GetForAddCivilLibrarybject> AddMWLibrary(int UserId, string TableName, object LoadLibraryViewModel, string connectionString);
-        Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName);
         Task<Response<AllItemAttributes>> Disable(int Id, string TableName);
         Task<Response<AllItemAttributes>> Delete(int Id, string TableName);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);

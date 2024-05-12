@@ -9867,7 +9867,10 @@ namespace TLIS_Service.Services
                   
                     if (allcivil != null)
                     {
-
+                        List<TLIcivilLoads>LoadsOnCivil= _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
+                        && !x.Dismantle).ToList();
+                        if(LoadsOnCivil !=null || LoadsOnCivil.Count()>0)
+                            return new Response<bool>(false, false, null, "You cannot delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {
@@ -9976,6 +9979,10 @@ namespace TLIS_Service.Services
 
                     if (allcivil != null)
                     {
+                        List<TLIcivilLoads> LoadsOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
+                        && !x.Dismantle).ToList();
+                        if (LoadsOnCivil != null || LoadsOnCivil.Count() > 0)
+                            return new Response<bool>(false, false, null, "You cannot delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
@@ -10086,6 +10093,11 @@ namespace TLIS_Service.Services
 
                     if (allcivil != null)
                     {
+                        List<TLIcivilLoads> LoadsOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
+                        && !x.Dismantle).ToList();
+                        if (LoadsOnCivil != null || LoadsOnCivil.Count() > 0)
+                            return new Response<bool>(false, false, null, "You cannot delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {
