@@ -227,10 +227,10 @@ namespace TLIS_API.Controllers
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMW_Dish")]
-        [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
-        public async Task<IActionResult> EditMW_Dish([FromBody]EditMW_DishViewModel MW_Dish,int? TaskId)
+        [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
+        public async Task<IActionResult> EditMW_Dish([FromBody] EditMWDishInstallationObject MW_Dish,int? TaskId)
         {
-            if (TryValidateModel(MW_Dish, nameof(EditMW_DishViewModel)))
+            if (TryValidateModel(MW_Dish, nameof(EditMWDishInstallationObject)))
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -260,7 +260,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<EditMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<EditMWDishInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         //[ServiceFilter(typeof(WorkFlowMiddleware))]

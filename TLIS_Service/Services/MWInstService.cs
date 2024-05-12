@@ -3473,7 +3473,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_Dish.installationConfig.civilWithLegId != null)
                                         {
-                                            if (AddMW_Dish.installationConfig.sideArmId.Count > 0)
+                                            if (AddMW_Dish.installationConfig.sideArmId.Count() ! > 0)
 
                                             {
                                                 var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
