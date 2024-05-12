@@ -226,7 +226,7 @@ namespace TLIS_API.Controllers
         //    }
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditMW_Dish")]
+        [HttpPost("EditMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
         public async Task<IActionResult> EditMW_Dish([FromBody] EditMWDishInstallationObject MW_Dish,int? TaskId)
         {
@@ -252,7 +252,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
+                var response = await _unitOfWorkService.MWInstService.EditMWDishInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
                 return Ok(response);
             }
             else

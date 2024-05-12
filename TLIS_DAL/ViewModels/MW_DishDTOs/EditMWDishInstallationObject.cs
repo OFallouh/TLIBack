@@ -9,11 +9,11 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
 {
     public class EditMWDishInstallationObject
     {
-        public LibraryAttributesMWDish civilType { get; set; }
-        public AddCivilLoad civilLoads { get; set; }
-        public installationAttributesMWDish installationAttributes { get; set; }
+        public LibraryAttributesMWDishObject civilType { get; set; }
+        public AddCivilLoadObject civilLoads { get; set; }
+        public installationAttributesMWDishObject installationAttributes { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class installationAttributesMWDish
+        public class installationAttributesMWDishObject
         {
             public int Id { get; set; } 
             public float Azimuth { get; set; } = 0;
@@ -37,12 +37,12 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             public float EquivalentSpace { get; set; } = 0;
 
         }
-        public class LibraryAttributesMWDish
+        public class LibraryAttributesMWDishObject
         {
             public int MwDishLibraryId { get; set; }
 
         }
-        public class AddCivilLoad
+        public class AddCivilLoadObject
         {
             public DateTime InstallationDate { get; set; } = DateTime.Now;
             public string? ItemOnCivilStatus { get; set; } = null;
