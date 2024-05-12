@@ -143,7 +143,7 @@ namespace TLIS_Service.Services
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                     {
-                        { "polarityonlocation_name", () => _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && x.Disable).ToList())},
+                        { "polarityonlocation_name", () => _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
                         { "repeatertype_name", () => _mapper.Map<List<RepeaterTypeViewModel>>(_unitOfWork.RepeaterTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         { "itemconnectto_name", () => _mapper.Map<List<ItemConnectToViewModel>>(_unitOfWork.ItemConnectToRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
@@ -12457,7 +12457,7 @@ namespace TLIS_Service.Services
 
                                 case "polarityonlocation_name":
                                     FKitem.Value = _mapper.Map<PolarityOnLocationViewModel>(MWDish.allLoadInst.mwDish.PolarityOnLocation);
-                                    FKitem.Options = _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && x.Disable).ToList());
+                                    FKitem.Options = _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                     break;
                                 case "repeatertype_name":
                                     if (MWDish.allLoadInst.mwDish.RepeaterType != null)
