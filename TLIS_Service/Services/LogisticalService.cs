@@ -959,9 +959,14 @@ namespace TLIS_Service.Services
                 .GetWhereFirst(x => x.Name.ToLower() == EditLogisticalViewModel.Name.ToLower() && !x.Deleted &&
                     x.tablePartNameId == Logistical.tablePartNameId && x.logisticalTypeId == Logistical.logisticalTypeId &&
                     x.Id != Logistical.Id);
+            var UsedLogicItem = _unitOfWork.LogisticalitemRepository.GetWhereAndInclude(x => x.logisticalId == Logistical.Id
+            && (x.tablesNames.TableName.ToLower() == "tlicivilwithlegs" || x.tablesNames.TableName.ToLower() == "tlicivilwithoutleg")
+            && x.logistical.logisticalType.Name.ToLower() == "vendor",x=>x.tablesNames,x=>x.logistical,x=>x.logistical.logisticalType);
+            if(UsedLogicItem != null)
+                return new Response<bool>(false, false, null, "can not update this logisticalitem because used in model to civil item", (int)Helpers.Constants.ApiReturnCode.fail);
 
             if (CheckLogistical != null)
-                return new Response<bool>(true, false, null, "This logistical is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<bool>(false, false, null, "This logistical is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
 
             _unitOfWork.SaveChanges();
             return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
