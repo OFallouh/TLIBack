@@ -12656,7 +12656,7 @@ namespace TLIS_Service.Services
 
 
                         objectInst.InstallationAttributes = ListAttributesActivated;
-
+                        objectInst.CivilLoads = Civilload;
                         objectInst.dynamicAttribute = null;
                         objectInst.dynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
 
