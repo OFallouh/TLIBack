@@ -6343,15 +6343,15 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
-                                           referencesValue = supportReferenceAllCivilInst.civilWithLegs;
+                                           referencesValue = supportReferenceAllCivilInst.civilWithLegs.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg;
+                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg.Name;
                                         }
                                         else
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel;
+                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel.Name;
                                         }
                                     }
 
