@@ -36,11 +36,9 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public string? OWNER { get; set; }
         public string SIDEARMTYPE { get; set; }
         public string? ITEMSTATUS { get; set; }
-        public string POLARITYONLOCATION { get; set; }
         public bool Draft { get; set; }
         public bool Active { get; set; }
         public float CenterHigh { get; set; }
-        public int ODU_COUNT { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
@@ -80,8 +78,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             outputData.Add("SECOND_LEG_ID", SECOND_LEG_ID);
             outputData.Add("FIRST_LEG_ID", FIRST_LEG_ID);
             outputData.Add("BRANCHING_SIDEARM", BRANCHING_SIDEARM);
-            outputData.Add("ODU_COUNT", ODU_COUNT);
-            outputData.Add("POLARITYONLOCATION", POLARITYONLOCATION);
+
 
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))

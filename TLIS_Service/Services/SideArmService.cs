@@ -1167,8 +1167,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SECOND_LEG");
                     propertyNamesStatic.Add("SECOND_LEG_ID");
                     propertyNamesStatic.Add("BRANCHING_SIDEARM");
-                    propertyNamesStatic.Add("ODU_COUNT");
-                    propertyNamesStatic.Add("POLARITYONLOCATION");
+             
 
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -1210,8 +1209,7 @@ namespace TLIS_Service.Services
                            FIRST_LEG_ID=x.FIRST_LEG_ID,
                            SECOND_LEG_ID=x.SECOND_LEG_ID,
                            BRANCHING_SIDEARM = x.BRANCHING_SIDEARM,
-                           ODU_COUNT = x.ODU_COUNT,
-                           POLARITYONLOCATION = x.POLARITYONLOCATION = x.BRANCHING_SIDEARM
+                        
 
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })

@@ -46,8 +46,10 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public string? SIDEARMNAME { get; set; }
         public int? SIDEARM_ID { get; set; }
         public int ALLCIVILINST_ID { get; set; }
-        public int? LEG_ID { get; set; }
-     
+        public int? LEG_ID { get; set; }        
+        public int ODU_COUNT { get; set; }
+ 
+
         public Dictionary<string, object> GenerateOutputData()
         {
             Dictionary<string, object> outputData = new Dictionary<string, object>();
@@ -89,6 +91,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             outputData.Add("ALLCIVILINST_ID", ALLCIVILINST_ID);      
             outputData.Add("Dismantle", Dismantle);      
             outputData.Add("LEG_ID", LEG_ID);      
+            outputData.Add("ODU_COUNT", ODU_COUNT);           
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
             {

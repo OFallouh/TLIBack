@@ -24,7 +24,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.LoadLibrary
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
    
@@ -45,11 +45,12 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.MWLibraryService.get_MW_ODU_LibrariesAsync(filters, WithFilterData, parameters);
             return Ok(response);
         }
-        [HttpPost("GetMW_ODULibraries")]
+        [HttpPost("GetMWODULibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_ODULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetMW_ODULibraries()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_ODULibraries(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWODULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]

@@ -19,15 +19,14 @@ namespace TLIS_DAL.Models
         public float Depth { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
-        public string frequency_range { get; set; }
-        public string frequency_band { get; set; }
+        public string? frequency_range { get; set; }
+        public string? frequency_band { get; set; }
         public float SpaceLibrary { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
         [ForeignKey("TLIparity")]
         public int? parityId { get; set; }
         public float Diameter { get; set; }
-
         public TLIparity parity { get; set; }
         public IEnumerable<TLImwODU> Mw_ODU { get; set; }
     }

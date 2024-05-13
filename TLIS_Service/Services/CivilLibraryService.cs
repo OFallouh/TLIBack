@@ -129,7 +129,7 @@ namespace TLIS_Service.Services
                                     return new Response<AddCivilWithLegsLibraryObject>(false, null, null, $"Prefix It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 }
-                                var model = structureTypeName + ' ' + vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + CivilWithLegEntites.Height_Designed;
+                                var model = vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegEntites.Height_Designed;
                                 if (_unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Model == model && !x.Deleted) != null)
                                 {
                                     return new Response<AddCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -304,7 +304,8 @@ namespace TLIS_Service.Services
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"Prefix It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             }
-                            var model = structureTypeName + ' ' + vendor + ' ' + CivilWithoutLegEntites.Prefix + ' ' + CivilWithoutLegEntites.Height_Designed;
+                            var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegEntites.CivilWithoutLegCategoryId) ?.Name;
+                            var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithoutLegEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithoutLegEntites.Height_Designed;
                             if (_unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Model == model && !x.Deleted) != null)
                             {
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);

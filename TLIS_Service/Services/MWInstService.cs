@@ -2727,7 +2727,7 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_SIDEARM ";
+                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
                     using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
                         procedureCommand.CommandType = CommandType.StoredProcedure;
@@ -2775,8 +2775,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
-                    
-
+                    propertyNamesStatic.Add("ODU_COUNT");
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).AsEnumerable()
@@ -2822,7 +2821,8 @@ namespace TLIS_Service.Services
                            SIDEARM_ID = x.SIDEARM_ID,
                            ALLCIVILINST_ID = x.ALLCIVILINST_ID,
                            LEG_ID = x.LEG_ID,
-                          
+                           ODU_COUNT=x.ODU_COUNT
+
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));

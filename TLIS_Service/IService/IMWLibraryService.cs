@@ -21,6 +21,7 @@ namespace TLIS_Service.IService
     public interface IMWLibraryService
     {
         Task MW_OtherLibrarySeedDataForTest();
+        Response<GetEnableAttribute> GetMWODULibrariesEnabledAtt(string ConnectionString);
         Response<AddMWBULibraryObject> AddMWBULibrary(int UserId, string TableName, AddMWBULibraryObject addMWBULibraryObject, string connectionString);
         Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName);
         Task MW_ODULibrarySeedDataForTest();

@@ -2549,9 +2549,10 @@ namespace TLIS_Service.Services
 
                         civilWithLegs.Name = sitename + "" + Model + "" + ownername + "" + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented;
 
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                            (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegs.Name.ToLower() : false &&
-                                x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
+
+                        var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                             (x.Id != null ? x.Name.ToLower() == civilWithLegs.Name.ToLower() : false
+                                && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithLegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2718,11 +2719,11 @@ namespace TLIS_Service.Services
                         if (CvilWithoutlegsLibrary.Model != null)
                             Model = CvilWithoutlegsLibrary.Model;
 
-                        civilwithoutlegs.Name = sitename + "" + Model + "" + ownername + "" + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented;
+                        civilwithoutlegs.Name = sitename + " " + Model + " " + ownername + " " + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented;
 
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                            (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false &&
-                                x.SiteCode.ToLower() == SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
+                        var CheckName = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                         (x.Id != null ? x.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false
+                           && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilwithoutlegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3032,9 +3033,9 @@ namespace TLIS_Service.Services
 
                         civilWithLegsEntity.Name = SiteCode.Site.SiteName + "" + Model + "" + ownername + "" + civilWithLegsEntity.HeightImplemented;
 
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                             (x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegs.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false 
-                               &&x.allCivilInst.civilWithLegsId != civilWithLegsEntity.Id && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
+                        var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                             (x.Id != null ? x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
+                               && x.Id != civilWithLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
 
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3276,10 +3277,9 @@ namespace TLIS_Service.Services
 
                         civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + "" + Model + "" + ownername + "" + civilWithoutLegsEntity.HeightImplemented;
 
-                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                             (x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLeg.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() : false 
-                             && x.allCivilInst.civilWithoutLegId != civilWithoutLegsEntity.Id && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()), x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
-
+                        var CheckName = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                         (x.Id != null ? x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() : false
+                           && x.Id != civilWithoutLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithoutLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -6137,6 +6137,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
+                        NameAttribute.Value = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
                     }
 
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
@@ -6337,16 +6338,31 @@ namespace TLIS_Service.Services
                                             x => x.civilNonSteel,
                                             x => x.civilWithLegs,
                                             x => x.civilWithoutLeg);
-
-                                    var referencesValue = _mapper.Map<SupportTypeImplementedViewModel>(
-                                    supportReferenceAllCivilInst?.civilWithLegsId != null
-                                        ? supportReferenceAllCivilInst?.civilWithLegs
-                                        : supportReferenceAllCivilInst?.civilWithoutLegId != null
-                                            ? supportReferenceAllCivilInst?.civilWithoutLeg
-                                            : supportReferenceAllCivilInst?.civilNonSteel);
-                                    if (referencesValue != null)
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
                                     {
-                                        attr.Value = referencesValue;
+                                        if (supportReferenceAllCivilInst.civilWithLegsId != null)
+                                        {
+                                           referencesValue = supportReferenceAllCivilInst.civilWithLegs;
+                                        }
+                                        else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg;
+                                        }
+                                        else
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel;
+                                        }
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceCivilId != null && support.ReferenceCivilId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceCivilId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
                                     }
                                     if (referencesValue == null)
                                     {
@@ -6475,6 +6491,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
+                        NameAttribute.Value = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
                     }
 
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
@@ -6577,16 +6594,31 @@ namespace TLIS_Service.Services
                                             x => x.civilNonSteel,
                                             x => x.civilWithLegs,
                                             x => x.civilWithoutLeg);
-
-                                    var referencesValue = _mapper.Map<SupportTypeImplementedViewModel>(
-                                        supportReferenceAllCivilInst?.civilWithLegsId != null
-                                            ? supportReferenceAllCivilInst?.civilWithLegs
-                                            : supportReferenceAllCivilInst?.civilWithoutLegId != null
-                                                ? supportReferenceAllCivilInst?.civilWithoutLeg
-                                                : supportReferenceAllCivilInst?.civilNonSteel);
-                                    if (referencesValue != null)
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
                                     {
-                                        attr.Value = referencesValue;
+                                        if (supportReferenceAllCivilInst.civilWithLegsId != null)
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs;
+                                        }
+                                        else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg;
+                                        }
+                                        else
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel;
+                                        }
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceCivilId != null && support.ReferenceCivilId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceCivilId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
                                     }
                                     if (referencesValue == null)
                                     {
@@ -6791,16 +6823,31 @@ namespace TLIS_Service.Services
                                             x => x.civilNonSteel,
                                             x => x.civilWithLegs,
                                             x => x.civilWithoutLeg);
-
-                                    var referencesValue = _mapper.Map<SupportTypeImplementedViewModel>(
-                                        supportReferenceAllCivilInst?.civilWithLegsId != null
-                                            ? supportReferenceAllCivilInst?.civilWithLegs
-                                            : supportReferenceAllCivilInst?.civilWithoutLegId != null
-                                                ? supportReferenceAllCivilInst?.civilWithoutLeg
-                                                : supportReferenceAllCivilInst?.civilNonSteel);
-                                    if (referencesValue != null)
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
                                     {
-                                        attr.Value = referencesValue;
+                                        if (supportReferenceAllCivilInst.civilWithLegsId != null)
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs;
+                                        }
+                                        else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg;
+                                        }
+                                        else
+                                        {
+                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel;
+                                        }
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceCivilId != null && support.ReferenceCivilId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceCivilId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
                                     }
                                     if (referencesValue == null)
                                     {
@@ -9884,9 +9931,9 @@ namespace TLIS_Service.Services
                     if (allcivil != null)
                     {
                         List<TLIcivilLoads>LoadsOnCivil= _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
-                        && !x.Dismantle).ToList();
-                        if(LoadsOnCivil !=null || LoadsOnCivil.Count()>0)
-                            return new Response<bool>(false, false, null, "You cannot delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                        && !x.Dismantle && x.SiteCode.ToLower()==SiteCode.ToLower()).ToList();
+                        if(LoadsOnCivil !=null && LoadsOnCivil.Count()>0)
+                            return new Response<bool>(false, false, null, "You can not delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {
@@ -9995,11 +10042,10 @@ namespace TLIS_Service.Services
 
                     if (allcivil != null)
                     {
-                        List<TLIcivilLoads> LoadsOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
-                        && !x.Dismantle).ToList();
-                        if (LoadsOnCivil != null || LoadsOnCivil.Count() > 0)
-                            return new Response<bool>(false, false, null, "You cannot delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
-
+                        var LoadsOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
+                        && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
+                        if (LoadsOnCivil != null && LoadsOnCivil.Count() > 0)
+                            return new Response<bool>(false, false, null, "You can not delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {
@@ -10110,10 +10156,9 @@ namespace TLIS_Service.Services
                     if (allcivil != null)
                     {
                         List<TLIcivilLoads> LoadsOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
-                        && !x.Dismantle).ToList();
-                        if (LoadsOnCivil != null || LoadsOnCivil.Count() > 0)
-                            return new Response<bool>(false, false, null, "You cannot delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
-
+                        && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
+                        if (LoadsOnCivil != null && LoadsOnCivil.Count() > 0)
+                            return new Response<bool>(false, false, null, "You can not delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {
