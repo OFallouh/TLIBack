@@ -1727,7 +1727,11 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
 
-
+                    BaseInstAttViews NameAttribute = attributes.InstallationAttributes.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        NameAttribute.Value = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == Id)?.Name;
+                    }
                     var selectedAttributes = attributes.InstallationAttributes
                    .Where(x => new[] { "sidearminstallationplace_name", "sidearmtype_name" }
                                 .Contains(x.Label.ToLower()))
@@ -2663,14 +2667,13 @@ namespace TLIS_Service.Services
                                                 SideArm.Name = CivilLoads.allCivilInst.civilWithLegs.Name + LegName + SideArm.HeightBase + SideArm.Azimuth;
 
                                             }
-                                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
-                                                    x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                    x => x.sideArm);
+                                             var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                              && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                             if (CheckName != null)
-                                                return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
-
+                                                return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                
                                         }
                                     }
                                 }
@@ -2691,13 +2694,12 @@ namespace TLIS_Service.Services
 
                                         SideArm.Name = CivilLoads.allCivilInst.civilWithoutLeg.Name + SideArm.HeightBase + SideArm.Azimuth;
 
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                 (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
-                                                     x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                     x => x.sideArm);
+                                        var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                  && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                         if (CheckName != null)
-                                            return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
 
@@ -2726,13 +2728,12 @@ namespace TLIS_Service.Services
                                             SideArm.Name = CivilLoads.allCivilInst.civilWithLegs.Name + LegName + SideArm.HeightBase + SideArm.Azimuth;
 
                                         }
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
-                                                    x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                    x => x.sideArm);
+                                        var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                               && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                         if (CheckName != null)
-                                            return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                     }
                                 }
@@ -2748,13 +2749,12 @@ namespace TLIS_Service.Services
                                             SideArm.Name = CivilLoads.allCivilInst.civilWithLegs.Name + LegName + LegName2 + SideArm.HeightBase + SideArm.Azimuth;
 
                                         }
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                               (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
-                                                   x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                   x => x.sideArm);
+                                        var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                               && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                         if (CheckName != null)
-                                            return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                     }
                                 }
@@ -2765,15 +2765,12 @@ namespace TLIS_Service.Services
                                 {
 
                                     SideArm.Name = CivilLoads.allCivilInst.civilWithoutLeg.Name + SideArm.HeightBase + SideArm.Azimuth;
-
-
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
-                                                    x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                    x => x.sideArm);
+                                    var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                               && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                     if (CheckName != null)
-                                        return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                        return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
                                 }
@@ -2794,14 +2791,12 @@ namespace TLIS_Service.Services
                                 {
 
                                     SideArm.Name = CivilLoads.allCivilInst.civilNonSteel.Name + SideArm.HeightBase + SideArm.Azimuth;
-
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && x.sideArmId != SideArm.Id && !x.sideArm.Draft && !x.Dismantle &&
-                                                    x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                    x => x.sideArm);
+                                    var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                    (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                        && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                     if (CheckName != null)
-                                        return new Response<EditSidearmInstallationObject>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                        return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 }
                             }
@@ -3632,13 +3627,13 @@ namespace TLIS_Service.Services
                                                         SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + LegName + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
 
                                                     }
-                                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                        (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                            x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                            x => x.sideArm);
+
+                                                    var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                         (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                            && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                                     if (CheckName != null)
-                                                        return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                                        return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                     //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -3760,13 +3755,12 @@ namespace TLIS_Service.Services
 
                                                 SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
 
-                                                TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                    (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                        x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                        x => x.sideArm);
+                                                var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                           && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                                 if (CheckName != null)
-                                                    return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                                    return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -3911,13 +3905,12 @@ namespace TLIS_Service.Services
                                                     SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + LegName + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
 
                                                 }
-                                                TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                    (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                        x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                        x => x.sideArm);
+                                                var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                           && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                                 if (CheckName != null)
-                                                    return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                                    return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -4019,13 +4012,12 @@ namespace TLIS_Service.Services
                                                     SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + LegName + LegName2 + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
 
                                                 }
-                                                TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                   (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                       x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                       x => x.sideArm);
+                                                var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                             (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                                && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                                 if (CheckName != null)
-                                                    return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                                    return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -4126,13 +4118,12 @@ namespace TLIS_Service.Services
                                             SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
 
 
-                                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                 (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                     x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                     x => x.sideArm);
+                                            var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                    (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                       && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                             if (CheckName != null)
-                                                return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                                return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
                                             //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
@@ -4244,13 +4235,12 @@ namespace TLIS_Service.Services
                                     {
                                         SideArm.Name = civilwithlegname.allCivilInst.civilNonSteel.Name + addSideArms.installationAttributes.HeightBase + addSideArms.installationAttributes.Azimuth;
 
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId != null ?
-                                                    (x.sideArm.Name.ToLower() == SideArm.Name.ToLower() && !x.sideArm.Draft && !x.Dismantle &&
-                                                        x.SiteCode.ToLower() == SiteCode.ToLower()) : false,
-                                                        x => x.sideArm);
+                                        var CheckName = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                         (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                            && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                         if (CheckName != null)
-                                            return new Response<SideArmViewDto>(false, null, null, $"This name {SideArm.Name} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                         //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 

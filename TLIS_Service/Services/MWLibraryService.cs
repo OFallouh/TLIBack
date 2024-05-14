@@ -3626,17 +3626,21 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwODULibrary MW_ODULibraryEntity = _mapper.Map<TLImwODULibrary>(aDDMWODULibraryObject.AttributesActivatedLibrary);
-                            //if (MW_DishLibraryEntity.SpaceLibrary <= 0)
-                            //{
-                            //    if (MW_DishLibraryEntity.diameter <= 0)
-                            //    {
-                            //        return new Response<AddMWDishLibraryObject>(false, null, null, "diamete must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //    }
-                            //    else
-                            //    {
-                            //        MW_DishLibraryEntity.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MW_DishLibraryEntity.diameter / 2, 2); ;
-                            //    }
-                            //}
+                            if (MW_ODULibraryEntity.SpaceLibrary <= 0)
+                            {
+                                if (MW_ODULibraryEntity.Height <= 0)
+                                {
+                                    return new Response<ADDMWODULibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else if (MW_ODULibraryEntity.Width <= 0)
+                                {
+                                    return new Response<ADDMWODULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    MW_ODULibraryEntity.SpaceLibrary = MW_ODULibraryEntity.Height * MW_ODULibraryEntity.Width;
+                                }
+                            }
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -5078,18 +5082,21 @@ namespace TLIS_Service.Services
                     TLImwODULibrary MWODULegLib = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWODULibraryEntites.Id);
 
 
-                    //if (MWDishLibraryEntites.SpaceLibrary == 0)
-                    //{
-                    //    if (MWDishLibraryEntites.diameter <= 0)
-                    //    {
-                    //        return new Response<EditMWDishLibraryObject>(false, null, null, "diameter It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //    }
-                    //    else
-                    //    {
-                    //        MWDishLibraryEntites.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibraryEntites.diameter / 2, 2); ;
-                    //    }
-
-                    //}
+                    if (MWODULibraryEntites.SpaceLibrary <= 0)
+                    {
+                        if (MWODULibraryEntites.Height <= 0)
+                        {
+                            return new Response<EditMWODULibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else if (MWODULibraryEntites.Width <= 0)
+                        {
+                            return new Response<EditMWODULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else
+                        {
+                            MWODULibraryEntites.SpaceLibrary = MWODULibraryEntites.Height * MWODULibraryEntites.Width;
+                        }
+                    }
                     if (_unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Model == MWODULibraryEntites.Model && x.Id != MWODULibraryEntites.Id && !x.Deleted) != null)
                     {
                         return new Response<EditMWODULibraryObject>(false, null, null, $"This model {MWODULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);

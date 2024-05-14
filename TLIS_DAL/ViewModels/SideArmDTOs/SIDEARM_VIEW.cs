@@ -40,8 +40,9 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public bool Active { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
-        public float HieghFromLand { get; set; }
-        public float EquivalentSpace { get; set; }
+        public float HieghFromLand { get; set;}
+        public float EquivalentSpace { get; set;}
+        public bool Dismantle { get; set; }
 
 
         public Dictionary<string, object> GenerateOutputData()

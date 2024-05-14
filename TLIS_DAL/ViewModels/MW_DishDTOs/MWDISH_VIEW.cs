@@ -39,7 +39,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
-        public float Dismantle { get; set; }
+        public bool Dismantle { get; set; }
         public string? LEG_NAME { get; set; }
         public string CIVILNAME { get; set; }
         public int CIVIL_ID { get; set; }
@@ -48,6 +48,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public int ALLCIVILINST_ID { get; set; }
         public int? LEG_ID { get; set; }        
         public int ODU_COUNT { get; set; }
+        public string POLARITYTYPE { get; set; }
  
 
         public Dictionary<string, object> GenerateOutputData()
@@ -92,6 +93,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             outputData.Add("Dismantle", Dismantle);      
             outputData.Add("LEG_ID", LEG_ID);      
             outputData.Add("ODU_COUNT", ODU_COUNT);           
+            outputData.Add("POLARITYTYPE", POLARITYTYPE);           
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
             {

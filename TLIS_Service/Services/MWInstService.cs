@@ -2821,7 +2821,8 @@ namespace TLIS_Service.Services
                            SIDEARM_ID = x.SIDEARM_ID,
                            ALLCIVILINST_ID = x.ALLCIVILINST_ID,
                            LEG_ID = x.LEG_ID,
-                           ODU_COUNT=x.ODU_COUNT
+                           ODU_COUNT=x.ODU_COUNT,
+                           POLARITYTYPE=x.POLARITYTYPE
 
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
@@ -3186,11 +3187,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                         if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                                     }
                                                     if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                                     {
@@ -3360,13 +3362,14 @@ namespace TLIS_Service.Services
                                                             mwDish.DishName = legname?.CiviLegName + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
 
                                                         }
-                                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                       (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                          && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                         if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                                     }
-                                                   
+
                                                     if (mwDish?.ItemConnectToId != null)
                                                     {
                                                         TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
@@ -3583,12 +3586,12 @@ namespace TLIS_Service.Services
                                                                 }
                                                             }
                                                         }
-                                                        
-                                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                           !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                               x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                                   && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                         if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                         if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                                         {
@@ -3784,11 +3787,12 @@ namespace TLIS_Service.Services
                                                                 }
                                                             }
                                                         }
-                                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                           !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                               x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                         (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                         if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                         if (mwDish?.ItemConnectToId != null)
                                                         {
@@ -4001,11 +4005,12 @@ namespace TLIS_Service.Services
                                                                 }
                                                             }
                                                         }
-                                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                           !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                               x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                         (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                         if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                         if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                                         {
@@ -4201,11 +4206,12 @@ namespace TLIS_Service.Services
                                                                 }
                                                             }
                                                         }
-                                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                           !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                               x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                         && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                         if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);                                                   
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                                         if (mwDish?.ItemConnectToId != null)
                                                         {
                                                             TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
@@ -4411,11 +4417,12 @@ namespace TLIS_Service.Services
                                                             }
                                                         }
                                                     }
-                                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                                                   && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
                                                     if (CheckName != null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                     if (mwDish?.ItemConnectToId != null)
                                                     {
@@ -4778,11 +4785,12 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                              && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                             if (CheckName != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                         {
@@ -4940,11 +4948,12 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                               && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                             if (CheckName != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
 
                                         var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
@@ -5096,11 +5105,12 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                               && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                             if (CheckName != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                         {
@@ -5258,11 +5268,12 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                                !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                               && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                             if (CheckName != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         if (mwDish?.ItemConnectToId != null)
                                         {
@@ -5458,12 +5469,12 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
-                                    if (CheckName != null)
-                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                               && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
 
+                                    if (CheckName != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                     if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                     {
                                         AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
@@ -5643,12 +5654,12 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                     }
+                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                               (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                                                 && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
 
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
                                     if (CheckName != null)
-                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                     var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
 
                                     if (OldVcivilinfo != null)
@@ -5824,11 +5835,12 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                           (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                             && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                     if (CheckName != null)
-                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                     if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                     {
                                         AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
@@ -6011,11 +6023,12 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                              && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                     if (CheckName != null)
-                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
                                     if (mwDish?.ItemConnectToId != null)
@@ -6204,11 +6217,12 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                              && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                         if (CheckName != null)
-                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                         if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                         {
@@ -6392,11 +6406,12 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                              && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                         if (CheckName != null)
-                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                         var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
 
                                         if (OldVcivilinfo != null)
@@ -6573,11 +6588,12 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                              && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                         if (CheckName != null)
-                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                         if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                         {
@@ -6761,11 +6777,12 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-                                        TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                            !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                                x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                              && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                         if (CheckName != null)
-                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                         if (mwDish?.ItemConnectToId != null)
                                         {
@@ -6953,11 +6970,12 @@ namespace TLIS_Service.Services
                                             }
                                         }
                                     }
-                                    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                                        !x.allLoadInst.Draft && (x.allLoadInst.mwDishId != null ? x.allLoadInst.mwDish.DishName.ToLower() == mwDish.DishName.ToLower() : false) : false),
-                                            x => x.allLoadInst, x => x.allLoadInst.mwDish);
+                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                           (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                             && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+
                                     if (CheckName != null)
-                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name {mwDish.DishName} is already exists", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                     if (mwDish?.ItemConnectToId != null)
                                     {
@@ -14839,7 +14857,8 @@ namespace TLIS_Service.Services
                             BaseInstAttViews Swap = ListAttributesActivated[0];
                             ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                             ListAttributesActivated[0] = NameAttribute;
-                        }
+                           NameAttribute.Value = _dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWInsId)?.Name;
+                         }
                         var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
                         {
                             switch (FKitem.Label.ToLower())

@@ -6384,19 +6384,32 @@ namespace TLIS_Service.Services
 
                                             if (item.allCivilInst.civilWithLegs != null)
                                             {
-                                                var civilWithLegsOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithLegs);
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithLegs?.Name
+                                                };
+                                                
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
                                             if (item.allCivilInst.civilWithoutLeg != null)
                                             {
-                                                var civilWithoutLegOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithoutLeg);
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                };
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
                                             if (item.allCivilInst.civilNonSteel != null)
                                             {
-                                                var civilNonSteelOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilNonSteel);
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                };
                                                 innerOptions.Add(civilNonSteelOption);
                                             }
 
@@ -6599,15 +6612,15 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs;
+                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg;
+                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg.Name;
                                         }
                                         else
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel;
+                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel.Name;
                                         }
                                     }
 
@@ -6640,19 +6653,32 @@ namespace TLIS_Service.Services
 
                                             if (item.allCivilInst.civilWithLegs != null)
                                             {
-                                                var civilWithLegsOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithLegs);
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithLegs?.Name
+                                                };
+
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
                                             if (item.allCivilInst.civilWithoutLeg != null)
                                             {
-                                                var civilWithoutLegOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithoutLeg);
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                };
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
                                             if (item.allCivilInst.civilNonSteel != null)
                                             {
-                                                var civilNonSteelOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilNonSteel);
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                };
                                                 innerOptions.Add(civilNonSteelOption);
                                             }
 
@@ -6828,15 +6854,15 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs;
+                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg;
+                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg.Name;
                                         }
                                         else
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel;
+                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel.Name;
                                         }
                                     }
 
@@ -6869,19 +6895,32 @@ namespace TLIS_Service.Services
 
                                             if (item.allCivilInst.civilWithLegs != null)
                                             {
-                                                var civilWithLegsOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithLegs);
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithLegs?.Name
+                                                };
+
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
                                             if (item.allCivilInst.civilWithoutLeg != null)
                                             {
-                                                var civilWithoutLegOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilWithoutLeg);
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                };
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
                                             if (item.allCivilInst.civilNonSteel != null)
                                             {
-                                                var civilNonSteelOption = _mapper.Map<SupportTypeImplementedViewModel>(item.allCivilInst.civilNonSteel);
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allCivilInst.Id,
+                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                };
                                                 innerOptions.Add(civilNonSteelOption);
                                             }
 
