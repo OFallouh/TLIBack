@@ -504,8 +504,8 @@ namespace TLIS_Service.Services
                         {
                             if (FKitem.Label.ToLower() == "parity_name")
                             {
-                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.ParityRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(MWODUULibrary.parity);
+                                FKitem.Options = _mapper.Map<List<ParityViewModel>>(_unitOfWork.ParityRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                FKitem.Value = _mapper.Map<ParityViewModel>(MWODUULibrary.parity);
                             }
                            
                             return FKitem;
