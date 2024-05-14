@@ -2776,6 +2776,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
                     propertyNamesStatic.Add("ODU_COUNT");
+                    propertyNamesStatic.Add("POLARITYTYPE");
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower()).AsEnumerable()
