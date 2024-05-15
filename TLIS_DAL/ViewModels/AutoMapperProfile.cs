@@ -161,6 +161,7 @@ using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.EditMWBULibraryObject;
 using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.ADDMWODULibraryObject;
 using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.EditMWODULibraryObject;
 using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.AddMWBULibraryObject;
+using static TLIS_DAL.ViewModels.MW_DishDTOs.EditMWDishInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -189,6 +190,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LoadandsidearmViewDto, TLIcivilWithoutLeg>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLIcivilNonSteel>().ReverseMap();
             CreateMap<TLImwDishLibrary, EditMWDishLibraryAttributes>().ReverseMap();
+            CreateMap<installationAttributesMWDishObject, TLImwDish>().ReverseMap();
            
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

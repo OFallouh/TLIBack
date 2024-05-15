@@ -7153,7 +7153,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwBU.MwBULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                         TLImwBULibrary OldMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if ((CivilLoad != null || CivilLoad.Count > 0) && OldMW_BULibrary.Active == true)
+                        if ((CivilLoad != null && CivilLoad.Count > 0) && OldMW_BULibrary.Active == true)
                         {
                               return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                             

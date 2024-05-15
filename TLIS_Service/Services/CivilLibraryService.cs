@@ -1560,7 +1560,7 @@ namespace TLIS_Service.Services
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,x=>x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
                         var NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
 
-                        if ((UsedCivil != null || UsedCivil.Count>0) && NewCivilWithLeg.Active == true)
+                        if ((UsedCivil != null && UsedCivil.Count>0) && NewCivilWithLeg.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -1580,7 +1580,7 @@ namespace TLIS_Service.Services
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).ToList();
                         TLIcivilWithoutLegLibrary NewCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
-                        if ((UsedCivil != null || UsedCivil.Count > 0) && NewCivilWithoutLeg.Active == true)
+                        if ((UsedCivil != null && UsedCivil.Count > 0) && NewCivilWithoutLeg.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -1597,7 +1597,7 @@ namespace TLIS_Service.Services
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.CivilNonSteelLibraryId
                          == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary).ToList();
                         TLIcivilNonSteelLibrary NewCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == Id);
-                        if ((UsedCivil != null || UsedCivil.Count > 0) && NewCivilNonSteel.Active == true)
+                        if ((UsedCivil != null &&UsedCivil.Count > 0) && NewCivilNonSteel.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -5184,7 +5184,7 @@ namespace TLIS_Service.Services
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
                         var NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
-                        if ((UsedCivil != null || UsedCivil.Count > 0) && NewCivilWithLeg.Active == true)
+                        if ((UsedCivil != null && UsedCivil.Count > 0) && NewCivilWithLeg.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -5207,7 +5207,7 @@ namespace TLIS_Service.Services
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId
                          == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).ToList();
                         var CivilWithoutlib = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
-                        if ((UsedCivil != null || UsedCivil.Count > 0) && CivilWithoutlib.Active == true)
+                        if ((UsedCivil != null && UsedCivil.Count > 0) && CivilWithoutlib.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -5231,7 +5231,7 @@ namespace TLIS_Service.Services
                         var UsedCivil = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.CivilNonSteelLibraryId
                          == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary).ToList();
                         var CivilNonSteellib = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == Id);
-                        if ((UsedCivil != null || UsedCivil.Count > 0) && CivilNonSteellib.Active == true)
+                        if ((UsedCivil != null && UsedCivil.Count > 0) && CivilNonSteellib.Active == true)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         }

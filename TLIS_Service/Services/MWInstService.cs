@@ -4760,7 +4760,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -4923,7 +4923,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -5080,7 +5080,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -5243,7 +5243,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -5418,7 +5418,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                     {
-                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                         if (CheckSerialNumber)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                     }
@@ -5604,7 +5604,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                     {
-                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                         if (CheckSerialNumber)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                     }
@@ -5784,7 +5784,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                     {
-                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                         if (CheckSerialNumber)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                     }
@@ -5972,7 +5972,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                     {
-                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                         if (CheckSerialNumber)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                     }
@@ -6166,7 +6166,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -6355,7 +6355,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -6537,7 +6537,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -6726,7 +6726,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -6919,7 +6919,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                     {
-                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
                                         if (CheckSerialNumber)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                     }

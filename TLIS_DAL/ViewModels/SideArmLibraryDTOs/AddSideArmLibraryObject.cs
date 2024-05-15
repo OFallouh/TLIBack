@@ -16,14 +16,14 @@ namespace TLIS_DAL.ViewModels.SideArmLibraryDTOs
         public class SideArmLibraryAttributes
         {
             public string Model { get; set; }
-            public float Width { get; set; }
-            public float Weight { get; set; }
-            public float Length { get; set; }
-            public float Height { get; set; }
-            public float SpaceLibrary { get; set; }
+            public float Width { get; set; } = 0;
+            public float Weight { get; set; } = 0;
+            public float Length { get; set; } = 0;
+            public float Height { get; set; } = 0;
+            public float SpaceLibrary { get; set; } = 0;
             public string? Note { get; set; }
-            public bool Active { get; set; }
-            public bool Deleted { get; set; }
+            public bool Active { get; set; } = true;
+            public bool Deleted { get; set; } = false;
         }
     }
 }

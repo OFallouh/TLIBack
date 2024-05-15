@@ -6343,15 +6343,16 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
-                                           referencesValue = supportReferenceAllCivilInst.civilWithLegs.Name;
+
+                                            referencesValue = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg.Name;
+                                            referencesValue = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
                                         }
                                         else
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel.Name;
+                                            referencesValue = _dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
                                         }
                                     }
 
@@ -6389,7 +6390,7 @@ namespace TLIS_Service.Services
                                                     Id = item.allCivilInst.Id,
                                                     Name = item.allCivilInst.civilWithLegs?.Name
                                                 };
-                                                
+
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
@@ -6408,7 +6409,7 @@ namespace TLIS_Service.Services
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
                                                     Id = item.allCivilInst.Id,
-                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                    Name = item.allCivilInst.civilNonSteel?.Name
                                                 };
                                                 innerOptions.Add(civilNonSteelOption);
                                             }
@@ -6612,15 +6613,16 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs.Name;
+
+                                            referencesValue = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg.Name;
+                                            referencesValue = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
                                         }
                                         else
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel.Name;
+                                            referencesValue = _dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
                                         }
                                     }
 
@@ -6677,7 +6679,7 @@ namespace TLIS_Service.Services
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
                                                     Id = item.allCivilInst.Id,
-                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                    Name = item.allCivilInst.civilNonSteel?.Name
                                                 };
                                                 innerOptions.Add(civilNonSteelOption);
                                             }
@@ -6854,15 +6856,16 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithLegs.Name;
+
+                                            referencesValue = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilWithoutLeg.Name;
+                                            referencesValue = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
                                         }
                                         else
                                         {
-                                            referencesValue = supportReferenceAllCivilInst.civilNonSteel.Name;
+                                            referencesValue = _dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
                                         }
                                     }
 
@@ -6919,7 +6922,7 @@ namespace TLIS_Service.Services
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
                                                     Id = item.allCivilInst.Id,
-                                                    Name = item.allCivilInst.civilWithoutLeg?.Name
+                                                    Name = item.allCivilInst.civilNonSteel?.Name
                                                 };
                                                 innerOptions.Add(civilNonSteelOption);
                                             }
@@ -12935,7 +12938,7 @@ namespace TLIS_Service.Services
                     .Select(item => new LocationTypeViewModel
                     {
                         Id = item.allCivilInstId,
-                        Name = $"{item.allCivilInst?.civilWithLegs?.Name} {item.allCivilInst?.civilWithoutLeg?.Name} {item.allCivilInst?.civilNonSteel?.Name}".Trim()
+                        Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x=>x.Id== item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
                     })
                     .ToList();
 
@@ -13122,12 +13125,12 @@ namespace TLIS_Service.Services
                  .ToList();
 
                     var locationTypeViewModels = query
-                    .Select(item => new LocationTypeViewModel
-                    {
-                        Id = item.allCivilInstId,
-                        Name = $"{item.allCivilInst?.civilWithLegs?.Name} {item.allCivilInst?.civilWithoutLeg?.Name} {item.allCivilInst?.civilNonSteel?.Name}".Trim()
-                    })
-                    .ToList();
+                     .Select(item => new LocationTypeViewModel
+                     {
+                         Id = item.allCivilInstId,
+                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                     })
+                     .ToList();
 
                     objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
                     {
@@ -13137,7 +13140,6 @@ namespace TLIS_Service.Services
                         }
                         return x;
                     });
-
 
 
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -13283,12 +13285,12 @@ namespace TLIS_Service.Services
                      .ToList();
 
                     var locationTypeViewModels = query
-                    .Select(item => new LocationTypeViewModel
-                    {
-                        Id = item.allCivilInstId,
-                        Name = $"{item.allCivilInst?.civilWithLegs?.Name} {item.allCivilInst?.civilWithoutLeg?.Name} {item.allCivilInst?.civilNonSteel?.Name}".Trim()
-                    })
-                    .ToList();
+                     .Select(item => new LocationTypeViewModel
+                     {
+                         Id = item.allCivilInstId,
+                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                     })
+                     .ToList();
 
                     objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
                     {
@@ -13442,12 +13444,12 @@ namespace TLIS_Service.Services
                     .ToList();
 
                     var locationTypeViewModels = query
-                    .Select(item => new LocationTypeViewModel
-                    {
-                        Id = item.allCivilInstId,
-                        Name = $"{item.allCivilInst?.civilWithLegs?.Name} {item.allCivilInst?.civilWithoutLeg?.Name} {item.allCivilInst?.civilNonSteel?.Name}".Trim()
-                    })
-                    .ToList();
+                     .Select(item => new LocationTypeViewModel
+                     {
+                         Id = item.allCivilInstId,
+                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                     })
+                     .ToList();
 
                     objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
                     {
@@ -13553,12 +13555,12 @@ namespace TLIS_Service.Services
                     .ToList();
 
                     var locationTypeViewModels = query
-                    .Select(item => new LocationTypeViewModel
-                    {
-                        Id = item.allCivilInstId,
-                        Name = $"{item.allCivilInst?.civilWithLegs?.Name} {item.allCivilInst?.civilWithoutLeg?.Name} {item.allCivilInst?.civilNonSteel?.Name}".Trim()
-                    })
-                    .ToList();
+                     .Select(item => new LocationTypeViewModel
+                     {
+                         Id = item.allCivilInstId,
+                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                     })
+                     .ToList();
 
                     objectInst.CivilSupportDistance = objectInst.CivilSupportDistance.Select(x =>
                     {

@@ -771,7 +771,7 @@ namespace TLIS_Service.Services
                 var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArmId !=null && x.sideArm.sideArmLibraryId== id && 
                 !x.Dismantle,x=>x.sideArm,x=>x.sideArm.sideArmLibrary).ToList();
                 TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
-                if (SideArmInstllation != null || SideArmInstllation.Count>0)
+                if (SideArmInstllation != null && SideArmInstllation.Count>0)
                 {
                     return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -804,7 +804,7 @@ namespace TLIS_Service.Services
                     var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
                      x.Dismantle, x => x.sideArm).ToList();
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
-                    if ((SideArmInstllation != null || SideArmInstllation.Count > 0) || NewSideWithArm.Active == true)
+                    if ((SideArmInstllation != null && SideArmInstllation.Count > 0) || NewSideWithArm.Active == true)
                     {
                         return new Response<SideArmLibraryViewModel>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
@@ -843,7 +843,7 @@ namespace TLIS_Service.Services
                 if (CheckModel != null)
                 {
                     return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                } 
+                }
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, SidArm, tLIsideArmLibrary);
                 //string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
                 //if (!string.IsNullOrEmpty(CheckDependency))
@@ -2312,7 +2312,7 @@ namespace TLIS_Service.Services
 
                 List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
             
-                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.SideArm.ToString(), TablesNames.TLIsideArmLibrary.ToString(), Id);
+                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.SideArm.ToString(), TablesNames.TLIsideArmLibrary.ToString(), Id);
                 attributes.LogisticalItems = LogisticalItems;
                 attributes.AttributesActivatedLibrary = listofAttributesActivated;
 
@@ -2345,7 +2345,7 @@ namespace TLIS_Service.Services
                 GetForAddCivilLibrarybject Attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArmLibrary.ToString());
                 List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), null, null).ToList();
-                var LogisticalAttributes = _unitOfWork.LogistcalRepository.GetLogisticalLibrary(Helpers.Constants.TablePartName.SideArm.ToString());
+                var LogisticalAttributes = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel(Helpers.Constants.TablePartName.SideArm.ToString());
                 Attributes.LogisticalItems = LogisticalAttributes;
                 Attributes.AttributesActivatedLibrary = listofAttributesActivated;
 

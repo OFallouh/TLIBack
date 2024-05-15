@@ -24,8 +24,8 @@ namespace TLIS_DAL.ViewModels.SideArmLibraryDTOs
             public float Height { get; set; }
             public float SpaceLibrary { get; set; }
             public string? Note { get; set; }
-            public bool Active { get; set; }
-            public bool Deleted { get; set; }
+            public bool Active { get; set; } = true;
+            public bool Deleted { get; set; }=false;
         }
         public class LogisticalObject
         {
