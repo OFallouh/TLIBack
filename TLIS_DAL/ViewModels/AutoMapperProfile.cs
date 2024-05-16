@@ -191,7 +191,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LoadandsidearmViewDto, TLIcivilNonSteel>().ReverseMap();
             CreateMap<TLImwDishLibrary, EditMWDishLibraryAttributes>().ReverseMap();
             CreateMap<installationAttributesMWDishObject, TLImwDish>().ReverseMap();
-           
+     
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
             CreateMap<TLIsideArm, SideArmViewDto>().ReverseMap();

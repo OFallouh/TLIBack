@@ -31,7 +31,7 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> OwnerLists = _mapper.Map<List<DropDownListFilters>>(Owners);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("OwnerId", OwnerLists));
 
-            List<int> UsedDishesIds = _context.TLImwODU.Where(x => x.Mw_DishId != null).Select(x => x.Mw_DishId.Value).ToList();
+            List<int> UsedDishesIds = _context.TLImwODU.Where(x => x.Mw_DishId != null).Select(x => x.Mw_DishId).ToList();
 
             List<TLImwDish> MW_Dishes = _context.TLIcivilLoads
                 .Include(x => x.allLoadInst).Where(x => !x.Dismantle && x.allCivilInstId == AllCivilInstId &&

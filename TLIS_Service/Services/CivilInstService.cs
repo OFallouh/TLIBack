@@ -9688,26 +9688,26 @@ namespace TLIS_Service.Services
                     LoadType = GetKeyName(l.allLoadInst);
 
                     //Dismantle dish related with BU AND ODU
-                    if (LoadType == "mwDishId")
-                    {
-                        var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == l.allLoadInst.mwDishId || x.SdDishId == l.allLoadInst.mwDishId).ToList();
-                        foreach (var b in Bu)
-                        {
-                            b.MainDishId = null;
-                            b.SdDishId = null;
-                            _dbContext.SaveChanges();
+                    //if (LoadType == "mwDishId")
+                    //{
+                    //    var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == l.allLoadInst.mwDishId || x.SdDishId == l.allLoadInst.mwDishId).ToList();
+                    //    foreach (var b in Bu)
+                    //    {
+                    //        b.MainDishId = null;
+                    //        b.SdDishId = null;
+                    //        _dbContext.SaveChanges();
 
-                        }
-                        var Odu = _dbContext.TLImwODU.Where(x => x.Mw_DishId == l.allLoadInst.mwDishId).ToList();
-                        foreach (var o in Odu)
-                        {
-                            o.Mw_DishId = null;
-                            _dbContext.SaveChanges();
-                        }
+                    //    }
+                    //    var Odu = _dbContext.TLImwODU.Where(x => x.Mw_DishId == l.allLoadInst.mwDishId).ToList();
+                    //    foreach (var o in Odu)
+                    //    {
+                    //        o.Mw_DishId = null;
+                    //        _dbContext.SaveChanges();
+                    //    }
 
-                    }
+                    //}
 
-                    else if (LoadType == "mwBUId")
+                    if (LoadType == "mwBUId")
                     {
                         var Bu = _dbContext.TLImwBU.FirstOrDefault(x => x.Id == l.allLoadInst.mwBUId);
                         Bu.MainDishId = null;
