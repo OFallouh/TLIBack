@@ -36,8 +36,8 @@ namespace TLIS_Service.IService
         Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId);
         Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString,int UserId);
         Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName, int userId);
-        Task<Response<AllItemAttributes>> Disable(int Id,string CivilType);
-        Task<Response<AllItemAttributes>> Delete(int Id, string CivilType);
+        Task<Response<AllItemAttributes>> Disable(int Id, string TableName, int UserId);
+        Task<Response<AllItemAttributes>> Delete(int Id, string CivilType, int UserId);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt( string ConnectionString);

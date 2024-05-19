@@ -764,24 +764,23 @@ namespace TLIS_Service.Services
         //get record by Id
         //set Deleted is true
         //update Entity
-        public async Task<Response<SideArmLibraryViewModel>> Delete(int id)
+        public async Task<Response<SideArmLibraryViewModel>> Delete(int id,int UserId)
         {
             try
             {
                 var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArmId !=null && x.sideArm.sideArmLibraryId== id && 
                 !x.Dismantle,x=>x.sideArm,x=>x.sideArm.sideArmLibrary).ToList();
-                TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                 if (SideArmInstllation != null && SideArmInstllation.Count>0)
                 {
                     return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
-                {          
-                    TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
+                {
+                    TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
+                    TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                     NewSideWithArm.Deleted = true;
                     NewSideWithArm.Model = NewSideWithArm.Model + "_" + DateTime.Now.ToString();
-
-                    _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
+                    _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, OldSideWithArm, NewSideWithArm);
                     await _unitOfWork.SaveChangesAsync();
                     return new Response<SideArmLibraryViewModel>();
                 }
@@ -795,7 +794,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //enable or disable record depened on record status
         //update Entity
-        public async Task<Response<SideArmLibraryViewModel>> Disable(int id)
+        public async Task<Response<SideArmLibraryViewModel>> Disable(int id,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {

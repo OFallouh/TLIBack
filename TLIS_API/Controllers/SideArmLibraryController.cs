@@ -138,7 +138,25 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
         public async Task<IActionResult> DisableSideArmLibrary(int id)
         {
-            var response = await _unitOfWorkService.SideArmLibraryService.Disable(id);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.SideArmLibraryService.Disable(id, userId);
             return Ok(response);
         }
 
@@ -146,7 +164,25 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(SideArmLibraryViewModel))]
         public async Task<IActionResult> DeleteSideArmLibrary(int id)
         {
-            var response = await _unitOfWorkService.SideArmLibraryService.Delete(id);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.SideArmLibraryService.Delete(id, userId);
             return Ok(response);
         }
         [HttpGet("GetSideArmLibs")]

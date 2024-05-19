@@ -3621,7 +3621,7 @@ namespace TLIS_Service.Services
 
                     //////////////UpdateCivilSupportDistance/////////////////////////////////
 
-                    var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilWithLegsId == civilNonSteelEntity.Id);
+                    var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilNonSteelId == civilNonSteelEntity.Id);
                     if (allcivilinstId != null)
                     {
                         var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);

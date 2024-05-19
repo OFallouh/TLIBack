@@ -1548,7 +1548,7 @@ namespace TLIS_Service.Services
         //Function take 2 parameters that disable or enable record depened on record status ex: if record is active then disable else enable
         //First Id to specify the record i deal with
         //Second TableName to specify the table i deal with
-        public async Task<Response<AllItemAttributes>> Disable(int Id, string TableName)
+        public async Task<Response<AllItemAttributes>> Disable(int Id, string TableName,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -1571,7 +1571,7 @@ namespace TLIS_Service.Services
 
                             NewCivilWithLeg.Active = !(NewCivilWithLeg.Active);
 
-                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithLeg, NewCivilWithLeg);
+                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithLeg, NewCivilWithLeg);
                             await _unitOfWork.SaveChangesAsync();
                         }
                     }
@@ -1588,7 +1588,7 @@ namespace TLIS_Service.Services
                         {
                             TLIcivilWithoutLegLibrary OldCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilWithoutLeg.Active = !(NewCivilWithoutLeg.Active);
-                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithoutLeg, NewCivilWithoutLeg);
+                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithoutLeg, NewCivilWithoutLeg);
                             await _unitOfWork.SaveChangesAsync();
                         }
                     }
@@ -1606,7 +1606,7 @@ namespace TLIS_Service.Services
 
                             TLIcivilNonSteelLibrary OldCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilNonSteel.Active = !(NewCivilNonSteel.Active);
-                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilNonSteel, NewCivilNonSteel);
+                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(UserId, OldCivilNonSteel, NewCivilNonSteel);
                             await _unitOfWork.SaveChangesAsync();
                         }
                     }
@@ -5172,7 +5172,7 @@ namespace TLIS_Service.Services
         //Second CivilType to specify the table i deal with
         //Function Update Deleted column to true for record 
         //and Update Delete to all dynamic attributes values related to this record to true   
-        public async Task<Response<AllItemAttributes>> Delete(int Id, string CivilType)
+        public async Task<Response<AllItemAttributes>> Delete(int Id, string CivilType,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -5190,13 +5190,11 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
+                            var NewCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
                             TLIcivilWithLegLibrary OldCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-
-                            TLIcivilWithLegLibrary NewCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilWithLegLibrary.Deleted = true;
                             NewCivilWithLegLibrary.Model = NewCivilWithLegLibrary.Model + "_" + DateTime.Now.ToString();
-
-                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithLegLibrary, NewCivilWithLegLibrary);
+                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithLegLibrary, NewCivilWithLegLibrary);
                             _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                             await _unitOfWork.SaveChangesAsync();
                             //AddHistory(CivilWithLeg.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString());
@@ -5213,14 +5211,11 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
+                            TLIcivilWithoutLegLibrary NewCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x=>x.Id==Id);
                             TLIcivilWithoutLegLibrary OldCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                            TLIcivilWithoutLegLibrary NewCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilWithoutLegLibrary.Deleted = true;
                             NewCivilWithoutLegLibrary.Model = NewCivilWithoutLegLibrary.Model + "_" + DateTime.Now.ToString();
-                            //TLIcivilWithoutLegLibrary NewCivilWithoutLegLibrary = _mapper.Map<TLIcivilWithoutLegLibrary>(OldCivilWithoutLegLibrary);
-                            //NewCivilWithoutLegLibrary.Deleted = true;
-
-                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilWithoutLegLibrary, NewCivilWithoutLegLibrary);
+                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithoutLegLibrary, NewCivilWithoutLegLibrary);
                             _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                             await _unitOfWork.SaveChangesAsync();
                         }
@@ -5237,14 +5232,11 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
+                            TLIcivilNonSteelLibrary NewCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == Id);
                             TLIcivilNonSteelLibrary OldCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                            TLIcivilNonSteelLibrary NewCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilNonSteelLibrary.Deleted = true;
                             NewCivilNonSteelLibrary.Model = NewCivilNonSteelLibrary.Model + "_" + DateTime.Now.ToString();
-                            //TLIcivilNonSteelLibrary NewCivilNonSteelLibrary = _mapper.Map<TLIcivilNonSteelLibrary>(OldCivilNonSteelLibrary);
-                            //NewCivilNonSteelLibrary.Deleted = true;
-
-                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCivilNonSteelLibrary, NewCivilNonSteelLibrary);
+                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(UserId, OldCivilNonSteelLibrary, NewCivilNonSteelLibrary);
                             _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                             await _unitOfWork.SaveChangesAsync();
                             //AddHistory(CivilNonSteel.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString());

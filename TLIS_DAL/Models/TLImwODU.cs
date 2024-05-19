@@ -16,7 +16,7 @@ namespace TLIS_DAL.Models
         public string Serial_Number { get; set; }
         public string Name { get; set; }
         public string? Notes { get; set; }
-        public float? Height { get; set; }
+        public float Height { get; set; }
         public ODUConnections? ODUConnections { get; set; }
         public string? Visiable_Status { get; set; }
         public float SpaceInstallation { get; set; }
@@ -32,6 +32,7 @@ namespace TLIS_DAL.Models
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
+        public float Azimuth { get; set; }
         public IEnumerable<TLIallLoadInst> allLoadInsts { get; set; }
     }
 }

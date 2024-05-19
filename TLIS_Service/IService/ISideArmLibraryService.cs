@@ -20,8 +20,8 @@ namespace TLIS_Service.IService
         Response<AddSideArmLibraryObject> AddSideArmLibrary(AddSideArmLibraryObject addSideArmLibraryViewModel, string connectionString, int UserId);
         Task<Response<EditSideArmLibraryObject>> EditSideArmLibrary(EditSideArmLibraryObject editSideArmLibraryViewModel, int UserId);
         Response<GetForAddCivilLibrarybject> GetSideArmLibraryById(int Id);
-        Task<Response<SideArmLibraryViewModel>> Disable(int id);
-        Task<Response<SideArmLibraryViewModel>> Delete(int id);
+        Task<Response<SideArmLibraryViewModel>> Disable(int id, int UserId);
+        Task<Response<SideArmLibraryViewModel>> Delete(int id, int UserId);
         Response<GetForAddCivilLibrarybject> GetForAdd();
         Response<GetEnableAttribute> GetSideArmLibrariesEnabledAtt(string ConnectionString);
         Response<ReturnWithFilters<object>> GetSideArmLibrariesWithEnabledAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);

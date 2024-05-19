@@ -16739,921 +16739,921 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttRepository.AddRange(MW_ODUMissedAttributes);
                         _unitOfWork.SaveChanges();
 
-                        for (int j = 0; j <= MW_ODUDataTable.Rows.Count - 1; j++)
-                        {
-                            using (TransactionScope MW_ODUTransaction = new TransactionScope(TransactionScopeOption.Required,
-                                new System.TimeSpan(0, 15, 0)))
-                            {
-                                try
-                                {
-                                    // Unique Constraint (Serial Number)..
+                        //for (int j = 0; j <= MW_ODUDataTable.Rows.Count - 1; j++)
+                        //{
+                        //    using (TransactionScope MW_ODUTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //        new System.TimeSpan(0, 15, 0)))
+                        //    {
+                        //        try
+                        //        {
+                        //            // Unique Constraint (Serial Number)..
 
-                                    string MW_ODUSerialNumber = MW_ODUDataTable.Rows[j]["Serial Number"].ToString();
+                        //            string MW_ODUSerialNumber = MW_ODUDataTable.Rows[j]["Serial Number"].ToString();
 
-                                    //
-                                    // Library Information..
-                                    //
+                        //            //
+                        //            // Library Information..
+                        //            //
 
-                                    string MW_ODULibraryModelName = MW_ODUDataTable.Rows[j]["ODU Type"].ToString();
-                                    int MW_ODULibraryId = 0;
-                                    if (!string.IsNullOrEmpty(MW_ODULibraryModelName))
-                                    {
-                                        TLImwODULibrary CheckMW_ODULibraryModelName = _unitOfWork.MW_ODULibraryRepository
-                                            .GetWhereFirst(x => x.Model.ToLower() == MW_ODULibraryModelName.ToLower() && !x.Deleted);
+                        //            string MW_ODULibraryModelName = MW_ODUDataTable.Rows[j]["ODU Type"].ToString();
+                        //            int MW_ODULibraryId = 0;
+                        //            if (!string.IsNullOrEmpty(MW_ODULibraryModelName))
+                        //            {
+                        //                TLImwODULibrary CheckMW_ODULibraryModelName = _unitOfWork.MW_ODULibraryRepository
+                        //                    .GetWhereFirst(x => x.Model.ToLower() == MW_ODULibraryModelName.ToLower() && !x.Deleted);
 
-                                        if (CheckMW_ODULibraryModelName != null)
-                                        {
-                                            MW_ODULibraryId = CheckMW_ODULibraryModelName.Id;
-                                        }
-                                        else
-                                        {
-                                            MW_ODUTransaction.Dispose();
+                        //                if (CheckMW_ODULibraryModelName != null)
+                        //                {
+                        //                    MW_ODULibraryId = CheckMW_ODULibraryModelName.Id;
+                        //                }
+                        //                else
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
 
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(ODU Type) coulumn's value: ({MW_ODULibraryModelName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = true,
-                                                RefTable = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(ODU Type) coulumn's value: ({MW_ODULibraryModelName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = true,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
 
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
 
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MW_ODUTransaction.Dispose();
+                        //                    continue;
+                        //                }
+                        //            }
+                        //            else
+                        //            {
+                        //                MW_ODUTransaction.Dispose();
 
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(ODU Type) coulumn's value can't be null or empty",
-                                            IsDeleted = false,
-                                            IsLib = true,
-                                            RefTable = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
-                                            SheetName = "ODU info",
-                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                        };
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(ODU Type) coulumn's value can't be null or empty",
+                        //                    IsDeleted = false,
+                        //                    IsLib = true,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLImwODULibrary.ToString(),
+                        //                    SheetName = "ODU info",
+                        //                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                };
 
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
 
-                                        continue;
-                                    }
+                        //                continue;
+                        //            }
 
-                                    string MW_ODU_SiteCodeAfterCheck = string.Empty;
-                                    string MW_ODU_SiteCode = MW_ODUDataTable.Rows[j]["Site Code"].ToString();
-                                    string MW_ODU_SiteName = MW_ODUDataTable.Rows[j]["Site Name"].ToString();
-                                    string MW_ODU_Site = MW_ODUDataTable.Rows[j]["Site"].ToString();
+                        //            string MW_ODU_SiteCodeAfterCheck = string.Empty;
+                        //            string MW_ODU_SiteCode = MW_ODUDataTable.Rows[j]["Site Code"].ToString();
+                        //            string MW_ODU_SiteName = MW_ODUDataTable.Rows[j]["Site Name"].ToString();
+                        //            string MW_ODU_Site = MW_ODUDataTable.Rows[j]["Site"].ToString();
 
-                                    if (!string.IsNullOrEmpty(MW_ODU_SiteCode))
-                                    {
-                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteCode.ToLower() == MW_ODU_SiteCode.ToLower());
+                        //            if (!string.IsNullOrEmpty(MW_ODU_SiteCode))
+                        //            {
+                        //                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        //                    .GetWhereFirst(x => x.SiteCode.ToLower() == MW_ODU_SiteCode.ToLower());
 
-                                        if (CheckSiteCode == null)
-                                        {
-                                            MW_ODUTransaction.Dispose();
+                        //                if (CheckSiteCode == null)
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
 
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Site Code) coulumn's value: ({MW_ODU_SiteCode}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Site Code) coulumn's value: ({MW_ODU_SiteCode}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
 
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
 
-                                            continue;
-                                        }
+                        //                    continue;
+                        //                }
 
-                                        MW_ODU_SiteCodeAfterCheck = MW_ODU_SiteCode;
-                                    }
-                                    else if (!string.IsNullOrEmpty(MW_ODU_SiteName))
-                                    {
-                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteName.ToLower() == MW_ODU_SiteName.ToLower());
+                        //                MW_ODU_SiteCodeAfterCheck = MW_ODU_SiteCode;
+                        //            }
+                        //            else if (!string.IsNullOrEmpty(MW_ODU_SiteName))
+                        //            {
+                        //                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        //                    .GetWhereFirst(x => x.SiteName.ToLower() == MW_ODU_SiteName.ToLower());
 
-                                        if (CheckSiteCode == null)
-                                        {
-                                            MW_ODUTransaction.Dispose();
+                        //                if (CheckSiteCode == null)
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
 
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Site Name) coulumn's value: ({MW_ODU_SiteName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Site Name) coulumn's value: ({MW_ODU_SiteName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
 
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
 
-                                            continue;
-                                        }
+                        //                    continue;
+                        //                }
 
-                                        MW_ODU_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
-                                    }
-                                    else if (!string.IsNullOrEmpty(MW_ODU_Site))
-                                    {
-                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteCode.ToLower() == MW_ODU_Site.ToLower());
+                        //                MW_ODU_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
+                        //            }
+                        //            else if (!string.IsNullOrEmpty(MW_ODU_Site))
+                        //            {
+                        //                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        //                    .GetWhereFirst(x => x.SiteCode.ToLower() == MW_ODU_Site.ToLower());
 
-                                        if (CheckSiteCode == null)
-                                        {
-                                            MW_ODUTransaction.Dispose();
+                        //                if (CheckSiteCode == null)
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
 
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Site) coulumn's value: ({MW_ODU_Site}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Site) coulumn's value: ({MW_ODU_Site}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
 
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
 
-                                            continue;
-                                        }
+                        //                    continue;
+                        //                }
 
-                                        MW_ODU_SiteCodeAfterCheck = MW_ODU_Site;
-                                    }
-                                    else
-                                    {
-                                        MW_ODUTransaction.Dispose();
+                        //                MW_ODU_SiteCodeAfterCheck = MW_ODU_Site;
+                        //            }
+                        //            else
+                        //            {
+                        //                MW_ODUTransaction.Dispose();
 
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                            SheetName = "ODU info",
-                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                        };
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                    SheetName = "ODU info",
+                        //                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                };
 
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
 
-                                        continue;
-                                    }
+                        //                continue;
+                        //            }
 
-                                    // Auto Fill The MW_ODU Name Because it's not Found in The CSV File..
-                                    // MW_ODU Name = Dish Name + ODU Model + Polarity on Location..
+                        //            // Auto Fill The MW_ODU Name Because it's not Found in The CSV File..
+                        //            // MW_ODU Name = Dish Name + ODU Model + Polarity on Location..
 
-                                    string MW_ODUName = string.Empty;
-                                    string MW_ODU_MW_DishName = MW_ODUDataTable.Rows[j]["ODU MW Dish Name"].ToString();
+                        //            string MW_ODUName = string.Empty;
+                        //            string MW_ODU_MW_DishName = MW_ODUDataTable.Rows[j]["ODU MW Dish Name"].ToString();
                               
-                                    int? MW_ODUCivilSupportCategoryId = 0;
-                                    string MW_ODUTowerType = MW_ODUDataTable.Rows[j]["type"].ToString();
-
-                                    if (string.IsNullOrEmpty(MW_ODU_MW_DishName))
-                                    {
-                                        MW_ODUTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(ODU MW Dish Name) column's : ({MW_ODU_MW_DishName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                            SheetName = "ODU info",
-                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-
-                                    TLIcivilLoads CheckMW_ODU_MW_DishName = _unitOfWork.CivilLoadsRepository
-                                        .GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInstId != null ?
-                                            (x.allLoadInst.mwDishId != null ? (!x.allLoadInst.Draft &&
-                                                x.allLoadInst.mwDish.DishName.ToLower() == MW_ODU_MW_DishName.ToLower()) : false) : false,
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.PolarityOnLocation,
-                                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib,
-                                                    x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
-                                                    x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
-
-                                    if (CheckMW_ODU_MW_DishName != null)
-                                    {
-                                        if (CheckMW_ODU_MW_DishName.allLoadInst.mwDish.PolarityOnLocation != null)
-                                            MW_ODUName = $"{MW_ODULibraryModelName} {MW_ODU_MW_DishName} " +
-                                                $"{CheckMW_ODU_MW_DishName.allLoadInst.mwDish.PolarityOnLocation.Name}";
-                                        else
-                                            MW_ODUName = $"{MW_ODULibraryModelName} {MW_ODU_MW_DishName}";
-
-                                        //MW_ODU_MW_DishId = CheckMW_ODU_MW_DishName.allLoadInst.mwDishId;
-
-                                        if (!string.IsNullOrEmpty(MW_ODUTowerType))
-                                        {
-                                            if (MW_ODUTowerType.ToLower() == "Tower".ToLower() ? CheckMW_ODU_MW_DishName.allCivilInst.civilWithLegsId != null : false)
-                                            {
-                                                MW_ODUCivilSupportCategoryId = CheckMW_ODU_MW_DishName.allCivilInst.civilWithLegs.CivilWithLegsLib.civilSteelSupportCategoryId;
-                                            }
-                                            else if (MW_ODUTowerType.ToLower() == "Mast".ToLower() ?
-                                                (CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLegId != null ?
-                                                   CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Mast".ToLower() : false) : false)
-                                            {
-                                                MW_ODUCivilSupportCategoryId = CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
-                                            }
-                                            else if (MW_ODUTowerType.ToLower() == "Monopole".ToLower() ?
-                                                (CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLegId != null ?
-                                                   CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Monopole".ToLower() : false) : false)
-                                            {
-                                                MW_ODUCivilSupportCategoryId = CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
-                                            }
-                                            else
-                                            {
-                                                MW_ODUTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"This Microwave Dish : ({MW_ODU_MW_DishName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                    SheetName = "ODU info",
-                                                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(type) column's value can't be null or empty",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MW_ODUTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(ODU MW Dish Name) column's value : ({MW_ODU_MW_DishName}) doesn't exist in TLIS",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                            SheetName = "ODU info",
-                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-
-                                    string MW_ODUHeightString = MW_ODUDataTable.Rows[j]["ODU-Height (m):"].ToString();
-                                    float? MW_ODUHeight = null;
-                                    if (!string.IsNullOrEmpty(MW_ODUHeightString))
-                                    {
-                                        CheckParser = float.TryParse(MW_ODUHeightString, out FloatParser);
-
-                                        if (CheckParser)
-                                            MW_ODUHeight = FloatParser;
-
-                                        else
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(ODU-Height (m):) coulumn's value: ({MW_ODUHeightString}) must be a number",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-
-                                    string MW_ODUOwnerName = MW_ODUDataTable.Rows[j]["ODU-Owner"].ToString();
-                                    int? MW_ODUOwnerId = null;
-                                    if (!string.IsNullOrEmpty(MW_ODUOwnerName))
-                                    {
-                                        TLIowner CheckMW_ODUOwnerName = _unitOfWork.OwnerRepository
-                                            .GetWhereFirst(x => x.OwnerName.ToLower() == MW_ODUOwnerName.ToLower() && !x.Deleted);
-
-                                        if (CheckMW_ODUOwnerName == null)
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(ODU-Owner) coulumn's value: ({MW_ODUOwnerName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIowner.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        MW_ODUOwnerId = CheckMW_ODUOwnerName.Id;
-                                    }
-
-                                    string MW_ODUInstallationPlaceName = MW_ODUDataTable.Rows[j]["ODU-installation place"].ToString();
-                                    int? MW_ODUInstallationPlaceId = null;
-                                    if (!string.IsNullOrEmpty(MW_ODUInstallationPlaceName))
-                                    {
-                                        TLIinstallationPlace CheckMW_ODUInstallationPlaceName = _unitOfWork.InstallationPlaceRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == MW_ODUInstallationPlaceName.ToLower() && !x.Deleted);
-
-                                        if (CheckMW_ODUInstallationPlaceName == null)
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(ODU-installation place) coulumn's value: ({MW_ODUInstallationPlaceName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIinstallationPlace.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        MW_ODUInstallationPlaceId = CheckMW_ODUInstallationPlaceName.Id;
-                                    }
-
-                                    // Check MW_ODU Name if Already Exist in The Same Site..
-
-                                    TLIcivilLoads CheckMW_ODUNameIfAlreadyExist = _unitOfWork.CivilLoadsRepository
-                                        .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == MW_ODU_SiteCodeAfterCheck.ToLower() && x.allLoadInstId != null ?
-                                            (!x.allLoadInst.Draft && x.allLoadInst.mwODUId != null ?
-                                                (x.allLoadInst.mwODU.Name.ToLower() == MW_ODUName.ToLower()) : false) : false,
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwODU);
-
-                                    if (CheckMW_ODUNameIfAlreadyExist != null)
-                                    {
-                                        MW_ODUTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(ODU Name) value: ({MW_ODUName}) is already exist in this site: ({MW_ODU_SiteCodeAfterCheck})",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                            SheetName = "ODU info",
-                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-
-                                    TLImwODU NewMW_ODUEntity = new TLImwODU()
-                                    {
-                                        CenterHigh = 0,
-                                        HBA = 0,
-                                        HieghFromLand = 0,
-                                        EquivalentSpace = 0,
-                                        SpaceInstallation = 0,
-                                        Name = MW_ODUName,
-                                        Height = MW_ODUHeight,
-                                        Serial_Number = MW_ODUSerialNumber,
-                                        Notes = MW_ODUDataTable.Rows[j]["Notes"].ToString(),
-                                        MwODULibraryId = MW_ODULibraryId,
-                                        Visiable_Status = MW_ODUDataTable.Rows[j]["Current Status"].ToString(),
-                                        OwnerId = MW_ODUOwnerId,
-                                        //Mw_DishId = MW_ODU_MW_DishId
-                                    };
-
-                                    // if ODU Connections == SeparateMount => SideArmName Can't Be Null Or Empty..
-                                    // else if ODU Connections == DirectMount => MW_DishName Can't Be Null Or Empty..
-
-                                    TLIcivilLoads CheckMW_ODUSideArmName = new TLIcivilLoads();
-
-                                    string MW_ODUSideArmName = MW_ODUDataTable.Rows[j]["Side Arm Name"].ToString();
-                                    int? MW_ODUSideArmId = null;
-                                    if (!string.IsNullOrEmpty(MW_ODUSideArmName))
-                                    {
-                                        CheckMW_ODUSideArmName = _unitOfWork.CivilLoadsRepository
-                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.sideArmId != null ?
-                                                (!x.sideArm.Draft && x.sideArm.Name.ToLower() == MW_ODUSideArmName.ToLower()) : false,
-                                                    x => x.sideArm, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                                    x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg,
-                                                    x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
-
-                                        if (CheckMW_ODUSideArmName == null)
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Side Arm Name) column's value: ({MW_ODUSideArmName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        MW_ODUSideArmId = CheckMW_ODUSideArmName.sideArmId;
-
-                                        if (!string.IsNullOrEmpty(MW_ODUTowerType))
-                                        {
-                                            if (MW_ODUTowerType.ToLower() == "Tower".ToLower() ? CheckMW_ODUSideArmName.allCivilInst.civilWithLegsId != null : false)
-                                            {
-                                                MW_ODUCivilSupportCategoryId = CheckMW_ODUSideArmName.allCivilInst.civilWithLegs.CivilWithLegsLib.civilSteelSupportCategoryId;
-                                            }
-                                            else if (MW_ODUTowerType.ToLower() == "Mast".ToLower() ?
-                                                (CheckMW_ODUSideArmName.allCivilInst.civilWithoutLegId != null ?
-                                                   CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Mast".ToLower() : false) : false)
-                                            {
-                                                MW_ODUCivilSupportCategoryId = CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
-                                            }
-                                            else if (MW_ODUTowerType.ToLower() == "Monopole".ToLower() ?
-                                                (CheckMW_ODUSideArmName.allCivilInst.civilWithoutLegId != null ?
-                                                   CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Monopole".ToLower() : false) : false)
-                                            {
-                                                MW_ODUCivilSupportCategoryId = CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
-                                            }
-                                            else
-                                            {
-                                                MW_ODUTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"This SideArm : ({MW_ODUSideArmName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                    SheetName = "ODU info",
-                                                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(type) column's value can't be null or empty",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-
-                                    string ODUConnectionsImportValue = MW_ODUDataTable.Rows[j]["ODU Connections"].ToString();
-                                    if (!string.IsNullOrEmpty(ODUConnectionsImportValue))
-                                    {
-                                        if (ODUConnectionsImportValue.ToLower() == "SeparateMount".ToLower() ||
-                                            ODUConnectionsImportValue.ToLower() == "Separate Mount".ToLower())
-                                        {
-                                            NewMW_ODUEntity.ODUConnections = ODUConnections.SeparateMount;
-
-                                            if (MW_ODUSideArmId == null)
-                                            {
-                                                MW_ODUTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"When (ODU Connections) column's value is equal to: ({ODUConnectionsImportValue}) then " +
-                                                        $"(Side Arm Name) column's value can't be null or empty",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                                    SheetName = "ODU info",
-                                                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-                                        else if (ODUConnectionsImportValue.ToLower() == "DirectMount".ToLower() ||
-                                            ODUConnectionsImportValue.ToLower() == "Direct Mount".ToLower())
-                                        {
-                                            NewMW_ODUEntity.ODUConnections = ODUConnections.DirectMount;
-
-                                            //if (MW_ODU_MW_DishId == null)
-                                            //{
-                                            //    MW_ODUTransaction.Dispose();
-
-                                            //    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            //    {
-                                            //        CreatedAt = DateTime.Now,
-                                            //        ErrMsg = $"When (ODU Connections) column's value is equal to: ({ODUConnectionsImportValue}) then " +
-                                            //            $"(ODU MW Dish Name) column's value can't be null or empty",
-                                            //        IsDeleted = false,
-                                            //        IsLib = false,
-                                            //        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                            //        SheetName = "ODU info",
-                                            //        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            //    };
-
-                                            //    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            //    _unitOfWork.SaveChanges();
-
-                                            //    continue;
-                                            //}
-                                        }
-                                        else
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(ODU Connections) coulumn's value must be either (SeparateMount, DirectMount)",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MW_ODUTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(ODU Connections) coulumn's value can't be null or empty",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                            SheetName = "ODU info",
-                                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-                                    _unitOfWork.MW_ODURepository.Add(NewMW_ODUEntity);
-                                    _unitOfWork.SaveChanges();
-
-                                    //
-                                    // Dynamic Attributes..
-                                    //
-
-                                    List<TLIdynamicAttInstValue> MW_ODUDynamicValues = new List<TLIdynamicAttInstValue>();
-
-                                    foreach (TLIdynamicAtt MissedAttribute in MW_ODUMissedAttributes)
-                                    {
-                                        if (!string.IsNullOrEmpty(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString()))
-                                        {
-                                            TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
-                                            {
-                                                tablesNamesId = MW_ODUTableNameId,
-                                                disable = false,
-                                                DynamicAttId = MissedAttribute.Id,
-                                                InventoryId = NewMW_ODUEntity.Id
-                                            };
-
-                                            if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
-                                                MissedAttributeValue.ValueString = MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString();
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
-                                                MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
-                                            {
-                                                double DoubleParser = 0;
-
-                                                CheckParser = double.TryParse(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
-
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueDouble = DoubleParser;
-
-                                                else
-                                                {
-                                                    MW_ODUTransaction.Dispose();
-
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({MW_ODUDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                                        SheetName = "ODU info",
-                                                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                                    };
-
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
-
-                                                    continue;
-                                                }
-                                            }
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
-                                            {
-                                                bool BooleanParser = false;
-
-                                                CheckParser = bool.TryParse(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
-
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueBoolean = BooleanParser;
-
-                                                else
-                                                {
-                                                    MW_ODUTransaction.Dispose();
-
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({MW_ODUDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                                        SheetName = "ODU info",
-                                                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                                    };
-
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
-
-                                                    continue;
-                                                }
-                                            }
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
-                                            {
-                                                DateTime DateTimeParser = DateTime.Now;
-
-                                                CheckParser = DateTime.TryParse(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
-
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueDateTime = DateTimeParser;
-
-                                                else
-                                                {
-                                                    MW_ODUTransaction.Dispose();
-
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({MW_ODUDataTable.Rows[j][MissedAttribute.Key]}) must be date",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                                        SheetName = "ODU info",
-                                                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                                    };
-
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
-
-                                                    continue;
-                                                }
-                                            }
-
-                                            MW_ODUDynamicValues.Add(MissedAttributeValue);
-                                        }
-                                    }
-                                    if (MW_ODUDynamicValues.Count() > 0)
-                                    {
-                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(MW_ODUDynamicValues);
-                                        _unitOfWork.SaveChanges();
-                                    }
-
-                                    //
-                                    // AllLoadInst Information..
-                                    //
-
-                                    bool MW_ODUAllLoadInstActiveComponent = true;
-                                    if (!string.IsNullOrEmpty(MW_ODUDataTable.Rows[j]["Active component"].ToString()))
-                                    {
-                                        if (MW_ODUDataTable.Rows[j]["Active component"].ToString().ToLower() != "Yes".ToLower())
-                                            MW_ODUAllLoadInstActiveComponent = false;
-                                    }
-
-                                    string MW_ODUCurrentStatus = MW_ODUDataTable.Rows[j]["Current Status"].ToString();
-                                    int? MW_ODUAllLoadInstItemStatusId = null;
-                                    if (!string.IsNullOrEmpty(MW_ODUCurrentStatus))
-                                    {
-                                        TLIitemStatus CheckItemStatusIfExist = _unitOfWork.ItemStatusRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == MW_ODUCurrentStatus.ToLower() && !x.Deleted);
-
-                                        if (CheckItemStatusIfExist != null)
-                                            MW_ODUAllLoadInstItemStatusId = CheckItemStatusIfExist.Id;
-
-                                        else
-                                        {
-                                            TLIitemStatus itemStatus = new TLIitemStatus();
-                                            itemStatus.Name = MW_ODUCurrentStatus;
-                                            _unitOfWork.ItemStatusRepository.Add(itemStatus);
-                                            _unitOfWork.SaveChanges();
-
-                                            MW_ODUAllLoadInstItemStatusId = itemStatus.Id;
-                                        }
-                                    }
-
-                                    TLIallLoadInst MW_ODU_AllLoadInst = new TLIallLoadInst()
-                                    {
-                                        mwODUId = NewMW_ODUEntity.Id,
-                                        Active = MW_ODUAllLoadInstActiveComponent,
-                                        Draft = false,
-                                        ItemStatusId = MW_ODUAllLoadInstItemStatusId
-                                    };
-
-                                    _unitOfWork.AllLoadInstRepository.Add(MW_ODU_AllLoadInst);
-                                    _unitOfWork.SaveChanges();
-
-                                    //
-                                    // Civil Loads Information..
-                                    //
-
-                                    int MW_ODUAllCivilInstId = 0;
-                                    if (!string.IsNullOrEmpty(MW_ODUSideArmName))
-                                    {
-                                        if (CheckMW_ODUSideArmName.SiteCode.ToLower() != MW_ODU_SiteCodeAfterCheck.ToLower())
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Side Arm Name) column's value: ({MW_ODUSideArmName}) doesn't exist in this site: ({MW_ODU_SiteCodeAfterCheck})",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        MW_ODUSideArmId = CheckMW_ODUSideArmName.sideArmId;
-                                        MW_ODUAllCivilInstId = CheckMW_ODUSideArmName.allCivilInstId;
-                                    }
-
-                                    string MW_ODUStatusDateString = MW_ODUDataTable.Rows[j]["Status Date"].ToString();
-                                    DateTime MW_ODUStatusDate = DateTime.Now;
-                                    if (!string.IsNullOrEmpty(MW_ODUStatusDateString))
-                                    {
-                                        DateTime DateTimeParser = DateTime.Now;
-
-                                        CheckParser = DateTime.TryParse(MW_ODUStatusDateString, out DateTimeParser);
-
-                                        if (CheckParser)
-                                            MW_ODUStatusDate = DateTimeParser;
-
-                                        else
-                                        {
-                                            MW_ODUTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Status Date) coulumn's value must be date",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "ODU info",
-                                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-
-                                    TLIcivilLoads MW_ODUCivilLoads = new TLIcivilLoads()
-                                    {
-                                        SiteCode = MW_ODU_SiteCodeAfterCheck,
-                                        allCivilInstId = MW_ODUAllCivilInstId,
-                                        sideArmId = MW_ODUSideArmId,
-                                        allLoadInstId = MW_ODU_AllLoadInst.Id,
-                                        legId = null,
-                                        InstallationDate = MW_ODUStatusDate,
-                                        civilSteelSupportCategoryId = MW_ODUCivilSupportCategoryId
-                                    };
-
-                                    _unitOfWork.CivilLoadsRepository.Add(MW_ODUCivilLoads);
-                                    _unitOfWork.SaveChanges();
-
-                                    MW_ODUTransaction.Complete();
-                                }
-                                catch (Exception err)
-                                {
-                                    MW_ODUTransaction.Dispose();
-
-                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                    {
-                                        CreatedAt = DateTime.Now,
-                                        ErrMsg = err.Message,
-                                        IsDeleted = false,
-                                        IsLib = false,
-                                        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
-                                        SheetName = "ODU info",
-                                        UniqueName = $"(Serial Number) : {MW_ODUDataTable.Rows[j]["Serial Number"]}"
-                                    };
-
-                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                    _unitOfWork.SaveChanges();
-
-                                    continue;
-                                }
-                            }
-                        }
+                        //            int? MW_ODUCivilSupportCategoryId = 0;
+                        //            string MW_ODUTowerType = MW_ODUDataTable.Rows[j]["type"].ToString();
+
+                        //            if (string.IsNullOrEmpty(MW_ODU_MW_DishName))
+                        //            {
+                        //                MW_ODUTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(ODU MW Dish Name) column's : ({MW_ODU_MW_DishName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                    SheetName = "ODU info",
+                        //                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+
+                        //            TLIcivilLoads CheckMW_ODU_MW_DishName = _unitOfWork.CivilLoadsRepository
+                        //                .GetIncludeWhereFirst(x => !x.Dismantle && x.allLoadInstId != null ?
+                        //                    (x.allLoadInst.mwDishId != null ? (!x.allLoadInst.Draft &&
+                        //                        x.allLoadInst.mwDish.DishName.ToLower() == MW_ODU_MW_DishName.ToLower()) : false) : false,
+                        //                            x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.PolarityOnLocation,
+                        //                            x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib,
+                        //                            x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
+                        //                            x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
+
+                        //            if (CheckMW_ODU_MW_DishName != null)
+                        //            {
+                        //                if (CheckMW_ODU_MW_DishName.allLoadInst.mwDish.PolarityOnLocation != null)
+                        //                    MW_ODUName = $"{MW_ODULibraryModelName} {MW_ODU_MW_DishName} " +
+                        //                        $"{CheckMW_ODU_MW_DishName.allLoadInst.mwDish.PolarityOnLocation.Name}";
+                        //                else
+                        //                    MW_ODUName = $"{MW_ODULibraryModelName} {MW_ODU_MW_DishName}";
+
+                        //                //MW_ODU_MW_DishId = CheckMW_ODU_MW_DishName.allLoadInst.mwDishId;
+
+                        //                if (!string.IsNullOrEmpty(MW_ODUTowerType))
+                        //                {
+                        //                    if (MW_ODUTowerType.ToLower() == "Tower".ToLower() ? CheckMW_ODU_MW_DishName.allCivilInst.civilWithLegsId != null : false)
+                        //                    {
+                        //                        MW_ODUCivilSupportCategoryId = CheckMW_ODU_MW_DishName.allCivilInst.civilWithLegs.CivilWithLegsLib.civilSteelSupportCategoryId;
+                        //                    }
+                        //                    else if (MW_ODUTowerType.ToLower() == "Mast".ToLower() ?
+                        //                        (CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLegId != null ?
+                        //                           CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Mast".ToLower() : false) : false)
+                        //                    {
+                        //                        MW_ODUCivilSupportCategoryId = CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
+                        //                    }
+                        //                    else if (MW_ODUTowerType.ToLower() == "Monopole".ToLower() ?
+                        //                        (CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLegId != null ?
+                        //                           CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Monopole".ToLower() : false) : false)
+                        //                    {
+                        //                        MW_ODUCivilSupportCategoryId = CheckMW_ODU_MW_DishName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
+                        //                    }
+                        //                    else
+                        //                    {
+                        //                        MW_ODUTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"This Microwave Dish : ({MW_ODU_MW_DishName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                            SheetName = "ODU info",
+                        //                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+                        //                }
+                        //                else
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(type) column's value can't be null or empty",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+                        //            else
+                        //            {
+                        //                MW_ODUTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(ODU MW Dish Name) column's value : ({MW_ODU_MW_DishName}) doesn't exist in TLIS",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                    SheetName = "ODU info",
+                        //                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+
+                        //            string MW_ODUHeightString = MW_ODUDataTable.Rows[j]["ODU-Height (m):"].ToString();
+                        //            float? MW_ODUHeight = null;
+                        //            if (!string.IsNullOrEmpty(MW_ODUHeightString))
+                        //            {
+                        //                CheckParser = float.TryParse(MW_ODUHeightString, out FloatParser);
+
+                        //                if (CheckParser)
+                        //                    MW_ODUHeight = FloatParser;
+
+                        //                else
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(ODU-Height (m):) coulumn's value: ({MW_ODUHeightString}) must be a number",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+
+                        //            string MW_ODUOwnerName = MW_ODUDataTable.Rows[j]["ODU-Owner"].ToString();
+                        //            int? MW_ODUOwnerId = null;
+                        //            if (!string.IsNullOrEmpty(MW_ODUOwnerName))
+                        //            {
+                        //                TLIowner CheckMW_ODUOwnerName = _unitOfWork.OwnerRepository
+                        //                    .GetWhereFirst(x => x.OwnerName.ToLower() == MW_ODUOwnerName.ToLower() && !x.Deleted);
+
+                        //                if (CheckMW_ODUOwnerName == null)
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(ODU-Owner) coulumn's value: ({MW_ODUOwnerName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIowner.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                MW_ODUOwnerId = CheckMW_ODUOwnerName.Id;
+                        //            }
+
+                        //            string MW_ODUInstallationPlaceName = MW_ODUDataTable.Rows[j]["ODU-installation place"].ToString();
+                        //            int? MW_ODUInstallationPlaceId = null;
+                        //            if (!string.IsNullOrEmpty(MW_ODUInstallationPlaceName))
+                        //            {
+                        //                TLIinstallationPlace CheckMW_ODUInstallationPlaceName = _unitOfWork.InstallationPlaceRepository
+                        //                    .GetWhereFirst(x => x.Name.ToLower() == MW_ODUInstallationPlaceName.ToLower() && !x.Deleted);
+
+                        //                if (CheckMW_ODUInstallationPlaceName == null)
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(ODU-installation place) coulumn's value: ({MW_ODUInstallationPlaceName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIinstallationPlace.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                MW_ODUInstallationPlaceId = CheckMW_ODUInstallationPlaceName.Id;
+                        //            }
+
+                        //            // Check MW_ODU Name if Already Exist in The Same Site..
+
+                        //            TLIcivilLoads CheckMW_ODUNameIfAlreadyExist = _unitOfWork.CivilLoadsRepository
+                        //                .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == MW_ODU_SiteCodeAfterCheck.ToLower() && x.allLoadInstId != null ?
+                        //                    (!x.allLoadInst.Draft && x.allLoadInst.mwODUId != null ?
+                        //                        (x.allLoadInst.mwODU.Name.ToLower() == MW_ODUName.ToLower()) : false) : false,
+                        //                            x => x.allLoadInst, x => x.allLoadInst.mwODU);
+
+                        //            if (CheckMW_ODUNameIfAlreadyExist != null)
+                        //            {
+                        //                MW_ODUTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(ODU Name) value: ({MW_ODUName}) is already exist in this site: ({MW_ODU_SiteCodeAfterCheck})",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                    SheetName = "ODU info",
+                        //                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+
+                        //            //TLImwODU NewMW_ODUEntity = new TLImwODU()
+                        //            //{
+                        //            //    CenterHigh = 0,
+                        //            //    HBA = 0,
+                        //            //    HieghFromLand = 0,
+                        //            //    EquivalentSpace = 0,
+                        //            //    SpaceInstallation = 0,
+                        //            //    Name = MW_ODUName,
+                        //            //    Height = MW_ODUHeight,
+                        //            //    Serial_Number = MW_ODUSerialNumber,
+                        //            //    Notes = MW_ODUDataTable.Rows[j]["Notes"].ToString(),
+                        //            //    MwODULibraryId = MW_ODULibraryId,
+                        //            //    Visiable_Status = MW_ODUDataTable.Rows[j]["Current Status"].ToString(),
+                        //            //    OwnerId = MW_ODUOwnerId,
+                        //            //    //Mw_DishId = MW_ODU_MW_DishId
+                        //            //};
+
+                        //            // if ODU Connections == SeparateMount => SideArmName Can't Be Null Or Empty..
+                        //            // else if ODU Connections == DirectMount => MW_DishName Can't Be Null Or Empty..
+
+                        //            TLIcivilLoads CheckMW_ODUSideArmName = new TLIcivilLoads();
+
+                        //            string MW_ODUSideArmName = MW_ODUDataTable.Rows[j]["Side Arm Name"].ToString();
+                        //            int? MW_ODUSideArmId = null;
+                        //            if (!string.IsNullOrEmpty(MW_ODUSideArmName))
+                        //            {
+                        //                CheckMW_ODUSideArmName = _unitOfWork.CivilLoadsRepository
+                        //                    .GetIncludeWhereFirst(x => !x.Dismantle && x.sideArmId != null ?
+                        //                        (!x.sideArm.Draft && x.sideArm.Name.ToLower() == MW_ODUSideArmName.ToLower()) : false,
+                        //                            x => x.sideArm, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                        //                            x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg,
+                        //                            x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
+
+                        //                if (CheckMW_ODUSideArmName == null)
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Side Arm Name) column's value: ({MW_ODUSideArmName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                MW_ODUSideArmId = CheckMW_ODUSideArmName.sideArmId;
+
+                        //                if (!string.IsNullOrEmpty(MW_ODUTowerType))
+                        //                {
+                        //                    if (MW_ODUTowerType.ToLower() == "Tower".ToLower() ? CheckMW_ODUSideArmName.allCivilInst.civilWithLegsId != null : false)
+                        //                    {
+                        //                        MW_ODUCivilSupportCategoryId = CheckMW_ODUSideArmName.allCivilInst.civilWithLegs.CivilWithLegsLib.civilSteelSupportCategoryId;
+                        //                    }
+                        //                    else if (MW_ODUTowerType.ToLower() == "Mast".ToLower() ?
+                        //                        (CheckMW_ODUSideArmName.allCivilInst.civilWithoutLegId != null ?
+                        //                           CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Mast".ToLower() : false) : false)
+                        //                    {
+                        //                        MW_ODUCivilSupportCategoryId = CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
+                        //                    }
+                        //                    else if (MW_ODUTowerType.ToLower() == "Monopole".ToLower() ?
+                        //                        (CheckMW_ODUSideArmName.allCivilInst.civilWithoutLegId != null ?
+                        //                           CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == "Monopole".ToLower() : false) : false)
+                        //                    {
+                        //                        MW_ODUCivilSupportCategoryId = CheckMW_ODUSideArmName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
+                        //                    }
+                        //                    else
+                        //                    {
+                        //                        MW_ODUTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"This SideArm : ({MW_ODUSideArmName}) doesn't exist on this civil type : ({MW_ODUTowerType})",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                            SheetName = "ODU info",
+                        //                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+                        //                }
+                        //                else
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(type) column's value can't be null or empty",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+
+                        //            string ODUConnectionsImportValue = MW_ODUDataTable.Rows[j]["ODU Connections"].ToString();
+                        //            if (!string.IsNullOrEmpty(ODUConnectionsImportValue))
+                        //            {
+                        //                if (ODUConnectionsImportValue.ToLower() == "SeparateMount".ToLower() ||
+                        //                    ODUConnectionsImportValue.ToLower() == "Separate Mount".ToLower())
+                        //                {
+                        //                    NewMW_ODUEntity.ODUConnections = ODUConnections.SeparateMount;
+
+                        //                    if (MW_ODUSideArmId == null)
+                        //                    {
+                        //                        MW_ODUTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"When (ODU Connections) column's value is equal to: ({ODUConnectionsImportValue}) then " +
+                        //                                $"(Side Arm Name) column's value can't be null or empty",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                            SheetName = "ODU info",
+                        //                            UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+                        //                }
+                        //                else if (ODUConnectionsImportValue.ToLower() == "DirectMount".ToLower() ||
+                        //                    ODUConnectionsImportValue.ToLower() == "Direct Mount".ToLower())
+                        //                {
+                        //                    NewMW_ODUEntity.ODUConnections = ODUConnections.DirectMount;
+
+                        //                    //if (MW_ODU_MW_DishId == null)
+                        //                    //{
+                        //                    //    MW_ODUTransaction.Dispose();
+
+                        //                    //    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    //    {
+                        //                    //        CreatedAt = DateTime.Now,
+                        //                    //        ErrMsg = $"When (ODU Connections) column's value is equal to: ({ODUConnectionsImportValue}) then " +
+                        //                    //            $"(ODU MW Dish Name) column's value can't be null or empty",
+                        //                    //        IsDeleted = false,
+                        //                    //        IsLib = false,
+                        //                    //        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                    //        SheetName = "ODU info",
+                        //                    //        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    //    };
+
+                        //                    //    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    //    _unitOfWork.SaveChanges();
+
+                        //                    //    continue;
+                        //                    //}
+                        //                }
+                        //                else
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(ODU Connections) coulumn's value must be either (SeparateMount, DirectMount)",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+                        //            else
+                        //            {
+                        //                MW_ODUTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(ODU Connections) coulumn's value can't be null or empty",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                    SheetName = "ODU info",
+                        //                    UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+                        //            _unitOfWork.MW_ODURepository.Add(NewMW_ODUEntity);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            //
+                        //            // Dynamic Attributes..
+                        //            //
+
+                        //            List<TLIdynamicAttInstValue> MW_ODUDynamicValues = new List<TLIdynamicAttInstValue>();
+
+                        //            foreach (TLIdynamicAtt MissedAttribute in MW_ODUMissedAttributes)
+                        //            {
+                        //                if (!string.IsNullOrEmpty(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString()))
+                        //                {
+                        //                    TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
+                        //                    {
+                        //                        tablesNamesId = MW_ODUTableNameId,
+                        //                        disable = false,
+                        //                        DynamicAttId = MissedAttribute.Id,
+                        //                        InventoryId = NewMW_ODUEntity.Id
+                        //                    };
+
+                        //                    if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
+                        //                        MissedAttributeValue.ValueString = MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString();
+                        //                    else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
+                        //                        MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
+                        //                    {
+                        //                        double DoubleParser = 0;
+
+                        //                        CheckParser = double.TryParse(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
+
+                        //                        if (CheckParser)
+                        //                            MissedAttributeValue.ValueDouble = DoubleParser;
+
+                        //                        else
+                        //                        {
+                        //                            MW_ODUTransaction.Dispose();
+
+                        //                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                            {
+                        //                                CreatedAt = DateTime.Now,
+                        //                                ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({MW_ODUDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
+                        //                                IsDeleted = false,
+                        //                                IsLib = false,
+                        //                                RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                                SheetName = "ODU info",
+                        //                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                            };
+
+                        //                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                            _unitOfWork.SaveChanges();
+
+                        //                            continue;
+                        //                        }
+                        //                    }
+                        //                    else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
+                        //                    {
+                        //                        bool BooleanParser = false;
+
+                        //                        CheckParser = bool.TryParse(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
+
+                        //                        if (CheckParser)
+                        //                            MissedAttributeValue.ValueBoolean = BooleanParser;
+
+                        //                        else
+                        //                        {
+                        //                            MW_ODUTransaction.Dispose();
+
+                        //                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                            {
+                        //                                CreatedAt = DateTime.Now,
+                        //                                ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({MW_ODUDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
+                        //                                IsDeleted = false,
+                        //                                IsLib = false,
+                        //                                RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                                SheetName = "ODU info",
+                        //                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                            };
+
+                        //                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                            _unitOfWork.SaveChanges();
+
+                        //                            continue;
+                        //                        }
+                        //                    }
+                        //                    else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
+                        //                    {
+                        //                        DateTime DateTimeParser = DateTime.Now;
+
+                        //                        CheckParser = DateTime.TryParse(MW_ODUDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
+
+                        //                        if (CheckParser)
+                        //                            MissedAttributeValue.ValueDateTime = DateTimeParser;
+
+                        //                        else
+                        //                        {
+                        //                            MW_ODUTransaction.Dispose();
+
+                        //                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                            {
+                        //                                CreatedAt = DateTime.Now,
+                        //                                ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({MW_ODUDataTable.Rows[j][MissedAttribute.Key]}) must be date",
+                        //                                IsDeleted = false,
+                        //                                IsLib = false,
+                        //                                RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                                SheetName = "ODU info",
+                        //                                UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                            };
+
+                        //                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                            _unitOfWork.SaveChanges();
+
+                        //                            continue;
+                        //                        }
+                        //                    }
+
+                        //                    MW_ODUDynamicValues.Add(MissedAttributeValue);
+                        //                }
+                        //            }
+                        //            if (MW_ODUDynamicValues.Count() > 0)
+                        //            {
+                        //                _unitOfWork.DynamicAttInstValueRepository.AddRange(MW_ODUDynamicValues);
+                        //                _unitOfWork.SaveChanges();
+                        //            }
+
+                        //            //
+                        //            // AllLoadInst Information..
+                        //            //
+
+                        //            bool MW_ODUAllLoadInstActiveComponent = true;
+                        //            if (!string.IsNullOrEmpty(MW_ODUDataTable.Rows[j]["Active component"].ToString()))
+                        //            {
+                        //                if (MW_ODUDataTable.Rows[j]["Active component"].ToString().ToLower() != "Yes".ToLower())
+                        //                    MW_ODUAllLoadInstActiveComponent = false;
+                        //            }
+
+                        //            string MW_ODUCurrentStatus = MW_ODUDataTable.Rows[j]["Current Status"].ToString();
+                        //            int? MW_ODUAllLoadInstItemStatusId = null;
+                        //            if (!string.IsNullOrEmpty(MW_ODUCurrentStatus))
+                        //            {
+                        //                TLIitemStatus CheckItemStatusIfExist = _unitOfWork.ItemStatusRepository
+                        //                    .GetWhereFirst(x => x.Name.ToLower() == MW_ODUCurrentStatus.ToLower() && !x.Deleted);
+
+                        //                if (CheckItemStatusIfExist != null)
+                        //                    MW_ODUAllLoadInstItemStatusId = CheckItemStatusIfExist.Id;
+
+                        //                else
+                        //                {
+                        //                    TLIitemStatus itemStatus = new TLIitemStatus();
+                        //                    itemStatus.Name = MW_ODUCurrentStatus;
+                        //                    _unitOfWork.ItemStatusRepository.Add(itemStatus);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    MW_ODUAllLoadInstItemStatusId = itemStatus.Id;
+                        //                }
+                        //            }
+
+                        //            TLIallLoadInst MW_ODU_AllLoadInst = new TLIallLoadInst()
+                        //            {
+                        //                mwODUId = NewMW_ODUEntity.Id,
+                        //                Active = MW_ODUAllLoadInstActiveComponent,
+                        //                Draft = false,
+                        //                ItemStatusId = MW_ODUAllLoadInstItemStatusId
+                        //            };
+
+                        //            _unitOfWork.AllLoadInstRepository.Add(MW_ODU_AllLoadInst);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            //
+                        //            // Civil Loads Information..
+                        //            //
+
+                        //            int MW_ODUAllCivilInstId = 0;
+                        //            if (!string.IsNullOrEmpty(MW_ODUSideArmName))
+                        //            {
+                        //                if (CheckMW_ODUSideArmName.SiteCode.ToLower() != MW_ODU_SiteCodeAfterCheck.ToLower())
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Side Arm Name) column's value: ({MW_ODUSideArmName}) doesn't exist in this site: ({MW_ODU_SiteCodeAfterCheck})",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                MW_ODUSideArmId = CheckMW_ODUSideArmName.sideArmId;
+                        //                MW_ODUAllCivilInstId = CheckMW_ODUSideArmName.allCivilInstId;
+                        //            }
+
+                        //            string MW_ODUStatusDateString = MW_ODUDataTable.Rows[j]["Status Date"].ToString();
+                        //            DateTime MW_ODUStatusDate = DateTime.Now;
+                        //            if (!string.IsNullOrEmpty(MW_ODUStatusDateString))
+                        //            {
+                        //                DateTime DateTimeParser = DateTime.Now;
+
+                        //                CheckParser = DateTime.TryParse(MW_ODUStatusDateString, out DateTimeParser);
+
+                        //                if (CheckParser)
+                        //                    MW_ODUStatusDate = DateTimeParser;
+
+                        //                else
+                        //                {
+                        //                    MW_ODUTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Status Date) coulumn's value must be date",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                        SheetName = "ODU info",
+                        //                        UniqueName = $"(Serial Number) : {MW_ODUSerialNumber}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+
+                        //            TLIcivilLoads MW_ODUCivilLoads = new TLIcivilLoads()
+                        //            {
+                        //                SiteCode = MW_ODU_SiteCodeAfterCheck,
+                        //                allCivilInstId = MW_ODUAllCivilInstId,
+                        //                sideArmId = MW_ODUSideArmId,
+                        //                allLoadInstId = MW_ODU_AllLoadInst.Id,
+                        //                legId = null,
+                        //                InstallationDate = MW_ODUStatusDate,
+                        //                civilSteelSupportCategoryId = MW_ODUCivilSupportCategoryId
+                        //            };
+
+                        //            _unitOfWork.CivilLoadsRepository.Add(MW_ODUCivilLoads);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            MW_ODUTransaction.Complete();
+                        //        }
+                        //        catch (Exception err)
+                        //        {
+                        //            MW_ODUTransaction.Dispose();
+
+                        //            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //            {
+                        //                CreatedAt = DateTime.Now,
+                        //                ErrMsg = err.Message,
+                        //                IsDeleted = false,
+                        //                IsLib = false,
+                        //                RefTable = Helpers.Constants.TablesNames.TLImwODU.ToString(),
+                        //                SheetName = "ODU info",
+                        //                UniqueName = $"(Serial Number) : {MW_ODUDataTable.Rows[j]["Serial Number"]}"
+                        //            };
+
+                        //            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            continue;
+                        //        }
+                        //    }
+                        //}
 
                     ////////////////////////////////////////////////////////////
                     /////////////////// Radio RRU //////////////////////////////

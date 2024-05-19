@@ -133,14 +133,50 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(List<CivilNonSteelLibraryViewModel>))]
         public async Task<IActionResult> DisableCivilNonSteelLibrary(int id)
         {
-            var response = await _unitOfWorkService.CivilLibraryService.Disable(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.CivilLibraryService.Disable(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId);
             return Ok(response);
         }
         [HttpPost("DeleteCivilNonSteelLibrary")]
         [ProducesResponseType(200, Type = typeof(List<CivilNonSteelLibraryViewModel>))]
         public async Task<IActionResult> DeleteCivilNonSteelLibrary(int id)
         {
-            var response = await _unitOfWorkService.CivilLibraryService.Delete(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.CivilLibraryService.Delete(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId);
             return Ok(response);
         }
         [HttpGet("GetForAddCivilNonSteelLibrary")] 
