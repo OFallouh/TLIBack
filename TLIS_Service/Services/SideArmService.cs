@@ -1769,15 +1769,15 @@ namespace TLIS_Service.Services
                             if (AllCivilInst.civilWithoutLegId != null)
                             {
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "CivilSupportType";
-                                baseInstAttViews.Label = "CivilSupportType_name";
+                                baseInstAttViews.Key = "civilSteelType";
+                                baseInstAttViews.Label = "Select Civil Steel Type";
                                 baseInstAttViews.Value = sectionsLegTypeViewcivilWithoutLeg;
                                 baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
                                 baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                                 BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
                                 baseInstAttViewss.Key = "civilWithoutLegId";
-                                baseInstAttViewss.Label = "civilWithoutLeg_name";
+                                baseInstAttViewss.Label = "Select Civil Without Leg";
                                 baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
                                 baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithoutLegRepository
                                      .GetWhere(x => x.Id == AllCivilInst.civilWithoutLegId));
@@ -1787,15 +1787,15 @@ namespace TLIS_Service.Services
                             else if (AllCivilInst.civilNonSteelId != null)
                             {
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "CivilSupportType";
-                                baseInstAttViews.Label = "CivilSupportType_name";
+                                baseInstAttViews.Key = "civilSteelType";
+                                baseInstAttViews.Label = "Select Civil Steel Type";
                                 baseInstAttViews.Value = sectionsLegTypeViewcivilNonSteel;
                                 baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
                                 baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                                 BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
                                 baseInstAttViewss.Key = "civilNonSteelId";
-                                baseInstAttViewss.Label = "civilNonSteel_name";
+                                baseInstAttViewss.Label = "Select Civil Non Steel";
                                 baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
                                 baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilNonSteelRepository
                                        .GetWhere(x => x.Id == AllCivilInst.civilNonSteelId));
@@ -1805,15 +1805,15 @@ namespace TLIS_Service.Services
                             if (AllCivilInst.civilWithLegsId != null)
                             {
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "CivilSupportType";
-                                baseInstAttViews.Label = "CivilSupportType_name";
+                                baseInstAttViews.Key = "civilSteelType";
+                                baseInstAttViews.Label = "Select Civil Steel Type";
                                 baseInstAttViews.Value = sectionsLegTypeViewcivilWithLeg;
                                 baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
                                 baseInstAttViews.DataType = "List";
                                 Config.Add(baseInstAttViews);
                                 BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
                                 baseInstAttViewss.Key = "civilWithLegId";
-                                baseInstAttViewss.Label = "civilWithLeg_name";
+                                baseInstAttViewss.Label = "Select Civil With Leg";
                                 baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
                                 baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithLegsRepository
                                     .GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
@@ -1872,9 +1872,9 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "legId";
                             baseInstAttViews.Value = ints;
-                            baseInstAttViews.Label = "leg_name";
+                            baseInstAttViews.Label = "Select Civil Non Steel";
                             baseInstAttViews.Options = sectionsLegTypeViewModels;
-                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.DataType = "MultiSelect";
                             Config.Add(baseInstAttViews);
                         }
                         attributes.installationConfig = Config;
