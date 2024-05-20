@@ -166,7 +166,7 @@ namespace TLIS_API.Controllers
             var Response = _unitOfWorkService.FileManagmentService.DeleteFile(FileName, RecordId, TableName, SiteCode);
             return Ok(Response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
+       // [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("GetFilesByRecordIdAndTableNameInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination)
