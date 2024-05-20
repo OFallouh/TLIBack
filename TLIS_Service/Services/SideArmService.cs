@@ -1828,11 +1828,16 @@ namespace TLIS_Service.Services
                             {
                                
                                 case "sidearmtype_name":
+                                   
+                                    FKitem.Key = "sideArmTypeId";
+                                    FKitem.Label = "Select Side Arm Type";
                                     FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArm?.sideArmType);
                                     FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SideArmTypeRepository
                                         .GetWhere(x => !x.Deleted && !x.Disable));
                                     break;
                                 case "sidearminstallationplace_name":
+                                    FKitem.Key = "installationPlaceId";
+                                    FKitem.Label = "Select Installation Place";
                                     FKitem.Value = _mapper.Map<SectionsLegTypeViewModel>(sideArm?.sideArm?.sideArmInstallationPlace);
                                     FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SideArmInstallationPlaceRepository
                                         .GetWhere(x => x.Id == sideArm.sideArm.sideArmInstallationPlaceId));
