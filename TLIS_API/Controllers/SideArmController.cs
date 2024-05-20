@@ -114,8 +114,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var Response = _UnitOfWorkService.SideArmService.AddSideArm(addSideArms, SiteCode, ConnectionString, TaskId, userId);
+            var Response = _UnitOfWorkService.SideArmService.AddSideArm(addSideArms, SiteCode, TaskId, userId);
             return Ok(Response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]

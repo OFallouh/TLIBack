@@ -24,7 +24,6 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             public int? civilNonSteelId { get; set; }
             public int sideArmTypeId { get; set; }
             public List<int>? legId { get; set; }
-            public int? branchingSideArmId { get; set; }
             public int sideArmLibraryId { get; set; }
         }
         public class installationAttributesSideArms

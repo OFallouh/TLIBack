@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
 
 namespace TLIS_DAL.ViewModels.SideArmDTOs
 {
     public class EditSidearmInstallationObject
     {
+        public InstallationConfigObject installationConfig { get; set; }
         public LibraryAttributesSideArm civilType { get; set; }
         public EditinstallationAttributesSideArm installationAttributes { get; set; }
         public EditCivilLoad CivilLoads { get; set; }
