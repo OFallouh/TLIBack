@@ -1783,6 +1783,22 @@ namespace TLIS_Service.Services
                                      .GetWhere(x => x.Id == AllCivilInst.civilWithoutLegId));
                                 baseInstAttViewss.DataType = "List";
                                 Config.Add(baseInstAttViewss);
+                                BaseInstAttViews baseInstAttViewsNonsteel = new BaseInstAttViews();
+                                baseInstAttViewss.Key = "civilNonSteelId";
+                                baseInstAttViewss.Label = "Select Civil Non Steel";
+                                baseInstAttViewss.Value = new object[0];
+                                baseInstAttViewss.Options = new object[0];
+                                baseInstAttViewss.DataType = "List";
+                                Config.Add(baseInstAttViewsNonsteel);
+                                BaseInstAttViews baseInstAttViewscivilwithleg = new BaseInstAttViews();
+                                baseInstAttViewss.Key = "civilWithLegId";
+                                baseInstAttViewss.Label = "Select Civil With Leg";
+                                baseInstAttViewss.Value = new object[0];
+                                baseInstAttViewss.Options = new object[0];
+                                baseInstAttViewss.DataType = "List";
+                                Config.Add(baseInstAttViewscivilwithleg);
+
+
                             }
                             else if (AllCivilInst.civilNonSteelId != null)
                             {
@@ -1801,6 +1817,20 @@ namespace TLIS_Service.Services
                                        .GetWhere(x => x.Id == AllCivilInst.civilNonSteelId));
                                 baseInstAttViewss.DataType = "List";
                                 Config.Add(baseInstAttViewss);
+                                BaseInstAttViews baseInstAttViewscivilwithleg = new BaseInstAttViews();
+                                baseInstAttViewss.Key = "civilWithLegId";
+                                baseInstAttViewss.Label = "Select Civil With Leg";
+                                baseInstAttViewss.Value = new object[0];
+                                baseInstAttViewss.Options = new object[0];
+                                baseInstAttViewss.DataType = "List";
+                                Config.Add(baseInstAttViewscivilwithleg);
+                                BaseInstAttViews baseInstAttViewscivilwithoutleg= new BaseInstAttViews();
+                                baseInstAttViewss.Key = "civilWithoutLegId";
+                                baseInstAttViewss.Label = "Select Civil Non Steel";
+                                baseInstAttViewss.Value = new object[0];
+                                baseInstAttViewss.Options = new object[0];
+                                baseInstAttViewss.DataType = "List";
+                                Config.Add(baseInstAttViewscivilwithoutleg);
                             }
                             if (AllCivilInst.civilWithLegsId != null)
                             {
@@ -1819,6 +1849,20 @@ namespace TLIS_Service.Services
                                     .GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
                                 baseInstAttViewss.DataType = "List";
                                 Config.Add(baseInstAttViewss);
+                                BaseInstAttViews baseInstAttViewscivilwithoutleg = new BaseInstAttViews();
+                                baseInstAttViewss.Key = "civilWithoutLegId";
+                                baseInstAttViewss.Label = "Select Civil Non Steel";
+                                baseInstAttViewss.Value = new object[0];
+                                baseInstAttViewss.Options = new object[0];
+                                baseInstAttViewss.DataType = "List";
+                                Config.Add(baseInstAttViewscivilwithoutleg);
+                                BaseInstAttViews baseInstAttViewsNonsteel = new BaseInstAttViews();
+                                baseInstAttViewss.Key = "civilNonSteelId";
+                                baseInstAttViewss.Label = "Select Civil Non Steel";
+                                baseInstAttViewss.Value = new object[0];
+                                baseInstAttViewss.Options = new object[0];
+                                baseInstAttViewss.DataType = "List";
+                                Config.Add(baseInstAttViewsNonsteel);
                             }
                         }
 
@@ -2710,7 +2754,8 @@ namespace TLIS_Service.Services
                                                     "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == SideArmViewModel.installationConfig.civilWithLegId.ToString()
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[0]
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && (x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[0] ||
+                                            x.SECOND_LEG_ID == SideArmViewModel.installationConfig.legId[0])
                                             && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id !=SideArm.Id).ToList();
                                             if (AzimuthandAndHeightBase != null || AzimuthandAndHeightBase.Count() > 0)
                                             {
@@ -2785,7 +2830,9 @@ namespace TLIS_Service.Services
                                                     "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == SideArmViewModel.installationConfig.civilWithLegId.ToString()
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[0]
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower() &&( x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[0]
+                                            && x.SECOND_LEG_ID == SideArmViewModel.installationConfig.legId[1])|| (x.SECOND_LEG_ID == SideArmViewModel.installationConfig.legId[0]
+                                            && x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[1])
                                             && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
                                             if (AzimuthandAndHeightBase != null || AzimuthandAndHeightBase.Count() > 0)
                                             {
@@ -2869,20 +2916,14 @@ namespace TLIS_Service.Services
                                             return new Response<EditSidearmInstallationObject>(false, null, null,
                                                 "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == SideArmViewModel.installationConfig.civilWithLegId.ToString()
-                                             && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[0]
+                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == SideArmViewModel.installationConfig.civilWithoutLegId.ToString()
+                                             && x.SITECODE.ToLower() == SiteCode.ToLower() 
                                              && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
                                         if (AzimuthandAndHeightBase != null || AzimuthandAndHeightBase.Count() > 0)
                                         {
                                             return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
-                                        var HeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == SideArmViewModel.installationConfig.civilWithoutLegId.ToString()
-                                        && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal"
-                                        && x.Azimuth == SideArmViewModel.installationAttributes.HeightBase).ToList();
-                                        if (HeightBase != null || HeightBase.Count() > 0)
-                                        {
-                                            return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on heightbase selected because found other sidearm in same heightbase", (int)ApiReturnCode.fail);
-                                        }
+                                       
                                         var civilwithlegname = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId == SideArmViewModel.installationConfig.civilWithoutLegId && x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle
                                         , x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                                         x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
@@ -2955,6 +2996,13 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<EditSidearmInstallationObject>(false, null, null,
                                                 "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == SideArmViewModel.installationConfig.civilNonSteelId.ToString()
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower()
+                                            && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
+                                        if (AzimuthandAndHeightBase != null || AzimuthandAndHeightBase.Count() > 0)
+                                        {
+                                            return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
                                         var civilwithlegname = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId == SideArmViewModel.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle
                                         , x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
@@ -3815,7 +3863,7 @@ namespace TLIS_Service.Services
                                                     "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == addSideArms.installationConfig.civilWithLegId.ToString()
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0]
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && (x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0] || x.SECOND_LEG_ID == addSideArms.installationConfig.legId[0])
                                             && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
                                             if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                             {
@@ -3921,7 +3969,9 @@ namespace TLIS_Service.Services
                                                     "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == addSideArms.installationConfig.civilWithLegId.ToString()
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0]
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && (x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0]
+                                            && x.SECOND_LEG_ID == addSideArms.installationConfig.legId[1] )|| (x.SECOND_LEG_ID == addSideArms.installationConfig.legId[0]
+                                            && x.FIRST_LEG_ID == addSideArms.installationConfig.legId[1])
                                             && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
                                             if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                             {
@@ -4039,8 +4089,8 @@ namespace TLIS_Service.Services
                                             return new Response<SideArmViewDto>(false, null, null,
                                                 "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == addSideArms.installationConfig.civilWithLegId.ToString()
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0]
+                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == addSideArms.installationConfig.civilWithoutLegId.ToString()
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower() 
                                             && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
                                         if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                         {
@@ -4172,8 +4222,8 @@ namespace TLIS_Service.Services
                                             return new Response<SideArmViewDto>(false, null, null,
                                                 "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == addSideArms.installationConfig.civilWithLegId.ToString()
-                                           && x.SITECODE.ToLower() == SiteCode.ToLower() && x.SIDEARMTYPE.ToLower() == "normal" && x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0]
+                                        var AzimuthandAndHeightBase = _dbContext.SIDEARM_VIEW.Where(x => x.CIVILID == addSideArms.installationConfig.civilNonSteelId.ToString()
+                                           && x.SITECODE.ToLower() == SiteCode.ToLower() 
                                            && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
                                         if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                         {

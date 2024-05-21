@@ -3480,1439 +3480,1448 @@ namespace TLIS_Service.Services
                                 }
 
                             }
-                            //else if (LoadSubType.TLImwDish.ToString() == TableName)
-                            //{
-                            //    AddMWDishInstallationObject AddMW_Dish = _mapper.Map<AddMWDishInstallationObject>(MWInstallationViewModel);
-                            //    TLImwDish mwDish = _mapper.Map<TLImwDish>(AddMW_Dish.installationAttributes);
-                            //    var MWDishLibrary = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.MwDishLibraryId
-                            //    && !x.Deleted && x.Active);
-                            //    if (MWDishLibrary == null)
-                            //        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDishLibrary is not found", (int)ApiReturnCode.fail);
-
-                            //    if (AddMW_Dish.installationConfig.InstallationPlaceId == 1)
-                            //    {
-
-                            //        if (AddMW_Dish.installationConfig.civilWithLegId != null)
-                            //        {
-                            //            if (AddMW_Dish.installationConfig.legId != null)
-                            //            {
-
-                            //                TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                            //                AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                            //                x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                            //                if (AllcivilinstId != null)
-                            //                {
-                            //                    if (AddMW_Dish.civilLoads.ReservedSpace == true)
-                            //                    {
-                            //                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                            //                        if (Message != "Success")
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        if (mwDish.CenterHigh <= 0)
-                            //                        {
-                            //                            if (mwDish.HBA_Surface <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else if (MWDishLibrary.diameter <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                            }
-                            //                        }
-                            //                        if (mwDish.SpaceInstallation == 0)
-                            //                        {
-                            //                            if (MWDishLibrary.SpaceLibrary == 0)
-                            //                            {
-                            //                                if (MWDishLibrary.diameter == 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                            }
-                            //                        }
-
-                            //                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                        }
-
-                            //                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                        {
-                            //                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                            if (CheckSerialNumber)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        var Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "steel" &&
-                            //                            x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
-                            //                        var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
-                            //                        mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                        if (CheckAzimuthAndHeightBase != null)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        else
-                            //                        {
-                            //                            TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
-                            //                            if (legname != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                            {
-                            //                                mwDish.DishName = legname?.CiviLegName + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-
-                            //                            }
-
-                            //                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                            if (CheckName != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //                        }
-                            //                        if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                            //                        {
-                            //                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                            //                        }
-                            //                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                            //                        if (OldVcivilinfo != null)
-                            //                        {
-                            //                            if (mwDish.SpaceInstallation != 0 && mwDish.CenterHigh != 0 && AllcivilinstId.allCivilInst.civilWithLegs.HeightBase != 0)
-                            //                            {
-                            //                                var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-
-                            //                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                            //                                mwDish.EquivalentSpace = EquivalentSpace;
-                            //                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                            //                                _unitOfWork.SaveChanges();
-                            //                            }
-                            //                        }
-
-                            //                        if (mwDish?.ItemConnectToId != null)
-                            //                        {
-                            //                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                            {
-                            //                                if (mwDish.RepeaterTypeId == null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                    if (mwDish.RepeaterTypeId != null)
-                            //                                    {
-                            //                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                        {
-                            //                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                        }
-                            //                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                        {
-                            //                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                        }
-                            //                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                        {
-                            //                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                        }
-                            //                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                        _unitOfWork.SaveChanges();
-                            //                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                        if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                        {
-                            //                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                            {
-                            //                                InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                allLoadInstId = Id,
-                            //                                legId = AddMW_Dish.installationConfig?.legId,
-                            //                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                Dismantle = false,
-                            //                                ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                SiteCode = SiteCode,
-                            //                                BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                            };
-                            //                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                            _unitOfWork.SaveChanges();
-
-                            //                        }
-
-                            //                        if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                        {
-
-                            //                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                        }
-
-                            //                    }
-                            //                    else
-                            //                    {
-                            //                        if (mwDish.CenterHigh <= 0)
-                            //                        {
-                            //                            if (mwDish.HBA_Surface <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else if (MWDishLibrary.diameter <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                            }
-                            //                        }
-                            //                        if (mwDish.SpaceInstallation == 0)
-                            //                        {
-
-
-                            //                            if (MWDishLibrary.SpaceLibrary == 0)
-                            //                            {
-                            //                                if (MWDishLibrary.diameter == 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                            }
-                            //                        }
-                            //                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                        }
-
-                            //                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                        {
-                            //                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                            if (CheckSerialNumber)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        var Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "steel" &&
-                            //                            x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
-                            //                        var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
-                            //                        mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                        if (CheckAzimuthAndHeightBase != null)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        else
-                            //                        {
-                            //                            TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
-                            //                            if (legname != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                            {
-                            //                                mwDish.DishName = legname?.CiviLegName + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-
-                            //                            }
-                            //                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                           (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                              && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                            if (CheckName != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //                        }
-
-                            //                        if (mwDish?.ItemConnectToId != null)
-                            //                        {
-                            //                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                            {
-                            //                                if (mwDish.RepeaterTypeId == null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                    if (mwDish.RepeaterTypeId != null)
-                            //                                    {
-                            //                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                        {
-                            //                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                        }
-                            //                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                        {
-                            //                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                        }
-                            //                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                        {
-                            //                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                        }
-                            //                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                        _unitOfWork.SaveChanges();
-                            //                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                        if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                        {
-                            //                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                            {
-                            //                                InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                allLoadInstId = Id,
-                            //                                legId = AddMW_Dish.installationConfig?.legId,
-                            //                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                Dismantle = false,
-                            //                                ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                SiteCode = SiteCode,
-                            //                                BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                            };
-                            //                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                            _unitOfWork.SaveChanges();
-
-                            //                        }
-
-                            //                        if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                        {
-
-                            //                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                        }
-
-                            //                    }
-
-
-
-                            //                }
-                            //                else
-                            //                {
-                            //                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                            //                }
-
-                            //            }
-                            //            else
-                            //            {
-                            //                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected leg ", (int)ApiReturnCode.fail);
-                            //            }
-                            //        }
-                            //        else
-                            //        {
-                            //            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
-                            //        }
-
-                            //    }
-
-                            //    if (AddMW_Dish.installationConfig.InstallationPlaceId == 2)
-                            //    {
-                            //        if (AddMW_Dish.installationConfig.civilSteelType == 0)
-                            //        {
-                            //            if (AddMW_Dish.installationConfig.civilWithLegId != null)
-                            //            {
-                            //                if (AddMW_Dish.installationConfig.sideArmId.Count()! > 0)
-
-                            //                {
-                            //                    var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                            //                    AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                            //                    x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                            //                    if (AllcivilinstId != null)
-                            //                    {
-                            //                        if (AddMW_Dish.civilLoads.ReservedSpace == true)
-                            //                        {
-                            //                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                            //                            if (Message != "Success")
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                            //                            }
-
-                            //                            if (mwDish.CenterHigh <= 0)
-                            //                            {
-                            //                                if (mwDish.HBA_Surface <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (MWDishLibrary.diameter <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                                }
-                            //                            }
-                            //                            if (mwDish.SpaceInstallation == 0)
-                            //                            {
-
-                            //                                if (MWDishLibrary.SpaceLibrary == 0)
-                            //                                {
-                            //                                    if (MWDishLibrary.diameter == 0)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-
-                            //                            if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                            {
-                            //                                bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                                if (CheckSerialNumber)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                    if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
-                            //                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                  x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                    var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
-                            //                                    if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                                    (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                                       && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                            if (CheckName != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //                            if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                            //                            {
-                            //                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                            //                            }
-                            //                            var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                            //                            if (OldVcivilinfo != null)
-                            //                            {
-
-                            //                                var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-
-                            //                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                            //                                mwDish.EquivalentSpace = EquivalentSpace;
-                            //                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                            //                                _unitOfWork.SaveChanges();
-                            //                            }
-
-                            //                            if (mwDish?.ItemConnectToId != null)
-                            //                            {
-                            //                                TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                    if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                                else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                                {
-                            //                                    if (mwDish.RepeaterTypeId == null)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    else
-                            //                                    {
-                            //                                        TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                        if (mwDish.RepeaterTypeId != null)
-                            //                                        {
-                            //                                            RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                            {
-                            //                                                if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                            else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                            {
-                            //                                                if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                            mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                            _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                            _unitOfWork.SaveChanges();
-                            //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                            if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                            {
-                            //                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                                {
-                            //                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                    allLoadInstId = Id,
-                            //                                    legId = AddMW_Dish.installationConfig?.legId,
-                            //                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                    sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                    Dismantle = false,
-                            //                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                    SiteCode = SiteCode,
-                            //                                    BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                                };
-                            //                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                                _unitOfWork.SaveChanges();
-
-                            //                            }
-
-                            //                            if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                            {
-
-                            //                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                            }
-
-
-                            //                        }
-                            //                        else
-                            //                        {
-                            //                            if (mwDish.CenterHigh <= 0)
-                            //                            {
-                            //                                if (mwDish.HBA_Surface <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (MWDishLibrary.diameter <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                                }
-                            //                            }
-                            //                            if (mwDish.SpaceInstallation == 0)
-                            //                            {
-
-
-                            //                                if (MWDishLibrary.SpaceLibrary == 0)
-                            //                                {
-                            //                                    if (MWDishLibrary.diameter == 0)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                                }
-                            //                            }
-
-                            //                            if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-
-                            //                            if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                            {
-                            //                                bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                                if (CheckSerialNumber)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                    if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
-                            //                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                  x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                    var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
-                            //                                    if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                            if (CheckName != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //                            if (mwDish?.ItemConnectToId != null)
-                            //                            {
-                            //                                TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                    if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                                else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                                {
-                            //                                    if (mwDish.RepeaterTypeId == null)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    else
-                            //                                    {
-                            //                                        TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                        if (mwDish.RepeaterTypeId != null)
-                            //                                        {
-                            //                                            RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                            {
-                            //                                                if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                            else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                            {
-                            //                                                if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                            mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                            _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                            _unitOfWork.SaveChanges();
-                            //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                            if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                            {
-                            //                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                                {
-                            //                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                    allLoadInstId = Id,
-                            //                                    legId = AddMW_Dish.installationConfig?.legId,
-                            //                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                    sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                    Dismantle = false,
-                            //                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                    SiteCode = SiteCode,
-                            //                                    BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                                };
-                            //                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                                _unitOfWork.SaveChanges();
-
-                            //                            }
-
-                            //                            if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                            {
-
-                            //                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                            }
-
-                            //                        }
-
-                            //                    }
-                            //                    else
-                            //                    {
-                            //                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                            //                    }
-                            //                }
-                            //                else
-                            //                {
-                            //                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
-                            //                }
-                            //            }
-                            //            else
-                            //            {
-                            //                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
-                            //            }
-                            //        }
-                            //        if (AddMW_Dish.installationConfig.civilSteelType == 1)
-                            //        {
-                            //            if (AddMW_Dish.installationConfig.civilWithoutLegId != null)
-                            //            {
-
-                            //                if (AddMW_Dish.installationConfig.sideArmId != null)
-
-                            //                {
-                            //                    var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
-                            //                    AddMW_Dish.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                            //                    x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                            //                    if (AllcivilinstId != null)
-                            //                    {
-                            //                        if (AddMW_Dish.civilLoads.ReservedSpace == true)
-                            //                        {
-                            //                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                            //                            if (Message != "Success")
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (mwDish.CenterHigh <= 0)
-                            //                            {
-                            //                                if (mwDish.HBA_Surface <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (MWDishLibrary.diameter <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                                }
-                            //                            }
-                            //                            if (mwDish.SpaceInstallation == 0)
-                            //                            {
-
-
-                            //                                if (MWDishLibrary.SpaceLibrary == 0)
-                            //                                {
-                            //                                    if (MWDishLibrary.diameter == 0)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-
-                            //                            if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                            {
-                            //                                bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                                if (CheckSerialNumber)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                    if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-
-                            //                                    var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
-                            //                                    if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                            if (CheckName != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //                            if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                            //                            {
-                            //                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                            //                            }
-                            //                            var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                            //                            if (OldVcivilinfo != null)
-                            //                            {
-
-                            //                                var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-
-                            //                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                            //                                mwDish.EquivalentSpace = EquivalentSpace;
-                            //                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                            //                                _unitOfWork.SaveChanges();
-                            //                            }
-
-                            //                            if (mwDish?.ItemConnectToId != null)
-                            //                            {
-                            //                                TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                    if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                                else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                                {
-                            //                                    if (mwDish.RepeaterTypeId == null)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    else
-                            //                                    {
-                            //                                        TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                        if (mwDish.RepeaterTypeId != null)
-                            //                                        {
-                            //                                            RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                            {
-                            //                                                if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                            else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                            {
-                            //                                                if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                            mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                            _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                            _unitOfWork.SaveChanges();
-                            //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                            if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                            {
-                            //                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                                {
-                            //                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                    allLoadInstId = Id,
-                            //                                    legId = AddMW_Dish.installationConfig?.legId,
-                            //                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                    sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                    Dismantle = false,
-                            //                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                    SiteCode = SiteCode,
-                            //                                    BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                                };
-                            //                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                                _unitOfWork.SaveChanges();
-
-                            //                            }
-
-                            //                            if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                            {
-
-                            //                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                            }
-
-
-                            //                        }
-                            //                        else
-                            //                        {
-                            //                            if (mwDish.CenterHigh <= 0)
-                            //                            {
-                            //                                if (mwDish.HBA_Surface <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (MWDishLibrary.diameter <= 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                                }
-                            //                            }
-                            //                            if (mwDish.SpaceInstallation == 0)
-                            //                            {
-
-
-                            //                                if (MWDishLibrary.SpaceLibrary == 0)
-                            //                                {
-                            //                                    if (MWDishLibrary.diameter == 0)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-
-                            //                            if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                            {
-                            //                                bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                                if (CheckSerialNumber)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                    if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
-                            //                            {
-                            //                                List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
-                            //                                MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                                if (CheckAzimuthAndHeightBase != null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-
-                            //                                    var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
-                            //                                    if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                    {
-                            //                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                             && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                            if (CheckName != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //                            if (mwDish?.ItemConnectToId != null)
-                            //                            {
-                            //                                TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                    if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                                if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                                else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                                {
-                            //                                    if (mwDish.RepeaterTypeId == null)
-                            //                                    {
-                            //                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                    }
-                            //                                    else
-                            //                                    {
-                            //                                        TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                        if (mwDish.RepeaterTypeId != null)
-                            //                                        {
-                            //                                            RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                            if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                            {
-                            //                                                if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                            else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                            {
-                            //                                                if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                                {
-                            //                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                                }
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                            mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                            mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                            _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                            _unitOfWork.SaveChanges();
-                            //                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                            if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                            {
-                            //                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                                {
-                            //                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                    allLoadInstId = Id,
-                            //                                    legId = AddMW_Dish.installationConfig?.legId,
-                            //                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                    sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                    Dismantle = false,
-                            //                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                    SiteCode = SiteCode,
-                            //                                    BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                                };
-                            //                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                                _unitOfWork.SaveChanges();
-
-                            //                            }
-
-                            //                            if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                            {
-
-                            //                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                            }
-
-
-
-                            //                        }
-
-                            //                    }
-                            //                    else
-                            //                    {
-                            //                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                            //                    }
-                            //                }
-                            //                else
-                            //                {
-                            //                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
-                            //                }
-
-                            //            }
-
-                            //            else
-                            //            {
-                            //                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithoutlegs item ", (int)ApiReturnCode.fail);
-                            //            }
-                            //        }
-                            //        if (AddMW_Dish.installationConfig.civilSteelType == 2)
-                            //        {
-                            //            if (AddMW_Dish.installationConfig.civilNonSteelId != null)
-                            //            {
-                            //                if (AddMW_Dish.installationConfig.sideArmId != null)
-                            //                {
-                            //                    var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
-                            //                    AddMW_Dish.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                            //                    x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                            //                    if (AllcivilinstId != null)
-                            //                    {
-                            //                        if (mwDish.CenterHigh <= 0)
-                            //                        {
-                            //                            if (mwDish.HBA_Surface <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else if (MWDishLibrary.diameter <= 0)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
-                            //                            }
-                            //                        }
-                            //                        if (mwDish.SpaceInstallation == 0)
-                            //                        {
-
-                            //                            if (MWDishLibrary.SpaceLibrary == 0)
-                            //                            {
-                            //                                if (MWDishLibrary.diameter == 0)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                            //                            }
-                            //                        }
-
-                            //                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
-                            //                        {
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                            //                        }
-
-                            //                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                            //                        {
-                            //                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                            //                            if (CheckSerialNumber)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            //                        }
-                            //                        if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
-                            //                        {
-                            //                            List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
-                            //                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                   x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
-                            //                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                            if (CheckAzimuthAndHeightBase != null)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-                            //                                if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                {
-                            //                                    mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                }
-                            //                            }
-                            //                        }
-                            //                        if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
-                            //                        {
-                            //                            List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
-                            //                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
-                            //                                    x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
-                            //                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
-                            //                            if (CheckAzimuthAndHeightBase != null)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
-                            //                            {
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
-                            //                            }
-                            //                            else
-                            //                            {
-                            //                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
-
-                            //                                var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
-                            //                                if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
-                            //                                {
-                            //                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
-                            //                                }
-                            //                            }
-                            //                        }
-                            //                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                            //                                                    (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                            //                                                       && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                            //                        if (CheckName != null)
-                            //                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //                        if (mwDish?.ItemConnectToId != null)
-                            //                        {
-                            //                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
-                            //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
-                            //                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
-                            //                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
-                            //                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
-
-                            //                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
-                            //                            {
-                            //                                if (mwDish.RepeaterTypeId == null)
-                            //                                {
-                            //                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
-                            //                                }
-                            //                                else
-                            //                                {
-                            //                                    TLIrepeaterType RepeaterTypeEntity = null;
-                            //                                    if (mwDish.RepeaterTypeId != null)
-                            //                                    {
-                            //                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
-                            //                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                        {
-                            //                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
-                            //                                        }
-                            //                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
-                            //                                        {
-                            //                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                        }
-                            //                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
-                            //                                        {
-                            //                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
-                            //                                            {
-                            //                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
-                            //                                            }
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                        }
-                            //                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
-                            //                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                            //                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
-                            //                        _unitOfWork.SaveChanges();
-                            //                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
-                            //                        if (AddMW_Dish.civilLoads != null && Id != 0)
-                            //                        {
-                            //                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                            //                            {
-                            //                                InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
-                            //                                allLoadInstId = Id,
-                            //                                legId = AddMW_Dish.installationConfig?.legId,
-                            //                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                            //                                sideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 1 ? AddMW_Dish.installationConfig.sideArmId[0] : null,
-                            //                                ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
-                            //                                ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
-                            //                                Dismantle = false,
-                            //                                ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
-                            //                                SiteCode = SiteCode,
-                            //                                BranchingSideArmId = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count == 2 ? AddMW_Dish.installationConfig.sideArmId[1] : null
-
-                            //                            };
-                            //                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                            //                            _unitOfWork.SaveChanges();
-
-                            //                        }
-
-                            //                        if (AddMW_Dish.dynamicAttribute.Count > 0)
-                            //                        {
-
-                            //                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
-                            //                        }
-
-                            //                    }
-                            //                    else
-                            //                    {
-                            //                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                            //                    }
-
-                            //                }
-                            //                else
-                            //                {
-                            //                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
-                            //                }
-                            //            }
-                            //            else
-                            //            {
-                            //                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel item ", (int)ApiReturnCode.fail);
-                            //            }
-                            //        }
-
-                            //    }
-
-                            //}
+                            else if (LoadSubType.TLImwDish.ToString() == TableName)
+                            {
+                                AddMWDishInstallationObject AddMW_Dish = _mapper.Map<AddMWDishInstallationObject>(MWInstallationViewModel);
+                                TLImwDish mwDish = _mapper.Map<TLImwDish>(AddMW_Dish.installationAttributes);
+                                var MWDishLibrary = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.MwDishLibraryId
+                                && !x.Deleted && x.Active);
+                                if (MWDishLibrary == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDishLibrary is not found", (int)ApiReturnCode.fail);
+
+                                if (AddMW_Dish.installationConfig.InstallationPlaceId == 1)
+                                {
+
+                                    if (AddMW_Dish.installationConfig.civilWithLegId != null)
+                                    {
+                                        if (AddMW_Dish.installationConfig.legId != null)
+                                        {
+
+                                            TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                            AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                            x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                            if (AllcivilinstId != null)
+                                            {
+                                                if (AddMW_Dish.civilLoads.ReservedSpace == true)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (mwDish.CenterHigh <= 0)
+                                                    {
+                                                        if (mwDish.HBA_Surface <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else if (MWDishLibrary.diameter <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                        }
+                                                    }
+                                                    if (mwDish.SpaceInstallation == 0)
+                                                    {
+                                                        if (MWDishLibrary.SpaceLibrary == 0)
+                                                        {
+                                                            if (MWDishLibrary.diameter == 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                        }
+                                                        else
+                                                        {
+                                                            mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                        }
+                                                    }
+
+                                                    if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                    {
+                                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                        if (CheckSerialNumber)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                    }
+                                                    var Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "steel" &&
+                                                        x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
+                                                    var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
+                                                    mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                    if (CheckAzimuthAndHeightBase != null)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    }
+                                                    else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
+                                                        if (legname != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                        {
+                                                            mwDish.DishName = legname?.CiviLegName + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+
+                                                        }
+
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        if (CheckName != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                    if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                    {
+                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                    }
+                                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                    if (OldVcivilinfo != null)
+                                                    {
+                                                        if (mwDish.SpaceInstallation != 0 && mwDish.CenterHigh != 0 && AllcivilinstId.allCivilInst.civilWithLegs.HeightBase != 0)
+                                                        {
+                                                            var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                            mwDish.EquivalentSpace = EquivalentSpace;
+                                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                            _unitOfWork.SaveChanges();
+                                                        }
+                                                    }
+
+                                                    if (mwDish?.ItemConnectToId != null)
+                                                    {
+                                                        TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                        if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                            if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                        if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                        else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                        {
+                                                            if (mwDish.RepeaterTypeId == null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                TLIrepeaterType RepeaterTypeEntity = null;
+                                                                if (mwDish.RepeaterTypeId != null)
+                                                                {
+                                                                    RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                    if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                    {
+                                                                        if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                    }
+                                                                    else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                    {
+                                                                        if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                    mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                    _unitOfWork.SaveChanges();
+                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                    if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                    {
+                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                        {
+                                                            InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                            allLoadInstId = Id,
+                                                            legId = AddMW_Dish.installationConfig?.legId,
+                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                            sideArmId = null,
+                                                            ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                            ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                            Dismantle = false,
+                                                            ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                            SiteCode = SiteCode,
+                                                            
+
+                                                        };
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+
+                                                    if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                    {
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    if (mwDish.CenterHigh <= 0)
+                                                    {
+                                                        if (mwDish.HBA_Surface <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else if (MWDishLibrary.diameter <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                        }
+                                                    }
+                                                    if (mwDish.SpaceInstallation == 0)
+                                                    {
+
+
+                                                        if (MWDishLibrary.SpaceLibrary == 0)
+                                                        {
+                                                            if (MWDishLibrary.diameter == 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                        }
+                                                        else
+                                                        {
+                                                            mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                        }
+                                                    }
+                                                    if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                    {
+                                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                        if (CheckSerialNumber)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                    }
+                                                    var Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "steel" &&
+                                                        x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
+                                                    var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
+                                                    mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                    if (CheckAzimuthAndHeightBase != null)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    }
+                                                    else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
+                                                        if (legname != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                        {
+                                                            mwDish.DishName = legname?.CiviLegName + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+
+                                                        }
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                       (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                          && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        if (CheckName != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+
+                                                    if (mwDish?.ItemConnectToId != null)
+                                                    {
+                                                        TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                        if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                            if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                        if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                        else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                        {
+                                                            if (mwDish.RepeaterTypeId == null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                TLIrepeaterType RepeaterTypeEntity = null;
+                                                                if (mwDish.RepeaterTypeId != null)
+                                                                {
+                                                                    RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                    if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                    {
+                                                                        if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                    }
+                                                                    else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                    {
+                                                                        if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                    mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                    _unitOfWork.SaveChanges();
+                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                    if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                    {
+                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                        {
+                                                            InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                            allLoadInstId = Id,
+                                                            legId = AddMW_Dish.installationConfig?.legId,
+                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                            sideArmId = null,
+                                                            ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                            ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                            Dismantle = false,
+                                                            ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                            SiteCode = SiteCode,
+
+
+                                                        };
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+
+                                                    if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                    {
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                    }
+
+                                                }
+
+
+
+                                            }
+                                            else
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected leg ", (int)ApiReturnCode.fail);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
+                                    }
+
+                                }
+
+                                if (AddMW_Dish.installationConfig.InstallationPlaceId == 2)
+                                {
+                                    if (AddMW_Dish.installationConfig.civilSteelType == 0)
+                                    {
+                                        if (AddMW_Dish.installationConfig.civilWithLegId != null)
+                                        {
+                                            if (AddMW_Dish.installationConfig.sideArmId.Count() > 0)
+
+                                            {
+                                                var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                                AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                                x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                if (AllcivilinstId != null)
+                                                {
+                                                    if (AddMW_Dish.civilLoads.ReservedSpace == true)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                        }
+
+                                                        if (mwDish.CenterHigh <= 0)
+                                                        {
+                                                            if (mwDish.HBA_Surface <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (MWDishLibrary.diameter <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                            }
+                                                        }
+                                                        if (mwDish.SpaceInstallation == 0)
+                                                        {
+
+                                                            if (MWDishLibrary.SpaceLibrary == 0)
+                                                            {
+                                                                if (MWDishLibrary.diameter == 0)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                }
+                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+
+                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                        {
+                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                            if (CheckSerialNumber)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                                if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
+                                                              x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                              x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                                var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                                if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                                   && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        if (CheckName != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                        if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                        {
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                        }
+                                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                        if (OldVcivilinfo != null)
+                                                        {
+
+                                                            var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                            mwDish.EquivalentSpace = EquivalentSpace;
+                                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                            _unitOfWork.SaveChanges();
+                                                        }
+
+                                                        if (mwDish?.ItemConnectToId != null)
+                                                        {
+                                                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                            {
+                                                                if (mwDish.RepeaterTypeId == null)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                                }
+                                                                else
+                                                                {
+                                                                    TLIrepeaterType RepeaterTypeEntity = null;
+                                                                    if (mwDish.RepeaterTypeId != null)
+                                                                    {
+                                                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                        {
+                                                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                        {
+                                                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                        _unitOfWork.SaveChanges();
+                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                        if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                        {
+                                                            foreach (var item in AddMW_Dish.installationConfig.sideArmId)
+                                                            {
+                                                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                {
+                                                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                                    allLoadInstId = Id,
+                                                                    legId = AddMW_Dish.installationConfig?.legId,
+                                                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                    sideArmId = item,
+                                                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                                    Dismantle = false,
+                                                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                                    SiteCode = SiteCode,
+
+                                                                };
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                _unitOfWork.SaveChanges();
+
+                                                            }
+                                                        }
+
+                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        {
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                        }
+
+
+                                                    }
+                                                    else
+                                                    {
+                                                        if (mwDish.CenterHigh <= 0)
+                                                        {
+                                                            if (mwDish.HBA_Surface <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (MWDishLibrary.diameter <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                            }
+                                                        }
+                                                        if (mwDish.SpaceInstallation == 0)
+                                                        {
+
+
+                                                            if (MWDishLibrary.SpaceLibrary == 0)
+                                                            {
+                                                                if (MWDishLibrary.diameter == 0)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                }
+                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                            }
+                                                        }
+
+                                                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+
+                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                        {
+                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                            if (CheckSerialNumber)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                                if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
+                                                              x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                              x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                                var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                                if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                         (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        if (CheckName != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                        if (mwDish?.ItemConnectToId != null)
+                                                        {
+                                                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                            {
+                                                                if (mwDish.RepeaterTypeId == null)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                                }
+                                                                else
+                                                                {
+                                                                    TLIrepeaterType RepeaterTypeEntity = null;
+                                                                    if (mwDish.RepeaterTypeId != null)
+                                                                    {
+                                                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                        {
+                                                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                        {
+                                                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                        _unitOfWork.SaveChanges();
+                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                        if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                        {
+                                                            foreach (var item in AddMW_Dish.installationConfig.sideArmId)
+                                                            {
+                                                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                {
+                                                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                                    allLoadInstId = Id,
+                                                                    legId = AddMW_Dish.installationConfig?.legId,
+                                                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                    sideArmId = item,
+                                                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                                    Dismantle = false,
+                                                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                                    SiteCode = SiteCode,
+
+                                                                };
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                _unitOfWork.SaveChanges();
+
+                                                            }
+                                                        }
+
+                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        {
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                        }
+
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
+                                        }
+                                    }
+                                    if (AddMW_Dish.installationConfig.civilSteelType == 1)
+                                    {
+                                        if (AddMW_Dish.installationConfig.civilWithoutLegId != null)
+                                        {
+
+                                            if (AddMW_Dish.installationConfig.sideArmId != null)
+
+                                            {
+                                                var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
+                                                AddMW_Dish.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                                x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                if (AllcivilinstId != null)
+                                                {
+                                                    if (AddMW_Dish.civilLoads.ReservedSpace == true)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (mwDish.CenterHigh <= 0)
+                                                        {
+                                                            if (mwDish.HBA_Surface <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (MWDishLibrary.diameter <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                            }
+                                                        }
+                                                        if (mwDish.SpaceInstallation == 0)
+                                                        {
+
+
+                                                            if (MWDishLibrary.SpaceLibrary == 0)
+                                                            {
+                                                                if (MWDishLibrary.diameter == 0)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                }
+                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+
+                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                        {
+                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                            if (CheckSerialNumber)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                                if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+
+                                                                var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                                if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                         (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        if (CheckName != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                        if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                        {
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                        }
+                                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                        if (OldVcivilinfo != null)
+                                                        {
+
+                                                            var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                            mwDish.EquivalentSpace = EquivalentSpace;
+                                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                            _unitOfWork.SaveChanges();
+                                                        }
+
+                                                        if (mwDish?.ItemConnectToId != null)
+                                                        {
+                                                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                            {
+                                                                if (mwDish.RepeaterTypeId == null)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                                }
+                                                                else
+                                                                {
+                                                                    TLIrepeaterType RepeaterTypeEntity = null;
+                                                                    if (mwDish.RepeaterTypeId != null)
+                                                                    {
+                                                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                        {
+                                                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                        {
+                                                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                        _unitOfWork.SaveChanges();
+                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                        if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                        {
+                                                            foreach (var item in AddMW_Dish.installationConfig.sideArmId)
+                                                            {
+                                                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                {
+                                                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                                    allLoadInstId = Id,
+                                                                    legId = AddMW_Dish.installationConfig?.legId,
+                                                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                    sideArmId = item,
+                                                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                                    Dismantle = false,
+                                                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                                    SiteCode = SiteCode,
+
+                                                                };
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                _unitOfWork.SaveChanges();
+
+                                                            }
+                                                        }
+
+                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        {
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                        }
+
+
+                                                    }
+                                                    else
+                                                    {
+                                                        if (mwDish.CenterHigh <= 0)
+                                                        {
+                                                            if (mwDish.HBA_Surface <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (MWDishLibrary.diameter <= 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                            }
+                                                        }
+                                                        if (mwDish.SpaceInstallation == 0)
+                                                        {
+
+
+                                                            if (MWDishLibrary.SpaceLibrary == 0)
+                                                            {
+                                                                if (MWDishLibrary.diameter == 0)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                }
+                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                            }
+                                                            else
+                                                            {
+                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+
+                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                        {
+                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                            if (CheckSerialNumber)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                                if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
+                                                        {
+                                                            List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                            MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                            if (CheckAzimuthAndHeightBase != null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+
+                                                                var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                                if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                                {
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                                }
+                                                            }
+                                                        }
+                                                        var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                         && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        if (CheckName != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        if (mwDish?.ItemConnectToId != null)
+                                                        {
+                                                            TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                                if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                            if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                            else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                            {
+                                                                if (mwDish.RepeaterTypeId == null)
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                                }
+                                                                else
+                                                                {
+                                                                    TLIrepeaterType RepeaterTypeEntity = null;
+                                                                    if (mwDish.RepeaterTypeId != null)
+                                                                    {
+                                                                        RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                        {
+                                                                            if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                        else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                        {
+                                                                            if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                        mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                        _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                        _unitOfWork.SaveChanges();
+                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                        if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                        {
+                                                            foreach (var item in AddMW_Dish.installationConfig.sideArmId)
+                                                            {
+                                                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                {
+                                                                    InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                                    allLoadInstId = Id,
+                                                                    legId = AddMW_Dish.installationConfig?.legId,
+                                                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                    sideArmId = item,
+                                                                    ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                                    ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                                    Dismantle = false,
+                                                                    ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                                    SiteCode = SiteCode,
+
+                                                                };
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                _unitOfWork.SaveChanges();
+
+                                                            }
+                                                        }
+
+                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        {
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                        }
+
+
+
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                            }
+
+                                        }
+
+                                        else
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithoutlegs item ", (int)ApiReturnCode.fail);
+                                        }
+                                    }
+                                    if (AddMW_Dish.installationConfig.civilSteelType == 2)
+                                    {
+                                        if (AddMW_Dish.installationConfig.civilNonSteelId != null)
+                                        {
+                                            if (AddMW_Dish.installationConfig.sideArmId != null)
+                                            {
+                                                var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
+                                                AddMW_Dish.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                                x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                if (AllcivilinstId != null)
+                                                {
+                                                    if (mwDish.CenterHigh <= 0)
+                                                    {
+                                                        if (mwDish.HBA_Surface <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else if (MWDishLibrary.diameter <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            mwDish.CenterHigh = mwDish.HBA + MWDishLibrary.diameter / 2;
+                                                        }
+                                                    }
+                                                    if (mwDish.SpaceInstallation == 0)
+                                                    {
+
+                                                        if (MWDishLibrary.SpaceLibrary == 0)
+                                                        {
+                                                            if (MWDishLibrary.diameter == 0)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                            }
+                                                            mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
+                                                        }
+                                                        else
+                                                        {
+                                                            mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
+                                                        }
+                                                    }
+
+                                                    if (AddMW_Dish.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (AddMW_Dish.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                    {
+                                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                        if (CheckSerialNumber)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
+                                                    {
+                                                        List<MWDISH_VIEW> Checkinstallationplace = _dbContext.MWDISH_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                        MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                        if (CheckAzimuthAndHeightBase != null)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+                                                            if (SideArmName1 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                            {
+                                                                mwDish.DishName = SideArmName1?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
+                                                    {
+                                                        List<MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MWDISH_VIEW.Where(
+                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.INSTALLATIONPLACE.ToLower() == "sideArm" &&
+                                                                x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                        MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
+                                                        if (CheckAzimuthAndHeightBase != null)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
+
+                                                            var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                            if (SideArmName1 != null && SideArmName2 != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
+                                                            {
+                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + AddMW_Dish.installationAttributes.Azimuth + " " + AddMW_Dish.installationAttributes.HeightBase;
+                                                            }
+                                                        }
+                                                    }
+                                                    var CheckName = _dbContext.MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
+                                                                                   && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                    if (CheckName != null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                    if (mwDish?.ItemConnectToId != null)
+                                                    {
+                                                        TLIitemConnectTo ConnectedToEntity = _unitOfWork.ItemConnectToRepository.GetByID(mwDish.ItemConnectToId);
+                                                        if (ConnectedToEntity.Name.ToLower() == "farsitedish")
+                                                            if (string.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if dish connected to FarSiteDish", (int)ApiReturnCode.fail);
+                                                        if (ConnectedToEntity.Name.ToLower() == "farsitedish" && mwDish.RepeaterTypeId != null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected RepeaterType because selected itemconecctedto is farsitedish", (int)ApiReturnCode.fail);
+
+                                                        else if (ConnectedToEntity.Name.ToLower() == "repeater")
+                                                        {
+                                                            if (mwDish.RepeaterTypeId == null)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type shouldn't be null", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                TLIrepeaterType RepeaterTypeEntity = null;
+                                                                if (mwDish.RepeaterTypeId != null)
+                                                                {
+                                                                    RepeaterTypeEntity = _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == mwDish.RepeaterTypeId);
+                                                                    if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() != "active" && RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "if dish connected to repeater then repeater type should be active or passive", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (RepeaterTypeEntity != null && RepeaterTypeEntity.Name.ToLower() == "active")
+                                                                    {
+                                                                        if (String.IsNullOrEmpty(mwDish.Far_End_Site_Code))
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Far Site Code Shouldn't be null if repeater type is active", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                    }
+                                                                    else if (RepeaterTypeEntity.Name.ToLower() == "passive")
+                                                                    {
+                                                                        if (ConnectedToEntity.Name.ToLower() != "repeater" || RepeaterTypeEntity.Name.ToLower() != "passive")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "The dish should be connected to repeater and repeater type is passive", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
+                                                    mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.MW_DishRepository.AddWithHistory(UserId, mwDish);
+                                                    _unitOfWork.SaveChanges();
+                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
+                                                    if (AddMW_Dish.civilLoads != null && Id != 0)
+                                                    {
+                                                        foreach (var item in AddMW_Dish.installationConfig.sideArmId)
+                                                        {
+                                                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                            {
+                                                                InstallationDate = AddMW_Dish.civilLoads.InstallationDate,
+                                                                allLoadInstId = Id,
+                                                                legId = AddMW_Dish.installationConfig?.legId,
+                                                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                sideArmId = item,
+                                                                ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
+                                                                ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
+                                                                Dismantle = false,
+                                                                ReservedSpace = AddMW_Dish.civilLoads.ReservedSpace,
+                                                                SiteCode = SiteCode,
+
+                                                            };
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            _unitOfWork.SaveChanges();
+
+                                                        }
+                                                    }
+                                                    if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                    {
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
+
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel item ", (int)ApiReturnCode.fail);
+                                        }
+                                    }
+
+                                }
+
+                            }
                             else if (LoadSubType.TLImwRFU.ToString() == TableName)
                             {
                                 AddMW_RFUViewModel AddMW_RFU = _mapper.Map<AddMW_RFUViewModel>(MWInstallationViewModel);
@@ -15371,57 +15380,144 @@ namespace TLIS_Service.Services
 
                     if (MWDish.allCivilInst != null)
                     {
-                        BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                        List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>();
+
+                        SectionsLegTypeViewModel sectionsLegTypeViewcivilWithoutLeg = new SectionsLegTypeViewModel()
+                        {
+                            Id = 1,
+                            Name = "civilWithoutLeg"
+
+                        };
+                        SectionsLegTypeViewModel sectionsLegTypeViewcivilNonSteel = new SectionsLegTypeViewModel()
+                        {
+                            Id = 2,
+                            Name = "civilNonSteel"
+
+                        };
+                        SectionsLegTypeViewModel sectionsLegTypeViewcivilWithLeg = new SectionsLegTypeViewModel()
+                        {
+                            Id = 0,
+                            Name = "civilWithLeg"
+
+                        };
+                        sectionsLegTypeViewModels.Add(sectionsLegTypeViewcivilWithoutLeg);
+                        sectionsLegTypeViewModels.Add(sectionsLegTypeViewcivilNonSteel);
+                        sectionsLegTypeViewModels.Add(sectionsLegTypeViewcivilWithLeg);
+                        
                         if (MWDish.allCivilInst.civilWithoutLegId != null)
                         {
-                            baseInstAttViews.Key = "civilWithoutLegId";
-                            baseInstAttViews.Label = "civilWithoutLeg_name";
-                            baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(MWDish.allCivilInst.civilWithoutLeg);
-                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithoutLegRepository
-                                    .GetWhere(x => x.Id == MWDish.allCivilInst.civilWithoutLegId));
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "civilSteelType";
+                            baseInstAttViews.Label = "Select Civil Steel Type";
+                            baseInstAttViews.Value = sectionsLegTypeViewcivilWithoutLeg;
+                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
                             baseInstAttViews.DataType = "List";
                             Config.Add(baseInstAttViews);
+                            BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
+                            baseInstAttViewss.Key = "civilWithoutLegId";
+                            baseInstAttViewss.Label = "Select Civil Without Leg";
+                            baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(MWDish.allCivilInst.civilWithoutLeg);
+                            baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithoutLegRepository
+                                 .GetWhere(x => x.Id == MWDish.allCivilInst.civilWithoutLegId));
+                            baseInstAttViewss.DataType = "List";
+                            Config.Add(baseInstAttViewss);
                         }
                         else if (MWDish.allCivilInst.civilNonSteelId != null)
                         {
-                            baseInstAttViews.Key = "civilNonSteelId";
-                            baseInstAttViews.Label = "civilNonSteel_name";
-                            baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(MWDish.allCivilInst.civilNonSteel);
-                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilNonSteelRepository
-                                    .GetWhere(x => x.Id == MWDish.allCivilInst.civilNonSteelId));
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "civilSteelType";
+                            baseInstAttViews.Label = "Select Civil Steel Type";
+                            baseInstAttViews.Value = sectionsLegTypeViewcivilNonSteel;
+                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
                             baseInstAttViews.DataType = "List";
                             Config.Add(baseInstAttViews);
+                            BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
+                            baseInstAttViewss.Key = "civilNonSteelId";
+                            baseInstAttViewss.Label = "Select Civil Non Steel";
+                            baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(MWDish.allCivilInst.civilNonSteel);
+                            baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilNonSteelRepository
+                                   .GetWhere(x => x.Id == MWDish.allCivilInst.civilNonSteelId));
+                            baseInstAttViewss.DataType = "List";
+                            Config.Add(baseInstAttViewss);
                         }
                         if (MWDish.allCivilInst.civilWithLegsId != null)
                         {
-                            baseInstAttViews.Key = "civilWithLegId";
-                            baseInstAttViews.Label = "civilWithLeg_name";
-                            baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(MWDish.allCivilInst.civilWithLegs);
-                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithLegsRepository
-                                .GetWhere(x => x.Id == MWDish.allCivilInst.civilWithLegsId));
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "civilSteelType";
+                            baseInstAttViews.Label = "Select Civil Steel Type";
+                            baseInstAttViews.Value = sectionsLegTypeViewcivilWithLeg;
+                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
                             baseInstAttViews.DataType = "List";
                             Config.Add(baseInstAttViews);
+                            BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
+                            baseInstAttViewss.Key = "civilWithLegId";
+                            baseInstAttViewss.Label = "Select Civil With Leg";
+                            baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(MWDish.allCivilInst.civilWithLegs);
+                            baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithLegsRepository
+                                .GetWhere(x => x.Id == MWDish.allCivilInst.civilWithLegsId));
+                            baseInstAttViewss.DataType = "List";
+                            Config.Add(baseInstAttViewss);
                         }
                     }
-                    if (MWDish.legId != 0 && MWDish.legId != null)
+                    if (MWDish.legId != 0 && MWDish.legId != null && MWDish.sideArmId ==null)
                     {
 
                         var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == MWDish.legId);
                         if (Leg1 != null)
                         {
+                
+                            SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
+                            {
+                                Id = Leg1.Id,
+                                Name = Leg1.CiviLegName
+                            };
+                        
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "legId";
-                            baseInstAttViews.Value = _mapper.Map<SectionsLegTypeViewModel>(Leg1);
-                            baseInstAttViews.Label = "leg_name";
-                            baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.LegRepository
-                                .GetWhere(x => x.Id == MWDish.legId));
-                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.Value = sectionsLegTypeViewModel.Id;
+                            baseInstAttViews.Label = "Select Civil Non Steel";
+                            baseInstAttViews.Options = sectionsLegTypeViewModel;
+                            baseInstAttViews.DataType = "MultiSelect";
                             Config.Add(baseInstAttViews);
                         }
 
                     }
-                
-                objectInst.installationConfig = Config;
+                    if (MWDish.legId == null && MWDish.sideArmId != null)
+                    {
+                        List<int> ints = new List<int>();
+                        List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>();
+                        SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
+                        {
+                            Id =Convert.ToInt32( MWDish.sideArmId),
+                            Name = MWDish.sideArm.Name,
+                        };
+                        ints.Add(sectionsLegTypeViewModel.Id);
+                        sectionsLegTypeViewModels.Add(sectionsLegTypeViewModel);
+                        var SideArmCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null&& x.Id != MWDish.Id && x.allLoadInst.mwDishId == MWInsId
+                        && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
+                        x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
+                        x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace, x => x.allLoadInst.mwDish.MwDishLibrary);
+
+                        if (SideArmCount != null)
+                        {
+                            SectionsLegTypeViewModel sectionsLegTypeViewModelss = new SectionsLegTypeViewModel()
+                            {
+                                Id = Convert.ToInt32(SideArmCount.sideArmId),
+                                Name = SideArmCount.sideArm.Name,
+                            };
+                            ints.Add(sectionsLegTypeViewModel.Id);
+                            sectionsLegTypeViewModels.Add(sectionsLegTypeViewModelss);
+                        }
+                        BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                        baseInstAttViews.Key = "SideArmd";
+                        baseInstAttViews.Value = ints;
+                        baseInstAttViews.Label = "leg_name";
+                        baseInstAttViews.Options = sectionsLegTypeViewModels;
+                        baseInstAttViews.DataType = "list";
+                        Config.Add(baseInstAttViews);
+                    }
+
+                    objectInst.installationConfig = Config;
                     var InstallationDate = new BaseInstAttViews()
                     {
                         Key = "InstallationDate",
