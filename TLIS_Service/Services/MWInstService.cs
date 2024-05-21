@@ -15366,6 +15366,8 @@ namespace TLIS_Service.Services
                         switch (FKitem.Label.ToLower())
                         {
                             case "installationplace_name":
+                                FKitem.Key = "installationPlaceId";
+                                FKitem.Label = "Select Installation Place";
                                 FKitem.Value = _mapper.Map<InstallationPlaceViewModel>(MWDish.allLoadInst.mwDish.InstallationPlace);
                                 FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_unitOfWork.InstallationPlaceRepository
                                     .GetWhere(x => x.Id == MWDish.allLoadInst.mwDish.InstallationPlaceId));
@@ -15378,113 +15380,124 @@ namespace TLIS_Service.Services
 
                     Config.AddRange(foreignKeyAttribute);
 
-                    //if (MWDish.allCivilInst != null)
-                    //{
-                    //    List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>
-                    //    {
-                    //        new SectionsLegTypeViewModel { Id = 1, Name = "civilWithoutLeg" },
-                    //        new SectionsLegTypeViewModel { Id = 2, Name = "civilNonSteel" },
-                    //        new SectionsLegTypeViewModel { Id = 0, Name = "civilWithLeg" }
-                    //    };
+                    if (MWDish.allCivilInst != null)
+                    {
+                        List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>
+                            {
+                                new SectionsLegTypeViewModel { Id = 1, Name = "civilWithoutLeg" },
+                                new SectionsLegTypeViewModel { Id = 2, Name = "civilNonSteel" },
+                                new SectionsLegTypeViewModel { Id = 0, Name = "civilWithLeg" }
+                            };
 
-                    //    void AddBaseInstAttViews(string key, string label, SectionsLegTypeViewModel value, object repo, int? id)
-                    //    {
-                    //        Config.Add(new BaseInstAttViews
-                    //        {
-                    //            Key = "civilSteelType",
-                    //            Label = "Select Civil Steel Type",
-                    //            Value = value,
-                    //            Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels),
-                    //            DataType = "List"
-                    //        });
+                        void AddBaseInstAttView(string key, string label, object value, object options, bool Visable)
+                        {
+                            Config.Add(new BaseInstAttViews
+                            {
+                                Key = key,
+                                Label = label,
+                                Value = value,
+                                Options = options,
+                                DataType = "List",
+                                visible = Visable
+                            });
+                        }
 
-                    //        if (id.HasValue)
-                    //        {
-                    //            Config.Add(new BaseInstAttViews
-                    //            {
-                    //                Key = key,
-                    //                Label = label,
-                    //                Value = _mapper.Map<SectionsLegTypeViewModel>(repo.GetType().GetMethod("GetWhereFirst").Invoke(repo, new object[] { x => x.Id == id.Value })),
-                    //                Options = _mapper.Map<List<SectionsLegTypeViewModel>>(repo.GetType().GetMethod("GetWhere").Invoke(repo, new object[] { x => x.Id == id.Value })),
-                    //                DataType = "List"
-                    //            });
-                    //        }
-                    //    }
+                        void ConfigureView3(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
+                        {
+                            AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels), true);
+                            AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions), true);
+                            AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0], false);
+                            AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0], false);
+                        }
+                        void ConfigureView1(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
+                        {
+                            AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels), true);
+                            AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions), true);
+                            AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0], false);
 
-                    //    if (MWDish.allCivilInst.civilWithoutLegId != null)
-                    //    {
-                    //        AddBaseInstAttViews("civilWithoutLegId", "Select Civil Without Leg", sectionsLegTypeViewModels[0], _unitOfWork.CivilWithoutLegRepository, MWDish.allCivilInst.civilWithoutLegId);
-                    //    }
-                    //    else if (MWDish.allCivilInst.civilNonSteelId != null)
-                    //    {
-                    //        AddBaseInstAttViews("civilNonSteelId", "Select Civil Non Steel", sectionsLegTypeViewModels[1], _unitOfWork.CivilNonSteelRepository, MWDish.allCivilInst.civilNonSteelId);
-                    //    }
-                    //    else if (MWDish.allCivilInst.civilWithLegsId != null)
-                    //    {
-                    //        AddBaseInstAttViews("civilWithLegId", "Select Civil With Leg", sectionsLegTypeViewModels[2], _unitOfWork.CivilWithLegsRepository, MWDish.allCivilInst.civilWithLegsId);
-                    //    }
+                            AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0], false);
+                        }
+                        void ConfigureView2(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
+                        {
+                            AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels), true);
+                            AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions), true);
+                            AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0], false);
+                            AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0], false);
 
+                        }
+                        if (MWDish.allCivilInst.civilWithoutLegId != null)
+                        {
+                            ConfigureView1("civilWithoutLeg", sectionsLegTypeViewModels[0], "civilWithoutLegId", MWDish.allCivilInst.civilWithoutLeg, _unitOfWork.CivilWithoutLegRepository.GetWhere(x => x.Id == MWDish.allCivilInst.civilWithoutLegId));
 
-                    //    if (MWDish.legId != 0 && MWDish.legId != null && MWDish.sideArmId == null)
-                    //    {
+                        }
+                        else if (MWDish.allCivilInst.civilNonSteelId != null)
+                        {
+                            ConfigureView2("civilNonSteel", sectionsLegTypeViewModels[1], "civilNonSteelId", MWDish.allCivilInst.civilNonSteel, _unitOfWork.CivilNonSteelRepository.GetWhere(x => x.Id == MWDish.allCivilInst.civilNonSteelId));
+                        }
+                        else if (MWDish.allCivilInst.civilWithLegsId != null)
+                        {
+                            ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", MWDish.allCivilInst.civilWithLegs, _unitOfWork.CivilWithLegsRepository.GetWhere(x => x.Id == MWDish.allCivilInst.civilWithLegsId));
+                        }
+                   
+                        if (MWDish.legId != 0 && MWDish.legId != null && MWDish.sideArmId == null)
+                        {
 
-                    //        var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == MWDish.legId);
-                    //        if (Leg1 != null)
-                    //        {
+                            var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == MWDish.legId);
+                            if (Leg1 != null)
+                            {
 
-                    //            SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
-                    //            {
-                    //                Id = Leg1.Id,
-                    //                Name = Leg1.CiviLegName
-                    //            };
+                                SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
+                                {
+                                    Id = Leg1.Id,
+                                    Name = Leg1.CiviLegName
+                                };
 
-                    //            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                    //            baseInstAttViews.Key = "legId";
-                    //            baseInstAttViews.Value = sectionsLegTypeViewModel.Id;
-                    //            baseInstAttViews.Label = "Select Leg";
-                    //            baseInstAttViews.Options = sectionsLegTypeViewModel;
-                    //            baseInstAttViews.DataType = "MultiSelect";
-                    //            Config.Add(baseInstAttViews);
-                    //        }
+                                BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                                baseInstAttViews.Key = "legId";
+                                baseInstAttViews.Value = sectionsLegTypeViewModel.Id;
+                                baseInstAttViews.Label = "Select Leg";
+                                baseInstAttViews.Options = sectionsLegTypeViewModel;
+                                baseInstAttViews.DataType = "MultiSelect";
+                                Config.Add(baseInstAttViews);
+                            }
 
-                    //    }
-                    //    if (MWDish.legId == null && MWDish.sideArmId != null)
-                    //    {
-                    //        List<int> ints = new List<int>();
-                    //        List<SectionsLegTypeViewModel> sectionsLegTypeViewModelsidearm = new List<SectionsLegTypeViewModel>();
-                    //        SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
-                    //        {
-                    //            Id = Convert.ToInt32(MWDish.sideArmId),
-                    //            Name = MWDish.sideArm.Name,
-                    //        };
-                    //        ints.Add(sectionsLegTypeViewModel.Id);
-                    //        sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
-                    //        var SideArmCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.Id != MWDish.Id && x.allLoadInst.mwDishId == MWInsId
-                    //        && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
-                    //        x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
-                    //        x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace, x => x.allLoadInst.mwDish.MwDishLibrary);
+                        }
+                        if (MWDish.legId == null && MWDish.sideArmId != null)
+                        {
+                            List<int> ints = new List<int>();
+                            List<SectionsLegTypeViewModel> sectionsLegTypeViewModelsidearm = new List<SectionsLegTypeViewModel>();
+                            SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
+                            {
+                                Id = Convert.ToInt32(MWDish.sideArmId),
+                                Name = MWDish.sideArm.Name,
+                            };
+                            ints.Add(sectionsLegTypeViewModel.Id);
+                            sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
+                            var SideArmCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.Id != MWDish.Id && x.allLoadInst.mwDishId == MWInsId
+                            && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
+                            x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
+                            x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace, x => x.allLoadInst.mwDish.MwDishLibrary);
 
-                    //        if (SideArmCount != null)
-                    //        {
-                    //            SectionsLegTypeViewModel sectionsLegTypeViewModelss = new SectionsLegTypeViewModel()
-                    //            {
-                    //                Id = Convert.ToInt32(SideArmCount.sideArmId),
-                    //                Name = SideArmCount.sideArm.Name,
-                    //            };
-                    //            ints.Add(sectionsLegTypeViewModel.Id);
-                    //            sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModelss);
-                    //        }
-                    //        BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                    //        baseInstAttViews.Key = "SideArmd";
-                    //        baseInstAttViews.Value = ints;
-                    //        baseInstAttViews.Label = "leg_name";
-                    //        baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
-                    //        baseInstAttViews.DataType = "list";
-                    //        Config.Add(baseInstAttViews);
-                    //    }
-                    //}
-
-                    objectInst.installationConfig = Config;
+                            if (SideArmCount != null)
+                            {
+                                SectionsLegTypeViewModel sectionsLegTypeViewModelss = new SectionsLegTypeViewModel()
+                                {
+                                    Id = Convert.ToInt32(SideArmCount.sideArmId),
+                                    Name = SideArmCount.sideArm.Name,
+                                };
+                                ints.Add(sectionsLegTypeViewModel.Id);
+                                sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModelss);
+                            }
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "SideArmd";
+                            baseInstAttViews.Value = ints;
+                            baseInstAttViews.Label = "leg_name";
+                            baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
+                            baseInstAttViews.DataType = "list";
+                            Config.Add(baseInstAttViews);
+                        }
+                        objectInst.installationConfig = Config;
+                    }
                     var InstallationDate = new BaseInstAttViews()
                     {
                         Key = "InstallationDate",
