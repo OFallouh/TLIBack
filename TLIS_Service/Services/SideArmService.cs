@@ -1750,7 +1750,7 @@ namespace TLIS_Service.Services
                                 new SectionsLegTypeViewModel { Id = 0, Name = "civilWithLeg" }
                             };
 
-                            void AddBaseInstAttView(string key, string label, object value, object options)
+                            void AddBaseInstAttView(string key, string label, object value, object options,bool Visable)
                             {
                                 Config.Add(new BaseInstAttViews
                                 {
@@ -1758,31 +1758,32 @@ namespace TLIS_Service.Services
                                     Label = label,
                                     Value = value,
                                     Options = options,
-                                    DataType = "List"
+                                    DataType = "List",
+                                    Visable=true
                                 });
                             }
 
                             void ConfigureView3(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
                             {
-                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels));
-                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions)); 
-                                AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0]);
-                                AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0]);
+                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels),true);
+                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions), true); 
+                                AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0],false);
+                                AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0], false);
                             }
                             void ConfigureView1(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
                             {
-                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels));
-                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions));
-                                AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0]);
+                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels),true);
+                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions),true);
+                                AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0], false);
 
-                                AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0]);
+                                AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0], false);
                             }
                             void ConfigureView2(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
                             {
-                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels));
-                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions));
-                                AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0]);
-                                AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0]);
+                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels), true);
+                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions), true);
+                                AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0], false);
+                                AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0], false);
                                 
                             }
                             if (AllCivilInst.civilWithoutLegId != null)
