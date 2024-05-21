@@ -15457,7 +15457,7 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Value = sectionsLegTypeViewModel.Id;
                                 baseInstAttViews.Label = "Select Leg";
                                 baseInstAttViews.Options = sectionsLegTypeViewModel;
-                                baseInstAttViews.DataType = "MultiSelect";
+                                baseInstAttViews.DataType = "list";
                                 Config.Add(baseInstAttViews);
                             }
 
