@@ -1743,129 +1743,62 @@ namespace TLIS_Service.Services
                         , x => x.civilWithLegs, x => x.civilWithoutLeg);
                         if (AllCivilInst != null)
                         {
-                            List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>();
-
-                            SectionsLegTypeViewModel sectionsLegTypeViewcivilWithoutLeg = new SectionsLegTypeViewModel()
+                            List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>
                             {
-                                Id = 1,
-                                Name = "civilWithoutLeg"
-
+                                new SectionsLegTypeViewModel { Id = 1, Name = "civilWithoutLeg" },
+                                new SectionsLegTypeViewModel { Id = 2, Name = "civilNonSteel" },
+                                new SectionsLegTypeViewModel { Id = 0, Name = "civilWithLeg" }
                             };
-                            SectionsLegTypeViewModel sectionsLegTypeViewcivilNonSteel = new SectionsLegTypeViewModel()
+
+                            void AddBaseInstAttView(string key, string label, object value, object options)
                             {
-                                Id = 2,
-                                Name = "civilNonSteel"
+                                Config.Add(new BaseInstAttViews
+                                {
+                                    Key = key,
+                                    Label = label,
+                                    Value = value,
+                                    Options = options,
+                                    DataType = "List"
+                                });
+                            }
 
-                            };
-                            SectionsLegTypeViewModel sectionsLegTypeViewcivilWithLeg = new SectionsLegTypeViewModel()
+                            void ConfigureView3(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
                             {
-                                Id = 0,
-                                Name = "civilWithLeg"
+                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels));
+                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions)); 
+                                AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0]);
+                                AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0]);
+                            }
+                            void ConfigureView1(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
+                            {
+                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels));
+                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions));
+                                AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0]);
 
-                            };
-                            sectionsLegTypeViewModels.Add(sectionsLegTypeViewcivilWithoutLeg);
-                            sectionsLegTypeViewModels.Add(sectionsLegTypeViewcivilNonSteel);
-                            sectionsLegTypeViewModels.Add(sectionsLegTypeViewcivilWithLeg);
+                                AddBaseInstAttView("civilNonSteelId", "Select Civil Non Steel", new object[0], new object[0]);
+                            }
+                            void ConfigureView2(string steelTypeKey, SectionsLegTypeViewModel steelTypeValue, string idKey, object idValue, object idOptions)
+                            {
+                                AddBaseInstAttView("civilSteelType", "Select Civil Steel Type", steelTypeValue, _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels));
+                                AddBaseInstAttView(idKey, $"Select {steelTypeKey}", _mapper.Map<SectionsLegTypeViewModel>(idValue), _mapper.Map<List<SectionsLegTypeViewModel>>(idOptions));
+                                AddBaseInstAttView("civilWithLegId", "Select Civil With Leg", new object[0], new object[0]);
+                                AddBaseInstAttView("civilWithoutLegId", "Select Civil Without Leg", new object[0], new object[0]);
+                                
+                            }
                             if (AllCivilInst.civilWithoutLegId != null)
                             {
-                                BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "civilSteelType";
-                                baseInstAttViews.Label = "Select Civil Steel Type";
-                                baseInstAttViews.Value = sectionsLegTypeViewcivilWithoutLeg;
-                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
-                                baseInstAttViews.DataType = "List";
-                                Config.Add(baseInstAttViews);
-                                BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilWithoutLegId";
-                                baseInstAttViewss.Label = "Select Civil Without Leg";
-                                baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithoutLeg);
-                                baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithoutLegRepository
-                                     .GetWhere(x => x.Id == AllCivilInst.civilWithoutLegId));
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewss);
-                                BaseInstAttViews baseInstAttViewsNonsteel = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilNonSteelId";
-                                baseInstAttViewss.Label = "Select Civil Non Steel";
-                                baseInstAttViewss.Value = new object[0];
-                                baseInstAttViewss.Options = new object[0];
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewsNonsteel);
-                                BaseInstAttViews baseInstAttViewscivilwithleg = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilWithLegId";
-                                baseInstAttViewss.Label = "Select Civil With Leg";
-                                baseInstAttViewss.Value = new object[0];
-                                baseInstAttViewss.Options = new object[0];
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewscivilwithleg);
-
-
+                                ConfigureView1("civilWithoutLeg", sectionsLegTypeViewModels[0], "civilWithoutLegId", AllCivilInst.civilWithoutLeg, _unitOfWork.CivilWithoutLegRepository.GetWhere(x => x.Id == AllCivilInst.civilWithoutLegId));
+                                
                             }
                             else if (AllCivilInst.civilNonSteelId != null)
                             {
-                                BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "civilSteelType";
-                                baseInstAttViews.Label = "Select Civil Steel Type";
-                                baseInstAttViews.Value = sectionsLegTypeViewcivilNonSteel;
-                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
-                                baseInstAttViews.DataType = "List";
-                                Config.Add(baseInstAttViews);
-                                BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilNonSteelId";
-                                baseInstAttViewss.Label = "Select Civil Non Steel";
-                                baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilNonSteel);
-                                baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilNonSteelRepository
-                                       .GetWhere(x => x.Id == AllCivilInst.civilNonSteelId));
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewss);
-                                BaseInstAttViews baseInstAttViewscivilwithleg = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilWithLegId";
-                                baseInstAttViewss.Label = "Select Civil With Leg";
-                                baseInstAttViewss.Value = new object[0];
-                                baseInstAttViewss.Options = new object[0];
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewscivilwithleg);
-                                BaseInstAttViews baseInstAttViewscivilwithoutleg= new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilWithoutLegId";
-                                baseInstAttViewss.Label = "Select Civil Non Steel";
-                                baseInstAttViewss.Value = new object[0];
-                                baseInstAttViewss.Options = new object[0];
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewscivilwithoutleg);
+                                ConfigureView2("civilNonSteel", sectionsLegTypeViewModels[1], "civilNonSteelId", AllCivilInst.civilNonSteel, _unitOfWork.CivilNonSteelRepository.GetWhere(x => x.Id == AllCivilInst.civilNonSteelId));
                             }
-                            if (AllCivilInst.civilWithLegsId != null)
+                            else if (AllCivilInst.civilWithLegsId != null)
                             {
-                                BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "civilSteelType";
-                                baseInstAttViews.Label = "Select Civil Steel Type";
-                                baseInstAttViews.Value = sectionsLegTypeViewcivilWithLeg;
-                                baseInstAttViews.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(sectionsLegTypeViewModels);
-                                baseInstAttViews.DataType = "List";
-                                Config.Add(baseInstAttViews);
-                                BaseInstAttViews baseInstAttViewss = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilWithLegId";
-                                baseInstAttViewss.Label = "Select Civil With Leg";
-                                baseInstAttViewss.Value = _mapper.Map<SectionsLegTypeViewModel>(AllCivilInst.civilWithLegs);
-                                baseInstAttViewss.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.CivilWithLegsRepository
-                                    .GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewss);
-                                BaseInstAttViews baseInstAttViewscivilwithoutleg = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilWithoutLegId";
-                                baseInstAttViewss.Label = "Select Civil Non Steel";
-                                baseInstAttViewss.Value = new object[0];
-                                baseInstAttViewss.Options = new object[0];
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewscivilwithoutleg);
-                                BaseInstAttViews baseInstAttViewsNonsteel = new BaseInstAttViews();
-                                baseInstAttViewss.Key = "civilNonSteelId";
-                                baseInstAttViewss.Label = "Select Civil Non Steel";
-                                baseInstAttViewss.Value = new object[0];
-                                baseInstAttViewss.Options = new object[0];
-                                baseInstAttViewss.DataType = "List";
-                                Config.Add(baseInstAttViewsNonsteel);
+                                ConfigureView("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", AllCivilInst.civilWithLegs, _unitOfWork.CivilWithLegsRepository.GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
                             }
                         }
-
                         var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
                         {
                             switch (FKitem.Label.ToLower())
@@ -1889,43 +1822,42 @@ namespace TLIS_Service.Services
                             }
                             return FKitem;
                         }).ToList();
-
-
                         Config.AddRange(foreignKeyAttribute);
-                        if ((CivilLoad.legId != 0 && CivilLoad.legId != null) || (CivilLoad.Leg2Id != 0 && CivilLoad.Leg2Id != null))
+                        if ((CivilLoad.legId ?? 0) != 0 || (CivilLoad.Leg2Id ?? 0) != 0)
                         {
                             List<SectionsLegTypeViewModel> sectionsLegTypeViewModels = new List<SectionsLegTypeViewModel>();
                             List<int> ints = new List<int>();
-                            var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.legId);
-                            if (Leg1 != null)
+
+                            void AddLegDetails(int? legId)
                             {
-                                SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
+                                if (legId.HasValue && legId.Value != 0)
                                 {
-                                    Id = Leg1.Id,
-                                    Name = Leg1.CiviLegName
-                                };
-                                sectionsLegTypeViewModels.Add(sectionsLegTypeViewModel);
-                                ints.Add(Leg1.Id);
+                                    var leg = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == legId.Value);
+                                    if (leg != null)
+                                    {
+                                        sectionsLegTypeViewModels.Add(new SectionsLegTypeViewModel
+                                        {
+                                            Id = leg.Id,
+                                            Name = leg.CiviLegName
+                                        });
+                                        ints.Add(leg.Id);
+                                    }
+                                }
                             }
-                            var Leg2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == CivilLoad.Leg2Id);
-                            if (Leg2 != null)
+
+                            AddLegDetails(CivilLoad.legId);
+                            AddLegDetails(CivilLoad.Leg2Id);
+
+                            Config.Add(new BaseInstAttViews
                             {
-                                SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
-                                {
-                                    Id = Leg1.Id,
-                                    Name = Leg1.CiviLegName
-                                };
-                                sectionsLegTypeViewModels.Add(sectionsLegTypeViewModel);
-                                ints.Add(Leg2.Id);
-                            }
-                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "legId";
-                            baseInstAttViews.Value = ints;
-                            baseInstAttViews.Label = "Select Civil Non Steel";
-                            baseInstAttViews.Options = sectionsLegTypeViewModels;
-                            baseInstAttViews.DataType = "MultiSelect";
-                            Config.Add(baseInstAttViews);
+                                Key = "legId",
+                                Value = ints,
+                                Label = "Select Leg",
+                                Options = sectionsLegTypeViewModels,
+                                DataType = "MultiSelect"
+                            });
                         }
+
                         attributes.installationConfig = Config;
                         var InstallationDate = new BaseInstAttViews()
                         {
