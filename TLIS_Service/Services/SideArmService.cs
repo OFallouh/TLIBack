@@ -1796,7 +1796,7 @@ namespace TLIS_Service.Services
                             }
                             else if (AllCivilInst.civilWithLegsId != null)
                             {
-                                ConfigureView("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", AllCivilInst.civilWithLegs, _unitOfWork.CivilWithLegsRepository.GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
+                                ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", AllCivilInst.civilWithLegs, _unitOfWork.CivilWithLegsRepository.GetWhere(x => x.Id == AllCivilInst.civilWithLegsId));
                             }
                         }
                         var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
