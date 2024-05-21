@@ -42,6 +42,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public float HieghFromLand { get; set;}
         public float EquivalentSpace { get; set;}
         public bool Dismantle { get; set; }
+        public int ALLCIVIL_ID { get; set; }
 
 
         public Dictionary<string, object> GenerateOutputData()
@@ -77,6 +78,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             outputData.Add("SIDEARMLIBRARY", SIDEARMLIBRARY);
             outputData.Add("SECOND_LEG_ID", SECOND_LEG_ID);
             outputData.Add("FIRST_LEG_ID", FIRST_LEG_ID);
+            outputData.Add("ALLCIVIL_ID", ALLCIVIL_ID);
 
 
             // Add dynamic property if "key" has a value

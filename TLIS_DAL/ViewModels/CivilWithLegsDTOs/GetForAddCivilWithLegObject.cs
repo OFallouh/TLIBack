@@ -34,7 +34,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public int? DataTypeId { get; set; }
         public string DataType { get; set; }
         public object Options { get; set; }
-        public bool Visable { get; set; } = true;
+        public bool visible { get; set; } = true;
     }
     public class BaseInstAttViewsVisuble
     {
