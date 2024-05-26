@@ -223,7 +223,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwODU.ToString(), null, "Name", "OduInstallationTypeId", "MwODULibraryId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwODU.ToString(), null, "Name", "OduInstallationTypeId", "MwODULibraryId", "EquivalentSpace", "Mw_DishId").ToList();
                     var xx = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle && x.allLoadInstId != null && x.allLoadInst.mwDishId != null
                             && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList();
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
