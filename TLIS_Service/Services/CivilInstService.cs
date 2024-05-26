@@ -2536,8 +2536,12 @@ namespace TLIS_Service.Services
                         if (civilWithLegs.HeightBase <= 0)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
 
+                        }
+                        if (civilWithLegs.HeightImplemented <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                         sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
                         if (civilWithLegs.OwnerId == 0 || civilWithLegs.OwnerId == null)
                         {
@@ -2547,7 +2551,7 @@ namespace TLIS_Service.Services
                         if (civilwithleglibrary.Model != null)
                             Model = civilwithleglibrary.Model;
 
-                        civilWithLegs.Name = sitename + "" + Model + "" + ownername + "" + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented;
+                        civilWithLegs.Name = sitename + "" + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented;
 
 
                         var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -2709,7 +2713,10 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-
+                        if (civilwithoutlegs.HeightImplemented <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                         sitename = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode)?.SiteName;
                         if (civilwithoutlegs.OwnerId == 0 || civilwithoutlegs.OwnerId == null)
                         {
@@ -3023,6 +3030,14 @@ namespace TLIS_Service.Services
 
                     if (SiteCode != null)
                     {
+                        if (civilWithLegsEntity.HeightBase <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilWithLegsEntity.HeightImplemented <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                         if (civilWithLegsEntity.OwnerId == 0 || civilWithLegsEntity?.OwnerId == null)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3031,7 +3046,7 @@ namespace TLIS_Service.Services
                         if (CivilWithLegInst.CivilWithLegsLib.Model != null)
                             Model = CivilWithLegInst.CivilWithLegsLib.Model;
 
-                        civilWithLegsEntity.Name = SiteCode.Site.SiteName + "" + Model + "" + ownername + "" + civilWithLegsEntity.HeightImplemented;
+                        civilWithLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithLegsEntity.HeightImplemented;
 
                         var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
                              (x.Id != null ? x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
@@ -3040,10 +3055,7 @@ namespace TLIS_Service.Services
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        if (civilWithLegsEntity.HeightBase <= 0)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        
                         if (civilWithLegsEntity.HeightBase != CivilWithLegInst.HeightBase)
                         {
                             var allcivilinst = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == civilWithLegsEntity.Id).Select(x => x.Id).FirstOrDefault();
@@ -3267,6 +3279,14 @@ namespace TLIS_Service.Services
                         !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst,x=>x.Site);
                     if (SiteCode != null)
                     {
+                        if (civilWithoutLegsEntity.HeightBase <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        if (civilWithoutLegsEntity.HeightImplemented <= 0)
+                        {
+                            return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
                         if (civilWithoutLegsEntity.OwnerId == 0 || civilWithoutLegsEntity?.OwnerId == null)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3275,7 +3295,7 @@ namespace TLIS_Service.Services
                         if (CivilWithoutLegInst.CivilWithoutlegsLib.Model != null)
                             Model = CivilWithoutLegInst.CivilWithoutlegsLib.Model;
 
-                        civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + "" + Model + "" + ownername + "" + civilWithoutLegsEntity.HeightImplemented;
+                        civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithoutLegsEntity.HeightImplemented;
 
                         var CheckName = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
                          (x.Id != null ? x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() : false
@@ -3344,8 +3364,6 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-
-
                         if (civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 12 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 14 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 16
                          && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 18 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 20)
                         {
@@ -7236,8 +7254,7 @@ namespace TLIS_Service.Services
                                  CIVILWITHOUTLEGCATEGORY=x.CIVILWITHOUTLEGCATEGORY,
                                  Dismantle = x.Dismantle
 
-                             }).Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
-                        .Distinct()
+                             }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
                       ;
                         int count = query.Count();
 

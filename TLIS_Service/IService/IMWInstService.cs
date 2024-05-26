@@ -42,7 +42,7 @@ namespace TLIS_Service.IService
         Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string SiteCode, string ConnectionString);
 
         Response<List<MW_Free_BUInstDto>> GetMw_Free_BuInst(int AllCivilInstId);
-
+        Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName);
         Response<List<MW_Free_BUInstDto>> GetMw_Free_Cascade_BuInst(int AllCivilInstId);
 
         Response<List<MW_PortViewModel>> GetFreePortOnBU(int BUid);
@@ -50,5 +50,6 @@ namespace TLIS_Service.IService
 
         Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId);
         Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId, int? MainBUId);
+        Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string SiteCode, string ConnectionString);
     }
 }

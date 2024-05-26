@@ -32,6 +32,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs
             public int? CivilWithoutLegCategoryId { get; set; }
             public float Manufactured_Max_Load { get; set; }
             public int structureTypeId { get; set; }
+            public string? WidthVariation { get; set; }
         }
     }
 }

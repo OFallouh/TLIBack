@@ -102,27 +102,44 @@ namespace TLIS_API.Controllers
         //        return Ok(new Response<AddMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("AddMW_ODU")]
-        //[ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
-        //public IActionResult AddMW_ODU([FromBody]AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int? TaskId)
-        //{
-        //    if (AddMW_ODUViewModel.TLIcivilLoads.sideArmId == 0)
-        //        AddMW_ODUViewModel.TLIcivilLoads.sideArmId = null;
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
-        //    {
-        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddMW_ODUInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddMwODUinstallationObject))]
+        public IActionResult AddMW_ODU([FromBody] AddMwODUinstallationObject AddMW_ODUViewModel, string SiteCode, int? TaskId)
+        {
+         
+            if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_Dish")]
         [ProducesResponseType(200, Type = typeof(AddMWDishInstallationObject))]
@@ -363,12 +380,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetMW_ODUById")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetMWODUInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_ODUById(int MW_ODU)
         {
-            var response = _unitOfWorkService.MWInstService.GetById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
+            var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
             return Ok(response);
         }
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -512,6 +529,14 @@ namespace TLIS_API.Controllers
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetMWODUInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetMWODUInstallationWithEnableAtt([FromQuery] string SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

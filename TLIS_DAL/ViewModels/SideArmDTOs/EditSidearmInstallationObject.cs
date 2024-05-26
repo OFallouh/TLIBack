@@ -43,7 +43,6 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
         public class EditCivilLoad
         {
             public DateTime InstallationDate { get; set; }=DateTime.Now;
-
             public string? ItemOnCivilStatus { get; set; } = " ";
             public string? ItemStatus { get; set; } = " ";
             public bool ReservedSpace { get; set; }

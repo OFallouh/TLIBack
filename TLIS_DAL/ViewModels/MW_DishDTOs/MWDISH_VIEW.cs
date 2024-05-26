@@ -49,7 +49,8 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public int? LEG_ID { get; set; }        
         public int ODU_COUNT { get; set; }
         public string POLARITYTYPE { get; set; }
- 
+        public int? SideArmSec_Id { get; set; }
+        public int? SideArmSec_Name{ get; set; }
 
         public Dictionary<string, object> GenerateOutputData()
         {
@@ -94,6 +95,8 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             outputData.Add("LEG_ID", LEG_ID);      
             outputData.Add("ODU_COUNT", ODU_COUNT);           
             outputData.Add("POLARITYTYPE", POLARITYTYPE);           
+            outputData.Add("SideArmSec_Id", SideArmSec_Id);           
+            outputData.Add("SideArmSec_Name", SideArmSec_Name);           
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
             {

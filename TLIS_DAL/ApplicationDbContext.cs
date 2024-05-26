@@ -18,6 +18,7 @@ using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL.ViewModels.MW_DishDTOs;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
+using TLIS_DAL.ViewModels.MW_ODUDTOs;
 
 
 namespace TLIS_DAL
@@ -186,6 +187,7 @@ namespace TLIS_DAL
         public virtual DbSet<MWDISH_LIBRARY_VIEW> MWDISH_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MWDISH_VIEW> MWDISH_VIEW { get; set; }
         public virtual DbSet<MWODU_LIBRARY_VIEW> MWODU_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MWODU_VIEW> MWODU_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -295,6 +297,12 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MWODU_LIBRARY_VIEW");
+
+            });
+            builder.Entity<MWODU_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MWODU_VIEW");
             });
             builder.Entity<TLIsession>();
 

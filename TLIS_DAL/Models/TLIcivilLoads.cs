@@ -23,6 +23,7 @@ namespace TLIS_DAL.Models
         public bool ReservedSpace { get; set; }
         public TLIsideArm sideArm { get; set; }
         public int? sideArmId { get; set; }
+        public int? sideArm2Id { get; set; }
         public TLIallCivilInst allCivilInst { get; set; }
         public int allCivilInstId { get; set; }
         public TLIallLoadInst allLoadInst { get; set; }

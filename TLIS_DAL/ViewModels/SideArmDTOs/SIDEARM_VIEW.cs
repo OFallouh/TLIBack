@@ -79,6 +79,7 @@ namespace TLIS_DAL.ViewModels.SideArmDTOs
             outputData.Add("SECOND_LEG_ID", SECOND_LEG_ID);
             outputData.Add("FIRST_LEG_ID", FIRST_LEG_ID);
             outputData.Add("ALLCIVIL_ID", ALLCIVIL_ID);
+            outputData.Add("Dismantle", Dismantle);
 
 
             // Add dynamic property if "key" has a value

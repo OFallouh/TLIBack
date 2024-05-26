@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using static TLIS_DAL.ViewModels.MW_DishDTOs.AddMWDishInstallationObject;
+using static TLIS_DAL.ViewModels.SideArmDTOs.SideArmViewDto;
 
 namespace TLIS_DAL.ViewModels.MW_DishDTOs
 {
     public class EditMWDishInstallationObject
     {
+        public InstallationMWDishConfigObject installationConfig { get; set; }
         public LibraryAttributesMWDishObject civilType { get; set; }
         public AddCivilLoadObject civilLoads { get; set; }
         public installationAttributesMWDishObject installationAttributes { get; set; }

@@ -25,7 +25,7 @@ namespace TLIS_DAL.Models
         public TLImwDish Mw_Dish { get; set; }
         public int Mw_DishId { get; set; }
         public TLIoduInstallationType OduInstallationType { get; set; }
-        public int? OduInstallationTypeId { get; set; }
+        public int OduInstallationTypeId { get; set; }
         public TLImwODULibrary MwODULibrary { get; set; }
         public int MwODULibraryId { get; set; }
         public float CenterHigh { get; set; }
