@@ -1166,8 +1166,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("FIRST_LEG_ID");
                     propertyNamesStatic.Add("SECOND_LEG");
                     propertyNamesStatic.Add("SECOND_LEG_ID");
-             
-
+            
                     if (propertyNamesDynamic.Count == 0)
                     {
                     

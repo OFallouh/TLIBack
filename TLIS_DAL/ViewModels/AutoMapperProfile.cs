@@ -162,6 +162,7 @@ using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.ADDMWODULibraryObject;
 using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.EditMWODULibraryObject;
 using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.AddMWBULibraryObject;
 using static TLIS_DAL.ViewModels.MW_DishDTOs.EditMWDishInstallationObject;
+using static TLIS_DAL.ViewModels.MW_ODUDTOs.AddMwODUinstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -175,6 +176,7 @@ namespace TLIS_DAL.ViewModels
            // ---------------------------------------------------------------------------------------
 
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
+            CreateMap<TLImwODU, installationAttributesMWODU>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIallCivilInst>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLIsideArm>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLImwBU>().ReverseMap();
@@ -220,6 +222,11 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditMWODULibraryAttributes, TLImwODULibrary>().ReverseMap();
             CreateMap<MWBULibraryAttributes, TLImwBULibrary>().ReverseMap();
             CreateMap<MWODULibraryAttributes, TLImwODULibrary>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, CivilNonSteelView>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, CIVIL_WITHOUTLEGS_VIEW>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, CivilWithLegView>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, SIDEARM_VIEW>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, MWDISH_VIEW>().ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();

@@ -35,7 +35,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
             public int ItemConnectToId { get; set; }
             public float CenterHigh { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;
-            public float EquivalentSpace { get; set; } = 0;
+
 
         }
         public class InstallationMWDishConfigObject
