@@ -16048,11 +16048,13 @@ namespace TLIS_Service.Services
                 List<BaseInstAttViews> Civilload = new List<BaseInstAttViews>();
                 List<BaseInstAttViews> Config = new List<BaseInstAttViews>();
 
-
-                var MWODU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == MWInsId
-                && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
-                        x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
-                        x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace, x => x.allLoadInst.mwODU.MwODULibrary);
+                var MWODU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null 
+                && x.allLoadInst.mwODUId == MWInsId && !x.Dismantle, x => x.allCivilInst,
+                x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs,
+                x => x.allCivilInst.civilWithoutLeg,x => x.allLoadInst, x => x.allLoadInst.mwODU, 
+                x => x.allLoadInst.mwDish.MwDishLibrary,x => x.allLoadInst.mwODU.Mw_Dish,
+                x => x.allLoadInst.mwODU.OduInstallationType, x => x.allLoadInst.mwODU.Owner,
+                x => x.allLoadInst.mwODU.MwODULibrary);
 
                 if (MWODU != null)
                 {
@@ -16120,31 +16122,31 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
                     var selectedAttributes = ListAttributesActivated
-                    .Where(x => new[] { "OduInstallationType", "Mw_Dish_Name" }
+                    .Where(x => new[] { "oduinstallationtype_name", "mw_dish_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "Mw_Dish_Name", "OduInstallationType", "MwODULibrary_Name" }
+                    .Where(x => new[] { "mw_dish_name", "Oduinstallationtype", "mwodulibrary_mame" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
                         {
-                            case "OduInstallationType":
+                            case "oduinstallationtype_name":
                                 FKitem.Key = "OduInstallationTyped";
                                 FKitem.Label = "Select Installation Place";
                                 FKitem.Value = _mapper.Map<OduInstallationTypeViewModel>(MWODU.allLoadInst.mwODU.OduInstallationType);
-                                FKitem.Options = _mapper.Map<List<OduInstallationTypeViewModel>>(_unitOfWork.InstallationPlaceRepository
+                                FKitem.Options = _mapper.Map<List<OduInstallationTypeViewModel>>(_unitOfWork.OduInstallationTypeRepository
                                     .GetWhere(x => x.Id == MWODU.allLoadInst.mwODU.OduInstallationTypeId));
                                 break;
-                            case "Mw_Dish_Name":
+                            case "mw_dish_name":
                                 FKitem.Key = "MWDishId";
                                 FKitem.Label = "Select MWDish";
                                 FKitem.Value = _mapper.Map<OwnerViewModel>(MWODU.allLoadInst.mwODU.Mw_Dish);
-                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.InstallationPlaceRepository
-                                    .GetWhere(x => x.Id == MWODU.allLoadInst.mwODU.Mw_DishId));
+                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.MWDISH_VIEW
+                                    .Where(x => x.Id == MWODU.allLoadInst.mwODU.Mw_DishId));
                                 break;
                         }
                         return FKitem;
