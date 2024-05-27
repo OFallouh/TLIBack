@@ -15726,7 +15726,7 @@ namespace TLIS_Service.Services
                 x=>x.allLoadInst,x=>x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
                 x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
                 x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace,
-                x => x.allLoadInst.mwDish.MwDishLibrary,x=>XAttribute.sideArm,x=>XAttribute.leg);
+                x => x.allLoadInst.mwDish.MwDishLibrary,x=>x.sideArm,x=>x.leg);
 
                 if (MWDish != null)
                 {
