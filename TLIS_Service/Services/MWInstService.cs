@@ -15722,9 +15722,11 @@ namespace TLIS_Service.Services
 
                 
                 var MWDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId !=null && x.allLoadInst.mwDishId == MWInsId
-                && !x.Dismantle,x=>x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x=>x.allLoadInst,x=>x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
-                        x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
-                        x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace, x => x.allLoadInst.mwDish.MwDishLibrary);
+                && !x.Dismantle,x=>x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                x=>x.allLoadInst,x=>x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
+                x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
+                x => x.allLoadInst.mwDish.ItemConnectTo, x => x.allLoadInst.mwDish.InstallationPlace,
+                x => x.allLoadInst.mwDish.MwDishLibrary,x=>XAttribute.sideArm,x=>XAttribute.leg);
 
                 if (MWDish != null)
                 {
@@ -15916,7 +15918,7 @@ namespace TLIS_Service.Services
                         {
                             ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", MWDish.allCivilInst.civilWithLegs, _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.Id == MWDish.allCivilInst.civilWithLegsId));
                         }
-                        if (MWDish.legId != 0 && MWDish.legId != null && MWDish.sideArmId == null)
+                        if (MWDish.legId != null && MWDish.sideArmId == null)
                         {
 
                             var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == MWDish.legId);
@@ -16054,7 +16056,7 @@ namespace TLIS_Service.Services
                 x => x.allCivilInst.civilWithoutLeg,x => x.allLoadInst, x => x.allLoadInst.mwODU, 
                 x => x.allLoadInst.mwDish.MwDishLibrary,x => x.allLoadInst.mwODU.Mw_Dish,
                 x => x.allLoadInst.mwODU.OduInstallationType, x => x.allLoadInst.mwODU.Owner,
-                x => x.allLoadInst.mwODU.MwODULibrary);
+                x => x.allLoadInst.mwODU.MwODULibrary, x => x.sideArm);
 
                 if (MWODU != null)
                 {
@@ -16135,15 +16137,15 @@ namespace TLIS_Service.Services
                         switch (FKitem.Label.ToLower())
                         {
                             case "oduinstallationtype_name":
-                                FKitem.Key = "OduInstallationTyped";
-                                FKitem.Label = "Select Installation Place";
+                                FKitem.Key = "installationPlaceId";
+                                FKitem.Label = "Select Installation Mode";
                                 FKitem.Value = _mapper.Map<OduInstallationTypeViewModel>(MWODU.allLoadInst.mwODU.OduInstallationType);
                                 FKitem.Options = _mapper.Map<List<OduInstallationTypeViewModel>>(_unitOfWork.OduInstallationTypeRepository
                                     .GetWhere(x => x.Id == MWODU.allLoadInst.mwODU.OduInstallationTypeId));
                                 break;
                             case "mw_dish_name":
-                                FKitem.Key = "MWDishId";
-                                FKitem.Label = "Select MWDish";
+                                FKitem.Key = "mwDishId";
+                                FKitem.Label = "Select Mw Dish";
                                 FKitem.Value = _mapper.Map<OwnerViewModel>(MWODU.allLoadInst.mwODU.Mw_Dish);
                                 FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.MWDISH_VIEW
                                     .Where(x => x.Id == MWODU.allLoadInst.mwODU.Mw_DishId));
@@ -16213,7 +16215,7 @@ namespace TLIS_Service.Services
                             ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", MWODU.allCivilInst.civilWithLegs, _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.Id == MWODU.allCivilInst.civilWithLegsId));
                         }
 
-                        if (MWODU.sideArmId != 0  && MWODU.sideArmId == null)
+                        if (MWODU.sideArmId != 0  || MWODU.sideArmId == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {
