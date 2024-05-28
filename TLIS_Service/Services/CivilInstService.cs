@@ -2551,7 +2551,7 @@ namespace TLIS_Service.Services
                         if (civilwithleglibrary.Model != null)
                             Model = civilwithleglibrary.Model;
 
-                        civilWithLegs.Name = sitename + " " + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented;
+                        civilWithLegs.Name = sitename + " " + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented+"HE";
 
 
                         var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&

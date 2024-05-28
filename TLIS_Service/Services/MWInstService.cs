@@ -16104,7 +16104,6 @@ namespace TLIS_Service.Services
                         switch (FKitem.Label.ToLower())
                         {
 
- 
                             case "owner_name":
                                 if (MWODU.allLoadInst.mwODU.Owner != null)
                                 {
@@ -16141,7 +16140,7 @@ namespace TLIS_Service.Services
                                 FKitem.Label = "Select Installation Mode";
                                 FKitem.Value = _mapper.Map<OduInstallationTypeViewModel>(MWODU.allLoadInst.mwODU.OduInstallationType);
                                 FKitem.Options = _mapper.Map<List<OduInstallationTypeViewModel>>(_unitOfWork.OduInstallationTypeRepository
-                                    .GetWhere(x => x.Id == MWODU.allLoadInst.mwODU.OduInstallationTypeId));
+                                    .GetWhere(x => !x.Deleted && !x.Disable));
                                 break;
                             case "mw_dish_name":
                                 FKitem.Key = "mwDishId";
@@ -16223,12 +16222,30 @@ namespace TLIS_Service.Services
                                 Value = MWODU.sideArmId,
                                 Label = "Select sideArm",
                                 Options = _dbContext.SIDEARM_VIEW.FirstOrDefault(x=>x.Id== MWODU.sideArmId)?.Name,
-                                DataType = "list"
+                                DataType = "list",
+                                visible=true
                             };
                             Config.Add(baseInstAttViews);
                           
                         }
+                        else
+                        {
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews
+                            {
+                                Key = "sideArmId",
+                                Value = new object[0],
+                                Label = "Select sideArm",
+                                Options = new object[0],
+                                DataType = "list",
+                                visible = false
+                            };
+                            Config.Add(baseInstAttViews);
+                        }
                         objectInst.installationConfig = Config;
+                        objectInst.installationConfig = objectInst.installationConfig.OrderByDescending(x => x.Key.ToLower().StartsWith("mwdishid"))
+                            .ThenBy(x => x.Key == null)
+                            .ThenBy(x => x.Key)
+                            .ToList();
                     }
                     var InstallationDate = new BaseInstAttViews()
                     {
