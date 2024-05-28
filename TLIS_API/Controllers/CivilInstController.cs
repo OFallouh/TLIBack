@@ -533,7 +533,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetlogicalOperation();
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("CheckFilterSideArm_LoadsOnCivils")]
         [ProducesResponseType(200, Type = typeof(SideArmAndLoadsOnCivil))]
         public IActionResult CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType)

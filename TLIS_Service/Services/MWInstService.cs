@@ -16146,8 +16146,8 @@ namespace TLIS_Service.Services
                                 FKitem.Key = "mwDishId";
                                 FKitem.Label = "Select Mw Dish";
                                 FKitem.Value = _mapper.Map<OwnerViewModel>(MWODU.allLoadInst.mwODU.Mw_Dish);
-                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.MWDISH_VIEW
-                                    .Where(x => x.Id == MWODU.allLoadInst.mwODU.Mw_DishId));
+                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.MWDISH_VIEW.Where(x=>x.Id
+                                == MWODU.allLoadInst.mwODU.Mw_Dish.Id));
                                 break;
                         }
                         return FKitem;
@@ -16214,7 +16214,7 @@ namespace TLIS_Service.Services
                             ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", MWODU.allCivilInst.civilWithLegs, _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.Id == MWODU.allCivilInst.civilWithLegsId));
                         }
 
-                        if (MWODU.sideArmId != 0  || MWODU.sideArmId == null)
+                        if (MWODU.sideArmId != 0 && MWODU.sideArmId != null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {
@@ -16241,11 +16241,20 @@ namespace TLIS_Service.Services
                             };
                             Config.Add(baseInstAttViews);
                         }
-                        objectInst.installationConfig = Config;
-                        objectInst.installationConfig = objectInst.installationConfig.OrderByDescending(x => x.Key.ToLower().StartsWith("mwdishid"))
-                            .ThenBy(x => x.Key == null)
-                            .ThenBy(x => x.Key)
-                            .ToList();
+                        string[] prefixes = new string[]
+                        {
+                            "installationplaceid",
+                            "civilsteeltype",
+                            "civilwithleg",
+                            "civilwithoutleg",
+                            "civilnonsteel",
+                            "sidearmid",
+                            "mwdishid"
+                        };
+
+                        objectInst.installationConfig = Config
+                            .OrderBy(x => Array.FindIndex(prefixes, prefix => x.Key.ToLower().StartsWith(prefix)))
+                            .ThenBy(x => x.Key);
                     }
                     var InstallationDate = new BaseInstAttViews()
                     {

@@ -803,7 +803,7 @@ namespace TLIS_Service.Services
                     var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
                      x.Dismantle, x => x.sideArm).ToList();
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
-                    if ((SideArmInstllation != null && SideArmInstllation.Count > 0) || NewSideWithArm.Active == true)
+                    if (SideArmInstllation != null && SideArmInstllation.Count > 0)
                     {
                         return new Response<SideArmLibraryViewModel>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
