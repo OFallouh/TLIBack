@@ -3061,12 +3061,12 @@ namespace TLIS_Service.Services
                                     if (AddMW_ODU.installationConfig?.mwDishId != null)
                                     {
                                         TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                        && !x.Dismantle && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
-                                        x=>x.allLoadInst,x=>x.allLoadInst.mwDish,x=>x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwDish.MwDishLibrary.polarityType);
+                                        && !x.Dismantle && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                        x =>x.allLoadInst,x=>x.allLoadInst.mwDish,x=>x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwDish.MwDishLibrary.polarityType);
                                         if(tLImwDish ==null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                        && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                        && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                         x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
                                         
                                         if (tLImwDishCount !=null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower()=="single")
@@ -3136,28 +3136,28 @@ namespace TLIS_Service.Services
                                         if (AddMW_ODU.installationConfig?.civilWithLegId != null)
                                         {
                                             TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle 
-                                            && x.allCivilInst.civilWithLegsId == AddMW_ODU.installationConfig.civilWithLegId && x.SiteCode == SiteCode);
+                                            && x.allCivilInst.civilWithLegsId == AddMW_ODU.installationConfig.civilWithLegId && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
 
                                             if (AddMW_ODU.installationConfig?.sideArmId != null)
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null && 
-                                                x.allCivilInstId != null && x.allCivilInst.civilWithLegsId == AddMW_ODU.installationConfig.civilWithLegId
-                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode == SiteCode);
+                                                x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
+                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 
                                                 if (AddMW_ODU.installationConfig?.mwDishId != null)
                                                 {
                                                     TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.sideArmId !=null && x.allCivilInstId !=null && x.allCivilInst.civilWithLegsId== AddMW_ODU.installationConfig.civilWithLegId 
-                                                    && x.sideArmId== AddMW_ODU.installationConfig.sideArmId && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                                    && !x.Dismantle && x.sideArmId !=null && x.allCivilInstId !=null && x.allCivilInstId== CivilFound.allCivilInstId
+                                                    && x.sideArmId== AddMW_ODU.installationConfig.sideArmId && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,x=>x.allCivilInst,x=>x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
 
                                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
@@ -3407,28 +3407,28 @@ namespace TLIS_Service.Services
                                         if (AddMW_ODU.installationConfig?.civilWithoutLegId != null) 
                                         {
                                             TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
-                                            && x.allCivilInst.civilWithoutLegId == AddMW_ODU.installationConfig.civilWithoutLegId && x.SiteCode == SiteCode);
+                                            && x.allCivilInst.civilWithoutLegId == AddMW_ODU.installationConfig.civilWithoutLegId && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
 
                                             if (AddMW_ODU.installationConfig?.sideArmId != null)
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
-                                                x.allCivilInstId != null && x.allCivilInst.civilWithoutLegId == AddMW_ODU.installationConfig.civilWithoutLegId
-                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode == SiteCode);
+                                                x.allCivilInstId != null && x.allCivilInstId== CivilFound.allCivilInstId
+                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 
                                                 if (AddMW_ODU.installationConfig?.mwDishId != null)
                                                 {
                                                     TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInst.civilWithoutLegId == AddMW_ODU.installationConfig.civilWithoutLegId
-                                                    && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId== CivilFound.allCivilInstId
+                                                    && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
 
                                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
@@ -3679,28 +3679,28 @@ namespace TLIS_Service.Services
                                         if (AddMW_ODU.installationConfig?.civilNonSteelId != null)
                                         {
                                             TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
-                                            && x.allCivilInst.civilNonSteelId == AddMW_ODU.installationConfig.civilNonSteelId && x.SiteCode == SiteCode);
+                                            && x.allCivilInst.civilNonSteelId == AddMW_ODU.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
 
                                             if (AddMW_ODU.installationConfig?.sideArmId != null)
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
-                                                x.allCivilInstId != null && x.allCivilInst.civilNonSteelId == AddMW_ODU.installationConfig.civilNonSteelId
-                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode == SiteCode);
+                                                x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
+                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 
                                                 if (AddMW_ODU.installationConfig?.mwDishId != null)
                                                 {
                                                     TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInst.civilNonSteelId == AddMW_ODU.installationConfig.civilNonSteelId
-                                                    && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId== CivilFound.allCivilInstId
+                                                    && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode == SiteCode,
+                                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
 
                                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
@@ -7967,6 +7967,1200 @@ namespace TLIS_Service.Services
                             else
                             {
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                            }
+                        }
+                    }
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transactionScope.Complete();
+                        }
+                        else
+                        {
+                            transactionScope.Dispose();
+                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transactionScope.Complete();
+                    }
+                    return new Response<GetForAddMWDishInstallationObject>();
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                }
+            }
+        }
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId)
+        {
+            using (TransactionScope transactionScope = new TransactionScope())
+            {
+                try
+                {
+                    int TableNameId = 0;
+
+                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
+                    TLIcivilLoads TLIMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking().
+                       Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.MwODULibrary).
+                       FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODUId
+                        == MWInstallationViewModel.installationAttributes.Id);
+
+                    TLImwODU mwODU = _mapper.Map<TLImwODU>(MWInstallationViewModel.installationAttributes);
+                    if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 1)
+                    {
+                        if (MWInstallationViewModel.installationConfig?.mwDishId != null)
+                        {
+                            TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                            && !x.Dismantle && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                            x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwDish.MwDishLibrary.polarityType);
+                            if (tLImwDish == null)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                            List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
+                            && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower(),
+                            x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+
+                            if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
+                            else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+
+                            if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                            {
+                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                    mwDish.MwDishLibrary.polarityType.Name;
+                            }
+                            var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                                && x.Id != mwODU.Id && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()));
+                            if (CheckName != null)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                            {
+                                bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
+                                if (CheckSerialNumber)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                            }
+                            mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                            mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                            mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                            _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                            if (MWInstallationViewModel.civilLoads != null)
+                            {
+                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                .GetAllAsQueryable()
+                                                .AsNoTracking()
+                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                _unitOfWork.SaveChanges();
+                            }
+
+                            if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+
+                        
+                        }
+                        else
+                        {
+                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWDish to installed this MWODU", (int)ApiReturnCode.fail);
+                        }
+                    }
+                    else if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 2)
+                    {
+                        if (MWInstallationViewModel.installationConfig?.civilSteelType == 0)
+                        {
+                            if (MWInstallationViewModel.installationConfig?.civilWithLegId != null)
+                            {
+                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
+                                if (CivilFound == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
+
+                                if (MWInstallationViewModel.installationConfig?.sideArmId != null)
+                                {
+                                    TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
+                                    x.allCivilInstId != null && x.allCivilInstId== CivilFound.allCivilInstId
+                                    && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
+                                    if (SideARmFound == null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
+
+                                    if (MWInstallationViewModel.installationConfig?.mwDishId != null)
+                                    {
+                                        TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                        && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId== CivilFound.allCivilInstId
+                                        && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
+                                        x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                        if (tLImwDish == null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                        List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
+                                        && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
+                                        x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+
+                                        if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
+                                        else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                        if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                                        {
+                                            bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
+                                            if (CheckSerialNumber)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                        }
+                                        if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                        {
+                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                            if (Message != "Success")
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                            }
+                                            if (mwODU.CenterHigh <= 0)
+                                            {
+                                                if (mwODU.HBA <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                                }
+                                            }
+                                            if (mwODU.SpaceInstallation == 0)
+                                            {
+                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                                {
+                                                    if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                                }
+                                                else
+                                                {
+                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                                }
+                                            }
+
+                                            if (mwODU.Azimuth <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            if (mwODU.Height <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                            x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&x.Id != mwODU.Id&&
+                                            x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                            mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                            if (CheckAzimuthAndHeightBase != null)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                            }
+
+                                            if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                            {
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwDish.MwDishLibrary.polarityType.Name;
+                                            }
+                                            var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                            (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                                && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                            if (CheckName != null)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                            if (CivilFound.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                            {
+                                                CivilFound.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                            }
+                                            var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == CivilFound.allCivilInst.civilWithLegsId);
+
+                                            if (OldVcivilinfo != null)
+                                            {
+                                                if (mwODU.SpaceInstallation != 0 && mwODU.CenterHigh != 0 && CivilFound.allCivilInst.civilWithLegs.HeightBase != 0)
+                                                {
+                                                    var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithLegs.HeightBase);
+
+                                                    CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                    mwODU.EquivalentSpace = EquivalentSpace;
+                                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
+                                        mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                        mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                        mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                        _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                        if (MWInstallationViewModel.civilLoads != null)
+                                        {
+                                            var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                            TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                            TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                            TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                            TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                            TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                            _unitOfWork.SaveChanges();
+                                        }
+
+                                            if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+
+                                        }
+                                        else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                    {
+                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                        if (Message != "Success")
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                        }
+                                        if (mwODU.CenterHigh <= 0)
+                                        {
+                                            if (mwODU.HBA <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                            }
+                                        }
+                                        if (mwODU.SpaceInstallation == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                            {
+                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                            }
+                                            else
+                                            {
+                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                            }
+                                        }
+
+                                        if (mwODU.Azimuth <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        if (mwODU.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                        x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                        x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                        mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                        if (CheckAzimuthAndHeightBase != null)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                        }
+
+                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                        if (CheckName != null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                        if (CivilFound.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                        {
+                                            CivilFound.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                        }
+                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == CivilFound.allCivilInst.civilWithLegsId);
+
+                                        if (OldVcivilinfo != null)
+                                        {
+                                            if (mwODU.SpaceInstallation != 0 && mwODU.CenterHigh != 0 && CivilFound.allCivilInst.civilWithLegs.HeightBase != 0)
+                                            {
+                                                var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithLegs.HeightBase);
+
+                                                CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                mwODU.EquivalentSpace = EquivalentSpace;
+                                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
+                                        mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                        mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                        mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                        _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                        if (MWInstallationViewModel.civilLoads != null)
+                                        {
+                                            var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                            TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                            TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                            TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                            TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                            TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                            _unitOfWork.SaveChanges();
+                                        }
+
+                                            if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                        }
+                                        else if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    {
+                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                        if (Message != "Success")
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                        }
+                                        if (mwODU.CenterHigh <= 0)
+                                        {
+                                            if (mwODU.HBA <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                            }
+                                        }
+                                        if (mwODU.SpaceInstallation == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                            {
+                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                            }
+                                            else
+                                            {
+                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                            }
+                                        }
+
+                                        if (mwODU.Azimuth <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        if (mwODU.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                        x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                        x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                        mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                        if (CheckAzimuthAndHeightBase != null)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                        }
+
+                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                        if (CheckName != null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                        if (CivilFound.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                        {
+                                            CivilFound.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                        }
+                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == CivilFound.allCivilInst.civilWithLegsId);
+
+                                        if (OldVcivilinfo != null)
+                                        { 
+                                            CivilFound.allCivilInst.civilWithLegs.CurrentLoads = CivilFound.allCivilInst.civilWithLegs.CurrentLoads - TLIMWODU.allLoadInst.mwODU.EquivalentSpace;
+                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
+                                            _unitOfWork.SaveChanges();
+                                                
+                                        }
+                                        mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                        mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                        mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                        _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                        if (MWInstallationViewModel.civilLoads != null)
+                                        {
+                                            var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                            TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                            TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                            TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                            TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                            TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                            _unitOfWork.SaveChanges();
+                                        }
+
+                                        if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+
+
+                                    }
+                                        else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    {
+                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                        if (Message != "Success")
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                        }
+                                        if (mwODU.CenterHigh <= 0)
+                                        {
+                                            if (mwODU.HBA <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                            }
+                                        }
+                                        if (mwODU.SpaceInstallation == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                            {
+                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                            }
+                                            else
+                                            {
+                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                            }
+                                        }
+
+                                        if (mwODU.Azimuth <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        if (mwODU.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                        x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                        x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                        mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                        if (CheckAzimuthAndHeightBase != null)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                        }
+
+                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                        if (CheckName != null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                        mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                        mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                        mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                        _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                        if (MWInstallationViewModel.civilLoads != null)
+                                        {
+                                            var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                            TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                            TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                            TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                            TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                            TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                            _unitOfWork.SaveChanges();
+                                        }
+
+                                            if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWDish to installed this MWODU", (int)ApiReturnCode.fail);
+                                    }
+                                }
+                                else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sidearm to installed this MWODU", (int)ApiReturnCode.fail);
+                                }
+                            }
+                            else
+                            {
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs to installed this MWODU", (int)ApiReturnCode.fail);
+                            }
+                        }
+                        if (MWInstallationViewModel.installationConfig?.civilSteelType == 1)
+                        {
+                            if (MWInstallationViewModel.installationConfig?.civilWithoutLegId != null)
+                            {
+                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId &&
+                                x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
+                                if (CivilFound == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
+
+                                if (MWInstallationViewModel.installationConfig?.sideArmId != null)
+                                {
+                                TLIcivilLoads SideArm = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId !=null
+                                && x.allCivilInstId == CivilFound.allCivilInstId && x.sideArmId== MWInstallationViewModel.installationConfig.sideArmId 
+                                && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
+                                if (SideArm == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SideArm is not found", (int)ApiReturnCode.fail);
+
+                                TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId== CivilFound.allCivilInstId
+                                    && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
+                                    x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                if (tLImwDish == null)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
+                                && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+
+                                if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
+                                else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                                {
+                                    bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
+                                    if (CheckSerialNumber)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                }
+                                if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.CenterHigh <= 0)
+                                    {
+                                        if (mwODU.HBA <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else
+                                        {
+                                            mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                        }
+                                    }
+                                    if (mwODU.SpaceInstallation == 0)
+                                    {
+                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                        }
+                                        else
+                                        {
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                        }
+                                    }
+
+                                    if (mwODU.Azimuth <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.Height <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                    mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                    if (CheckAzimuthAndHeightBase != null)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                    }
+
+                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                    {
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwDish.MwDishLibrary.polarityType.Name;
+                                    }
+                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                    if (CheckName != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                    if (CivilFound.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
+                                    {
+                                        CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                                    }
+                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == CivilFound.allCivilInst.civilWithoutLegId);
+
+                                    if (OldVcivilinfo != null)
+                                    {
+                                        if (mwODU.SpaceInstallation != 0 && mwODU.CenterHigh != 0 && CivilFound.allCivilInst.civilWithoutLeg.HeightBase != 0)
+                                        {
+                                            var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithoutLeg.HeightBase);
+
+                                            CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                            mwODU.EquivalentSpace = EquivalentSpace;
+                                            _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                    }
+                                    mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                    mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                    mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                    _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                    if (MWInstallationViewModel.civilLoads != null)
+                                    {
+                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                        TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                        TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                        TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                        TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                        TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                        TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                        if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                    }
+                                else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.CenterHigh <= 0)
+                                    {
+                                        if (mwODU.HBA <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else
+                                        {
+                                            mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                        }
+                                    }
+                                    if (mwODU.SpaceInstallation == 0)
+                                    {
+                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                        }
+                                        else
+                                        {
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                        }
+                                    }
+
+                                    if (mwODU.Azimuth <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.Height <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                    mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                    if (CheckAzimuthAndHeightBase != null)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                    }
+
+                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                    {
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwDish.MwDishLibrary.polarityType.Name;
+                                    }
+                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                    if (CheckName != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                    if (CivilFound.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
+                                    {
+                                        CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                                    }
+                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == CivilFound.allCivilInst.civilWithoutLegId);
+
+                                    if (OldVcivilinfo != null)
+                                    {
+                                        if (mwODU.SpaceInstallation != 0 && mwODU.CenterHigh != 0 && CivilFound.allCivilInst.civilWithoutLeg.HeightBase != 0)
+                                        {
+                                            var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithoutLeg.HeightBase);
+
+                                            CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                            mwODU.EquivalentSpace = EquivalentSpace;
+                                            _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                    }
+                                    mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                    mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                    mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                    _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                    if (MWInstallationViewModel.civilLoads != null)
+                                    {
+                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                        TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                        TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                        TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                        TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                        TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                        TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                        if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+
+                                    }
+                                else if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.CenterHigh <= 0)
+                                    {
+                                        if (mwODU.HBA <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else
+                                        {
+                                            mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                        }
+                                    }
+                                    if (mwODU.SpaceInstallation == 0)
+                                    {
+                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                        }
+                                        else
+                                        {
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                        }
+                                    }
+
+                                    if (mwODU.Azimuth <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.Height <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                    mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                    if (CheckAzimuthAndHeightBase != null)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                    }
+
+                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                    {
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwDish.MwDishLibrary.polarityType.Name;
+                                    }
+                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                    if (CheckName != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                    if (CivilFound.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
+                                    {
+                                        CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                                    }
+                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == CivilFound.allCivilInst.civilWithoutLegId);
+
+                                    if (OldVcivilinfo != null)
+                                    {
+                                        CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads = CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads - TLIMWODU.allLoadInst.mwODU.EquivalentSpace;
+                                        _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
+                                        _unitOfWork.SaveChanges();
+
+                                    }
+                                    mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                    mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                    mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                    _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                    if (MWInstallationViewModel.civilLoads != null)
+                                    {
+                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                        TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                        TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                        TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                        TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                        TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                        TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                        if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                    }
+                                else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.CenterHigh <= 0)
+                                    {
+                                        if (mwODU.HBA <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else
+                                        {
+                                            mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                        }
+                                    }
+                                    if (mwODU.SpaceInstallation == 0)
+                                    {
+                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                        }
+                                        else
+                                        {
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                        }
+                                    }
+
+                                    if (mwODU.Azimuth <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.Height <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                    mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                    if (CheckAzimuthAndHeightBase != null)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                    }
+
+                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                    {
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwDish.MwDishLibrary.polarityType.Name;
+                                    }
+                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                    if (CheckName != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                    mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                    mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                    mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                    _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                    if (MWInstallationViewModel.civilLoads != null)
+                                    {
+                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                        TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                        TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                        TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                        TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                        TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                        TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                        if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                    }
+                                else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWDish to installed this MWODU", (int)ApiReturnCode.fail);
+                                }
+                                }
+                                else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sidearm to installed this MWODU", (int)ApiReturnCode.fail);
+                                }
+
+                            }
+                            else
+                            {
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithoutlegs to installed this MWODU", (int)ApiReturnCode.fail);
+                            }
+                        }
+                        if (MWInstallationViewModel.installationConfig?.civilSteelType == 2)
+                        {
+                            if (MWInstallationViewModel.installationConfig?.civilNonSteelId != null)
+                            {
+                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
+                                if (CivilFound == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
+
+                            if (MWInstallationViewModel.installationConfig?.sideArmId != null)
+                            {
+                                TLIcivilLoads SideArm = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null
+                                && x.allCivilInstId == CivilFound.allCivilInstId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId
+                                && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
+                                if (SideArm == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SideArm is not found", (int)ApiReturnCode.fail);
+
+                                TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
+                                    && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
+                                    x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                if (tLImwDish == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
+                                && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
+                                x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+
+                                if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
+                                else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                                {
+                                    bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
+                                    if (CheckSerialNumber)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                }
+                      
+                                 
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.CenterHigh <= 0)
+                                    {
+                                        if (mwODU.HBA <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                        }
+                                        else
+                                        {
+                                            mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
+                                        }
+                                    }
+                                    if (mwODU.SpaceInstallation == 0)
+                                    {
+                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
+                                        {
+                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
+                                        }
+                                        else
+                                        {
+                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
+                                        }
+                                    }
+
+                                    if (mwODU.Azimuth <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (mwODU.Height <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    var CheckAzimuthAndHeightBase = _dbContext.MWODU_VIEW.Where(
+                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
+                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
+                                    mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+
+                                    if (CheckAzimuthAndHeightBase != null)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                    }
+
+                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                    {
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwDish.MwDishLibrary.polarityType.Name;
+                                    }
+                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
+                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                    if (CheckName != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                    mwODU.MwODULibraryId = MWInstallationViewModel.installationConfig.MwODULibraryId;
+                                    mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
+                                    mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
+                                    _unitOfWork.MW_ODURepository.UpdateWithHistory(UserId, TLIMWODU.allLoadInst.mwODU, mwODU);
+                                    if (MWInstallationViewModel.civilLoads != null)
+                                    {
+                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwODUId == mwODU.Id && !x.Dismantle);
+                                        TLIMWODU.allCivilInstId = tLImwDish.allCivilInst.Id;
+                                        TLIMWODU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                        TLIMWODU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                        TLIMWODU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                        TLIMWODU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                        TLIMWODU.SiteCode = tLImwDish.SiteCode;
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODU);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
+                                    if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
+                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+
+                                    else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWDish to installed this MWODU", (int)ApiReturnCode.fail);
+                                }
+                            }
+                            else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sidearm to installed this MWODU", (int)ApiReturnCode.fail);
+                                }
+                            }
+                            else
+                            {
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel to installed this MWODU", (int)ApiReturnCode.fail);
                             }
                         }
                     }
@@ -16145,9 +17339,10 @@ namespace TLIS_Service.Services
                             case "mw_dish_name":
                                 FKitem.Key = "mwDishId";
                                 FKitem.Label = "Select Mw Dish";
-                                FKitem.Value = _mapper.Map<OwnerViewModel>(MWODU.allLoadInst.mwODU.Mw_Dish);
-                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.MWDISH_VIEW.Where(x=>x.Id
-                                == MWODU.allLoadInst.mwODU.Mw_Dish.Id));
+                                FKitem.Value = _mapper.Map<OwnerViewModel>(_dbContext.MWDISH_VIEW.FirstOrDefault(x=>x.Id==
+                                MWODU.allLoadInst.mwODU.Mw_Dish.Id));
+                                FKitem.Options = _mapper.Map<OwnerViewModel>(_dbContext.MWDISH_VIEW.FirstOrDefault(x => x.Id ==
+                                MWODU.allLoadInst.mwODU.Mw_Dish.Id));
                                 break;
                         }
                         return FKitem;
@@ -16219,9 +17414,9 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {
                                 Key = "sideArmId",
-                                Value = MWODU.sideArmId,
+                                Value = _mapper.Map<OwnerViewModel>(_dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWODU.sideArmId)),
                                 Label = "Select sideArm",
-                                Options = _dbContext.SIDEARM_VIEW.FirstOrDefault(x=>x.Id== MWODU.sideArmId)?.Name,
+                                Options = _mapper.Map<OwnerViewModel>(_dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWODU.sideArmId)),
                                 DataType = "list",
                                 visible=true
                             };
