@@ -16958,7 +16958,7 @@ namespace TLIS_Service.Services
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLImwDish.ToString(), MWDish.allLoadInst.mwDish
-                          , "EquivalentSpace").ToList();
+                            ).ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
                     if (NameAttribute != null)
@@ -17027,21 +17027,21 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
                     var selectedAttributes = ListAttributesActivated
-                    .Where(x => new[] { "Oduinstallationtype_name" }
+                    .Where(x => new[] { "installationplace_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "Oduinstallationtype_name", "mwodulibrary_name" }
+                    .Where(x => new[] { "installationplace_name", "mwdishlibrary_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
                         {
-                            case "Oduinstallationtype_name":
-                                FKitem.Key = "OduInstallationTypeId";
-                                FKitem.Label = "Select Installation Mode";
+                            case "installationplace_name":
+                                FKitem.Key = "installationPlaceId";
+                                FKitem.Label = "Select Installation Place";
                                 FKitem.Value = _mapper.Map<InstallationPlaceViewModel>(MWDish.allLoadInst.mwDish.InstallationPlace);
                                 FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_unitOfWork.InstallationPlaceRepository
                                     .GetWhere(x => x.Id == MWDish.allLoadInst.mwDish.InstallationPlaceId));
@@ -17283,7 +17283,7 @@ namespace TLIS_Service.Services
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLImwODU.ToString(), MWODU.allLoadInst.mwODU
-                            ).ToList();
+                          , "EquivalentSpace").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
@@ -17317,14 +17317,15 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
                     var selectedAttributes = ListAttributesActivated
-                    .Where(x => new[] { "oduinstallationtype_name", "mw_dish_name" }
-                                .Contains(x.Label.ToLower()))
-                    .ToList();
+                   .Where(x => new[] { "Oduinstallationtype_name" }
+                               .Contains(x.Label.ToLower()))
+                   .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "mw_dish_name", "Oduinstallationtype", "mwodulibrary_mame" }
+                    .Where(x => new[] { "Oduinstallationtype_name", "mwodulibrary_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
+         
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
@@ -17416,7 +17417,7 @@ namespace TLIS_Service.Services
                                 Key = "sideArmId",
                                 Value = _mapper.Map<OwnerViewModel>(_dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWODU.sideArmId)),
                                 Label = "Select sideArm",
-                                Options = _mapper.Map<OwnerViewModel>(_dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWODU.sideArmId)),
+                                Options =  _mapper.Map<OwnerViewModel>(_dbContext.SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWODU.sideArmId)),
                                 DataType = "list",
                                 visible=true
                             };
