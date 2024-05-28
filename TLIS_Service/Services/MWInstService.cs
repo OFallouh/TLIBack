@@ -16958,7 +16958,7 @@ namespace TLIS_Service.Services
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLImwDish.ToString(), MWDish.allLoadInst.mwDish
-                            ).ToList();
+                          , "EquivalentSpace").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "DishName".ToLower());
                     if (NameAttribute != null)
@@ -17027,20 +17027,20 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
                     var selectedAttributes = ListAttributesActivated
-                    .Where(x => new[] { "installationplace_name" }
+                    .Where(x => new[] { "Oduinstallationtype_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "installationplace_name", "mwdishlibrary_name" }
+                    .Where(x => new[] { "Oduinstallationtype_name", "mwodulibrary_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
                         {
-                            case "installationplace_name":
-                                FKitem.Key = "installationPlaceId";
+                            case "Oduinstallationtype_name":
+                                FKitem.Key = "OduInstallationTypeId";
                                 FKitem.Label = "Select Installation Mode";
                                 FKitem.Value = _mapper.Map<InstallationPlaceViewModel>(MWDish.allLoadInst.mwDish.InstallationPlace);
                                 FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_unitOfWork.InstallationPlaceRepository
