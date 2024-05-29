@@ -1825,6 +1825,17 @@ namespace TLIS_Service.Services
                                 DataType = "MultiSelect"
                             });
                         }
+                        else
+                        {
+                            Config.Add(new BaseInstAttViews
+                            {
+                                Key = "legId",
+                                Value = new object[0],
+                                Label = "Select Leg",
+                                Options = new object[0],
+                                DataType = "MultiSelect"
+                            });
+                        }
                         attributes.installationConfig = Config;
                     }
 
