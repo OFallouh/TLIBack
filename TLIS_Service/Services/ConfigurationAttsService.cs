@@ -13148,11 +13148,11 @@ namespace TLIS_Service.Services
         //        return new Response<ConfigurationAttsViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
         //    }
         //}
-        public async Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId,int UserId)
+        public async Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId,string NewName,int UserId)
         {
             try
             {
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
                      || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
                 {
                     return new Response<ConfigurationAttsViewModel>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -13180,14 +13180,14 @@ namespace TLIS_Service.Services
                         {
 
                             TLIowner CheckName = _unitOfWork.OwnerRepository
-                                .GetWhereFirst(x => x.OwnerName == viewModel.Name);
+                                .GetWhereFirst(x => x.OwnerName == NewName);
                             if (CheckName != null)
-                                return new Response<ConfigurationAttsViewModel>(false, null, null, $"this owner name {viewModel.Name} is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ConfigurationAttsViewModel>(false, null, null, $"this owner name {NewName} is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
-                                .GetWhereFirst(x => x.Id == viewModel.Id);
+                                .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.OwnerName = viewModel.Name;
+                            NewEntity.OwnerName = NewName;
 
                             _unitOfWork.OwnerRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
@@ -13221,7 +13221,7 @@ namespace TLIS_Service.Services
             try
             {
  
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
                      || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
                 {
                     return new Response<List<TableAffected>>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -13283,7 +13283,7 @@ namespace TLIS_Service.Services
             try
             {
 
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
                      || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
                 {
                     return new Response<List<TableAffected>>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);

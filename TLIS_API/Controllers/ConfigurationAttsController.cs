@@ -68,7 +68,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("Update")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public async Task<IActionResult> Update(string TableName, string ListName, int RecordId)
+        public async Task<IActionResult> Update(string TableName, string ListName, string NewName, int RecordId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -88,7 +88,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.ConfigurationAttsService.Update(TableName, ListName, RecordId, userId);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Update(TableName, ListName, RecordId, NewName, userId);
             return Ok(response);          
         }
         [HttpPost("Disable")]
@@ -118,7 +118,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("Delete")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public async Task<IActionResult> Delete(string TableName, string ListName, int RecordId)
+        public async Task<IActionResult> Delete(string TableName, int RecordId, string ListName)
         {
 
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -139,7 +139,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.ConfigurationAttsService.Delete(TableName, ListName, RecordId, userId);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Delete(TableName, RecordId, userId, ListName);
             return Ok(response);
         }
     }

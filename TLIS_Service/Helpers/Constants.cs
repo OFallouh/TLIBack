@@ -2442,6 +2442,8 @@ namespace TLIS_Service.Helpers
             /// After Update (Library)
             /// </summary>
 
+            [Description("TLIsupportTypeDesigned TLIsectionsLegType TLIstructureType TLIcivilSteelSupportCategory")]
+            TLIcivilWithLegLibrary,
 
             [Description("TLIstructureType TLIcivilSteelSupportCategory TLIinstallationCivilwithoutLegsType")]
             TLIcivilWithoutLegLibrary,

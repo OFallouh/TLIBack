@@ -17,6 +17,6 @@ namespace TLIS_Service.IService
         Response<ConfigurationAttsViewModel> Add(AddConfigrationAttViewModel viewModel);
         Task<Response<List<TableAffected>>> Delete(string TabelName, int RecordId, int UserId, string ListName);
         Task<Response<List<TableAffected>>> Disable(string TabelName, int RecordId, string ListName, int UserId);
-        Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId, int UserId);
+        Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId, string NewName, int UserId);
     }
 }
