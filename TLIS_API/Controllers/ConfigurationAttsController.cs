@@ -50,20 +50,30 @@ namespace TLIS_API.Controllers
 
         [HttpPost("Add")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public IActionResult Add([FromBody]AddConfigrationAttViewModel model)
+        public IActionResult Add(string TabelName,string ListName, string NewName)
         {
-            if(TryValidateModel(model, nameof(ConfigurationAttsViewModel)))
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
-                var response = _unitOfWorkService.ConfigurationAttsService.Add(model);
-                return Ok(response);
+                return Unauthorized();
             }
-            else
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<ConfigurationAttsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Unauthorized();
             }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.ConfigurationAttsService.Add(TabelName, ListName, NewName, userId);
+            return Ok(response);
+            
+           
         }
 
         [HttpPost("Update")]

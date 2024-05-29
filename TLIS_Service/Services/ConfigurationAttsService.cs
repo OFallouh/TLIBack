@@ -72,615 +72,615 @@ namespace TLIS_Service.Services
             _mapper = mapper;
             db = _db;
         }
-        public Response<ConfigurationAttsViewModel> Add(AddConfigrationAttViewModel Viewmodel)
-        {
-            try
-            {
-                if(string.IsNullOrWhiteSpace(Viewmodel.Name) || string.IsNullOrEmpty(Viewmodel.Name))
-                    return new Response<ConfigurationAttsViewModel>(true, null, null, $"You Can't Add Empty Name", (int)Helpers.Constants.ApiReturnCode.fail);
+        //public Response<ConfigurationAttsViewModel> Add(AddConfigrationAttViewModel Viewmodel)
+        //{
+        //    try
+        //    {
+        //        if(string.IsNullOrWhiteSpace(Viewmodel.Name) || string.IsNullOrEmpty(Viewmodel.Name))
+        //            return new Response<ConfigurationAttsViewModel>(true, null, null, $"You Can't Add Empty Name", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                string TableName = Viewmodel.TableName;
-                ConfigurationAttsViewModel model = new ConfigurationAttsViewModel(Viewmodel.Name);
+        //        string TableName = Viewmodel.TableName;
+        //        ConfigurationAttsViewModel model = new ConfigurationAttsViewModel(Viewmodel.Name);
 
-                if (ConfigrationTables.TLIdiversityType.ToString() == TableName)
-                {
-                    var diversityType = _mapper.Map<AddDiversityTypeViewModel>(model);
-                    var diversityTypeEntity = _mapper.Map<TLIdiversityType>(diversityType);
-                    if(!ValidateAdd(ConfigrationTables.TLIdiversityType.ToString(), diversityTypeEntity))
-                    {
-                        _unitOfWork.DiversityTypeRepository.Add(diversityTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This diversityType {diversityTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        if (ConfigrationTables.TLIdiversityType.ToString() == TableName)
+        //        {
+        //            var diversityType = _mapper.Map<AddDiversityTypeViewModel>(model);
+        //            var diversityTypeEntity = _mapper.Map<TLIdiversityType>(diversityType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIdiversityType.ToString(), diversityTypeEntity))
+        //            {
+        //                _unitOfWork.DiversityTypeRepository.Add(diversityTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This diversityType {diversityTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
                     
-                }
-                else if (ConfigrationTables.TLIdataType.ToString() == TableName)
-                {
-                    var dataType = _mapper.Map<AddDataTypeViewModel>(model);
-                    var dataTypeEntity = _mapper.Map<TLIdataType>(dataType);
-                    if (!ValidateAdd(ConfigrationTables.TLIdataType.ToString(), dataTypeEntity))
-                    {
-                        _unitOfWork.DataTypeRepository.Add(dataTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This dataType {dataTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        }
+        //        else if (ConfigrationTables.TLIdataType.ToString() == TableName)
+        //        {
+        //            var dataType = _mapper.Map<AddDataTypeViewModel>(model);
+        //            var dataTypeEntity = _mapper.Map<TLIdataType>(dataType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIdataType.ToString(), dataTypeEntity))
+        //            {
+        //                _unitOfWork.DataTypeRepository.Add(dataTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This dataType {dataTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
-                else if (ConfigrationTables.TLIoperation.ToString() == TableName)
-                {
-                    var operation = _mapper.Map<AddOperationViewModel>(model);
-                    var operationEntity = _mapper.Map<TLIoperation>(operation);
-                    if (!ValidateAdd(ConfigrationTables.TLIoperation.ToString(), operationEntity))
-                    {
-                        _unitOfWork.OperationRepository.Add(operationEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This operation {operationEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        }
+        //        else if (ConfigrationTables.TLIoperation.ToString() == TableName)
+        //        {
+        //            var operation = _mapper.Map<AddOperationViewModel>(model);
+        //            var operationEntity = _mapper.Map<TLIoperation>(operation);
+        //            if (!ValidateAdd(ConfigrationTables.TLIoperation.ToString(), operationEntity))
+        //            {
+        //                _unitOfWork.OperationRepository.Add(operationEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This operation {operationEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
-                else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
-                {
-                    var logicalOperation = _mapper.Map<AddLogicalOperationViewModel>(model);
-                    var logicalOperationEntity = _mapper.Map<TLIlogicalOperation>(logicalOperation);
-                    if (!ValidateAdd(ConfigrationTables.TLIlogicalOperation.ToString(), logicalOperationEntity))
-                    {
-                        _unitOfWork.LogicalOperationRepository.Add(logicalOperationEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This logical operation {logicalOperationEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        }
+        //        else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
+        //        {
+        //            var logicalOperation = _mapper.Map<AddLogicalOperationViewModel>(model);
+        //            var logicalOperationEntity = _mapper.Map<TLIlogicalOperation>(logicalOperation);
+        //            if (!ValidateAdd(ConfigrationTables.TLIlogicalOperation.ToString(), logicalOperationEntity))
+        //            {
+        //                _unitOfWork.LogicalOperationRepository.Add(logicalOperationEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This logical operation {logicalOperationEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
-                else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
-                {
-                    var telecomType = _mapper.Map<AddTelecomTypeViewModel>(model);
-                    var telecomTypeEntity = _mapper.Map<TLItelecomType>(telecomType);
-                    if (!ValidateAdd(ConfigrationTables.TLItelecomType.ToString(),telecomTypeEntity))
-                    {
-                        _unitOfWork.TelecomTypeRepository.Add(telecomTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This TelecomType {telecomTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        }
+        //        else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
+        //        {
+        //            var telecomType = _mapper.Map<AddTelecomTypeViewModel>(model);
+        //            var telecomTypeEntity = _mapper.Map<TLItelecomType>(telecomType);
+        //            if (!ValidateAdd(ConfigrationTables.TLItelecomType.ToString(),telecomTypeEntity))
+        //            {
+        //                _unitOfWork.TelecomTypeRepository.Add(telecomTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This TelecomType {telecomTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
                    
-                }
-                else if (ConfigrationTables.TLIsideArmInstallationPlace.ToString() == TableName)
-                {
-                    var sideArmInstallationPlace = _mapper.Map<AddSideArmInstallationPlaceViewModel>(model);
-                    var sideArmInstallationPlaceEntity = _mapper.Map<TLIsideArmInstallationPlace>(sideArmInstallationPlace);
-                    if(!ValidateAdd(ConfigrationTables.TLIsideArmInstallationPlace.ToString(),sideArmInstallationPlaceEntity))
-                    {
-                        _unitOfWork.SideArmInstallationPlaceRepository.Add(sideArmInstallationPlaceEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This sideArmInstallationPlace {sideArmInstallationPlaceEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIoduInstallationType.ToString() == TableName)
-                {
-                    var oduInstallationType = _mapper.Map<AddOduInstallationTypeViewModel>(model);
-                    var oduInstallationTypeEntity = _mapper.Map<TLIoduInstallationType>(oduInstallationType);
-                    if (!ValidateAdd(ConfigrationTables.TLIoduInstallationType.ToString(), oduInstallationTypeEntity))
-                    {
-                        _unitOfWork.OduInstallationTypeRepository.Add(oduInstallationTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                      else
-                      {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This oduInstallationType {oduInstallationTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                      }
-                }
-                else if (ConfigrationTables.TLIrepeaterType.ToString() == TableName)
-                {
-                    var repeaterType = _mapper.Map<AddRepeaterTypeViewModel>(model);
-                    var repeaterTypeEntity = _mapper.Map<TLIrepeaterType>(repeaterType);
-                    if (!ValidateAdd(ConfigrationTables.TLIrepeaterType.ToString(), repeaterTypeEntity))
-                    {
-                        _unitOfWork.RepeaterTypeRepository.Add(repeaterTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This repeaterType {repeaterTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        }
+        //        else if (ConfigrationTables.TLIsideArmInstallationPlace.ToString() == TableName)
+        //        {
+        //            var sideArmInstallationPlace = _mapper.Map<AddSideArmInstallationPlaceViewModel>(model);
+        //            var sideArmInstallationPlaceEntity = _mapper.Map<TLIsideArmInstallationPlace>(sideArmInstallationPlace);
+        //            if(!ValidateAdd(ConfigrationTables.TLIsideArmInstallationPlace.ToString(),sideArmInstallationPlaceEntity))
+        //            {
+        //                _unitOfWork.SideArmInstallationPlaceRepository.Add(sideArmInstallationPlaceEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This sideArmInstallationPlace {sideArmInstallationPlaceEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIoduInstallationType.ToString() == TableName)
+        //        {
+        //            var oduInstallationType = _mapper.Map<AddOduInstallationTypeViewModel>(model);
+        //            var oduInstallationTypeEntity = _mapper.Map<TLIoduInstallationType>(oduInstallationType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIoduInstallationType.ToString(), oduInstallationTypeEntity))
+        //            {
+        //                _unitOfWork.OduInstallationTypeRepository.Add(oduInstallationTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //              else
+        //              {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This oduInstallationType {oduInstallationTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //              }
+        //        }
+        //        else if (ConfigrationTables.TLIrepeaterType.ToString() == TableName)
+        //        {
+        //            var repeaterType = _mapper.Map<AddRepeaterTypeViewModel>(model);
+        //            var repeaterTypeEntity = _mapper.Map<TLIrepeaterType>(repeaterType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIrepeaterType.ToString(), repeaterTypeEntity))
+        //            {
+        //                _unitOfWork.RepeaterTypeRepository.Add(repeaterTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This repeaterType {repeaterTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
-                else if (ConfigrationTables.TLIitemConnectTo.ToString() == TableName)
-                {
-                    var itemConnectTo = _mapper.Map<AddTelecomTypeViewModel>(model);
-                    var itemConnectToEntity = _mapper.Map<TLIitemConnectTo>(itemConnectTo);
-                    if (!ValidateAdd(ConfigrationTables.TLIitemConnectTo.ToString(),itemConnectToEntity))
-                    {
-                        _unitOfWork.ItemConnectToRepository.Add(itemConnectToEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                  else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This itemConnectTo { itemConnectToEntity.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
-                {
-                    var supportTypeDesigned = _mapper.Map<AddSupportTypeDesignedViewModel>(model);
-                    var supportTypeDesignedEntity = _mapper.Map<TLIsupportTypeDesigned>(supportTypeDesigned);
-                    if (!ValidateAdd(ConfigrationTables.TLIsupportTypeDesigned.ToString(),supportTypeDesignedEntity))
-                    {
-                        _unitOfWork.SupportTypeDesignedRepository.Add(supportTypeDesignedEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This supportTypeDesigned { supportTypeDesigned.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIpolarityOnLocation.ToString() == TableName)
-                {
-                    var polarityOnLocation = _mapper.Map<AddPolarityOnLocationViewModel>(model);
-                    var polarityOnLocationEntity = _mapper.Map<TLIpolarityOnLocation>(polarityOnLocation);
-                    if (!ValidateAdd(ConfigrationTables.TLIpolarityOnLocation.ToString(),polarityOnLocationEntity))
-                    {
-                        _unitOfWork.PolarityOnLocationRepository.Add(polarityOnLocationEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This polarityOnLocation { polarityOnLocation.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
-                {
-                    var supportTypeImplemented = _mapper.Map<AddSupportTypeImplementedViewModel>(model);
-                    var supportTypeImplementedEntity = _mapper.Map<TLIsupportTypeImplemented>(supportTypeImplemented);
-                    if (!ValidateAdd(ConfigrationTables.TLIsupportTypeImplemented.ToString(), supportTypeImplementedEntity))
-                    {
-                        _unitOfWork.SupportTypeImplementedRepository.Add(supportTypeImplementedEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                   else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This supportTypeImplemented { supportTypeImplemented.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
-                {
-                    var structureType = _mapper.Map<AddStructureTypeViewModel>(model);
-                    var structureTypeEntity = _mapper.Map<TLIstructureType>(structureType);
-                    if (!ValidateAdd(ConfigrationTables.TLIstructureType.ToString(),structureTypeEntity))
-                    {
-                        _unitOfWork.StructureTypeRepository.Add(structureTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                   else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This structureType { structureType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
-                {
-                    var sectionsLegType = _mapper.Map<AddSectionsLegTypeViewModel>(model);
-                    var sectionsLegTypeEntity = _mapper.Map<TLIsectionsLegType>(sectionsLegType);
-                    if(!ValidateAdd(ConfigrationTables.TLIsectionsLegType.ToString(),sectionsLegTypeEntity))
-                    {
-                        _unitOfWork.SectionsLegTypeRepository.Add(sectionsLegTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                   else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This sectionsLegType { sectionsLegType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
-                {
-                    var logisticalType = _mapper.Map<AddLogisticalTypeViewModel>(model);
-                    var logisticalTypeEntity = _mapper.Map<TLIlogisticalType>(logisticalType);
-                    if(!ValidateAdd(ConfigrationTables.TLIlogisticalType.ToString(),logisticalTypeEntity))
-                    {
-                        _unitOfWork.logisticalTypeRepository.Add(logisticalTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                  else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This logisticalType { logisticalType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
-                {
-                    var baseCivilWithLegsType = _mapper.Map<AddBaseCivilWithLegsTypeViewModel>(model);
-                    var baseCivilWithLegsTypeEntity = _mapper.Map<TLIbaseCivilWithLegsType>(baseCivilWithLegsType);
-                    if(!ValidateAdd(ConfigrationTables.TLIbaseCivilWithLegsType.ToString(),baseCivilWithLegsTypeEntity))
-                    {
-                        _unitOfWork.BaseCivilWithLegsTypeRepository.Add(baseCivilWithLegsTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This baseCivilWithLegsType { baseCivilWithLegsType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
-                {
-                    var baseGeneratorType = _mapper.Map<AddBaseGeneratorTypeViewModel>(model);
-                    var baseGeneratorTypeEntity = _mapper.Map<TLIbaseGeneratorType>(baseGeneratorType);
-                    if(!ValidateAdd(ConfigrationTables.TLIbaseGeneratorType.ToString(),baseGeneratorTypeEntity))
-                    {
-                        _unitOfWork.BaseGeneratorTypeRepository.Add(baseGeneratorTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                   else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This baseGeneratorType { baseGeneratorType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
-                {
-                    var InstCivilwithoutLegsType = _mapper.Map<AddInstCivilwithoutLegsTypeViewModel>(model);
-                    var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(InstCivilwithoutLegsType);
-                    if(!ValidateAdd(ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString(),InstCivilwithoutLegsTypeEntity))
-                    {
-                        _unitOfWork.InstCivilwithoutLegsTypeRepository.Add(InstCivilwithoutLegsTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                  else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This InstCivilwithoutLegsType { InstCivilwithoutLegsType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIboardType.ToString() == TableName)
-                {
-                    var boardType = _mapper.Map<AddBoardTypeViewModel>(model);
-                    var boardTypeEntity = _mapper.Map<TLIboardType>(boardType);
-                    if(!ValidateAdd(ConfigrationTables.TLIboardType.ToString(),boardTypeEntity))
-                    {
-                        _unitOfWork.BoardTypeRepository.Add(boardTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                   else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This boardType { boardType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIguyLineType.ToString() == TableName)
-                {
-                    var guyLineType = _mapper.Map<AddGuyLineTypeViewModel>(model);
-                    var guyLineTypeEntity = _mapper.Map<TLIguyLineType>(guyLineType);
-                    if(!ValidateAdd(ConfigrationTables.TLIguyLineType.ToString(),guyLineTypeEntity))
-                    {
-                        _unitOfWork.GuyLineTypeRepository.Add(guyLineTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                   else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This guyLineType { guyLineType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
-                {
-                    var enforcmentCategory = _mapper.Map<AddEnforcmentCategoryViewModel>(model);
-                    var enforcmentCategoryEntity = _mapper.Map<TLIenforcmentCategory>(enforcmentCategory);
-                    if (!ValidateAdd(ConfigrationTables.TLIenforcmentCategory.ToString(), enforcmentCategoryEntity))
-                    {
-                        _unitOfWork.EnforcmentCategoryRepository.Add(enforcmentCategoryEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This enforcmentCategory { enforcmentCategory.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIdocumentType.ToString() == TableName)
-                {
-                    var documentType = _mapper.Map<AddDocumentTypeViewModel>(model);
-                    var documentTypeEntity = _mapper.Map<TLIdocumentType>(documentType);
-                    if (!ValidateAdd(ConfigrationTables.TLIdocumentType.ToString(), documentTypeEntity))
-                    {
-                        _unitOfWork.DocumentTypeRepository.Add(documentTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This documentType { documentType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIpowerType.ToString() == TableName)
-                {
-                    var powerType = _mapper.Map<AddPowerTypeViewModel>(model);
-                    var powerTypeEntity = _mapper.Map<TLIpowerType>(powerType);
-                    if (!ValidateAdd(ConfigrationTables.TLIpowerType.ToString(), powerTypeEntity))
-                    {
-                        _unitOfWork.PowerTypeRepository.Add(powerTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This powerType { powerType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
+        //        }
+        //        else if (ConfigrationTables.TLIitemConnectTo.ToString() == TableName)
+        //        {
+        //            var itemConnectTo = _mapper.Map<AddTelecomTypeViewModel>(model);
+        //            var itemConnectToEntity = _mapper.Map<TLIitemConnectTo>(itemConnectTo);
+        //            if (!ValidateAdd(ConfigrationTables.TLIitemConnectTo.ToString(),itemConnectToEntity))
+        //            {
+        //                _unitOfWork.ItemConnectToRepository.Add(itemConnectToEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //          else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This itemConnectTo { itemConnectToEntity.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
+        //        {
+        //            var supportTypeDesigned = _mapper.Map<AddSupportTypeDesignedViewModel>(model);
+        //            var supportTypeDesignedEntity = _mapper.Map<TLIsupportTypeDesigned>(supportTypeDesigned);
+        //            if (!ValidateAdd(ConfigrationTables.TLIsupportTypeDesigned.ToString(),supportTypeDesignedEntity))
+        //            {
+        //                _unitOfWork.SupportTypeDesignedRepository.Add(supportTypeDesignedEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This supportTypeDesigned { supportTypeDesigned.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIpolarityOnLocation.ToString() == TableName)
+        //        {
+        //            var polarityOnLocation = _mapper.Map<AddPolarityOnLocationViewModel>(model);
+        //            var polarityOnLocationEntity = _mapper.Map<TLIpolarityOnLocation>(polarityOnLocation);
+        //            if (!ValidateAdd(ConfigrationTables.TLIpolarityOnLocation.ToString(),polarityOnLocationEntity))
+        //            {
+        //                _unitOfWork.PolarityOnLocationRepository.Add(polarityOnLocationEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This polarityOnLocation { polarityOnLocation.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
+        //        {
+        //            var supportTypeImplemented = _mapper.Map<AddSupportTypeImplementedViewModel>(model);
+        //            var supportTypeImplementedEntity = _mapper.Map<TLIsupportTypeImplemented>(supportTypeImplemented);
+        //            if (!ValidateAdd(ConfigrationTables.TLIsupportTypeImplemented.ToString(), supportTypeImplementedEntity))
+        //            {
+        //                _unitOfWork.SupportTypeImplementedRepository.Add(supportTypeImplementedEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //           else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This supportTypeImplemented { supportTypeImplemented.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
+        //        {
+        //            var structureType = _mapper.Map<AddStructureTypeViewModel>(model);
+        //            var structureTypeEntity = _mapper.Map<TLIstructureType>(structureType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIstructureType.ToString(),structureTypeEntity))
+        //            {
+        //                _unitOfWork.StructureTypeRepository.Add(structureTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //           else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This structureType { structureType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
+        //        {
+        //            var sectionsLegType = _mapper.Map<AddSectionsLegTypeViewModel>(model);
+        //            var sectionsLegTypeEntity = _mapper.Map<TLIsectionsLegType>(sectionsLegType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIsectionsLegType.ToString(),sectionsLegTypeEntity))
+        //            {
+        //                _unitOfWork.SectionsLegTypeRepository.Add(sectionsLegTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //           else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This sectionsLegType { sectionsLegType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
+        //        {
+        //            var logisticalType = _mapper.Map<AddLogisticalTypeViewModel>(model);
+        //            var logisticalTypeEntity = _mapper.Map<TLIlogisticalType>(logisticalType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIlogisticalType.ToString(),logisticalTypeEntity))
+        //            {
+        //                _unitOfWork.logisticalTypeRepository.Add(logisticalTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //          else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This logisticalType { logisticalType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
+        //        {
+        //            var baseCivilWithLegsType = _mapper.Map<AddBaseCivilWithLegsTypeViewModel>(model);
+        //            var baseCivilWithLegsTypeEntity = _mapper.Map<TLIbaseCivilWithLegsType>(baseCivilWithLegsType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIbaseCivilWithLegsType.ToString(),baseCivilWithLegsTypeEntity))
+        //            {
+        //                _unitOfWork.BaseCivilWithLegsTypeRepository.Add(baseCivilWithLegsTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This baseCivilWithLegsType { baseCivilWithLegsType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
+        //        {
+        //            var baseGeneratorType = _mapper.Map<AddBaseGeneratorTypeViewModel>(model);
+        //            var baseGeneratorTypeEntity = _mapper.Map<TLIbaseGeneratorType>(baseGeneratorType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIbaseGeneratorType.ToString(),baseGeneratorTypeEntity))
+        //            {
+        //                _unitOfWork.BaseGeneratorTypeRepository.Add(baseGeneratorTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //           else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This baseGeneratorType { baseGeneratorType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
+        //        {
+        //            var InstCivilwithoutLegsType = _mapper.Map<AddInstCivilwithoutLegsTypeViewModel>(model);
+        //            var InstCivilwithoutLegsTypeEntity = _mapper.Map<TLIinstallationCivilwithoutLegsType>(InstCivilwithoutLegsType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString(),InstCivilwithoutLegsTypeEntity))
+        //            {
+        //                _unitOfWork.InstCivilwithoutLegsTypeRepository.Add(InstCivilwithoutLegsTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //          else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This InstCivilwithoutLegsType { InstCivilwithoutLegsType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIboardType.ToString() == TableName)
+        //        {
+        //            var boardType = _mapper.Map<AddBoardTypeViewModel>(model);
+        //            var boardTypeEntity = _mapper.Map<TLIboardType>(boardType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIboardType.ToString(),boardTypeEntity))
+        //            {
+        //                _unitOfWork.BoardTypeRepository.Add(boardTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //           else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This boardType { boardType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIguyLineType.ToString() == TableName)
+        //        {
+        //            var guyLineType = _mapper.Map<AddGuyLineTypeViewModel>(model);
+        //            var guyLineTypeEntity = _mapper.Map<TLIguyLineType>(guyLineType);
+        //            if(!ValidateAdd(ConfigrationTables.TLIguyLineType.ToString(),guyLineTypeEntity))
+        //            {
+        //                _unitOfWork.GuyLineTypeRepository.Add(guyLineTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //           else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This guyLineType { guyLineType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
+        //        {
+        //            var enforcmentCategory = _mapper.Map<AddEnforcmentCategoryViewModel>(model);
+        //            var enforcmentCategoryEntity = _mapper.Map<TLIenforcmentCategory>(enforcmentCategory);
+        //            if (!ValidateAdd(ConfigrationTables.TLIenforcmentCategory.ToString(), enforcmentCategoryEntity))
+        //            {
+        //                _unitOfWork.EnforcmentCategoryRepository.Add(enforcmentCategoryEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This enforcmentCategory { enforcmentCategory.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIdocumentType.ToString() == TableName)
+        //        {
+        //            var documentType = _mapper.Map<AddDocumentTypeViewModel>(model);
+        //            var documentTypeEntity = _mapper.Map<TLIdocumentType>(documentType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIdocumentType.ToString(), documentTypeEntity))
+        //            {
+        //                _unitOfWork.DocumentTypeRepository.Add(documentTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This documentType { documentType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIpowerType.ToString() == TableName)
+        //        {
+        //            var powerType = _mapper.Map<AddPowerTypeViewModel>(model);
+        //            var powerTypeEntity = _mapper.Map<TLIpowerType>(powerType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIpowerType.ToString(), powerTypeEntity))
+        //            {
+        //                _unitOfWork.PowerTypeRepository.Add(powerTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This powerType { powerType.Name } is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
 
-                else if (ConfigrationTables.TLIcivilSteelSupportCategory.ToString() == TableName)
-                {
-                    var civilSteelSupportCategory = _mapper.Map<AddCivilSteelSupportCategoryViewModel>(model);
-                    var civilSteelSupportCategoryEntity = _mapper.Map<TLIcivilSteelSupportCategory>(civilSteelSupportCategory);
-                    if (!ValidateAdd(ConfigrationTables.TLIcivilSteelSupportCategory.ToString(), civilSteelSupportCategoryEntity))
-                    {
-                        _unitOfWork.CivilSteelSupportCategoryRepository.Add(civilSteelSupportCategoryEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This civilSteelSupportCategory {civilSteelSupportCategoryEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIcivilSteelSupportCategory.ToString() == TableName)
+        //        {
+        //            var civilSteelSupportCategory = _mapper.Map<AddCivilSteelSupportCategoryViewModel>(model);
+        //            var civilSteelSupportCategoryEntity = _mapper.Map<TLIcivilSteelSupportCategory>(civilSteelSupportCategory);
+        //            if (!ValidateAdd(ConfigrationTables.TLIcivilSteelSupportCategory.ToString(), civilSteelSupportCategoryEntity))
+        //            {
+        //                _unitOfWork.CivilSteelSupportCategoryRepository.Add(civilSteelSupportCategoryEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This civilSteelSupportCategory {civilSteelSupportCategoryEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIcapacity.ToString() == TableName)
-                {
-                    var capacity = _mapper.Map<AddCapacityViewModel>(model);
-                    var capacityEntity = _mapper.Map<TLIcapacity>(capacity);
-                    if (!ValidateAdd(ConfigrationTables.TLIcapacity.ToString(), capacityEntity))
-                    {
-                        _unitOfWork.CapacityRepository.Add(capacityEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This capacity {capacityEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIcapacity.ToString() == TableName)
+        //        {
+        //            var capacity = _mapper.Map<AddCapacityViewModel>(model);
+        //            var capacityEntity = _mapper.Map<TLIcapacity>(capacity);
+        //            if (!ValidateAdd(ConfigrationTables.TLIcapacity.ToString(), capacityEntity))
+        //            {
+        //                _unitOfWork.CapacityRepository.Add(capacityEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This capacity {capacityEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIcabinetPowerType.ToString() == TableName)
-                {
-                    AddCabinetPowerTypeViewModel cabinetPowerType = _mapper.Map<AddCabinetPowerTypeViewModel>(model);
-                    TLIcabinetPowerType cabinetPowerTypeEntity = _mapper.Map<TLIcabinetPowerType>(cabinetPowerType);
-                    if (!ValidateAdd(ConfigrationTables.TLIcabinetPowerType.ToString(), cabinetPowerTypeEntity))
-                    {
-                        _unitOfWork.CabinetPowerTypeRepository.Add(cabinetPowerTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This cabinetPowerType {cabinetPowerTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIcabinetPowerType.ToString() == TableName)
+        //        {
+        //            AddCabinetPowerTypeViewModel cabinetPowerType = _mapper.Map<AddCabinetPowerTypeViewModel>(model);
+        //            TLIcabinetPowerType cabinetPowerTypeEntity = _mapper.Map<TLIcabinetPowerType>(cabinetPowerType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIcabinetPowerType.ToString(), cabinetPowerTypeEntity))
+        //            {
+        //                _unitOfWork.CabinetPowerTypeRepository.Add(cabinetPowerTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This cabinetPowerType {cabinetPowerTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
-                {
-                    var civilNonSteelType = _mapper.Map<AddcivilNonSteelTypeViewModel>(model);
-                    var civilNonSteelTypeEntity = _mapper.Map<TLIcivilNonSteelType>(civilNonSteelType);
-                    if (!ValidateAdd(ConfigrationTables.TLIcivilNonSteelType.ToString(), civilNonSteelTypeEntity))
-                    {
-                        _unitOfWork.CivilNonSteelTypeRepository.Add(civilNonSteelTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This civilNonSteelType {civilNonSteelTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
+        //        {
+        //            var civilNonSteelType = _mapper.Map<AddcivilNonSteelTypeViewModel>(model);
+        //            var civilNonSteelTypeEntity = _mapper.Map<TLIcivilNonSteelType>(civilNonSteelType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIcivilNonSteelType.ToString(), civilNonSteelTypeEntity))
+        //            {
+        //                _unitOfWork.CivilNonSteelTypeRepository.Add(civilNonSteelTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This civilNonSteelType {civilNonSteelTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIasType.ToString() == TableName)
-                {
-                    var asType = _mapper.Map<AddAsTypeViewModel>(model);
-                    var TLIasTypeEntity = _mapper.Map<TLIasType>(asType);
-                    if (!ValidateAdd(ConfigrationTables.TLIasType.ToString(), TLIasTypeEntity))
-                    {
-                        _unitOfWork.AsTypeRepository.Add(TLIasTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This TLIasType {TLIasTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIasType.ToString() == TableName)
+        //        {
+        //            var asType = _mapper.Map<AddAsTypeViewModel>(model);
+        //            var TLIasTypeEntity = _mapper.Map<TLIasType>(asType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIasType.ToString(), TLIasTypeEntity))
+        //            {
+        //                _unitOfWork.AsTypeRepository.Add(TLIasTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This TLIasType {TLIasTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIpolarityType.ToString() == TableName)
-                {
-                    var polarityType = _mapper.Map<AddPolarityTypeViewModel>(model);
-                    var polarityTypeEntity = _mapper.Map<TLIpolarityType>(polarityType);
-                    if (!ValidateAdd(ConfigrationTables.TLIpolarityType.ToString(), polarityTypeEntity))
-                    {
-                        _unitOfWork.PolarityTypeRepository.Add(polarityTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This polarityType {polarityTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIpolarityType.ToString() == TableName)
+        //        {
+        //            var polarityType = _mapper.Map<AddPolarityTypeViewModel>(model);
+        //            var polarityTypeEntity = _mapper.Map<TLIpolarityType>(polarityType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIpolarityType.ToString(), polarityTypeEntity))
+        //            {
+        //                _unitOfWork.PolarityTypeRepository.Add(polarityTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This polarityType {polarityTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIparity.ToString() == TableName)
-                {
-                    var parity = _mapper.Map<AddParityViewModel>(model);
-                    var parityEntity = _mapper.Map<TLIparity>(parity);
-                    if (!ValidateAdd(ConfigrationTables.TLIparity.ToString(), parityEntity))
-                    {
-                        _unitOfWork.ParityRepository.Add(parityEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This parity {parityEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIparity.ToString() == TableName)
+        //        {
+        //            var parity = _mapper.Map<AddParityViewModel>(model);
+        //            var parityEntity = _mapper.Map<TLIparity>(parity);
+        //            if (!ValidateAdd(ConfigrationTables.TLIparity.ToString(), parityEntity))
+        //            {
+        //                _unitOfWork.ParityRepository.Add(parityEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This parity {parityEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                else if (ConfigrationTables.TLIsubType.ToString() == TableName)
-                {
-                    var subType = _mapper.Map<AddTLIsubTypeViewModel>(model);
-                    var subTypeEntity = _mapper.Map<TLIsubType>(subType);
-                    if (!ValidateAdd(ConfigrationTables.TLIsubType.ToString(), subTypeEntity))
-                    {
-                        _unitOfWork.SubTypeRepository.Add(subTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This civilSteelSupportCategory {subTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+        //        else if (ConfigrationTables.TLIsubType.ToString() == TableName)
+        //        {
+        //            var subType = _mapper.Map<AddTLIsubTypeViewModel>(model);
+        //            var subTypeEntity = _mapper.Map<TLIsubType>(subType);
+        //            if (!ValidateAdd(ConfigrationTables.TLIsubType.ToString(), subTypeEntity))
+        //            {
+        //                _unitOfWork.SubTypeRepository.Add(subTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This civilSteelSupportCategory {subTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
 
-                }
+        //        }
 
-                //////////////////////////////////////////
+        //        //////////////////////////////////////////
                 
-                else if (ConfigrationTables.TLIowner.ToString() == TableName)
-                {
-                    AddOwnerViewModel AddOwnerViewModel = _mapper.Map<AddOwnerViewModel>(model);
-                    TLIowner OwnerEntity = _mapper.Map<TLIowner>(AddOwnerViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIowner.ToString(), OwnerEntity))
-                    {
-                        _unitOfWork.OwnerRepository.Add(OwnerEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Owner Name {OwnerEntity.OwnerName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
-                {
-                    AddLocationTypeViewModel AddLocationTypeViewModel = _mapper.Map<AddLocationTypeViewModel>(model);
-                    TLIlocationType LocationTypeEntity = _mapper.Map<TLIlocationType>(AddLocationTypeViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIlocationType.ToString(), LocationTypeEntity))
-                    {
-                        _unitOfWork.LocationTypeRepository.Add(LocationTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Location Type Name {LocationTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIbaseType.ToString() == TableName)
-                {
-                    AddBaseTypeViewModel AddBaseTypeViewModel = _mapper.Map<AddBaseTypeViewModel>(model);
-                    TLIbaseType BaseTypeEntity = _mapper.Map<TLIbaseType>(AddBaseTypeViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIbaseType.ToString(), BaseTypeEntity))
-                    {
-                        _unitOfWork.BaseTypeRepository.Add(BaseTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Base Type Name {BaseTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
-                {
-                    AddBaseBUViewModel AddBaseBUViewModel = _mapper.Map<AddBaseBUViewModel>(model);
-                    TLIbaseBU BaseBUEntity = _mapper.Map<TLIbaseBU>(AddBaseBUViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIbaseBU.ToString(), BaseBUEntity))
-                    {
-                        _unitOfWork.BaseBURepository.Add(BaseBUEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Base BU Name {BaseBUEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIrenewableCabinetType.ToString() == TableName)
-                {
-                    AddRenewableCabinetTypeViewModel AddRenewableCabinetTypeViewModel = _mapper.Map<AddRenewableCabinetTypeViewModel>(model);
-                    TLIrenewableCabinetType RenewableCabinetTypeEntity = _mapper.Map<TLIrenewableCabinetType>(AddRenewableCabinetTypeViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIrenewableCabinetType.ToString(), RenewableCabinetTypeEntity))
-                    {
-                        _unitOfWork.RenewableCabinetTypeRepository.Add(RenewableCabinetTypeEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Renewable Cabinet Type Name {RenewableCabinetTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIsideArmType.ToString() == TableName)
-                {
-                    AddSideArmTypeViewModel AddSideArmTypeViewModel = _mapper.Map<AddSideArmTypeViewModel>(model);
-                    TLIsideArmType SideArmTypeViewModelEntity = _mapper.Map<TLIsideArmType>(AddSideArmTypeViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIsideArmType.ToString(), SideArmTypeViewModelEntity))
-                    {
-                        _unitOfWork.SideArmTypeRepository.Add(SideArmTypeViewModelEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Side Arm Type Name {SideArmTypeViewModelEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
-                {
-                    AddItemStatusViewModel AddItemStatusViewModel = _mapper.Map<AddItemStatusViewModel>(model);
-                    TLIitemStatus ItemStatusEntity = _mapper.Map<TLIitemStatus>(AddItemStatusViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIitemStatus.ToString(), ItemStatusEntity))
-                    {
-                        _unitOfWork.ItemStatusRepository.Add(ItemStatusEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Item Status Name {ItemStatusEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
-                {
-                    AddInstallationPlaceViewModel AddInstallationPlaceViewModel = _mapper.Map<AddInstallationPlaceViewModel>(model);
-                    TLIinstallationPlace InstallationPlaceEntity = _mapper.Map<TLIinstallationPlace>(AddInstallationPlaceViewModel);
-                    if (!ValidateAdd(ConfigrationTables.TLIinstallationPlace.ToString(), InstallationPlaceEntity))
-                    {
-                        _unitOfWork.InstallationPlaceRepository.Add(InstallationPlaceEntity);
-                        _unitOfWork.SaveChanges();
-                    }
-                    else
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Installation Place Name {InstallationPlaceEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                else
-                {
+        //        else if (ConfigrationTables.TLIowner.ToString() == TableName)
+        //        {
+        //            AddOwnerViewModel AddOwnerViewModel = _mapper.Map<AddOwnerViewModel>(model);
+        //            TLIowner OwnerEntity = _mapper.Map<TLIowner>(AddOwnerViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIowner.ToString(), OwnerEntity))
+        //            {
+        //                _unitOfWork.OwnerRepository.Add(OwnerEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Owner Name {OwnerEntity.OwnerName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
+        //        {
+        //            AddLocationTypeViewModel AddLocationTypeViewModel = _mapper.Map<AddLocationTypeViewModel>(model);
+        //            TLIlocationType LocationTypeEntity = _mapper.Map<TLIlocationType>(AddLocationTypeViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIlocationType.ToString(), LocationTypeEntity))
+        //            {
+        //                _unitOfWork.LocationTypeRepository.Add(LocationTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Location Type Name {LocationTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIbaseType.ToString() == TableName)
+        //        {
+        //            AddBaseTypeViewModel AddBaseTypeViewModel = _mapper.Map<AddBaseTypeViewModel>(model);
+        //            TLIbaseType BaseTypeEntity = _mapper.Map<TLIbaseType>(AddBaseTypeViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIbaseType.ToString(), BaseTypeEntity))
+        //            {
+        //                _unitOfWork.BaseTypeRepository.Add(BaseTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Base Type Name {BaseTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
+        //        {
+        //            AddBaseBUViewModel AddBaseBUViewModel = _mapper.Map<AddBaseBUViewModel>(model);
+        //            TLIbaseBU BaseBUEntity = _mapper.Map<TLIbaseBU>(AddBaseBUViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIbaseBU.ToString(), BaseBUEntity))
+        //            {
+        //                _unitOfWork.BaseBURepository.Add(BaseBUEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Base BU Name {BaseBUEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIrenewableCabinetType.ToString() == TableName)
+        //        {
+        //            AddRenewableCabinetTypeViewModel AddRenewableCabinetTypeViewModel = _mapper.Map<AddRenewableCabinetTypeViewModel>(model);
+        //            TLIrenewableCabinetType RenewableCabinetTypeEntity = _mapper.Map<TLIrenewableCabinetType>(AddRenewableCabinetTypeViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIrenewableCabinetType.ToString(), RenewableCabinetTypeEntity))
+        //            {
+        //                _unitOfWork.RenewableCabinetTypeRepository.Add(RenewableCabinetTypeEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Renewable Cabinet Type Name {RenewableCabinetTypeEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIsideArmType.ToString() == TableName)
+        //        {
+        //            AddSideArmTypeViewModel AddSideArmTypeViewModel = _mapper.Map<AddSideArmTypeViewModel>(model);
+        //            TLIsideArmType SideArmTypeViewModelEntity = _mapper.Map<TLIsideArmType>(AddSideArmTypeViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIsideArmType.ToString(), SideArmTypeViewModelEntity))
+        //            {
+        //                _unitOfWork.SideArmTypeRepository.Add(SideArmTypeViewModelEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Side Arm Type Name {SideArmTypeViewModelEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIitemStatus.ToString() == TableName)
+        //        {
+        //            AddItemStatusViewModel AddItemStatusViewModel = _mapper.Map<AddItemStatusViewModel>(model);
+        //            TLIitemStatus ItemStatusEntity = _mapper.Map<TLIitemStatus>(AddItemStatusViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIitemStatus.ToString(), ItemStatusEntity))
+        //            {
+        //                _unitOfWork.ItemStatusRepository.Add(ItemStatusEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Item Status Name {ItemStatusEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else if (ConfigrationTables.TLIinstallationPlace.ToString() == TableName)
+        //        {
+        //            AddInstallationPlaceViewModel AddInstallationPlaceViewModel = _mapper.Map<AddInstallationPlaceViewModel>(model);
+        //            TLIinstallationPlace InstallationPlaceEntity = _mapper.Map<TLIinstallationPlace>(AddInstallationPlaceViewModel);
+        //            if (!ValidateAdd(ConfigrationTables.TLIinstallationPlace.ToString(), InstallationPlaceEntity))
+        //            {
+        //                _unitOfWork.InstallationPlaceRepository.Add(InstallationPlaceEntity);
+        //                _unitOfWork.SaveChanges();
+        //            }
+        //            else
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"This Installation Place Name {InstallationPlaceEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //        }
+        //        else
+        //        {
 
-                    // int DynamicAttID = _unitOfWork.DynamicAttRepository.GetAllAsQueryable().Where(x => x.Key == TableName).Select(x => x.Id).FirstOrDefault();
+        //            // int DynamicAttID = _unitOfWork.DynamicAttRepository.GetAllAsQueryable().Where(x => x.Key == TableName).Select(x => x.Id).FirstOrDefault();
                    
-                    int DynamicAttID = _unitOfWork.DynamicAttRepository.GetWhereSelectFirst(x => x.Key == TableName, x => new { x.Id }).Id;
-                    TLIdynamicListValues dynamicListValues = new TLIdynamicListValues();
-                    dynamicListValues.Value = ((ConfigurationAttsViewModel)model).Name;
-                    dynamicListValues.dynamicAttId = DynamicAttID;
-                    var dynamicListValueValidation = _unitOfWork.DynamicListValuesRepository.GetWhereFirst(x => (x.Value == dynamicListValues.Value && x.dynamicAttId == dynamicListValues.dynamicAttId));
-                    if (dynamicListValueValidation != null)
-                    {
-                        return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Name is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    else
-                    {
-                        _unitOfWork.DynamicListValuesRepository.Add(dynamicListValues);
-                        _unitOfWork.SaveChanges();
-                    }
+        //            int DynamicAttID = _unitOfWork.DynamicAttRepository.GetWhereSelectFirst(x => x.Key == TableName, x => new { x.Id }).Id;
+        //            TLIdynamicListValues dynamicListValues = new TLIdynamicListValues();
+        //            dynamicListValues.Value = ((ConfigurationAttsViewModel)model).Name;
+        //            dynamicListValues.dynamicAttId = DynamicAttID;
+        //            var dynamicListValueValidation = _unitOfWork.DynamicListValuesRepository.GetWhereFirst(x => (x.Value == dynamicListValues.Value && x.dynamicAttId == dynamicListValues.dynamicAttId));
+        //            if (dynamicListValueValidation != null)
+        //            {
+        //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Name is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+        //            }
+        //            else
+        //            {
+        //                _unitOfWork.DynamicListValuesRepository.Add(dynamicListValues);
+        //                _unitOfWork.SaveChanges();
+        //            }
                     
-                }
-                return new Response<ConfigurationAttsViewModel>();
-            }
-            catch(Exception err)
-            {
-                return new Response<ConfigurationAttsViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-            }
-        }
+        //        }
+        //        return new Response<ConfigurationAttsViewModel>();
+        //    }
+        //    catch(Exception err)
+        //    {
+        //        return new Response<ConfigurationAttsViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+        //    }
+        //}
 
         //public async Task<Response<List<TableAffected>>> Delete(string TableName, int Id)
         //{
@@ -12961,7 +12961,7 @@ namespace TLIS_Service.Services
         //                return new Response<ConfigurationAttsViewModel>(true, null, null, $"The Civil Non Steel Type Name {viewModel.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
         //            }
         //        }
-                
+
         //        else if (ConfigrationTables.TLIowner.ToString() == TableName)
         //        {
         //            TLIowner CheckName = _unitOfWork.OwnerRepository
@@ -13148,6 +13148,50 @@ namespace TLIS_Service.Services
         //        return new Response<ConfigurationAttsViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
         //    }
         //}
+        public async Task<Response<ConfigurationAttsViewModel>> Add(string TabelName, string ListName,string NewName, int UserId)
+        {
+            try
+            {
+                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                     || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
+                {
+                    return new Response<ConfigurationAttsViewModel>(true, null, null, "You cannot Add any item To any list", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
+                   || TabelName == "TLImwDish" || TabelName == "TLImwODU")
+                {
+                    if (ConfigrationTables.TLIowner.ToString() == ListName)
+                    {
+                        TLIowner tLIowner = new TLIowner()
+                        {
+                            OwnerName = NewName,
+                             Deleted=false,
+                             Disable=false,
+
+                        };
+                        _unitOfWork.OwnerRepository.AddWithHistory(UserId, tLIowner);
+                        await _unitOfWork.SaveChangesAsync();
+                        
+                    }
+                    else
+                    {
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else
+                {
+                    return new Response<ConfigurationAttsViewModel>(false, null, null, $"this tabel name {TabelName} is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                return new Response<ConfigurationAttsViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+            }
+            catch (Exception ex)
+            {
+
+                return new Response<ConfigurationAttsViewModel>(true, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+
+            }
+        }
         public async Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId,string NewName,int UserId)
         {
             try

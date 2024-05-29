@@ -1699,7 +1699,8 @@ namespace TLIS_Service.Services
                 TLIcivilLoads sideArm = _unitOfWork.CivilLoadsRepository
                     .GetIncludeWhereFirst(x => x.sideArmId ==Id && !x.Dismantle , 
                     x => x.sideArm.owner, x => x.sideArm.sideArmType, x => x.sideArm.sideArmInstallationPlace,
-                    x => x.sideArm.sideArmInstallationPlace,x=>x.sideArm.sideArmLibrary,x=>x.allCivilInst);
+                    x => x.sideArm.sideArmInstallationPlace,x=>x.sideArm.sideArmLibrary,x=>x.allCivilInst,
+                    x=>x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
                 if (sideArm != null)
                 {
                     EditCivilSideArmlLibraryAttributes SideArmLibrary = _mapper.Map<EditCivilSideArmlLibraryAttributes>(sideArm.sideArm.sideArmLibrary);
