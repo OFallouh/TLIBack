@@ -10943,7 +10943,6 @@ namespace TLIS_Service.Services
         public Response<SideArmAndLoadsOnCivil> CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType)
         {
             SideArmAndLoadsOnCivil OutPutData = new SideArmAndLoadsOnCivil();
-            string OutPutMessage = "";
             TLIallCivilInst AllCivilInst = new TLIallCivilInst();
             if (CivilType.ToLower() == TablesNames.TLIcivilWithLegs.ToString().ToLower())
             {

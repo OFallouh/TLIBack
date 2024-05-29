@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -67,11 +68,29 @@ namespace TLIS_API.Controllers
 
         [HttpPost("Update")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public async Task<IActionResult> Update([FromBody]ConfigurationAttsViewModel model)
+        public async Task<IActionResult> Update([FromBody]ConfigurationAttsViewModel model,string TabelName)
         {
             if(TryValidateModel(model, nameof(ConfigurationAttsViewModel)))
             {
-                var response = await _unitOfWorkService.ConfigurationAttsService.Update(model);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.ConfigurationAttsService.Update(model, TabelName, userId);
                 return Ok(response);
             }
             else
@@ -84,16 +103,53 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("Disable")]
         [ProducesResponseType(200, Type = typeof(TableAffected))]
-        public async Task<IActionResult> Disable( string TableName, int Id)
+        public async Task<IActionResult> Disable( string TableName, int Id,string ViewName)
         {
-            var response = await _unitOfWorkService.ConfigurationAttsService.Disable(TableName, Id);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Disable(TableName, Id, ViewName, userId);
             return Ok(response);
         }
         [HttpPost("Delete")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public async Task<IActionResult> Delete(string TableName, int Id)
+        public async Task<IActionResult> Delete(string TableName, int Id,string ViewName)
         {
-            var response = await _unitOfWorkService.ConfigurationAttsService.Delete(TableName, Id);
+
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Delete(TableName, Id, userId, ViewName);
             return Ok(response);
         }
     }

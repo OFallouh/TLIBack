@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -43,17 +44,55 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddSite")]
         [ProducesResponseType(200, Type = typeof(AddSiteViewModel))]
-        public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel, int TaskId)
-        { 
-            var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel,TaskId);
+        public IActionResult AddSite([FromBody] AddSiteViewModel AddSiteViewModel, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.SiteService.AddSite(AddSiteViewModel,TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditSite")]
         [ProducesResponseType(200, Type = typeof(EditSiteViewModel))]
-        public IActionResult EditSite([FromBody] EditSiteViewModel EditSiteViewModel, int TaskId)
+        public IActionResult EditSite([FromBody] EditSiteViewModel EditSiteViewModel, int? TaskId)
         {
-            var response = _unitOfWorkService.SiteService.EditSite(EditSiteViewModel, TaskId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.SiteService.EditSite(EditSiteViewModel, TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -97,7 +136,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetSites(parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetSiteMainSpaces")]
         [ProducesResponseType(200, Type = typeof(SiteViewModel))]
         public IActionResult GetSiteMainSpaces(string SiteCode)

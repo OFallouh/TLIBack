@@ -96,7 +96,7 @@ namespace TLIS_Service.Services
             _mapper = mapper;
             Services = service;
         }
-        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId)
+        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -116,7 +116,7 @@ namespace TLIS_Service.Services
                             (int)Helpers.Constants.ApiReturnCode.fail);
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
-                    _unitOfWork.SiteRepository.Add(NewSiteEntity);
+                    _unitOfWork.SiteRepository.AddWithHistory(UserId,NewSiteEntity);
                     
                     if (TaskId != null)
                     {
@@ -161,20 +161,24 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId)
+        public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
-                    var CheckSiteName = _context.TLIsite.Where(x => x.SiteName == EditSiteViewModel.SiteName && x.SiteCode != EditSiteViewModel.SiteCode).FirstOrDefault();
+                    var CheckSiteName = _context.TLIsite.FirstOrDefault(x => x.SiteName == EditSiteViewModel.SiteName 
+                    && x.SiteCode != EditSiteViewModel.SiteCode);
+                   
                     if (CheckSiteName != null)
                     {
                         return new Response<EditSiteViewModel>(true, null, null, $"This site name {EditSiteViewModel.SiteName} is already exist",
                             (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
+                        (x => x.SiteName == EditSiteViewModel.SiteName && x.SiteCode != EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
-                    _unitOfWork.SiteRepository.Update(Site);
+                    _unitOfWork.SiteRepository.UpdateWithHistory(UserId,OldSiteInfo, Site);
 
                     _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
                     _MySites.Add(Site);
