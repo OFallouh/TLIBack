@@ -1815,26 +1815,43 @@ namespace TLIS_Service.Services
 
                             AddLegDetails(sideArm.legId);
                             AddLegDetails(sideArm.Leg2Id);
-
-                            Config.Add(new BaseInstAttViews
-                            {
-                                Key = "legId",
-                                Value = ints,
-                                Label = "Select Leg",
-                                Options = sectionsLegTypeViewModelLeg,
-                                DataType = "MultiSelect"
-                            });
+                            
+                                Config.Add(new BaseInstAttViews
+                                {
+                                    Key = "legId",
+                                    Value = ints,
+                                    Label = "Select Leg",
+                                    Options = sectionsLegTypeViewModelLeg,
+                                    DataType = "MultiSelect"
+                                });
+                            
                         }
                         else
                         {
-                            Config.Add(new BaseInstAttViews
+                            if (sideArm.allCivilInst.civilWithLegsId != null)
                             {
-                                Key = "legId",
-                                Value = new object[0],
-                                Label = "Select Leg",
-                                Options = new object[0],
-                                DataType = "MultiSelect"
-                            });
+                                Config.Add(new BaseInstAttViews
+                                {
+                                    Key = "legId",
+                                    Value = new object[0],
+                                    Label = "Select Leg",
+                                    Options = new object[0],
+                                    DataType = "MultiSelect",
+                                  
+                                });
+                            }
+                            else
+                            {
+                                Config.Add(new BaseInstAttViews
+                                {
+                                    Key = "legId",
+                                    Value = new object[0],
+                                    Label = "Select Leg",
+                                    Options = new object[0],
+                                    DataType = "MultiSelect",
+                                    visible = false
+                                });
+                            }
                         }
                         attributes.installationConfig = Config;
                     }

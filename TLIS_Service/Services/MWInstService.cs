@@ -17138,7 +17138,8 @@ namespace TLIS_Service.Services
                                     Value = Leg1.Id,
                                     Label = "Select Leg",
                                     Options = sectionsLegTypeViewModel,
-                                    DataType = "list"
+                                    DataType = "list",
+                                    visible=false
                                 };
                                 Config.Add(baseInstAttViews);
                             }
