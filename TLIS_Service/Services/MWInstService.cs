@@ -178,37 +178,8 @@ namespace TLIS_Service.Services
                      .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
                          "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
 
-                    IEnumerable<DynaminAttInstViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                       .GetDynamicInstAtts(TableNameEntity.Id, null);
-
-                    foreach (DynaminAttInstViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                    {
-                        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                        {
-                            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                                DynamicAttribute.ValueString = DynamicAttributeEntity.DefaultValue;
-
-                            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                                DynamicAttribute.ValueDouble = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                                DynamicAttribute.ValueDouble = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                                DynamicAttribute.ValueBoolean = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                                DynamicAttribute.ValueDateTime = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                        }
-                        else
-                        {
-                            DynamicAttribute.ValueString = " ".Split(' ')[0];
-                        }
-                    }
-
-                    //objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+.                    GetDynamicInstAttInst(TableNameEntity.Id, null);
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -285,6 +256,8 @@ namespace TLIS_Service.Services
                      .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
                          "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
 
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                   .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -17250,10 +17223,9 @@ namespace TLIS_Service.Services
 
                     objectInst.InstallationAttributes = ListAttributesActivated;
                     objectInst.CivilLoads = Civilload;
-                    objectInst.dynamicAttribute = null;
-                    objectInst.dynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
-
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
+                        GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -17529,10 +17501,9 @@ namespace TLIS_Service.Services
 
                     objectInst.InstallationAttributes = ListAttributesActivated;
                     objectInst.CivilLoads = Civilload;
-                    objectInst.dynamicAttribute = null;
-                    objectInst.dynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
-
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
+                        GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
