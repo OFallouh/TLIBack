@@ -15,8 +15,8 @@ namespace TLIS_Service.IService
         Response<List<ConfigurationAttsViewModel>> GetAll(string TableName, ParameterPagination Pagination);
         Response<ConfigurationAttsViewModel> GetById(string TableName, int Id);
         Response<ConfigurationAttsViewModel> Add(AddConfigrationAttViewModel viewModel);
-        Task<Response<ConfigurationAttsViewModel>> Update(ConfigurationAttsViewModel viewModel, string TabelName, int UserId);
-        Task<Response<List<TableAffected>>> Disable(string TabelName, int Id, string ViewName, int UserId);
-        Task<Response<List<TableAffected>>> Delete(string TabelName, int Id, int UserId, string ViewName);
+        Task<Response<List<TableAffected>>> Delete(string TabelName, int RecordId, int UserId, string ListName);
+        Task<Response<List<TableAffected>>> Disable(string TabelName, int RecordId, string ListName, int UserId);
+        Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId, int UserId);
     }
 }

@@ -13148,11 +13148,10 @@ namespace TLIS_Service.Services
         //        return new Response<ConfigurationAttsViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
         //    }
         //}
-        public async Task<Response<ConfigurationAttsViewModel>> Update(ConfigurationAttsViewModel viewModel, string TabelName,int UserId)
+        public async Task<Response<ConfigurationAttsViewModel>> Update(string TabelName, string ListName, int RecordId,int UserId)
         {
             try
             {
-                String TableName = viewModel.TableName;
                 if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
                      || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
                 {
@@ -13161,21 +13160,20 @@ namespace TLIS_Service.Services
                 else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
                    || TabelName == "TLImwDish" || TabelName == "TLImwODU")
                 {
-                    if (ConfigrationTables.TLIowner.ToString() == TableName)
+                    if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
                         TLIowner OldEntity = _unitOfWork.OwnerRepository
-                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == viewModel.Id);
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
-                        {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                         var CheckOwnerInCivil = _unitOfWork.AllCivilInstRepository
-                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == viewModel.Id ||
-                            x.civilWithoutLeg.OwnerId == viewModel.Id || x.civilNonSteel.ownerId == viewModel.Id,
+                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == RecordId ||
+                            x.civilWithoutLeg.OwnerId == RecordId || x.civilNonSteel.ownerId == RecordId,
                             x => x.civilNonSteel, x => x.civilWithLegs, x => x.civilWithoutLeg);
                         var CheckOwnerInload = _unitOfWork.CivilLoadsRepository
-                          .GetIncludeWhereFirst(x => x.sideArm.ownerId == viewModel.Id ||
-                          x.allLoadInst.mwDish.ownerId == viewModel.Id || x.allLoadInst.mwODU.OwnerId == viewModel.Id,
+                          .GetIncludeWhereFirst(x => x.sideArm.ownerId == RecordId ||
+                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId,
                           x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU);
 
                         if (CheckOwnerInCivil == null || CheckOwnerInload == null)
@@ -13196,7 +13194,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not update the owner name {viewModel.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not update the owner name {OldEntity?.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13218,7 +13216,7 @@ namespace TLIS_Service.Services
 
             }
         }
-        public async Task<Response<List<TableAffected>>> Disable(string TabelName, int Id,string ViewName,int UserId)
+        public async Task<Response<List<TableAffected>>> Disable(string TabelName, int RecordId,string ListName,int UserId)
         {
             try
             {
@@ -13231,28 +13229,27 @@ namespace TLIS_Service.Services
                 else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
                    || TabelName == "TLImwDish" || TabelName == "TLImwODU")
                 {
-                    if (ConfigrationTables.TLIowner.ToString() == ViewName)
+                    if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
                         TLIowner OldEntity = _unitOfWork.OwnerRepository
-                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
-                        {
                             return new Response<List<TableAffected>>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        
                         var CheckOwnerInCivil = _unitOfWork.AllCivilInstRepository
-                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == Id ||
-                            x.civilWithoutLeg.OwnerId == Id || x.civilNonSteel.ownerId == Id,
+                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == RecordId ||
+                            x.civilWithoutLeg.OwnerId == RecordId || x.civilNonSteel.ownerId == RecordId,
                             x => x.civilNonSteel, x => x.civilWithLegs, x => x.civilWithoutLeg);
                         var CheckOwnerInload = _unitOfWork.CivilLoadsRepository
-                          .GetIncludeWhereFirst(x => x.sideArm.ownerId == Id ||
-                          x.allLoadInst.mwDish.ownerId == Id || x.allLoadInst.mwODU.OwnerId == Id,
+                          .GetIncludeWhereFirst(x => x.sideArm.ownerId == RecordId ||
+                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId,
                           x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU);
 
                         if (CheckOwnerInCivil == null || CheckOwnerInload == null)
                         {
                            
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
-                                .GetWhereFirst(x => x.Id == Id);
+                                .GetWhereFirst(x => x.Id == RecordId);
 
                             NewEntity.Disable = !NewEntity.Disable;
 
@@ -13261,7 +13258,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return  new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return  new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name {OldEntity?.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13281,7 +13278,7 @@ namespace TLIS_Service.Services
                 throw;
             }
         }
-        public async Task<Response<List<TableAffected>>> Delete(string TabelName, int Id, int UserId, string ViewName)
+        public async Task<Response<List<TableAffected>>> Delete(string TabelName, int RecordId, int UserId, string ListName)
         {
             try
             {
@@ -13294,28 +13291,27 @@ namespace TLIS_Service.Services
                 else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
                    || TabelName == "TLImwDish" || TabelName == "TLImwODU")
                 {
-                    if (ConfigrationTables.TLIowner.ToString() == ViewName)
+                    if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
                         TLIowner OldEntity = _unitOfWork.OwnerRepository
-                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
-                        {
                             return new Response<List<TableAffected>>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        
                         var CheckOwnerInCivil = _unitOfWork.AllCivilInstRepository
-                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == Id ||
-                            x.civilWithoutLeg.OwnerId == Id || x.civilNonSteel.ownerId == Id,
+                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == RecordId ||
+                            x.civilWithoutLeg.OwnerId == RecordId || x.civilNonSteel.ownerId == RecordId,
                             x => x.civilNonSteel, x => x.civilWithLegs, x => x.civilWithoutLeg);
                         var CheckOwnerInload = _unitOfWork.CivilLoadsRepository
-                          .GetIncludeWhereFirst(x => x.sideArm.ownerId == Id ||
-                          x.allLoadInst.mwDish.ownerId == Id || x.allLoadInst.mwODU.OwnerId == Id,
+                          .GetIncludeWhereFirst(x => x.sideArm.ownerId == RecordId ||
+                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId,
                           x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU);
 
                         if (CheckOwnerInCivil == null || CheckOwnerInload == null)
                         {
 
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
-                                .GetWhereFirst(x => x.Id == Id);
+                                .GetWhereFirst(x => x.Id == RecordId);
 
                             NewEntity.Deleted = true;
 
@@ -13324,7 +13320,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else

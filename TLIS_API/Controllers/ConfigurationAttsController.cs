@@ -68,42 +68,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("Update")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public async Task<IActionResult> Update([FromBody]ConfigurationAttsViewModel model,string TabelName)
-        {
-            if(TryValidateModel(model, nameof(ConfigurationAttsViewModel)))
-            {
-                string authHeader = HttpContext.Request.Headers["Authorization"];
-
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken == null)
-                {
-                    return Unauthorized();
-                }
-
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.ConfigurationAttsService.Update(model, TabelName, userId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<ConfigurationAttsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [HttpPost("Disable")]
-        [ProducesResponseType(200, Type = typeof(TableAffected))]
-        public async Task<IActionResult> Disable( string TableName, int Id,string ViewName)
+        public async Task<IActionResult> Update(string TableName, string ListName, int RecordId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -123,12 +88,37 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.ConfigurationAttsService.Disable(TableName, Id, ViewName, userId);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Update(TableName, ListName, RecordId, userId);
+            return Ok(response);          
+        }
+        [HttpPost("Disable")]
+        [ProducesResponseType(200, Type = typeof(TableAffected))]
+        public async Task<IActionResult> Disable( string TableName, int RecordId, string ListName)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Disable(TableName, RecordId, ListName, userId);
             return Ok(response);
         }
         [HttpPost("Delete")]
         [ProducesResponseType(200, Type = typeof(ConfigurationAttsViewModel))]
-        public async Task<IActionResult> Delete(string TableName, int Id,string ViewName)
+        public async Task<IActionResult> Delete(string TableName, string ListName, int RecordId)
         {
 
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -149,7 +139,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.ConfigurationAttsService.Delete(TableName, Id, userId, ViewName);
+            var response = await _unitOfWorkService.ConfigurationAttsService.Delete(TableName, ListName, RecordId, userId);
             return Ok(response);
         }
     }
