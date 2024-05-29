@@ -1903,7 +1903,7 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
 
                     attributes.dynamicAttribute = null;
-                    attributes.dynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false).ToList());
+                    attributes.dynamicAttribute = _mapper.Map<List<DynaminAttInstViewModel>>(_unitOfWork.DynamicAttRepository.GetWhereAndInclude(x => x.tablesNamesId == TableNameEntity.Id && x.LibraryAtt == false,x=>x.DataType).ToList());
 
 
                     return new Response<GetForAddLoadObject>(true, attributes, null, null, (int)ApiReturnCode.success);
