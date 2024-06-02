@@ -2813,12 +2813,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_DishInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
@@ -2863,6 +2863,8 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("LEG_ID");
                     propertyNamesStatic.Add("ODU_COUNT");
                     propertyNamesStatic.Add("POLARITYTYPE");
+                    propertyNamesStatic.Add("SideArmSec_Name");
+                    propertyNamesStatic.Add("SideArmSec_Id");
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
@@ -2938,12 +2940,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_ODUInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
@@ -3024,7 +3026,7 @@ namespace TLIS_Service.Services
                            ALLCIVILID=x.ALLCIVILID,
 
                        })
-                       .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.key, z => z.INPUTVALUE) })
+                       .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
 
                         int count = query.Count();
@@ -3081,7 +3083,7 @@ namespace TLIS_Service.Services
                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
 
-                                        if (tLImwDish.allLoadInst.mwDish !=null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                        if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                         {
                                             mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                mwDish.MwDishLibrary.polarityType.Name;
@@ -3234,9 +3236,9 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                                         }
                                                         
-                                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                                        if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary !=null)
                                                         {
-                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
                                                         var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -3349,9 +3351,9 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                                        if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                         {
-                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
                                                         var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -3505,9 +3507,9 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                                        if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                         {
-                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
                                                         var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -3620,9 +3622,9 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                                        if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                         {
-                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
                                                         var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -3770,9 +3772,9 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                                    if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                     {
-                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
                                                     var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -5532,6 +5534,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
+                            Task.Run(() => RefreshView(ConnectionString));
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                    
@@ -5554,7 +5557,7 @@ namespace TLIS_Service.Services
                 entry.State = EntityState.Detached;
             }
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWDishInstallation(int UserId, EditMWDishInstallationObject MWInstallationViewModel, string TableName, int? TaskId)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWDishInstallation(int UserId, EditMWDishInstallationObject MWInstallationViewModel, string TableName, int? TaskId,string ConnectionString)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -7997,6 +8000,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
+                    await Task.Run(() => RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -8005,7 +8009,26 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId)
+        private void RefreshView(string connectionString)
+        {
+            try
+            {
+                using (var connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new OracleCommand("BEGIN DBMS_MVIEW.REFRESH('mwDish_view', 'C'); END;", connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // يمكنك تسجيل الاستثناء هنا إذا أردت
+                Console.WriteLine($"Error during refreshing view: {ex.Message}");
+            }
+        }
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId,string ConnectionString)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -8038,9 +8061,9 @@ namespace TLIS_Service.Services
                             else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
 
-                            if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                             {
-                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                     mwDish.MwDishLibrary.polarityType.Name;
                             }
                             var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -8183,9 +8206,9 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
-                                            if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                             {
-                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
                                             var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -8293,12 +8316,12 @@ namespace TLIS_Service.Services
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                         }
 
-                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                        {
-                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                                mwDish.MwDishLibrary.polarityType.Name;
-                                        }
-                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            {
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwDish.MwDishLibrary.polarityType.Name;
+                                            }
+                                            var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                         (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                             && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                         if (CheckName != null)
@@ -8402,12 +8425,12 @@ namespace TLIS_Service.Services
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                         }
 
-                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                        {
-                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                                mwDish.MwDishLibrary.polarityType.Name;
-                                        }
-                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            {
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwDish.MwDishLibrary.polarityType.Name;
+                                            }
+                                            var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                         (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                             && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                         if (CheckName != null)
@@ -8508,12 +8531,12 @@ namespace TLIS_Service.Services
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                         }
 
-                                        if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                        {
-                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                                mwDish.MwDishLibrary.polarityType.Name;
-                                        }
-                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            {
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwDish.MwDishLibrary.polarityType.Name;
+                                            }
+                                            var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                         (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                             && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                         if (CheckName != null)
@@ -8653,13 +8676,12 @@ namespace TLIS_Service.Services
                                     {
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                     }
-
-                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                    {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                            mwDish.MwDishLibrary.polarityType.Name;
-                                    }
-                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                        if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                     (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                         && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                     if (CheckName != null)
@@ -8763,12 +8785,12 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                     }
 
-                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                    {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                            mwDish.MwDishLibrary.polarityType.Name;
-                                    }
-                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                        if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                     (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                         && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                     if (CheckName != null)
@@ -8873,12 +8895,12 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                     }
 
-                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                    {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                            mwDish.MwDishLibrary.polarityType.Name;
-                                    }
-                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                        if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                     (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                         && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                     if (CheckName != null)
@@ -8977,12 +8999,12 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                     }
 
-                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
-                                    {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
-                                            mwDish.MwDishLibrary.polarityType.Name;
-                                    }
-                                    var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                        if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                        {
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwDish.MwDishLibrary.polarityType.Name;
+                                        }
+                                        var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                     (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
                                                         && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
                                     if (CheckName != null)
@@ -9121,9 +9143,9 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
                                     }
 
-                                    if (tLImwDish.allLoadInst.mwDish != null && tLImwDish.allLoadInst.mwDish.MwDishLibrary != null)
+                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                     {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                             mwDish.MwDishLibrary.polarityType.Name;
                                     }
                                     var CheckName = _dbContext.MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -9191,6 +9213,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
+                    Task.Run(() => RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -17323,17 +17346,17 @@ namespace TLIS_Service.Services
                         }
                         return FKitem;
                     }).ToList();
-                    var selectedAttributes = ListAttributesActivated
-                   .Where(x => new[] { "Oduinstallationtype_name" }
-                               .Contains(x.Label.ToLower()))
-                   .ToList();
+                    var ForeignKeyAttributes = ListAttributesActivated
+                     .Where(x => new[] { "oduinstallationtype_name", "mw_dish_name" }
+                                 .Contains(x.Label.ToLower()))
+                     .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "Oduinstallationtype_name", "mwodulibrary_name" }
+                    .Where(x => new[] { "oduinstallationtype_name", "mwodulibrary_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
          
-                    var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
+                    var foreignKeyAttribute = ForeignKeyAttributes.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
                         {

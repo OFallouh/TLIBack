@@ -269,7 +269,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWDishInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
+                var response = await _unitOfWorkService.MWInstService.EditMWDishInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -280,24 +280,43 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMWDishInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("EditMW_ODU")]
-        //[ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
-        //public async Task<IActionResult> EditMW_ODU([FromBody]EditMW_ODUViewModel MW_ODU,int? TaskId)
-        //{
-        //    if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("EditMWODUInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditMWODUInstallationObject))]
+        public async Task<IActionResult> EditMW_ODU([FromBody] EditMWODUInstallationObject MW_ODU, int? TaskId)
+        {
+            if (TryValidateModel(MW_ODU, nameof(EditMWODUInstallationObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.MWInstService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMWODUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
         //[HttpPost("EditMW_RFU")]
         //[ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]

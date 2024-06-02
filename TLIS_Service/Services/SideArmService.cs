@@ -56,6 +56,8 @@ using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
+using System.Diagnostics.Eventing.Reader;
+using TLIS_DAL.ViewModels.MW_DishDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -76,6 +78,25 @@ namespace TLIS_Service.Services
             _services = services;
             _dbContext = context;
             _mapper = mapper;
+        }
+        private void RefreshView(string connectionString)
+        {
+            try
+            {
+                using (var connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new OracleCommand("BEGIN DBMS_MVIEW.REFRESH('mwDish_view', 'C'); END;", connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // يمكنك تسجيل الاستثناء هنا إذا أردت
+                Console.WriteLine($"Error during refreshing view: {ex.Message}");
+            }
         }
         //public Response<AllItemAttributes> AddSideArm(AddSideArmLibraryObject SideArmViewModel, string SiteCode, string ConnectionString, int? TaskId,int UserId)
         //{
@@ -1090,12 +1111,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_SIDEARM ";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_SIDEARM ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "SideArmInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
@@ -2658,7 +2679,7 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //map ViewModel to Entity
         //update Entity
-        public async Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId,int UserId)
+        public async Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId,int UserId,string ConnectionString)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -2738,10 +2759,6 @@ namespace TLIS_Service.Services
 
                                                     //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                                     //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-
-
-
                                                 }
                                                 else
                                                 {
@@ -3062,11 +3079,12 @@ namespace TLIS_Service.Services
                         {      
                             var AllLoadOnSideArm = _unitOfWork.CivilLoadsRepository.GetWhere(x =>
                              x.sideArmId == SideArmViewModel.installationAttributes.Id &&
-                             x.Id != CivilLoads.Id && !x.Dismantle);
+                             x.allLoadInstId !=null&& x.Id != CivilLoads.Id && !x.Dismantle);
 
                             AllLoadOnSideArm.Select(item =>
                             {
-                                var OldAllLoadOnSideArm = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.Id == item.Id);
+                                var OldAllLoadOnSideArm = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
+                                .AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                 item.allCivilInstId = AllCivilInst;
                                 CivilLoads.Dismantle = false;
                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldAllLoadOnSideArm, item);
@@ -3074,16 +3092,34 @@ namespace TLIS_Service.Services
                             }).ToList(); 
                             _unitOfWork.SaveChanges();
 
-                            var OldSideArmInCivilLoad = _unitOfWork.CivilLoadsRepository.GetWhereFirst
-                               (x => x.sideArmId == SideArmViewModel.installationAttributes.Id
-                               && x.Id != CivilLoads.Id && !x.Dismantle);
+                            var OldSideArmInCivilLoad = _unitOfWork.CivilLoadsRepository.
+                                GetAllAsQueryable().AsNoTracking().FirstOrDefault
+                               (x => x.sideArmId == SideArmViewModel.installationAttributes.Id && 
+                               x.allLoadInstId ==null&& !x.Dismantle);
 
                             CivilLoads.ItemOnCivilStatus = SideArmViewModel.CivilLoads?.ItemOnCivilStatus;
                             CivilLoads.InstallationDate = SideArmViewModel.CivilLoads.InstallationDate;
                             CivilLoads.ItemStatus = SideArmViewModel.CivilLoads?.ItemStatus;
                             CivilLoads.ReservedSpace = SideArmViewModel.CivilLoads.ReservedSpace;
-                            CivilLoads.legId = SideArmViewModel.installationConfig?.legId[0] ?? null;
-                            CivilLoads.Leg2Id = SideArmViewModel.installationConfig?.legId[1] ?? null;
+
+                            if (SideArmViewModel.installationConfig?.legId.Count == 1)
+                            {
+                                CivilLoads.legId = SideArmViewModel.installationConfig?.legId[0] ?? null;
+                                
+                            }
+                            else
+                            {
+                                CivilLoads.legId = null;
+                            }
+                            if (SideArmViewModel.installationConfig?.legId.Count > 1)
+                            {
+                                CivilLoads.legId = SideArmViewModel.installationConfig?.legId[1] ?? null;
+
+                            }
+                            else
+                            {
+                                CivilLoads.Leg2Id = null;
+                            } 
                             CivilLoads.allCivilInstId = AllCivilInst;
                             CivilLoads.Dismantle =false;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldSideArmInCivilLoad, CivilLoads);
@@ -3112,6 +3148,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transactionScope.Complete();
                         }
+                        Task.Run(() => RefreshView(ConnectionString));
                         return new Response<EditSidearmInstallationObject>();
                     }
                     else
@@ -3835,7 +3872,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode,int? TaskId, int UserId)
+        public Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode,int? TaskId, int UserId,string ConnectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4363,6 +4400,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                        Task.Run(() => RefreshView(ConnectionString));
                         return new Response<SideArmViewDto>();
                     }
                     else

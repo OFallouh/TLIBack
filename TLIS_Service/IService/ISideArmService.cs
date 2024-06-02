@@ -18,7 +18,7 @@ namespace TLIS_Service.IService
     public interface ISideArmService
     {
 
-        Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, int? TaskId, int UserId);
+        Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, int? TaskId, int UserId, string ConnectionString);
         Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string SiteCode, string ConnectionString);
         Response<ReturnWithFilters<SideArmDisplayedOnTableViewModel>> getSideArms(CivilLoadsFilter BaseFilter, bool WithFilterData, List<FilterObjectList> filters);
         Response<ReturnWithFilters<object>> GetSideArmsWithEnabledAtt(CivilLoadsFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, CombineFilters CombineFilters, int? CivilId, string CivilType);
@@ -26,8 +26,8 @@ namespace TLIS_Service.IService
         Response<GetForAddLoadObject> GetById(int Id);
         public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskI);
         Response<ObjectInstAttsForSideArm> GetSideArmById(int SideArmId, string TableName);
- 
-        Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId, int UserId);
+
+        Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId, int UserId, string ConnectionString);
         Task<Response<IEnumerable<SideArmInstallationPlaceViewModel>>> GetSideArmInstallationPlace(int civilInstallationPlaceType);
         Task<Response<TLIsideArmInstallationPlace>> AddSideArmInstallationPlace(AddSideArmInstallationPlaceViewModel SideArmInstallationPlace);
         Task<Response<TLIsideArmInstallationPlace>> UpdateSideArmInstallationPlace(EditSideArmInstallationPlaceViewModel SideArmInstallationPlace);

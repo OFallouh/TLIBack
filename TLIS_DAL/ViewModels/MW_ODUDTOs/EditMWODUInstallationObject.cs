@@ -14,7 +14,7 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
         public InstallationMWODUConfigObject installationConfig { get; set; }
         public LibraryAttributesMWODUObject civilType { get; set; }
         public EditinstallationAttributesMWODUObject installationAttributes { get; set; }
-        public AddCivilLoadObject civilLoads { get; set; }
+        public AddCivilLoad civilLoads { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
         public class EditinstallationAttributesMWODUObject
         {
@@ -36,13 +36,6 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
             public int MwODULibraryId { get; set; }
 
         }
-        public class AddCivilLoadObject
-        {
-            public DateTime InstallationDate { get; set; } = DateTime.Now;
-            public string? ItemOnCivilStatus { get; set; } = null;
-            public string? ItemStatus { get; set; } = " ";
-            public bool ReservedSpace { get; set; }
-
-        }
+       
     }
 }

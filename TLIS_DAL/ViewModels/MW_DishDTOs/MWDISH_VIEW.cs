@@ -50,7 +50,7 @@ namespace TLIS_DAL.ViewModels.MW_DishDTOs
         public int ODU_COUNT { get; set; }
         public string POLARITYTYPE { get; set; }
         public int? SideArmSec_Id { get; set; }
-        public int? SideArmSec_Name{ get; set; }
+        public string? SideArmSec_Name{ get; set; }
 
         public Dictionary<string, object> GenerateOutputData()
         {

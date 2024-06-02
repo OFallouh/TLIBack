@@ -15,7 +15,7 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string SiteCode { get; set; }
-        public string? key { get; set; }
+        public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
         public string Serial_Number { get; set; }
         public string Name { get; set; }
@@ -48,7 +48,7 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
             outputData.Add("SiteCode", SiteCode);
             outputData.Add("dynamicKeyProperties", null);
             outputData.Add("dynamicValueProperties", null);
-            outputData.Add("key", key);
+            outputData.Add("key", Key);
             outputData.Add("value", INPUTVALUE);
             outputData.Add("id", Id);
             outputData.Add("Serial_Number", Serial_Number);
@@ -79,9 +79,9 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
             outputData.Add("SIDEARMNAME", SIDEARMNAME);
             outputData.Add("Dismantle", Dismantle);
             // Add dynamic property if "key" has a value
-            if (!string.IsNullOrEmpty(key))
+            if (!string.IsNullOrEmpty(Key))
             {
-                outputData.Add(key, INPUTVALUE);
+                outputData.Add(Key, INPUTVALUE);
             }
 
             return outputData;
