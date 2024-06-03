@@ -2665,6 +2665,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                        //Task.Run(() =>_unitOfWork.CivilWithLegsRepository.RefreshView(connectionString,));
                         return new Response<ObjectInstAtts>();
                     }
                     else
@@ -2868,6 +2869,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                   
                         return new Response<ObjectInstAtts>();
                     }
                     else
@@ -2990,6 +2992,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                  
                         return new Response<ObjectInstAtts>();
                     }
 
@@ -7009,12 +7012,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_withleg ";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
@@ -7141,12 +7144,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
@@ -7416,12 +7419,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
@@ -7558,12 +7561,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
@@ -7969,12 +7972,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "CREATE_DYNAMIC_PIVOT_NONSTEEL ";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_NONSTEEL ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))

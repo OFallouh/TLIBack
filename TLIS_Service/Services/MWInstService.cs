@@ -5534,7 +5534,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
-                            Task.Run(() => RefreshView(ConnectionString));
+                           
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                    
@@ -8000,7 +8000,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    await Task.Run(() => RefreshView(ConnectionString));
+                     //Task.Run(() => RefreshView(ConnectionString,));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -8009,25 +8009,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        private void RefreshView(string connectionString)
-        {
-            try
-            {
-                using (var connection = new OracleConnection(connectionString))
-                {
-                    connection.Open();
-                    using (var command = new OracleCommand("BEGIN DBMS_MVIEW.REFRESH('mwDish_view', 'C'); END;", connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // يمكنك تسجيل الاستثناء هنا إذا أردت
-                Console.WriteLine($"Error during refreshing view: {ex.Message}");
-            }
-        }
+       
         public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId,string ConnectionString)
         {
             using (TransactionScope transactionScope = new TransactionScope())
@@ -9213,7 +9195,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    Task.Run(() => RefreshView(ConnectionString));
+                   
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -17352,7 +17334,7 @@ namespace TLIS_Service.Services
                      .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "oduinstallationtype_name", "mwodulibrary_name" }
+                    .Where(x => new[] { "oduinstallationtype_name", "mwodulibrary_name" ,"mw_dish_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
          

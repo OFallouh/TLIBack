@@ -65,5 +65,6 @@ namespace TLIS_Repository.Base
         IEnumerable<TType> GetIncludeWhereSelect<TType>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TType>> select, params Expression<Func<TEntity, object>>[] includes) where TType : class;
         IEnumerable<TEntity> GetIncludeWhere(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
         TEntity GetIncludeWhereFirst(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
+        void RefreshView(string connectionString, string viewName);
     }
 }

@@ -16,6 +16,7 @@ using System.Reflection;
 using static TLIS_Repository.Helpers.Constants;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using Oracle.ManagedDataAccess.Client;
 
 namespace TLIS_Repository.Base
 {
@@ -1294,6 +1295,24 @@ namespace TLIS_Repository.Base
                 RemoveItemWithHistory(UserId, Entity);
             }
             _context.SaveChanges();
+        }
+        public void RefreshView(string connectionString, string viewName)
+        {
+            try
+            {
+                using (var connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new OracleCommand($"BEGIN DBMS_MVIEW.REFRESH('{viewName}', 'C'); END;", connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during refreshing view: {ex.Message}");
+            }
         }
         #endregion
     }

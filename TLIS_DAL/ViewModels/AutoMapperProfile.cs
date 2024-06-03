@@ -243,7 +243,9 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditinstallationAttributesSideArm, TLIsideArm>().ReverseMap();
             CreateMap<MWDishLibraryAttributes, TLImwDishLibrary>().ReverseMap();
             CreateMap<installationAttributesMWDish, TLImwDish>().ReverseMap();
-            CreateMap<OwnerViewModel, MWDISH_VIEW>().ReverseMap();
+            CreateMap<OwnerViewModel, MWDISH_VIEW>().
+                ForMember(c => c.DishName, c => c.MapFrom(s => s.Name))
+                .ReverseMap();
             CreateMap<OwnerViewModel, TLImwDish>()
                 .ForMember(c => c.DishName, c => c.MapFrom(s => s.Name))
                 .ReverseMap();
