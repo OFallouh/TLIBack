@@ -51,6 +51,7 @@ using TLIS_DAL;
 using static TLIS_Service.Helpers.Constants;
 using System.Data;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace TLIS_Service.Services
 {
@@ -3561,7 +3562,7 @@ namespace TLIS_Service.Services
                                 {
                                     if (MW_DishLibraryEntity.diameter <= 0)
                                     {
-                                        return new Response<AddMWDishLibraryObject>(false, null, null, "diamete must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddMWDishLibraryObject>(false, null, null, "diameter must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -6909,6 +6910,7 @@ namespace TLIS_Service.Services
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         }
+
                         TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_BULibrary.Active = !(NewMW_BULibrary.Active);
 
@@ -6922,7 +6924,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwDish.MwDishLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
                         var MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null || CivilLoad.Count > 0)
+                        if (CivilLoad != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -6939,7 +6941,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null || CivilLoad.Count > 0)
+                        if (CivilLoad != null )
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -6954,7 +6956,7 @@ namespace TLIS_Service.Services
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwRFU.MwRFULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
-                        if (CivilLoad != null || CivilLoad.Count > 0)
+                        if (CivilLoad != null )
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -6970,7 +6972,7 @@ namespace TLIS_Service.Services
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwOther.mwOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwOther).ToList();
-                        if (CivilLoad != null || CivilLoad.Count > 0)
+                        if (CivilLoad != null )
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -7054,11 +7056,44 @@ namespace TLIS_Service.Services
                         }
                         return FKitem;
                     }).ToList();
-                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel("MW");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
-                    
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+               .GetDynamicLibAtt(TableNameEntity.Id, null )
+               .Select(DynamicAttribute =>
+               {
+                   TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                   if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                   {
+                       switch (DynamicAttribute.DataType.ToLower())
+                       {
+                           case "string":
+                               DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                               break;
+                           case "int":
+                               DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                           case "double":
+                               DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                           case "bool":
+                               DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                           case "datetime":
+                               DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                       }
+                   }
+                   else
+                   {
+                       DynamicAttribute.Value = " ".Split(' ')[0];
+                   }
+                   return DynamicAttribute;
+               });
+
+                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
+
                 }
                 else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                 {
@@ -7083,8 +7118,41 @@ namespace TLIS_Service.Services
                     var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
-                  
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                .GetDynamicLibAtt(TableNameEntity.Id, null)
+                .Select(DynamicAttribute =>
+                {
+                    TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                    if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                    {
+                        switch (DynamicAttribute.DataType.ToLower())
+                        {
+                            case "string":
+                                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                                break;
+                            case "int":
+                                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                            case "double":
+                                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                            case "bool":
+                                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                            case "datetime":
+                                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        DynamicAttribute.Value = " ".Split(' ')[0];
+                    }
+                    return DynamicAttribute;
+                });
+
+                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
+
                 }
                 else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                 {
@@ -7177,7 +7245,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwDish.MwDishLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
                         var MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if ((CivilLoad != null || CivilLoad.Count > 0) && MW_DishLibrary.Active == true)
+                        if (CivilLoad != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -7195,7 +7263,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if ((CivilLoad != null || CivilLoad.Count > 0) && MW_ODULibrary.Active == true)
+                        if (CivilLoad != null)
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -7213,7 +7281,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwRFU.MwRFULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if ((CivilLoad != null || CivilLoad.Count > 0) && MW_RFULibrary.Active == true)
+                        if (CivilLoad != null )
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -7231,7 +7299,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if ((CivilLoad != null || CivilLoad.Count > 0) && MW_OtherLibrary.Active == true)
+                        if (CivilLoad != null )
                         {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 

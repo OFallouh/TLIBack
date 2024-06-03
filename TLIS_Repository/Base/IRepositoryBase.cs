@@ -66,5 +66,6 @@ namespace TLIS_Repository.Base
         IEnumerable<TEntity> GetIncludeWhere(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
         TEntity GetIncludeWhereFirst(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
         void RefreshView(string connectionString, string viewName);
+        void AddSiteWithHistory(int? UserId, TEntity entity);
     }
 }

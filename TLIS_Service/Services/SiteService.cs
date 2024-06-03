@@ -116,7 +116,7 @@ namespace TLIS_Service.Services
                             (int)Helpers.Constants.ApiReturnCode.fail);
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
-                    _unitOfWork.SiteRepository.AddWithHistory(UserId,NewSiteEntity);
+                    _unitOfWork.SiteRepository.AddSiteWithHistory(UserId,NewSiteEntity);
                     
                     if (TaskId != null)
                     {
@@ -178,7 +178,7 @@ namespace TLIS_Service.Services
                     var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
                         (x => x.SiteName == EditSiteViewModel.SiteName && x.SiteCode != EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
-                    _unitOfWork.SiteRepository.UpdateWithHistory(UserId,OldSiteInfo, Site);
+                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId,OldSiteInfo, Site);
 
                     _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
                     _MySites.Add(Site);

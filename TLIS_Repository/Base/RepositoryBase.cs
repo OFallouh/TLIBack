@@ -534,6 +534,34 @@ namespace TLIS_Repository.Base
                 _context.SaveChanges();
             }
         }
+        public virtual void AddSiteWithHistory(int? UserId, TEntity entity)
+        {
+            //if (UserId == null)
+            //    UserId = _context.TLIuser.FirstOrDefault(x => x.UserName == "AdminSy").Id;
+            dataTable.Add(entity);
+            _context.SaveChanges();
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == entity.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id;
+
+                string entityId = (string)entity.GetType().GetProperty("SiteCode").GetValue(entity, null);
+
+                TLItablesHistory AddTablesHistory = new TLItablesHistory
+                {
+                    Date = DateTime.Now,
+                    HistoryTypeId = HistoryTypeId,
+                    PreviousHistoryId = null,
+                    RecordId = entityId.ToString(),
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+                _context.TLItablesHistory.Add(AddTablesHistory);
+                _context.SaveChanges();
+            }
+        }
         public virtual async Task AddAsyncWithHistory(int? UserId, TEntity entity)
         {
             await dataTable.AddAsync(entity);

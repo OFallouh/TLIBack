@@ -770,7 +770,7 @@ namespace TLIS_Service.Services
             {
                 var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArmId !=null && x.sideArm.sideArmLibraryId== id && 
                 !x.Dismantle,x=>x.sideArm,x=>x.sideArm.sideArmLibrary).ToList();
-                if (SideArmInstllation != null && SideArmInstllation.Count>0)
+                if (SideArmInstllation != null)
                 {
                     return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -803,7 +803,7 @@ namespace TLIS_Service.Services
                     var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
                      x.Dismantle, x => x.sideArm).ToList();
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
-                    if (SideArmInstllation != null && SideArmInstllation.Count > 0)
+                    if (SideArmInstllation != null )
                     {
                         return new Response<SideArmLibraryViewModel>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
