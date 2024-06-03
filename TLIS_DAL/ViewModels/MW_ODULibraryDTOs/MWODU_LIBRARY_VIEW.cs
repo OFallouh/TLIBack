@@ -9,7 +9,7 @@ using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.MW_ODULibraryDTOs
 {
-    public class MWODU_LIBRARY_VIEW
+    public class MV_MWODU_LIBRARY_VIEW
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

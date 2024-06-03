@@ -455,7 +455,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_RadioLibraryService == null)
-                    _RadioLibraryService = new RadioLibraryService(_unitOfWork, _services,_mapper);
+                    _RadioLibraryService = new RadioLibraryService(_unitOfWork, _services,_mapper,db);
                 return _RadioLibraryService;
             }
         }

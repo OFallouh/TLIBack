@@ -223,10 +223,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<MWBULibraryAttributes, TLImwBULibrary>().ReverseMap();
             CreateMap<MWODULibraryAttributes, TLImwODULibrary>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, CivilNonSteelView>().ReverseMap();
-            CreateMap<SectionsLegTypeViewModel, CIVIL_WITHOUTLEGS_VIEW>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, MV_CIVIL_WITHOUTLEGS_VIEW>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, CivilWithLegView>().ReverseMap();
-            CreateMap<SectionsLegTypeViewModel, SIDEARM_VIEW>().ReverseMap();
-            CreateMap<SectionsLegTypeViewModel, MWDISH_VIEW>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, MV_SIDEARM_VIEW>().ReverseMap();
+            CreateMap<SectionsLegTypeViewModel, MV_MWDISH_VIEW>().ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();
@@ -243,7 +243,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditinstallationAttributesSideArm, TLIsideArm>().ReverseMap();
             CreateMap<MWDishLibraryAttributes, TLImwDishLibrary>().ReverseMap();
             CreateMap<installationAttributesMWDish, TLImwDish>().ReverseMap();
-            CreateMap<OwnerViewModel, MWDISH_VIEW>().
+            CreateMap<OwnerViewModel, MV_MWDISH_VIEW>().
                 ForMember(c => c.DishName, c => c.MapFrom(s => s.Name))
                 .ReverseMap();
             CreateMap<OwnerViewModel, TLImwDish>()

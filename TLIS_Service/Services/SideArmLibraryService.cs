@@ -251,7 +251,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.SIDEARM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.MV_SIDEARM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
@@ -260,7 +260,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.SIDEARM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.MV_SIDEARM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,

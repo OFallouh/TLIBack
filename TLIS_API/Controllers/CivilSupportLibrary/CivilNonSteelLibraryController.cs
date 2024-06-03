@@ -118,7 +118,8 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.CivilLibraryService.EditCivilNonSteelLibrary(editCivilNonSteelLibraryViewModel, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId);
+                string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.CivilLibraryService.EditCivilNonSteelLibrary(editCivilNonSteelLibraryViewModel, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -151,7 +152,8 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.CivilLibraryService.Disable(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.CivilLibraryService.Disable(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("DeleteCivilNonSteelLibrary")]
@@ -176,7 +178,8 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.CivilLibraryService.Delete(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.CivilLibraryService.Delete(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetForAddCivilNonSteelLibrary")] 

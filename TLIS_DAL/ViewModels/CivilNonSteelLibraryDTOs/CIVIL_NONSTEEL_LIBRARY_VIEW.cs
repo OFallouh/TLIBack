@@ -9,7 +9,7 @@ using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs
 {
-    public class CIVIL_NONSTEEL_LIBRARY_VIEW
+    public class MV_CIVIL_NONSTEEL_LIBRARY_VIEW
     {
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }

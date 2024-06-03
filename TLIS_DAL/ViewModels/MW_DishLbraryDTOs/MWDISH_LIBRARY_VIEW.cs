@@ -9,7 +9,7 @@ using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.MW_DishLbraryDTOs
 {
-    public class MWDISH_LIBRARY_VIEW
+    public class MV_MWDISH_LIBRARY_VIEW
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

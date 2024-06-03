@@ -9,7 +9,7 @@ using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.SideArmDTOs
 {
-    public class SIDEARM_VIEW
+    public class MV_SIDEARM_VIEW
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

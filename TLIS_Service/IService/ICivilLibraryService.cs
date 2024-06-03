@@ -22,7 +22,7 @@ namespace TLIS_Service.IService
     public interface ICivilLibraryService
     {
         Response<GetForAddCivilLibrarybject> GetCivilNonSteelLibraryById(int Id, string TableName);
-        Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId);
+        Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId,string connectionString);
         Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName);
         Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId);
         Response<AddCivilWithoutLegsLibraryObject> AddCivilWithoutLegsLibrary(string TableName, AddCivilWithoutLegsLibraryObject AddCivilWithoutLegsLibraryObject, string connectionString, int UserId);
@@ -33,11 +33,11 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<CivilNonSteelLibraryViewModel>> getCivilNonSteelLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<GetForAddCivilLibrarybject> GetCivilWithLegsLibraryById(int Id, string TableName);
         Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName, int CategoryId);
-        Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId);
+        Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId, string connectionString);
         Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString,int UserId);
-        Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName, int userId);
-        Task<Response<AllItemAttributes>> Disable(int Id, string TableName, int UserId);
-        Task<Response<AllItemAttributes>> Delete(int Id, string CivilType, int UserId);
+        Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName, int userId, string connectionString);
+        Task<Response<AllItemAttributes>> Disable(int Id, string TableName, int UserId, string connectionString);
+        Task<Response<AllItemAttributes>> Delete(int Id, string CivilType, int UserId, string connectionString);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt( string ConnectionString);

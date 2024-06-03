@@ -9,7 +9,7 @@ using TLIS_DAL.Models;
 
 namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
 {
-    public class CIVIL_WITHOUTLEGS_VIEW
+    public class MV_CIVIL_WITHOUTLEGS_VIEW
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

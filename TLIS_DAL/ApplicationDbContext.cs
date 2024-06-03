@@ -177,17 +177,17 @@ namespace TLIS_DAL
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
         public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW { get; set; }
-        public virtual DbSet<CivilWithLegView> CIVIL_WITHLEGS_VIEW { get; set; }
-        public virtual DbSet<ViewWithLegsLibrary> CIVIL_WITHLEG_LIBRARY_VIEW { get; set; }
-        public virtual DbSet<CIVIL_WITHOUTLEG_LIBRARY_VIEW> CIVIL_WITHOUTLEG_LIBRARY_VIEW { get; set; }
-        public virtual DbSet<CIVIL_WITHOUTLEGS_VIEW> CIVIL_WITHOUTLEGS_VIEW { get; set; }
-        public virtual DbSet<CIVIL_NONSTEEL_LIBRARY_VIEW> CIVIL_NONSTEEL_LIBRARY_VIEW { get; set; }
-        public virtual DbSet<SIDEARM_VIEW> SIDEARM_VIEW { get; set; }
-        public virtual DbSet<SIDEARM_LIBRARY_VIEW> SIDEARM_LIBRARY_VIEW { get; set; }
-        public virtual DbSet<MWDISH_LIBRARY_VIEW> MWDISH_LIBRARY_VIEW { get; set; }
-        public virtual DbSet<MWDISH_VIEW> MWDISH_VIEW { get; set; }
-        public virtual DbSet<MWODU_LIBRARY_VIEW> MWODU_LIBRARY_VIEW { get; set; }
-        public virtual DbSet<MWODU_VIEW> MWODU_VIEW { get; set; }
+        public virtual DbSet<CivilWithLegView> MV_CIVIL_WITHLEGS_VIEW { get; set; }
+        public virtual DbSet<ViewWithLegsLibrary> MV_CIVIL_WITHLEG_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW> MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_CIVIL_WITHOUTLEGS_VIEW> MV_CIVIL_WITHOUTLEGS_VIEW { get; set; }
+        public virtual DbSet<MV_CIVIL_NONSTEEL_LIBRARY_VIEW> MV_CIVIL_NONSTEEL_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_SIDEARM_VIEW> MV_SIDEARM_VIEW { get; set; }
+        public virtual DbSet<MV_SIDEARM_LIBRARY_VIEW> MV_SIDEARM_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_MWDISH_LIBRARY_VIEW> MV_MWDISH_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_MWDISH_VIEW> MV_MWDISH_VIEW { get; set; }
+        public virtual DbSet<MV_MWODU_LIBRARY_VIEW> MV_MWODU_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_MWODU_VIEW> MV_MWODU_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -251,58 +251,58 @@ namespace TLIS_DAL
             builder.Entity<CivilWithLegView>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("CIVIL_WITHLEGS_VIEW");
+                cn.ToView("MV_CIVIL_WITHLEGS_VIEW");
             });
             builder.Entity<ViewWithLegsLibrary>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("CIVIL_WITHLEG_LIBRARY_VIEW");
+                cn.ToView("MV_CIVIL_WITHLEG_LIBRARY_VIEW");
             });
-            builder.Entity<CIVIL_WITHOUTLEG_LIBRARY_VIEW>(cn =>
+            builder.Entity<MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("CIVIL_WITHOUTLEG_LIBRARY_VIEW");
+                cn.ToView("MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW");
             });
-            builder.Entity<CIVIL_WITHOUTLEGS_VIEW>(cn =>
+            builder.Entity<MV_CIVIL_WITHOUTLEGS_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("CIVIL_WITHOUTLEGS_VIEW");
+                cn.ToView("MV_CIVIL_WITHOUTLEGS_VIEW");
             });
-            builder.Entity<CIVIL_NONSTEEL_LIBRARY_VIEW>(cn =>
+            builder.Entity<MV_CIVIL_NONSTEEL_LIBRARY_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("CIVIL_NONSTEEL_LIBRARY_VIEW");
+                cn.ToView("MV_CIVIL_NONSTEEL_LIBRARY_VIEW");
             });
-            builder.Entity<SIDEARM_VIEW>(cn =>
+            builder.Entity<MV_SIDEARM_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("SIDEARM_VIEW");
+                cn.ToView("MV_SIDEARM_VIEW");
             });
-            builder.Entity<SIDEARM_LIBRARY_VIEW>(cn =>
+            builder.Entity<MV_SIDEARM_LIBRARY_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("SIDEARM_LIBRARY_VIEW");
+                cn.ToView("MV_SIDEARM_LIBRARY_VIEW");
             });
-            builder.Entity<MWDISH_LIBRARY_VIEW>(cn =>
+            builder.Entity<MV_MWDISH_LIBRARY_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("MWDISH_LIBRARY_VIEW");
+                cn.ToView("MV_MWDISH_LIBRARY_VIEW");
             });
-            builder.Entity<MWDISH_VIEW>(cn =>
+            builder.Entity<MV_MWDISH_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("MWDISH_VIEW");
+                cn.ToView("MV_MWDISH_VIEW");
             });
-            builder.Entity<MWODU_LIBRARY_VIEW>(cn =>
+            builder.Entity<MV_MWODU_LIBRARY_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("MWODU_LIBRARY_VIEW");
+                cn.ToView("MV_MWODU_LIBRARY_VIEW");
 
             });
-            builder.Entity<MWODU_VIEW>(cn =>
+            builder.Entity<MV_MWODU_VIEW>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("MWODU_VIEW");
+                cn.ToView("MV_MWODU_VIEW");
             });
             builder.Entity<TLIsession>();
 

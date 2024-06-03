@@ -134,7 +134,8 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.CivilLibraryService.EditCivilWithoutlegsLibrary(editCivilWithoutLegLibraryViewModel, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId);
+                string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.CivilLibraryService.EditCivilWithoutlegsLibrary(editCivilWithoutLegLibraryViewModel, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -166,7 +167,8 @@ namespace TLIS_API.Controllers
             }
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.CivilLibraryService.Disable(Id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.CivilLibraryService.Disable(Id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("DeleteCivilWithoutLegLibrary/{Id}")]
@@ -191,7 +193,8 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.CivilLibraryService.Delete(Id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.CivilLibraryService.Delete(Id, Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetForAddCivilWithoutLegsMastLibrary")]

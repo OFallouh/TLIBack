@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLIS_DAL.ViewModels.SideArmLibraryDTOs
 {
-    public class SIDEARM_LIBRARY_VIEW
+    public class MV_SIDEARM_LIBRARY_VIEW
     {
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }

@@ -2554,7 +2554,7 @@ namespace TLIS_Service.Services
                         civilWithLegs.Name = sitename + " " + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented+"HE";
 
 
-                        var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
                              (x.Id != null ? x.Name.ToLower() == civilWithLegs.Name.ToLower() : false
                                 && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
@@ -2729,7 +2729,7 @@ namespace TLIS_Service.Services
 
                         civilwithoutlegs.Name = sitename + " " + Model + " " + ownername + " " + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
                          (x.Id != null ? x.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false
                            && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
@@ -3051,7 +3051,7 @@ namespace TLIS_Service.Services
 
                         civilWithLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithLegsEntity.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
                              (x.Id != null ? x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
                                && x.Id != civilWithLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
 
@@ -3300,7 +3300,7 @@ namespace TLIS_Service.Services
 
                         civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithoutLegsEntity.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
                          (x.Id != null ? x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() : false
                            && x.Id != civilWithoutLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
                         if (CheckName != null)
@@ -6158,7 +6158,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                        NameAttribute.Value = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
+                        NameAttribute.Value = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
                     }
 
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
@@ -6365,11 +6365,11 @@ namespace TLIS_Service.Services
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
 
-                                            referencesValue = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
+                                            referencesValue = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
+                                            referencesValue = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
                                         }
                                         else
                                         {
@@ -6526,7 +6526,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                        NameAttribute.Value = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
+                        NameAttribute.Value = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
                     }
 
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
@@ -6635,11 +6635,11 @@ namespace TLIS_Service.Services
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
 
-                                            referencesValue = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
+                                            referencesValue = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
+                                            referencesValue = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
                                         }
                                         else
                                         {
@@ -6878,11 +6878,11 @@ namespace TLIS_Service.Services
                                         if (supportReferenceAllCivilInst.civilWithLegsId != null)
                                         {
 
-                                            referencesValue = _dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
+                                            referencesValue = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithLegsId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.civilWithoutLegId != null)
                                         {
-                                            referencesValue = _dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
+                                            referencesValue = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
                                         }
                                         else
                                         {
@@ -7058,7 +7058,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0) 
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                         && !x.Dismantle).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
@@ -7068,7 +7068,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                          && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
@@ -7191,7 +7191,7 @@ namespace TLIS_Service.Services
                     if (propertyNamesDynamic.Count == 0)
                     {
 
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
                         .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
                          x.CIVILWITHOUTLEGCATEGORY.ToLower()  == "mast" && !x.Dismantle)
                         .AsEnumerable().Select(x =>
@@ -7266,7 +7266,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
                          x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle).Select(x =>
 
                              new
@@ -7465,7 +7465,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
                          x.CIVILWITHOUTLEGCATEGORY.ToLower()== "capsule" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
@@ -7475,7 +7475,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                         && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
@@ -7607,7 +7607,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                         &&
                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
@@ -7618,7 +7618,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                         && x.CIVILWITHOUTLEGCATEGORY.ToLower()== "monopole" && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
@@ -12472,7 +12472,7 @@ namespace TLIS_Service.Services
                     .Select(item => new LocationTypeViewModel
                     {
                         Id = item.allCivilInstId,
-                        Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x=>x.Id== item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                        Name = $"{_dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x=>x.Id== item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
                     })
                     .ToList();
 
@@ -12662,7 +12662,7 @@ namespace TLIS_Service.Services
                      .Select(item => new LocationTypeViewModel
                      {
                          Id = item.allCivilInstId,
-                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                         Name = $"{_dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
                      })
                      .ToList();
 
@@ -12822,7 +12822,7 @@ namespace TLIS_Service.Services
                      .Select(item => new LocationTypeViewModel
                      {
                          Id = item.allCivilInstId,
-                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                         Name = $"{_dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
                      })
                      .ToList();
 
@@ -12981,7 +12981,7 @@ namespace TLIS_Service.Services
                      .Select(item => new LocationTypeViewModel
                      {
                          Id = item.allCivilInstId,
-                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                         Name = $"{_dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
                      })
                      .ToList();
 
@@ -13092,7 +13092,7 @@ namespace TLIS_Service.Services
                      .Select(item => new LocationTypeViewModel
                      {
                          Id = item.allCivilInstId,
-                         Name = $"{_dbContext.CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                         Name = $"{_dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithLegsId)?.Name} {_dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name} {_dbContext.CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
                      })
                      .ToList();
 

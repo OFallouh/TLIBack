@@ -8,13 +8,14 @@ using TLIS_DAL.ViewModels.LogisticalDTOs;
 
 namespace TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs
 {
-    public class AddRadioAntennaLibraryObject
+    public class EditRadioAntennaLibraryObject
     {
-        public RadioAntennaLibraryAttributes AttributesActivatedLibrary { get; set; }
+        public EditRadioAntennaLibraryAttributes AttributesActivatedLibrary { get; set; }
         public AddLogisticalViewModel LogisticalItems { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
-        public class RadioAntennaLibraryAttributes
+        public class EditRadioAntennaLibraryAttributes
         {
+            public int Id { get; set; }
             public string Model { get; set; }
             public string? FrequencyBand { get; set; }
             public float Weight { get; set; }
