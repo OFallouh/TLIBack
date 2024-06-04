@@ -179,27 +179,27 @@ namespace TLIS_API.Controllers
 
 
 
-        [HttpPost("DisableRadioOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DisableRadioOtherLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), Id);
-            return Ok(response);
-        }
-        [HttpPost("DisableRadioAntennaLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DisableRadioAntennaLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id);
-            return Ok(response);
-        }
-        [HttpPost("DisableRadioRRULibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DisableRadioRRULibrary(int Id)
-        {
-            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id);
-            return Ok(response);
-        }
+        //[HttpPost("DisableRadioOtherLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DisableRadioOtherLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), Id);
+        //    return Ok(response);
+        //}
+        //[HttpPost("DisableRadioAntennaLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DisableRadioAntennaLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id);
+        //    return Ok(response);
+        //}
+        //[HttpPost("DisableRadioRRULibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DisableRadioRRULibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id);
+        //    return Ok(response);
+        //}
         [HttpGet("GetForAdd/{RadioType}")]
         [ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
         public IActionResult GetForAdd(string RadioType)
@@ -207,80 +207,80 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioLibraryService.GetForAdd(RadioType);
             return Ok(response);
         }
-        [HttpPost("DeleteRadioOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DeleteRadioOtherLibrary(int Id)
-        {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
+        //[HttpPost("DeleteRadioOtherLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DeleteRadioOtherLibrary(int Id)
+        //{
+        //    string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+        //    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+        //    var token = authHeader.Substring("Bearer ".Length).Trim();
+        //    var handler = new JwtSecurityTokenHandler();
+        //    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            if (jsonToken == null)
-            {
-                return Unauthorized();
-            }
+        //    if (jsonToken == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-            var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), Id, userId);
-            return Ok(response);
-        }
-        [HttpPost("DeleteRadioAntennaLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DeleteRadioAntennaLibrary(int Id)
-        {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
+        //    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+        //    var userId = Convert.ToInt32(userInfo);
+        //    var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), Id, userId);
+        //    return Ok(response);
+        //}
+        //[HttpPost("DeleteRadioAntennaLibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DeleteRadioAntennaLibrary(int Id)
+        //{
+        //    string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+        //    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+        //    var token = authHeader.Substring("Bearer ".Length).Trim();
+        //    var handler = new JwtSecurityTokenHandler();
+        //    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            if (jsonToken == null)
-            {
-                return Unauthorized();
-            }
+        //    if (jsonToken == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-            var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id, userId);
-            return Ok(response);
-        }
-        [HttpPost("DeleteRadioRRULibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DeleteRadioRRULibrary(int Id)
-        {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
+        //    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+        //    var userId = Convert.ToInt32(userInfo);
+        //    var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id, userId,connectionString);
+        //    return Ok(response);
+        //}
+        //[HttpPost("DeleteRadioRRULibrary")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DeleteRadioRRULibrary(int Id)
+        //{
+        //    string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+        //    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+        //    var token = authHeader.Substring("Bearer ".Length).Trim();
+        //    var handler = new JwtSecurityTokenHandler();
+        //    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            if (jsonToken == null)
-            {
-                return Unauthorized();
-            }
+        //    if (jsonToken == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-            var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId);
-            return Ok(response);
-        }
+        //    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+        //    var userId = Convert.ToInt32(userInfo);
+        //    var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId);
+        //    return Ok(response);
+        //}
     }
 }

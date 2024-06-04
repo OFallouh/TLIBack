@@ -19,14 +19,15 @@ namespace TLIS_Service.IService
     {
         Response<ReturnWithFilters<RadioAntennaLibraryViewModel>> GetRadioAntennaLibraries(ParameterPagination parameters, List<FilterObjectList> filters = null);
         Response<ReturnWithFilters<RadioRRULibraryViewModel>> GetRadioRRULibraries(ParameterPagination parameters, List<FilterObjectList> filters = null);
-        Task<Response<EditRadioAntennaLibraryObject>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel, int UserId);
+        Task<Response<EditRadioAntennaLibraryObject>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel, int UserId,string connectionString);
         Response<ReturnWithFilters<RadioOtherLibraryViewModel>> GetOtherRadioLibraries(ParameterPagination parameters, List<FilterObjectList> filters = null);
         Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName);
         Response<AllItemAttributes> AddRadioLibrary(string TableName, object RadioLibraryViewModel, string connectionString, int UserId);
-       // Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);
-        Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id);
-        Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id, int UserId);
+        // Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);
+        Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id, int UserId, string connectionString);
+        Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id, int UserId, string connectionString);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
+        Response<GetEnableAttribute> GetRadioAntennaLibrariesEnabledAtt(string ConnectionString);
         Response<AddRadioAntennaLibraryObject> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int UserId);
         Response<ReturnWithFilters<object>> GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetRadioRRULibrariesWithEnabledAttribute(CombineFilters CombineFilters, ParameterPagination parameterPagination);

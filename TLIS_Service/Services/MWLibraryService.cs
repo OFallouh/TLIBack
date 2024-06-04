@@ -6912,7 +6912,7 @@ namespace TLIS_Service.Services
                         if (CivilLoad != null || CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetByID(Id);
                         NewMW_BULibrary.Active = !(NewMW_BULibrary.Active);
 
                         _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(UserId, OldMW_BULibrary, NewMW_BULibrary);
@@ -6929,7 +6929,7 @@ namespace TLIS_Service.Services
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-                        var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetByID(Id);
                         NewMW_DishLibrary.Active = !(NewMW_DishLibrary.Active);
 
                         _unitOfWork.MW_DishLibraryRepository.UpdateWithHistory(UserId, MW_DishLibrary, NewMW_DishLibrary);
@@ -6945,7 +6945,7 @@ namespace TLIS_Service.Services
                          return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-                        var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
                         NewMW_ODULibrary.Active = !(NewMW_ODULibrary.Active);
                         _unitOfWork.MW_ODULibraryRepository.UpdateWithHistory(UserId, MW_ODULibrary, NewMW_ODULibrary);
                         await _unitOfWork.SaveChangesAsync();
@@ -6959,7 +6959,7 @@ namespace TLIS_Service.Services
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        TLImwRFULibrary NewMw_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        TLImwRFULibrary NewMw_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetByID(Id);
                         NewMw_RFULibrary.Active = !(NewMw_RFULibrary.Active);
                         _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(UserId, MW_RFULibrary, NewMw_RFULibrary);
                         await _unitOfWork.SaveChangesAsync();
@@ -6972,7 +6972,7 @@ namespace TLIS_Service.Services
                         if (CivilLoad != null )
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetByID(Id);
                         NewMW_OtherLibrary.Active = !(NewMW_OtherLibrary.Active);
                         _unitOfWork.MW_OtherLibraryRepository.UpdateWithHistory(UserId, MW_OtherLibrary, NewMW_OtherLibrary);
                         await _unitOfWork.SaveChangesAsync();
@@ -7238,9 +7238,9 @@ namespace TLIS_Service.Services
                         if ((CivilLoad != null && CivilLoad.Count > 0) && OldMW_BULibrary.Active == true)
                               return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
         
-                            TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                            TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetByID(Id);
 
-                            NewMW_BULibrary.Deleted = true;
+                             NewMW_BULibrary.Deleted = true;
                             NewMW_BULibrary.Model = NewMW_BULibrary.Model + "_" + DateTime.Now.ToString();
 
                             _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(UserId, OldMW_BULibrary, NewMW_BULibrary);
@@ -7257,7 +7257,7 @@ namespace TLIS_Service.Services
                         if (CivilLoad != null)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetByID(Id);
                         NewMW_DishLibrary.Deleted = true;
                         NewMW_DishLibrary.Model = NewMW_DishLibrary.Model + "_" + DateTime.Now.ToString();
 
@@ -7269,7 +7269,7 @@ namespace TLIS_Service.Services
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                        var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
                         if (CivilLoad != null)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -7288,7 +7288,7 @@ namespace TLIS_Service.Services
                         if (CivilLoad != null )
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         
-                        TLImwRFULibrary NewMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        TLImwRFULibrary NewMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetByID(Id);
                         NewMW_RFULibrary.Deleted = true;
                         NewMW_RFULibrary.Model = NewMW_RFULibrary.Model + "_" + DateTime.Now.ToString();
 
@@ -7299,12 +7299,12 @@ namespace TLIS_Service.Services
                     else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle&&
-                        x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                        x.allLoadInst.mwOther.mwOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwOther).ToList();
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null )
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetByID(Id);
                         NewMW_OtherLibrary.Deleted = true;
                         NewMW_OtherLibrary.Model = NewMW_OtherLibrary.Model + "_" + DateTime.Now.ToString();
 

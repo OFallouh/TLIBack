@@ -31,20 +31,21 @@ namespace TLIS_API.Controllers.LoadLibrary
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [HttpPost("GetRadioAntennaLibraries")]
-        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioAntennaLibraryViewModel>))]
-        public IActionResult GetRadioAntennaLibraries([FromQueryAttribute]ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> Filter = null)
-        {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibraries(parameterPagination, Filter);
-            return Ok(response);
-        }
-        [HttpPost("GetRadioAntennaLibrariesWithEnabledAttribute")]
+        [HttpPost("GetRadioAntennaLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetRadioAntennaLibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination)
+        public IActionResult GetRadioAntennaLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
+        //[HttpPost("GetRadioAntennaLibrariesWithEnabledAttribute")]
+        //[ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        //public IActionResult GetRadioAntennaLibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination)
+        //{
+        //    var response = _unitOfWorkService.RadioLibraryService.GetRadioAntennaLibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
+        //    return Ok(response);
+        //}
         [HttpGet("GetRadioAntennaLibraryById/{Id}")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetRadioAntennaLibraryById(int Id)
@@ -112,7 +113,8 @@ namespace TLIS_API.Controllers.LoadLibrary
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.RadioLibraryService.EditRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), editRadioAntenna, userId);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.RadioLibraryService.EditRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), editRadioAntenna, userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -127,7 +129,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableRadioAntennaLibrary(int Id)
         {
-            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), userId, Id, ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetForAddRadioAntennLibrary")]
@@ -159,7 +180,8 @@ namespace TLIS_API.Controllers.LoadLibrary
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id, userId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), Id, userId, ConnectionString);
             return Ok(response);
         }
     }

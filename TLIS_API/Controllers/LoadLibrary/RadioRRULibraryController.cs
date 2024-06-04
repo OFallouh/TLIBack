@@ -98,7 +98,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableRadioRRULibrary(int Id)
         {
-            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("DeleteRadioRRULibrary")]
@@ -123,8 +142,10 @@ namespace TLIS_API.Controllers.LoadLibrary
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.RadioLibraryService.DeletedRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId, ConnectionString);
             return Ok(response);
+        
         }
     }
 }

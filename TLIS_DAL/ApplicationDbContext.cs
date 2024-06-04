@@ -19,6 +19,7 @@ using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL.ViewModels.MW_DishDTOs;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
+using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
 
 
 namespace TLIS_DAL
@@ -176,7 +177,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLIintegrationAccessLog> TLIintegrationAccessLog { get; set; }
         public virtual DbSet<TLIuser_Permissions> TLIuser_Permissions { get; set; }
         public virtual DbSet<TLIrole_Permissions> TLIrole_Permissions { get; set; }
-        public virtual DbSet<CivilNonSteelView> CIVIL_NONSTEEL_VIEW { get; set; }
+        public virtual DbSet<CivilNonSteelView> MV_CIVIL_NONSTEEL_VIEW { get; set; }
         public virtual DbSet<CivilWithLegView> MV_CIVIL_WITHLEGS_VIEW { get; set; }
         public virtual DbSet<ViewWithLegsLibrary> MV_CIVIL_WITHLEG_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW> MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW { get; set; }
@@ -188,6 +189,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_MWDISH_VIEW> MV_MWDISH_VIEW { get; set; }
         public virtual DbSet<MV_MWODU_LIBRARY_VIEW> MV_MWODU_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_MWODU_VIEW> MV_MWODU_VIEW { get; set; }
+        public virtual DbSet<MV_RADIO_ANTENNA_LIBRARY_VIEW> MV_RADIO_ANTENNA_LIBRARY_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -246,7 +248,7 @@ namespace TLIS_DAL
             builder.Entity<CivilNonSteelView>(cn =>
             {
                 cn.HasNoKey();
-                cn.ToView("CIVIL_NONSTEEL_VIEW");
+                cn.ToView("MV_CIVIL_NONSTEEL_VIEW");
             });
             builder.Entity<CivilWithLegView>(cn =>
             {
@@ -300,6 +302,11 @@ namespace TLIS_DAL
 
             });
             builder.Entity<MV_MWODU_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_MWODU_VIEW");
+            });
+             builder.Entity<MV_MWODU_VIEW>(cn =>
             {
                 cn.HasNoKey();
                 cn.ToView("MV_MWODU_VIEW");

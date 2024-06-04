@@ -1676,6 +1676,95 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        public Response<GetEnableAttribute> GetRadioAntennaLibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "RadioAntennaLibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MV_RADIO_ANTENNA_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MV_RADIO_ANTENNA_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Notes = x.Notes,
+                        FrequencyBand = x.FrequencyBand,
+                        Weight = x.Weight,
+                        Width = x.Width,
+                        Depth = x.Depth,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        Length = x.Length,
+                        SpaceLibrary = x.SpaceLibrary,          
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         //Function take 2 parameters
         //specify the table i deal with
         //map object to ViewModel
@@ -1861,6 +1950,9 @@ namespace TLIS_Service.Services
                           
                             transaction.Complete();
                             tran.Commit();
+                           
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                        
                             return new Response<AddRadioAntennaLibraryObject>();
                         }
                         catch (Exception err)
@@ -2944,7 +3036,7 @@ namespace TLIS_Service.Services
         //        }
         //    }
         //}
-        public async Task<Response<EditRadioAntennaLibraryObject>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel,int UserId)
+        public async Task<Response<EditRadioAntennaLibraryObject>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel,int UserId,string connectionString)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -3044,8 +3136,8 @@ namespace TLIS_Service.Services
 
                     await _unitOfWork.SaveChangesAsync();
 
-
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
                     return new Response<EditRadioAntennaLibraryObject>();
                 }
                 catch (Exception err)
@@ -4126,7 +4218,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //enable or disable the record depened on record status
         //update Entity
-        public async Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id)
+        public async Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id,int UserId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4135,28 +4227,56 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                     if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                     {
-                        var RadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
-                        RadioAntennaEntity.Active = !(RadioAntennaEntity.Active);
-                        _unitOfWork.RadioAntennaLibraryRepository.Update(RadioAntennaEntity);
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                       x.allLoadInst.radioAntenna.radioAntennaLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioAntenna).ToList();
+                        var OldRadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        if (CivilLoad != null)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
+                        NewRadioAntennaEntity.Active = !(NewRadioAntennaEntity.Active);
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntennaLibrary, NewRadioAntennaEntity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                     {
-                        var RadioOtherEntity = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                        x.allLoadInst.radioOther.radioOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioOther).ToList();
+                        var OldRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        if (CivilLoad != null)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
+                      
                         NewRadioOtherLibrary.Active = !(NewRadioOtherLibrary.Active);
-                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, RadioOtherEntity, NewRadioOtherLibrary);
+                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(UserId, OldRadioOtherLibrary, NewRadioOtherLibrary);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                     {
-                        var RadioRRUEntity = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                         x.allLoadInst.radioRRU.radioRRULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioRRU).ToList();
+                        var OldRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        if (CivilLoad != null)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
+                 
                         NewRadioRRULibrary.Active = !(NewRadioRRULibrary.Active);
-                        _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, RadioRRUEntity, NewRadioRRULibrary);
+                        _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRULibrary, NewRadioRRULibrary);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
+                    if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
+                    {
+                        //  Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
+                    {
+                        //   Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                    }
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -4272,7 +4392,7 @@ namespace TLIS_Service.Services
         //set Deleted is true
         //update Entity
         //update dynamic attributes
-        public async Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id,int UserId)
+        public async Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id,int UserId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4287,37 +4407,59 @@ namespace TLIS_Service.Services
                         if (CivilLoad != null)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        var RadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
-                        RadioAntennaEntity.Deleted = true;
-                        RadioAntennaEntity.Model = RadioAntennaEntity.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntennaLibrary, RadioAntennaEntity);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
+                        NewRadioAntennaEntity.Deleted = true;
+                        NewRadioAntennaEntity.Model = NewRadioAntennaEntity.Model + "_" + DateTime.Now.ToString();
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntennaLibrary, NewRadioAntennaEntity);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
-                        AddHistory(RadioAntennaEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString());
+                        AddHistory(NewRadioAntennaEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString());
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                     {
-                        var RadioOtherEntity = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                        x.allLoadInst.radioOther.radioOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioOther).ToList();
+                        var OldRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        if (CivilLoad != null)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
                         NewRadioOtherLibrary.Deleted = true;
                         NewRadioOtherLibrary.Model = NewRadioOtherLibrary.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, RadioOtherEntity, NewRadioOtherLibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(UserId, OldRadioOtherLibrary, NewRadioOtherLibrary);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
-                        AddHistory(RadioOtherEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString());
+                        AddHistory(NewRadioOtherLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString());
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                     {
-                        var RadioRRUEntity = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                          x.allLoadInst.radioRRU.radioRRULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioRRU).ToList();
+                        var OldRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        if (CivilLoad != null)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
                         NewRadioRRULibrary.Deleted = true;
                         NewRadioRRULibrary.Model = NewRadioRRULibrary.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, RadioRRUEntity, NewRadioRRULibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRULibrary, NewRadioRRULibrary);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
-                        AddHistory(RadioRRUEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString());
+                        AddHistory(NewRadioRRULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString());
                     }
                     transaction.Complete();
+                    if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
+                    {
+                      //  Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
+                    {
+                     //   Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                    }
+                
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -4325,6 +4467,19 @@ namespace TLIS_Service.Services
 
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
+            }
+        }
+        private void DisableDynamicAttLibValues(int TableNameId, int Id, int UserId)
+        {
+            var DynamiAttLibValues = db.TLIdynamicAttLibValue
+                .Where(d => d.InventoryId == Id && d.tablesNamesId == TableNameId)
+                .ToList();
+            foreach (var DynamiAttLibValue in DynamiAttLibValues)
+            {
+                var OldDynamiAttLibValues = _unitOfWork.DynamicAttLibValueRepository.GetAllAsQueryable().AsNoTracking()
+                .FirstOrDefault(d => d.Id == DynamiAttLibValue.Id);
+                DynamiAttLibValue.disable = true;
+                _unitOfWork.DynamicAttLibValueRepository.UpdateWithHistory(UserId, OldDynamiAttLibValues, DynamiAttLibValue);
             }
         }
         #region Add History

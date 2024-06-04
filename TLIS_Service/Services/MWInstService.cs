@@ -17125,7 +17125,7 @@ namespace TLIS_Service.Services
                         }
                         else if (MWDish.allCivilInst.civilNonSteelId != null)
                         {
-                            ConfigureView2("civilNonSteel", sectionsLegTypeViewModels[1], "civilNonSteelId", MWDish.allCivilInst.civilNonSteel, _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.Id == MWDish.allCivilInst.civilNonSteelId));
+                            ConfigureView2("civilNonSteel", sectionsLegTypeViewModels[1], "civilNonSteelId", MWDish.allCivilInst.civilNonSteel, _dbContext.MV_CIVIL_NONSTEEL_VIEW.Where(x => x.Id == MWDish.allCivilInst.civilNonSteelId));
                         }
                         else if (MWDish.allCivilInst.civilWithLegsId != null)
                         {
@@ -17422,7 +17422,7 @@ namespace TLIS_Service.Services
                         }
                         else if (MWODU.allCivilInst.civilNonSteelId != null)
                         {
-                            ConfigureView2("civilNonSteel", sectionsLegTypeViewModels[1], "civilNonSteelId", MWODU.allCivilInst.civilNonSteel, _dbContext.CIVIL_NONSTEEL_VIEW.Where(x => x.Id == MWODU.allCivilInst.civilNonSteelId));
+                            ConfigureView2("civilNonSteel", sectionsLegTypeViewModels[1], "civilNonSteelId", MWODU.allCivilInst.civilNonSteel, _dbContext.MV_CIVIL_NONSTEEL_VIEW.Where(x => x.Id == MWODU.allCivilInst.civilNonSteelId));
                         }
                         else if (MWODU.allCivilInst.civilWithLegsId != null)
                         {
