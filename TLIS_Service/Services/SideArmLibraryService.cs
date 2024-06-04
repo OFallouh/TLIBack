@@ -184,6 +184,7 @@ namespace TLIS_Service.Services
                             }
                             transaction.Complete();
                             tran.Commit();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
                             return new Response<AddSideArmLibraryObject>();
                         }
                         catch (Exception err)
@@ -764,58 +765,73 @@ namespace TLIS_Service.Services
         //get record by Id
         //set Deleted is true
         //update Entity
-        public async Task<Response<SideArmLibraryViewModel>> Delete(int id,int UserId)
+        public async Task<Response<SideArmLibraryViewModel>> Delete(int id,int UserId,string connectionString)
         {
-            try
+            using (TransactionScope transaction = new TransactionScope())
             {
-                var SideArmInstllation=_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x=>x.sideArmId !=null && x.sideArm.sideArmLibraryId== id && 
-                !x.Dismantle,x=>x.sideArm,x=>x.sideArm.sideArmLibrary).ToList();
-                if (SideArmInstllation != null)
+                try
                 {
-                    return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-                }
-                else
-                {
+                    var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == "TLIsideArmLibrary");
+                    var SideArmInstllation = _unitOfWork.CivilLoadsRepository
+                        .GetIncludeWhere(x => x.sideArmId != null && x.sideArm.sideArmLibraryId == id
+                        && !x.Dismantle, x => x.sideArm, x => x.sideArm.sideArmLibrary).ToList();
+                    if (SideArmInstllation != null)
+                        return new Response<SideArmLibraryViewModel>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
                     TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                     NewSideWithArm.Deleted = true;
                     NewSideWithArm.Model = NewSideWithArm.Model + "_" + DateTime.Now.ToString();
                     _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, OldSideWithArm, NewSideWithArm);
+                    DisableDynamicAttLibValues(TableNameEntity.Id, id, UserId);
                     await _unitOfWork.SaveChangesAsync();
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
                     return new Response<SideArmLibraryViewModel>();
                 }
+                catch (Exception err)
+                {
+                    return new Response<SideArmLibraryViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
-            catch (Exception err)
+        }
+        private void DisableDynamicAttLibValues(int TableNameId, int Id, int UserId)
+        {
+            var DynamiAttLibValues = db.TLIdynamicAttLibValue
+                .Where(d => d.InventoryId == Id && d.tablesNamesId == TableNameId)
+                .ToList();
+            foreach (var DynamiAttLibValue in DynamiAttLibValues)
             {
-                return new Response<SideArmLibraryViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                var OldDynamiAttLibValues = _unitOfWork.DynamicAttLibValueRepository.GetAllAsQueryable().AsNoTracking()
+                .FirstOrDefault(d => d.Id == DynamiAttLibValue.Id);
+                DynamiAttLibValue.disable = true;
+                _unitOfWork.DynamicAttLibValueRepository.UpdateWithHistory(UserId, OldDynamiAttLibValues, DynamiAttLibValue);
             }
         }
         //Function take 1 parameter
         //get record by Id
         //enable or disable record depened on record status
         //update Entity
-        public async Task<Response<SideArmLibraryViewModel>> Disable(int id,int UserId)
+        public async Task<Response<SideArmLibraryViewModel>> Disable(int id,int UserId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
-                    var SideArmInstllation = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && !
-                     x.Dismantle, x => x.sideArm).ToList();
+                    var SideArmInstllation = _unitOfWork.CivilLoadsRepository
+                    .GetIncludeWhere(x => x.sideArm.sideArmLibraryId == id && 
+                    ! x.Dismantle, x => x.sideArm).ToList();
                     TLIsideArmLibrary NewSideWithArm = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == id);
                     if (SideArmInstllation != null )
-                    {
                         return new Response<SideArmLibraryViewModel>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                    else 
-                    {
-                        TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
-                        NewSideWithArm.Active = !(NewSideWithArm.Active);
+                     
+                    TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
+                    NewSideWithArm.Active = !(NewSideWithArm.Active);
 
-                        _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldSideWithArm, NewSideWithArm);
-                        await _unitOfWork.SaveChangesAsync();
-                    }
+                    _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, OldSideWithArm, NewSideWithArm);
+                    await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
                     return new Response<SideArmLibraryViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
 
                 }
@@ -830,7 +846,7 @@ namespace TLIS_Service.Services
         //check validation
         //update Entity
         //update dynamic library attributes values
-        public async Task<Response<EditSideArmLibraryObject>> EditSideArmLibrary(EditSideArmLibraryObject editSideArmLibraryViewModel,int UserId)
+        public async Task<Response<EditSideArmLibraryObject>> EditSideArmLibrary(EditSideArmLibraryObject editSideArmLibraryViewModel,int UserId, string connectionString)
         {
             try
             {
@@ -932,6 +948,7 @@ namespace TLIS_Service.Services
                     _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editSideArmLibraryViewModel.dynamicAttributes, TableNames.Id, tLIsideArmLibrary.Id, UserId, resultId, SidArm.Id);
                 }
                 await _unitOfWork.SaveChangesAsync();
+                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
                 return new Response<EditSideArmLibraryObject>();
             }
             catch (Exception err)

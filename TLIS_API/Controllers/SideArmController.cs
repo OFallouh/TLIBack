@@ -146,7 +146,8 @@ namespace TLIS_API.Controllers
         [HttpPost("DismantlesideArm")]
         public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int? TaskId)
         {
-            var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

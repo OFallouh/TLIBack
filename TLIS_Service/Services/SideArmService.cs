@@ -79,25 +79,7 @@ namespace TLIS_Service.Services
             _dbContext = context;
             _mapper = mapper;
         }
-        private void RefreshView(string connectionString)
-        {
-            try
-            {
-                using (var connection = new OracleConnection(connectionString))
-                {
-                    connection.Open();
-                    using (var command = new OracleCommand("BEGIN DBMS_MVIEW.REFRESH('MV_MWDISH_VIEW', 'C'); END;", connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // يمكنك تسجيل الاستثناء هنا إذا أردت
-                Console.WriteLine($"Error during refreshing view: {ex.Message}");
-            }
-        }
+
         //public Response<AllItemAttributes> AddSideArm(AddSideArmLibraryObject SideArmViewModel, string SiteCode, string ConnectionString, int? TaskId,int UserId)
         //{
         //    //using (TransactionScope transaction = new TransactionScope())
@@ -312,7 +294,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilLoadObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId)
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId,string ConnectionString)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -344,6 +326,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception er)
@@ -726,6 +709,7 @@ namespace TLIS_Service.Services
                     BaseInstAttView Swap = ListAttributesActivated[0];
                     ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                     ListAttributesActivated[0] = NameAttribute;
+                    NameAttribute.Value = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => x.Id == SideArmId)?.Name;
                 }
 
                 foreach (BaseInstAttView FKitem in ListAttributesActivated)
@@ -3148,7 +3132,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transactionScope.Complete();
                         }
-                        Task.Run(() => RefreshView(ConnectionString));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
                         return new Response<EditSidearmInstallationObject>();
                     }
                     else
@@ -4400,7 +4384,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => RefreshView(ConnectionString));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
                         return new Response<SideArmViewDto>();
                     }
                     else

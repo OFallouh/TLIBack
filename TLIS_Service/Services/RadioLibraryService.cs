@@ -1814,7 +1814,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<AllItemAttributes> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int UserId)
+        public Response<AddRadioAntennaLibraryObject> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int UserId)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -1829,28 +1829,29 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
                           
                             TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
-                            string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
+                            //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
-                            if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                            string CheckGeneralValidation = CheckGeneralValidationFunctionLib(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
 
-                            if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
                             var CheckModel = _unitOfWork.RadioAntennaLibraryRepository
                                 .GetWhereFirst(x => x.Model == radioAntennaLibrary.Model && !x.Deleted);
 
                             if (CheckModel != null)
-                                return new Response<AllItemAttributes>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             _unitOfWork.RadioAntennaLibraryRepository.AddWithHistory(UserId, radioAntennaLibrary);
                             _unitOfWork.SaveChanges();
 
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = RadioLibraryViewModel.LogisticalItems;
-                            AddLogisticalItemWithRadio(LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id);
+                            AddLogisticalItemWithCivil(UserId,LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id);
+
                             if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
                             {
                                 _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id);
@@ -1860,12 +1861,12 @@ namespace TLIS_Service.Services
                           
                             transaction.Complete();
                             tran.Commit();
-                            return new Response<AllItemAttributes>();
+                            return new Response<AddRadioAntennaLibraryObject>();
                         }
                         catch (Exception err)
                         {
                             tran.Rollback();
-                            return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AddRadioAntennaLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                 }
@@ -2516,6 +2517,127 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public void AddLogisticalItemWithCivil(int UserId, dynamic LogisticalItemIds, dynamic CivilEntity, int TableNameEntityId)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+                    if (LogisticalItemIds != null)
+                    {
+                        if (LogisticalItemIds.Vendor != null && LogisticalItemIds.Vendor != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Vendor);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsyncWithHistory(UserId, NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Supplier);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsyncWithHistory(UserId, NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Designer != null && LogisticalItemIds.Designer != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Designer);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsyncWithHistory(UserId, NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Manufacturer != null && LogisticalItemIds.Manufacturer != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Manufacturer);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsyncWithHistory(UserId, NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Contractor != null && LogisticalItemIds.Contractor != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Contractor);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsyncWithHistory(UserId, NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+
+                        }
+                        if (LogisticalItemIds.Consultant != null && LogisticalItemIds.Consultant != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Consultant);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddAsyncWithHistory(UserId, NewLogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                    }
+
+                    transaction.Complete();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
         #endregion
         //Function take 2 parameters
         //get table name Entity by TableName
@@ -2822,7 +2944,7 @@ namespace TLIS_Service.Services
         //        }
         //    }
         //}
-        public async Task<Response<AllItemAttributes>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel,int UserId)
+        public async Task<Response<EditRadioAntennaLibraryObject>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel,int UserId)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -2840,9 +2962,8 @@ namespace TLIS_Service.Services
                         var CheckModel = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == radioAntennaLibrary.Model.ToLower() &&
                             x.Id != radioAntennaLibrary.Id && !x.Deleted);
                         if (CheckModel != null)
-                        {
-                            return new Response<AllItemAttributes>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                         return new Response<EditRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                         _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, RadioAntenna, radioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
                         //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
@@ -2925,11 +3046,11 @@ namespace TLIS_Service.Services
 
 
                     transaction.Complete();
-                    return new Response<AllItemAttributes>();
+                    return new Response<EditRadioAntennaLibraryObject>();
                 }
                 catch (Exception err)
                 {
-                    return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<EditRadioAntennaLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
         }

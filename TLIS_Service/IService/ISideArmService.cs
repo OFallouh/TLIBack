@@ -24,7 +24,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<object>> GetSideArmsWithEnabledAtt(CivilLoadsFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, CombineFilters CombineFilters, int? CivilId, string CivilType);
         Response<List<KeyValuePair<string, int>>> getSideArmsForAdd(string SiteCode, int CivilId, int? LegId, int? MinHeight, int? MaxHeight, int? NumberOfLoadsOnSideArm, int? MinAzimuth, int? MaxAzimuth);
         Response<GetForAddLoadObject> GetById(int Id);
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskI);
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskI, string ConnectionString);
         Response<ObjectInstAttsForSideArm> GetSideArmById(int SideArmId, string TableName);
 
         Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId, int UserId, string ConnectionString);

@@ -180,7 +180,8 @@ namespace TLIS_Repository.Repositories
 
             foreach (TLIlogisticalType LogisticalType in LogistaclTypes)
             {
-                TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical).ThenInclude(x => x.logisticalType)
+                TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical).
+                    ThenInclude(x => x.logisticalType)
                     .FirstOrDefault(x => x.tablesNamesId == TableNameId && x.RecordId == RecordId &&
                         x.logistical.tablePartNameId == TablePartNameId && x.logistical.logisticalTypeId == LogisticalType.Id);
                 List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical

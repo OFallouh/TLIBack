@@ -1493,7 +1493,7 @@ namespace TLIS_Service.Services
 
                             _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithLeg, NewCivilWithLeg);
                             await _unitOfWork.SaveChangesAsync();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                          
                         }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
@@ -1511,7 +1511,7 @@ namespace TLIS_Service.Services
                             NewCivilWithoutLeg.Active = !(NewCivilWithoutLeg.Active);
                             _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithoutLeg, NewCivilWithoutLeg);
                             await _unitOfWork.SaveChangesAsync();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                          
                         }
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
@@ -1530,10 +1530,22 @@ namespace TLIS_Service.Services
                             NewCivilNonSteel.Active = !(NewCivilNonSteel.Active);
                             _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(UserId, OldCivilNonSteel, NewCivilNonSteel);
                             await _unitOfWork.SaveChangesAsync();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                 
                         }
                     }
                     transaction.Complete();
+                    if(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                    }
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -5111,9 +5123,8 @@ namespace TLIS_Service.Services
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
                         var NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
                         if (UsedCivil != null)
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        
                         else
                         {
                             var NewCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
@@ -5121,9 +5132,9 @@ namespace TLIS_Service.Services
                             NewCivilWithLegLibrary.Deleted = true;
                             NewCivilWithLegLibrary.Model = NewCivilWithLegLibrary.Model + "_" + DateTime.Now.ToString();
                             _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithLegLibrary, NewCivilWithLegLibrary);
-                            _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                            DisableDynamicAttLibValues(TableNameEntity.Id, Id,UserId);
                             await _unitOfWork.SaveChangesAsync();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                           
                             //AddHistory(CivilWithLeg.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcivilWithLegLibrary.ToString());
                         }
                     }
@@ -5143,10 +5154,10 @@ namespace TLIS_Service.Services
                             NewCivilWithoutLegLibrary.Deleted = true;
                             NewCivilWithoutLegLibrary.Model = NewCivilWithoutLegLibrary.Model + "_" + DateTime.Now.ToString();
                             _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(UserId, OldCivilWithoutLegLibrary, NewCivilWithoutLegLibrary);
-                            _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                            DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                             await _unitOfWork.SaveChangesAsync();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                      
                         //AddHistory(CivilWithoutLeg.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcivilWithoutLegLibrary.ToString());
                     }
                     else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == CivilType)
@@ -5165,14 +5176,27 @@ namespace TLIS_Service.Services
                             NewCivilNonSteelLibrary.Deleted = true;
                             NewCivilNonSteelLibrary.Model = NewCivilNonSteelLibrary.Model + "_" + DateTime.Now.ToString();
                             _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(UserId, OldCivilNonSteelLibrary, NewCivilNonSteelLibrary);
-                            _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                            DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                             await _unitOfWork.SaveChangesAsync();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                            
                             //AddHistory(CivilNonSteel.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcivilNonSteelLibrary.ToString());
                         }
                     }
+                   
 
                     transaction.Complete();
+                    if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == CivilType)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == CivilType)
+                    {
+                          Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == CivilType)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                    }
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -5323,6 +5347,19 @@ namespace TLIS_Service.Services
                 {
                     return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
+            }
+        }
+        private void DisableDynamicAttLibValues(int TableNameId, int Id,int UserId)
+        {
+            var DynamiAttLibValues = db.TLIdynamicAttLibValue
+                .Where(d => d.InventoryId == Id && d.tablesNamesId == TableNameId)
+                .ToList();
+            foreach (var DynamiAttLibValue in DynamiAttLibValues)
+            {
+                var OldDynamiAttLibValues = _unitOfWork.DynamicAttLibValueRepository.GetAllAsQueryable().AsNoTracking()
+                .FirstOrDefault(d => d.Id == DynamiAttLibValue.Id);
+                DynamiAttLibValue.disable = true;
+                _unitOfWork.DynamicAttLibValueRepository.UpdateWithHistory(UserId, OldDynamiAttLibValues, DynamiAttLibValue);
             }
         }
         public Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt(  string ConnectionString)

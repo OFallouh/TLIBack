@@ -26,7 +26,7 @@ namespace TLIS_Service.IService
        
         Response<GetForAddCivilWithLegObject> GetForAddCivilWithLegInstallation(string TableName, int CivilLibraryId, string SiteCode);
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName, int CategoryId);
-        Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId);
+        Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId,string connectionString);
        // Task<Response<ObjectInstAtts>> EditCivilInstallation(object CivilInstallationViewModel, string CivilType, int? TaskId);
         Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCiviNonSteelInstallation(string TableName, int CivilLibraryId, string SiteCode);
         Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Monople(string TableName, int CivilLibraryId, string SiteCode);
@@ -35,12 +35,12 @@ namespace TLIS_Service.IService
         Response<LoadsOnSideArm> GetLoadsOnSideArm(int SideArmId);
         Response<ObjectInstAtts> AddCivilWithoutLegsInstallation(AddCivilWithoutLegViewModel addCivilWithoutLegViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId);
         Response<ObjectInstAtts> AddCivilNonSteelInstallation(AddCivilNonSteelObject addCivilNonSteelObject, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId);
-        Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int userId);
-       // Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString, int? TaskId);
+        Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString);
+        // Response<ObjectInstAtts> AddCivilInstallation(object CivilInstallationViewModel, string TableName, string SiteCode, string connectionString, int? TaskId);
         Response<CivilLoads> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType);
         Response<ObjectInst> GetAttForAdd(string CivilType, int CivilLibraryId, int? CategoryId, string SiteCode);
         Response<ObjectInstAtts> AddCivilWithLegsInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId);
-        Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId, int userId);
+        Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString);
         Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName);
         Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string SiteCode, string ConnectionString);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
@@ -49,13 +49,13 @@ namespace TLIS_Service.IService
         Response<List<ListOfCivilLoadDto>> GetAllCivilLoad(string SearchName, ParameterPagination parameters);
         List<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);
         List<LoadOnCivil> GetLoadWithoutSideArm(int civilid);
-        Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId);
+        Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString);
         string GetKeyName(TLIallLoadInst m);
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName);
         //Response<bool> CivilDismantle(DismantleBinding dis);
         bool ReCalcualateSiteFreeSpace(int civilid, string sitecode, int loadid);
-        Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId,int? TaskId);
-        Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId , int? TaskId);
+        Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId,int? TaskId, string connectionString);
+        Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId , int? TaskId, string connectionString);
         public Response<bool> CheckLoadsBeforDismantle(string TableName, int loadId);
         bool CheckRelatedLoad(string sitecode, int civilid, int sidearm, int loadid);
         public Response<CivilLoads> GetRelationshipBetweenloads(int loadid, string Loadname);

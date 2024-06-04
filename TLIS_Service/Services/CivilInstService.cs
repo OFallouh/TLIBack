@@ -2665,7 +2665,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        //Task.Run(() =>_unitOfWork.CivilWithLegsRepository.RefreshView(connectionString,));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
                         return new Response<ObjectInstAtts>();
                     }
                     else
@@ -2869,7 +2869,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                   
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
                         return new Response<ObjectInstAtts>();
                     }
                     else
@@ -2992,7 +2992,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                  
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
                         return new Response<ObjectInstAtts>();
                     }
 
@@ -3008,7 +3008,7 @@ namespace TLIS_Service.Services
             }
             //}
         }
-        public async Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId,int userId)
+        public async Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId,int userId, string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3252,6 +3252,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -3260,7 +3261,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int userId)
+        public async Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3552,6 +3553,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -3560,7 +3562,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId)
+        public async Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3684,6 +3686,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -9981,7 +9984,7 @@ namespace TLIS_Service.Services
 
             }
         }
-        public Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId)
+        public Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -10079,6 +10082,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
                         return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     else 
@@ -10093,7 +10097,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId)
+        public Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -10192,6 +10196,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
                         return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     else
@@ -10206,7 +10211,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId, int? TaskId)
+        public Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId, int? TaskId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -10306,6 +10311,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
                         return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     else

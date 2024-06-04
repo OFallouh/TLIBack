@@ -122,7 +122,8 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.SideArmLibraryService.EditSideArmLibrary(editSideArmLibraryViewModel,userId);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.SideArmLibraryService.EditSideArmLibrary(editSideArmLibraryViewModel,userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -156,7 +157,8 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.SideArmLibraryService.Disable(id, userId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.SideArmLibraryService.Disable(id, userId, ConnectionString);
             return Ok(response);
         }
 
@@ -182,7 +184,8 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.SideArmLibraryService.Delete(id, userId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.SideArmLibraryService.Delete(id, userId, ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetSideArmLibs")]

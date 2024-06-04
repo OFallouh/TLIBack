@@ -332,7 +332,7 @@ namespace TLIS_API.Controllers
             var userId = Convert.ToInt32(userInfo);
             if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsInstallationObject)))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, userId);
+                var response = await _unitOfWorkService.CivilInstService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -369,7 +369,7 @@ namespace TLIS_API.Controllers
             var userId = Convert.ToInt32(userInfo);
             if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegsInstallationObject)))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId);
+                var response = await _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -406,7 +406,7 @@ namespace TLIS_API.Controllers
             var userId = Convert.ToInt32(userInfo);
             if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelInstallationObject)))
             {
-                var response = await _unitOfWorkService.CivilInstService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId);
+                var response = await _unitOfWorkService.CivilInstService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -449,7 +449,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId, ConnectionString);
             return Ok(response);
 
         }
@@ -476,7 +476,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, ConnectionString);
             return Ok(response);
 
         }
@@ -503,7 +503,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId);
+            var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId, ConnectionString);
             return Ok(response);
 
         }

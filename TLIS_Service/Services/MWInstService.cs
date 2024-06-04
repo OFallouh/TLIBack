@@ -5534,7 +5534,14 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
-                           
+                            if (LoadSubType.TLImwODU.ToString() == TableName)
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWODU_VIEW"));
+                            }
+                            else if (LoadSubType.TLImwDish.ToString() == TableName)
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWDISH_VIEW"));
+                            }
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                    
@@ -8000,7 +8007,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                     //Task.Run(() => RefreshView(ConnectionString,));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWDISH_VIEW"));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -9195,7 +9202,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                   
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWODU_VIEW"));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -16978,8 +16985,8 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                        NameAttribute.Value = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWInsId)?.Name;
-                        }
+                        NameAttribute.Value = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => x.Id == MWInsId)?.DishName;
+                    }
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
                     {
                         switch (FKitem.Label.ToLower())
@@ -17303,7 +17310,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                        NameAttribute.Value = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWInsId)?.Name;
+                        NameAttribute.Value = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => x.Id == MWInsId)?.Name;
                     }
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
                     {
@@ -17441,7 +17448,7 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {
                                 Key = "sideArmId",
-                                Value = new object[0],
+                                Value = null,
                                 Label = "Select sideArm",
                                 Options = new object[0],
                                 DataType = "list",

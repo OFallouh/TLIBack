@@ -15,6 +15,7 @@ namespace TLIS_Repository.Base
         ICityRepository CityRepository { get; }
         ISiteRepository SiteRepository { get; }
         ILegRepository LegRepository { get; }
+        IDynamicAttLibValueRepository DynamicAttLibValueRepository { get; }
         ICivilWithLegLibraryRepository CivilWithLegLibraryRepository { get; }
         ICivilWithoutLegLibraryRepository CivilWithoutLegLibraryRepository { get; }
         ICivilNonSteelLibraryRepository CivilNonSteelLibraryRepository { get; }

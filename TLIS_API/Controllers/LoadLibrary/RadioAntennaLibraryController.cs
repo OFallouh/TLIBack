@@ -77,7 +77,7 @@ namespace TLIS_API.Controllers.LoadLibrary
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.RadioLibraryService.AddRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), addRadioAntenna, ConnectionString, userId);
+                var response = _unitOfWorkService.RadioLibraryService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), addRadioAntenna, ConnectionString, userId);
                 return Ok(response);
             }
             else

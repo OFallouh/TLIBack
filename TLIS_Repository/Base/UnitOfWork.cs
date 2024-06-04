@@ -132,6 +132,7 @@ namespace TLIS_Repository.Base
         IOrderStatusListRepository _OrderStatusListRepository;
         IWorkFlowRepository _workflowRepository;
         IStepActionItemStatusRepository _stepActionItemStatusRepository;
+        IDynamicAttLibValueRepository _dynamicAttLibValueRepository;
         //IAddWorkFlowRepository _addWorkflowRepository;
         //IEditWorkFlowRepository _editWorkflowRepository;
         //IWorkFlowDeleteRepository _workflowDeleteRepository;
@@ -1854,6 +1855,16 @@ namespace TLIS_Repository.Base
                     _InstallationTypeRepository = new InstallationTypeRepository(_context, _mapper);
 
                 return _InstallationTypeRepository;
+            }
+        }
+        public IDynamicAttLibValueRepository DynamicAttLibValueRepository
+        {
+            get
+            {
+                if (_dynamicAttLibValueRepository == null)
+                    _dynamicAttLibValueRepository = new DynamicAttLibValueRepository(_context, _mapper);
+
+                return _dynamicAttLibValueRepository;
             }
         }
 

@@ -24,8 +24,8 @@ namespace TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs
             public float Length { get; set; }
             public string? Notes { get; set; }
             public float SpaceLibrary { get; set; }
-            public bool Active { get; set; }
-            public bool Deleted { get; set; }
+            public bool Active { get; set; } = true;
+            public bool Deleted { get; set; } = false;
         }
     }
 }

@@ -26,9 +26,9 @@ namespace TLIS_Service.IService
         Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName);
         Task MW_ODULibrarySeedDataForTest();
         Task MW_DishLibrarySeedDataForTest();
-        Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName);
+        Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName,string connectionString);
         Response<ADDMWODULibraryObject> AddMWODULibrary(int UserId, string TableName, ADDMWODULibraryObject aDDMWODULibraryObject, string connectionString);
-        Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName);
+        Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName, string connectionString);
         Response<GetEnableAttribute> GetMWDishLibrariesEnabledAtt(string ConnectionString);
         Response<ReturnWithFilters<MW_BULibraryViewModel>> get_MW_BU_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<MW_DishLibraryViewModel>> get_MW_Dish_LibrariesAsync(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
@@ -37,8 +37,8 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<MW_OtherLibraryViewModel>> get_MW_Other_LibrariesAsync(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName);
         Response<GetForAddCivilLibrarybject> AddMWLibrary(int UserId, string TableName, object LoadLibraryViewModel, string connectionString);
-        Task<Response<AllItemAttributes>> Disable(int Id, string TableName);
-        Task<Response<AllItemAttributes>> Delete(int Id, string TableName);
+        Task<Response<AllItemAttributes>> Disable(int Id, string TableName,string connectionString,int UserId);
+        Task<Response<AllItemAttributes>> Delete(int Id, string TableName, string connectionString, int UserId);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<AddMWDishLibraryObject> AddMWDishLibrary(int UserId, string TableName, AddMWDishLibraryObject addMWDishLibraryObject, string connectionString);
         Response<ReturnWithFilters<object>> GetMW_BULibraries(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);

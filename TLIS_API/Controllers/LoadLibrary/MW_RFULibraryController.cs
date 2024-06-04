@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -98,7 +99,26 @@ namespace TLIS_API.Controllers.Load
         [ProducesResponseType(200, Type = typeof(MW_RFULibraryViewModel))]
         public async Task<IActionResult> DisableMW_RFULibrary(int Id)
         {
-            var response = await _unitOfWorkService.MWLibraryService.Disable(Id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.MWLibraryService.Disable(Id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
 
@@ -114,7 +134,26 @@ namespace TLIS_API.Controllers.Load
         [ProducesResponseType(200, Type = typeof(MW_RFULibraryViewModel))]
         public async Task<IActionResult> DeleteMW_RFULibrary(int Id)
         {
-            var response = await _unitOfWorkService.MWLibraryService.Delete(Id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.MWLibraryService.Delete(Id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
     }

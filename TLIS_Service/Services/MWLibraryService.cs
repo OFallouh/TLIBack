@@ -3602,6 +3602,7 @@ namespace TLIS_Service.Services
                             
 
                             transaction.Complete();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
                             return new Response<AddMWDishLibraryObject>();
                         }
                         catch (Exception err)
@@ -3675,6 +3676,7 @@ namespace TLIS_Service.Services
 
 
                             transaction.Complete();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
                             return new Response<ADDMWODULibraryObject>();
                         }
                         catch (Exception err)
@@ -4938,7 +4940,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName)
+        public async Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName,string connectionString)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -5056,6 +5058,7 @@ namespace TLIS_Service.Services
 
 
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
                     return new Response<EditMWDishLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -5065,7 +5068,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName)
+        public async Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName,string connectionString)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -5186,6 +5189,7 @@ namespace TLIS_Service.Services
 
 
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
                     return new Response<EditMWODULibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -6893,7 +6897,7 @@ namespace TLIS_Service.Services
         //Get record by Id
         //disable or active record depened on record status
         //Update record 
-        public async Task<Response<AllItemAttributes>> Disable(int Id, string TableName)
+        public async Task<Response<AllItemAttributes>> Disable(int Id, string TableName,string connectionString,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -6902,88 +6906,98 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                     if (LoadSubType.TLImwBULibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwBU.MwBULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList(); 
                         TLImwBULibrary OldMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null || CivilLoad.Count > 0)
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        }
 
                         TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_BULibrary.Active = !(NewMW_BULibrary.Active);
 
-                        _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_BULibrary, NewMW_BULibrary);
+                        _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(UserId, OldMW_BULibrary, NewMW_BULibrary);
 
                         await _unitOfWork.SaveChangesAsync();
 
                     }
                     else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwDish.MwDishLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
                         var MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null)
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
+
                         var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_DishLibrary.Active = !(NewMW_DishLibrary.Active);
 
-                        _unitOfWork.MW_DishLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_DishLibrary, NewMW_DishLibrary);
+                        _unitOfWork.MW_DishLibraryRepository.UpdateWithHistory(UserId, MW_DishLibrary, NewMW_DishLibrary);
                         await _unitOfWork.SaveChangesAsync();
 
                     }
                     else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null )
-                        {
-                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                         return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
+
                         var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_ODULibrary.Active = !(NewMW_ODULibrary.Active);
-                        _unitOfWork.MW_ODULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_ODULibrary, NewMW_ODULibrary);
+                        _unitOfWork.MW_ODULibraryRepository.UpdateWithHistory(UserId, MW_ODULibrary, NewMW_ODULibrary);
                         await _unitOfWork.SaveChangesAsync();
 
                     }
                     else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwRFU.MwRFULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
                         if (CivilLoad != null )
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLImwRFULibrary NewMw_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMw_RFULibrary.Active = !(NewMw_RFULibrary.Active);
-                        _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_RFULibrary, NewMw_RFULibrary);
+                        _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(UserId, MW_RFULibrary, NewMw_RFULibrary);
                         await _unitOfWork.SaveChangesAsync();
 
                     }
                     else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwOther.mwOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwOther).ToList();
                         if (CivilLoad != null )
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        }
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_OtherLibrary.Active = !(NewMW_OtherLibrary.Active);
-                        _unitOfWork.MW_OtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_OtherLibrary, NewMW_OtherLibrary);
+                        _unitOfWork.MW_OtherLibraryRepository.UpdateWithHistory(UserId, MW_OtherLibrary, NewMW_OtherLibrary);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
+                    if (LoadSubType.TLImwBULibrary.ToString() == TableName)
+                    {
+                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
+                    {
+                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
+                    {
+                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -7209,7 +7223,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //set Deleted to true
         //update record
-        public async Task<Response<AllItemAttributes>> Delete(int Id, string TableName)
+        public async Task<Response<AllItemAttributes>> Delete(int Id, string TableName,string connectionString, int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -7218,101 +7232,108 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                     if (LoadSubType.TLImwBULibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwBU.MwBULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                         TLImwBULibrary OldMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if ((CivilLoad != null && CivilLoad.Count > 0) && OldMW_BULibrary.Active == true)
-                        {
                               return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-                            
-                        }
-                        else
-                        {
-
+        
                             TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                             NewMW_BULibrary.Deleted = true;
                             NewMW_BULibrary.Model = NewMW_BULibrary.Model + "_" + DateTime.Now.ToString();
 
-                            _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldMW_BULibrary, NewMW_BULibrary);
-                            _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                            _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(UserId, OldMW_BULibrary, NewMW_BULibrary);
+                            DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                             await _unitOfWork.SaveChangesAsync();
                             //AddHistory(MW_BULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), TablesNames.TLImwBULibrary.ToString());
-                        }
+                        
                     }
                     else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle&&
                         x.allLoadInst.mwDish.MwDishLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
                         var MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null)
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
                         var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_DishLibrary.Deleted = true;
                         NewMW_DishLibrary.Model = NewMW_DishLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        _unitOfWork.MW_DishLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_DishLibrary, NewMW_DishLibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        _unitOfWork.MW_DishLibraryRepository.UpdateWithHistory(UserId, MW_DishLibrary, NewMW_DishLibrary);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null)
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        }
                         var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_ODULibrary.Deleted = true;
                         NewMW_ODULibrary.Model = NewMW_ODULibrary.Model + "_" + DateTime.Now.ToString();
 
-                        _unitOfWork.MW_ODULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_ODULibrary, NewMW_ODULibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        _unitOfWork.MW_ODULibraryRepository.UpdateWithHistory(UserId, MW_ODULibrary, NewMW_ODULibrary);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwRFU.MwRFULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null )
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        }
+                        
                         TLImwRFULibrary NewMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_RFULibrary.Deleted = true;
                         NewMW_RFULibrary.Model = NewMW_RFULibrary.Model + "_" + DateTime.Now.ToString();
 
-                        _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_RFULibrary, NewMW_RFULibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(UserId, MW_RFULibrary, NewMW_RFULibrary);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                     {
-                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&
+                        var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle&&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null )
-                        {
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
                         var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_OtherLibrary.Deleted = true;
                         NewMW_OtherLibrary.Model = NewMW_OtherLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        _unitOfWork.MW_OtherLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, MW_OtherLibrary, NewMW_OtherLibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                        _unitOfWork.MW_OtherLibraryRepository.UpdateWithHistory(UserId, MW_OtherLibrary, NewMW_OtherLibrary);
+                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
+                    if (LoadSubType.TLImwBULibrary.ToString() == TableName)
+                    {
+                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
+                    {
+                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
+                    {
+                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -7320,6 +7341,19 @@ namespace TLIS_Service.Services
 
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
+            }
+        }
+        private void DisableDynamicAttLibValues(int TableNameId, int Id, int UserId)
+        {
+            var DynamiAttLibValues = db.TLIdynamicAttLibValue
+                .Where(d => d.InventoryId == Id && d.tablesNamesId == TableNameId)
+                .ToList();
+            foreach (var DynamiAttLibValue in DynamiAttLibValues)
+            {
+                var OldDynamiAttLibValues = _unitOfWork.DynamicAttLibValueRepository.GetAllAsQueryable().AsNoTracking()
+                .FirstOrDefault(d => d.Id == DynamiAttLibValue.Id);
+                DynamiAttLibValue.disable = true;
+                _unitOfWork.DynamicAttLibValueRepository.UpdateWithHistory(UserId, OldDynamiAttLibValues, DynamiAttLibValue);
             }
         }
         //#region Add History

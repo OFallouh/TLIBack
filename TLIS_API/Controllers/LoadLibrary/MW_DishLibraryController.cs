@@ -117,7 +117,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.MWLibraryService.EditMWDishLibrary(userId, editMW_DishLibraryViewModel, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString());
+                var response = await _unitOfWorkService.MWLibraryService.EditMWDishLibrary(userId, editMW_DishLibraryViewModel, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(),ConnectionString);
                 return Ok(response);
             }
             else
@@ -133,7 +133,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]
         public async Task<IActionResult> DisableMW_DishLibrary(int Id)
         {
-            var response = await _unitOfWorkService.MWLibraryService.Disable(Id, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.MWLibraryService.Disable(Id, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
 
@@ -149,7 +168,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]
         public async Task<IActionResult> DeleteMW_DishLibrary(int Id)
         {
-            var response = await _unitOfWorkService.MWLibraryService.Delete(Id, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.MWLibraryService.Delete(Id, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
     }
