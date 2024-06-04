@@ -1209,6 +1209,7 @@ namespace TLIS_Repository.Base
             dataTable.Update(OldObject);
             _context.SaveChanges();
         }
+        
         public virtual void UpdateSiteWithHistory(int? UserId, TEntity OldObject, TEntity NewObject)
         {
             //if (UserId == null)
