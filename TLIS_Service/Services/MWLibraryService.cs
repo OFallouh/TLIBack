@@ -6909,7 +6909,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwBU.MwBULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList(); 
                         TLImwBULibrary OldMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null || CivilLoad.Count > 0)
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetByID(Id);
@@ -6925,7 +6925,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwDish.MwDishLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
                         var MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null)
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
@@ -6941,8 +6941,8 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null )
-                         return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (CivilLoad != null && CivilLoad.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
                         var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
@@ -6955,7 +6955,7 @@ namespace TLIS_Service.Services
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwRFU.MwRFULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
-                        if (CivilLoad != null )
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -6969,7 +6969,7 @@ namespace TLIS_Service.Services
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwOther.mwOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwOther).ToList();
-                        if (CivilLoad != null )
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetByID(Id);
@@ -7235,8 +7235,8 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwBU.MwBULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                         TLImwBULibrary OldMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if ((CivilLoad != null && CivilLoad.Count > 0) && OldMW_BULibrary.Active == true)
-                              return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (CivilLoad != null && CivilLoad.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
         
                             TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetByID(Id);
 
@@ -7254,7 +7254,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle&&
                         x.allLoadInst.mwDish.MwDishLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwDish).ToList();
                         var MW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null)
+                        if (CivilLoad != null && CivilLoad.Count >0 )
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetByID(Id);
@@ -7270,7 +7270,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
                         var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
-                        if (CivilLoad != null)
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_ODULibrary.Deleted = true;
@@ -7285,7 +7285,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
                         x.allLoadInst.mwRFU.MwRFULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwRFU).ToList();
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null )
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         
                         TLImwRFULibrary NewMW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetByID(Id);
@@ -7301,7 +7301,7 @@ namespace TLIS_Service.Services
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle&&
                         x.allLoadInst.mwOther.mwOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwOther).ToList();
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        if (CivilLoad != null )
+                        if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetByID(Id);
