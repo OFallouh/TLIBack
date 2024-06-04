@@ -3047,7 +3047,7 @@ namespace TLIS_Service.Services
                     int resultId = 0;
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
 
-                        TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel);
+                        TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
                         var RadioAntenna = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioAntennaLibrary.Id);
                         radioAntennaLibrary.Active = RadioAntenna.Active;
                         radioAntennaLibrary.Deleted = RadioAntenna.Deleted;
@@ -4322,7 +4322,7 @@ namespace TLIS_Service.Services
                         }
                         return FKitem;
                     }).ToList();
-                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel("Radio");
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository

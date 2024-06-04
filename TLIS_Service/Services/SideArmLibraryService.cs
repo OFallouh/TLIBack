@@ -206,12 +206,12 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    string storedProcedureName = "create_dynamic_pivot_sidearm_library ";
-                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    {
-                        procedureCommand.CommandType = CommandType.StoredProcedure;
-                        procedureCommand.ExecuteNonQuery();
-                    }
+                    //string storedProcedureName = "create_dynamic_pivot_sidearm_library ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
                     var attActivated = db.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)

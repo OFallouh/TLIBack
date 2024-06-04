@@ -165,6 +165,7 @@ using static TLIS_DAL.ViewModels.MW_DishDTOs.EditMWDishInstallationObject;
 using static TLIS_DAL.ViewModels.MW_ODUDTOs.AddMwODUinstallationObject;
 using static TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs.EditRadioAntennaLibraryObject;
 using static TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs.AddRadioAntennaLibraryObject;
+using static TLIS_DAL.ViewModels.MW_ODUDTOs.EditMWODUInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -282,6 +283,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<AddRadioAntennaLibraryObject, TLIradioAntennaLibrary>().ReverseMap();
             CreateMap<RadioAntennaLibraryAttributes, TLIradioAntennaLibrary>().ReverseMap();
             CreateMap<EditRadioAntennaLibraryAttributes, TLIradioAntennaLibrary>().ReverseMap();
+            CreateMap<EditMWODUInstallationObject, TLImwODU>().ReverseMap();
+            CreateMap<EditinstallationAttributesMWODUObject, TLImwODU>().ReverseMap();
 
             CreateMap<TLIcivilNonSteelType, CivilNonSteelTypeViewModel>().ReverseMap();
 
