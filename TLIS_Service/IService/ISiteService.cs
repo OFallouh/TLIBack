@@ -70,7 +70,8 @@ namespace TLIS_Service.IService
         Response<List<AreaViewModel>> GetAllArea();
         Response<List<RegionViewModel>> GetAllRegion();
         Response<SiteViewModel> DisplaySiteDetailsBySiteCode(string SiteCode);
-        Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode);
+        Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode, int UserId);
+
         Response<List<GetAllsiteOnMultiRegion>> GetAllsiteonMultiRegion(List<RegionForSiteViewModel> Region);
         Response<List<GetAllsiteOnMultiAreaViewModel>> GetAllsiteonMultiArea(List<AreaForSiteViewModel> Area);
         Task<List<GetSiteNameBySitCode>> GetSiteNameBySitCode(List<SiteCodeForW_F> SiteCode);

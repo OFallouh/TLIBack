@@ -7070,7 +7070,7 @@ namespace TLIS_Service.Services
                         }
                         return FKitem;
                     }).ToList();
-                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel("MW");
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository

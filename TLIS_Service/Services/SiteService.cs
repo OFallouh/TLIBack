@@ -991,20 +991,26 @@ namespace TLIS_Service.Services
                 return new Response<SiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public async Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode)
+        public async Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode,int UserId)
         {
             try
             {
-                TLIsite site = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == SiteCode);
-                site.RentedSpace = RentedSpace;
-                site.ReservedSpace = ReservedSpace;
-
-                TLIsite OldSiteData = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
-                _MySites.Remove(OldSiteData);
-                _MySites.Add(site);
-
-                _unitOfWork.SiteRepository.Update(site);
-                _unitOfWork.SaveChanges();
+                TLIsite site = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode.ToLower() == SiteCode.ToLower());
+                TLIsite Oldsite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
+                if (ReservedSpace != site.ReservedSpace)
+                {
+                    return new Response<bool>(false, true, null, "You cannot modify the value of reservedspace ", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else
+                {
+                    site.RentedSpace = RentedSpace;
+                    site.ReservedSpace = ReservedSpace;
+                    TLIsite OldSiteData = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
+                    _MySites.Remove(OldSiteData);
+                    _MySites.Add(site);
+                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, Oldsite, site);
+                    _unitOfWork.SaveChanges();
+                }
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
             }

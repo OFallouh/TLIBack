@@ -417,7 +417,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(List<object>))]
         public async Task<IActionResult> EditSitesMainSpaces(string SiteCode, [FromBody] EditSiteViewModel EditSiteViewModel)
         {
-            var response = await _unitOfWorkService.SiteService.EditSitesMainSpaces(EditSiteViewModel.RentedSpace, EditSiteViewModel.ReservedSpace, SiteCode);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.SiteService.EditSitesMainSpaces(EditSiteViewModel.RentedSpace, EditSiteViewModel.ReservedSpace, SiteCode, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
