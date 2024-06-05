@@ -183,7 +183,9 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LocationTypeViewModel, TLIallCivilInst>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLIsideArm>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLImwBU>().ReverseMap();
-            CreateMap<LoadandsidearmViewDto, TLImwDish>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLImwDish>().
+                ForMember(c => c.DishName, c => c.MapFrom(s => s.Name))
+                .ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLImwODU>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLImwRFU>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLImwOther>().ReverseMap();
