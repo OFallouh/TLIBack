@@ -6257,20 +6257,29 @@ namespace TLIS_Service.Services
                     var leg = _unitOfWork.LegRepository
                      .GetWhere(x => x.CivilWithLegInstId == CivilInsId)
                      .ToList();
-
-                    List<List<BaseInstAttViews>> baseInstAttViewsList4 = new List<List<BaseInstAttViews>>();
+                    List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
                     string[] legLetters = { "A", "B", "C", "D" };
                     float[] legAzimuths = { 0, 90, 180, 270 };
 
-                    List<List<BaseInstAttViews>> baseInstAttViewsList3 = new List<List<BaseInstAttViews>>();
                     string[] legLetters3 = { "A", "B", "C" };
                     float[] legAzimuths3 = { 0, 120, 240 };
 
                     if (NumberofNumber == 3)
                     {
-                        baseInstAttViewsList3 = Enumerable.Range(0, NumberofNumber)
-                            .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
-                                .Select(att => new BaseInstAttViews
+                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).Select(x => x.Notes).ToList();
+
+                        foreach (var i in Enumerable.Range(0, NumberofNumber))
+                        {
+                            List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
+
+
+                            var attributes = _unitOfWork.AttributeActivatedRepository
+                                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
+                                .ToList();
+
+                            foreach (var att in attributes)
+                            {
+                                BaseInstAttViews baseInstAttView = new BaseInstAttViews
                                 {
                                     Key = att.Key,
                                     Desc = att.Desc,
@@ -6282,16 +6291,51 @@ namespace TLIS_Service.Services
                                     DataTypeId = att.DataTypeId,
                                     DataType = att.DataType,
                                     Options = att.Options,
-                                    Value = att.Label.ToLower() == "legletter" ? legLetters3[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths3[i] : null)
-                                }).ToList())
-                            .ToList();
-                        objectInst.LegsInfo = baseInstAttViewsList3;
+                                    Value = null
+                                };
+
+                                switch (att.Label.ToLower())
+                                {
+                                    case "legletter":
+                                        baseInstAttView.Value = legLetters3[i];
+                                        break;
+                                    case "legazimuth":
+                                        baseInstAttView.Value = legAzimuths3[i];
+                                        break;
+                                    case "civilegname":
+                                        baseInstAttView.Value = CivilWithLegsInst?.allCivilInst?.civilWithLegs?.Name + " " + legLetters[i];
+                                        break;
+                                    case "notes":
+
+                                        baseInstAttView.Value = tliLegData[i];
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                instanceAttributes.Add(baseInstAttView);
+                            }
+
+                            baseInstAttViewsList.Add(instanceAttributes);
+                        }
+                        objectInst.LegsInfo = baseInstAttViewsList;
                     }
                     else if (NumberofNumber == 4)
                     {
-                        baseInstAttViewsList4 = Enumerable.Range(0, NumberofNumber)
-                            .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
-                                .Select(att => new BaseInstAttViews
+                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).Select(x => x.Notes).ToList();
+
+                        foreach (var i in Enumerable.Range(0, NumberofNumber))
+                        {
+                            List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
+
+
+                            var attributes = _unitOfWork.AttributeActivatedRepository
+                                .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
+                                .ToList();
+
+                            foreach (var att in attributes)
+                            {
+                                BaseInstAttViews baseInstAttView = new BaseInstAttViews
                                 {
                                     Key = att.Key,
                                     Desc = att.Desc,
@@ -6303,11 +6347,37 @@ namespace TLIS_Service.Services
                                     DataTypeId = att.DataTypeId,
                                     DataType = att.DataType,
                                     Options = att.Options,
-                                    Value = att.Label.ToLower() == "legletter" ? legLetters[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] : null)
-                                }).ToList())
-                            .ToList();
-                        objectInst.LegsInfo = baseInstAttViewsList4;
+                                    Value = null
+                                };
+
+                                switch (att.Label.ToLower())
+                                {
+                                    case "legletter":
+                                        baseInstAttView.Value = legLetters[i];
+                                        break;
+                                    case "legazimuth":
+                                        baseInstAttView.Value = legAzimuths[i];
+                                        break;
+                                    case "civilegname":
+                                        baseInstAttView.Value = CivilWithLegsInst?.allCivilInst?.civilWithLegs?.Name + " " + legLetters[i];
+                                        break;
+                                    case "notes":
+
+                                        baseInstAttView.Value = tliLegData[i];
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                instanceAttributes.Add(baseInstAttView);
+                            }
+
+                            baseInstAttViewsList.Add(instanceAttributes);
+                        }
+                        objectInst.LegsInfo = baseInstAttViewsList;
                     }
+
+
                     TLIallCivilInst AllCivilInst = _unitOfWork.AllCivilInstRepository
                             .GetWhereFirst(x => x.civilWithLegsId == CivilInsId);
 

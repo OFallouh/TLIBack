@@ -57,7 +57,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.LogisiticalService.DisableLogistical(LogisticalId);
             return Ok(response);
         }
-        [HttpPut("EditLogistical/{id}")]
+        [HttpPost("EditLogistical/{id}")]
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult EditLogistical(int Id, EditLogisticalViewModel EditLogisticalViewModel)
         {

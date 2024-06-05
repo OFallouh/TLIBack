@@ -117,8 +117,7 @@ namespace TLIS_API.Controllers.LoadLibrary
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId, ConnectionString);
-            return Ok(response);
+            var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id, userId, ConnectionString); return Ok(response);
         }
         [HttpPost("DeleteRadioRRULibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]

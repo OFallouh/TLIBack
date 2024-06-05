@@ -488,6 +488,7 @@ namespace TLIS_Service.Services
                         Test[Test.IndexOf(NameAttribute)] = Swap;
                         Test[0] = NameAttribute;
                         attributes.AttributesActivatedLibrary = Test;
+                        NameAttribute.Value = db.MV_MWDISH_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
                     }
 
 
@@ -523,6 +524,7 @@ namespace TLIS_Service.Services
                         Test[Test.IndexOf(NameAttribute)] = Swap;
                         Test[0] = NameAttribute;
                         attributes.AttributesActivatedLibrary = Test;
+                        NameAttribute.Value = db.MV_MWODU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
                     }
 
                 }

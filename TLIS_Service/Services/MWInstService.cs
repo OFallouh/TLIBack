@@ -3096,7 +3096,7 @@ namespace TLIS_Service.Services
 
                                         if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                         {
-                                            bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number);
+                                            bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
                                             if (CheckSerialNumber)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                         }
@@ -3175,7 +3175,7 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
                                                     if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                                     {
-                                                        bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number);
+                                                        bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
                                                         if (CheckSerialNumber)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                                     }
@@ -3446,7 +3446,7 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
                                                     if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                                     {
-                                                        bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number);
+                                                        bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
                                                         if (CheckSerialNumber)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                                     }
@@ -3718,7 +3718,7 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
                                                     if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                                     {
-                                                        bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number);
+                                                        bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
                                                         if (CheckSerialNumber)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                                     }
@@ -3975,7 +3975,12 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_Dish.installationConfig.legId != null)
                                         {
-
+                                            if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                            {
+                                                bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && !x.Dismantle);
+                                                if (CheckSerialNumber)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                            }
                                             TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                             AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                             x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
@@ -4029,12 +4034,6 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                                    {
-                                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                                                        if (CheckSerialNumber)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                                    }
                                                     var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                         x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
@@ -4205,12 +4204,6 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                                    {
-                                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                                                        if (CheckSerialNumber)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                                    }
                                                     var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && 
                                                         x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
@@ -4352,6 +4345,12 @@ namespace TLIS_Service.Services
                                                 var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                                 AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                                                 x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                                {
+                                                    bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && !x.Dismantle);
+                                                    if (CheckSerialNumber)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                                }
                                                 if (AllcivilinstId != null)
                                                 {
                                                     if (AddMW_Dish.civilLoads.ReservedSpace == true)
@@ -4403,12 +4402,7 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                                        {
-                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                                                            if (CheckSerialNumber)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                                        }
+                                                       
                                                         if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
@@ -4605,12 +4599,7 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                                        {
-                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                                                            if (CheckSerialNumber)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                                        }
+                                                     
                                                         if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
@@ -4820,13 +4809,6 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-
-                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                                        {
-                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                                                            if (CheckSerialNumber)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                                        }
                                                         if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
@@ -5018,13 +5000,6 @@ namespace TLIS_Service.Services
                                                         if (mwDish.HeightBase <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-
-                                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                                        {
-                                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
-                                                            if (CheckSerialNumber)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                                         }
                                                         if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
                                                         {
@@ -5232,7 +5207,7 @@ namespace TLIS_Service.Services
 
                                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                                     {
-                                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number);
+                                                        bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && !x.Dismantle);
                                                         if (CheckSerialNumber)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                                     }
@@ -5589,7 +5564,12 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig.legId != null)
                             {
-
+                                if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                {
+                                    bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number &&x.Id != mwDish.Id &&!x.Dismantle);
+                                    if (CheckSerialNumber)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                }
                                 TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
                                     Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                     .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
@@ -5640,12 +5620,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                    
                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish .Id &&
                                             x.LEG_ID == MWDishInst.legId).ToList();
@@ -5805,12 +5780,6 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
                                             x.LEG_ID == MWDishInst.legId).ToList();
@@ -5963,12 +5932,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                     
                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
                                             x.LEG_ID == MWDishInst.legId).ToList();
@@ -6126,13 +6090,7 @@ namespace TLIS_Service.Services
                                         if (mwDish.HeightBase <= 0)
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                        }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                        }                                 
                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
                                             x.LEG_ID == MWDishInst.legId).ToList();
@@ -6256,6 +6214,12 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count()>0)
                             {
+                                if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                {
+                                    bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id && !x.Dismantle);
+                                    if (CheckSerialNumber)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                }
                                 TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
                                    Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                    .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
@@ -6305,12 +6269,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                    
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -6496,12 +6455,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                       
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -6679,12 +6633,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                      
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -6871,12 +6820,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                     
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -7023,6 +6967,12 @@ namespace TLIS_Service.Services
                         {
                             if (MWDishInst.sideArmId != null)
                             {
+                                if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                {
+                                    bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id && !x.Dismantle);
+                                    if (CheckSerialNumber)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                }
                                 TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
                                    Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                    .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
@@ -7072,12 +7022,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                       
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -7262,12 +7207,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                      
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -7453,12 +7393,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                       
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -7644,12 +7579,7 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+                                     
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
@@ -7796,6 +7726,12 @@ namespace TLIS_Service.Services
                         {
                             if (MWDishInst.sideArmId != null)
                             {
+                                if (!string.IsNullOrEmpty(mwDish.Serial_Number))
+                                {
+                                    bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id && !x.Dismantle);
+                                    if (CheckSerialNumber)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                }
                                 TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
                                 Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
@@ -7842,12 +7778,6 @@ namespace TLIS_Service.Services
                                     if (mwDish.HeightBase <= 0)
                                     {
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                    }
-                                    if (!string.IsNullOrEmpty(mwDish.Serial_Number))
-                                    {
-                                        bool CheckSerialNumber = _unitOfWork.MW_DishRepository.Any(x => x.Serial_Number == mwDish.Serial_Number && x.Id != mwDish.Id);
-                                        if (CheckSerialNumber)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                     }
                                     if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                         MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
@@ -8030,12 +7960,20 @@ namespace TLIS_Service.Services
                     .Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.MwODULibrary)
                     .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODUId
                         == MWInstallationViewModel.installationAttributes.Id);
-                                                 
+                     if(TLIMWODU ==null)
+                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"This item is not found", (int)ApiReturnCode.fail);
+                    
                     TLImwODU mwODU = _mapper.Map<TLImwODU>(MWInstallationViewModel.installationAttributes);
                     if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 1)
                     {
                         if (MWInstallationViewModel.installationConfig?.mwDishId != null)
                         {
+                            if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                            {
+                                bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id && !x.Dismantle);
+                                if (CheckSerialNumber)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                            }
                             TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                             .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
                             .ThenInclude(x => x.polarityType).Include(x=>x.allCivilInst).FirstOrDefault(x => x.allLoadInstId != null
@@ -8045,7 +7983,7 @@ namespace TLIS_Service.Services
                             if (tLImwDish == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                             List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                            .Where(x => x.allLoadInstId != null&& !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
+                            .Where(x => x.allLoadInstId != null&& !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
                              && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
                             .ThenInclude(x => x.MwDishLibrary).ToList();
                            
@@ -8065,13 +8003,7 @@ namespace TLIS_Service.Services
                             if (CheckName != null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            if (!string.IsNullOrEmpty(mwODU.Serial_Number))
-                            {
-                                bool CheckSerialNumber = _unitOfWork.MW_ODURepository.GetAllAsQueryable().AsNoTracking().
-                                    Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
-                                if (CheckSerialNumber)
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                            }
+                          
                             mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                             mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                             mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
@@ -8130,6 +8062,12 @@ namespace TLIS_Service.Services
 
                                     if (MWInstallationViewModel.installationConfig?.mwDishId != null)
                                     {
+                                        if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                                        {
+                                            bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id && !x.Dismantle);
+                                            if (CheckSerialNumber)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                        }
                                         TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                         .Include(x=>x.allLoadInst).ThenInclude(x=>x.mwDish).ThenInclude(x=>x.MwDishLibrary).Include(x=>x.allCivilInst)
                                         .Include(x=>x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
@@ -8138,21 +8076,17 @@ namespace TLIS_Service.Services
                                         && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                        
-                                        List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                        && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
-                                        x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+
+                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                         .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
+                                          && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
+                                         .ThenInclude(x => x.MwDishLibrary).ToList();
 
                                         if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
-                                        if (!string.IsNullOrEmpty(mwODU.Serial_Number))
-                                        {
-                                            bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
-                                            if (CheckSerialNumber)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                        }
+
                                         if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                         {
                                             var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
@@ -8627,6 +8561,12 @@ namespace TLIS_Service.Services
 
                                 if (MWInstallationViewModel.installationConfig?.sideArmId != null)
                                 {
+                                    if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                                    {
+                                        bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id && !x.Dismantle);
+                                        if (CheckSerialNumber)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                    }
                                     TLIcivilLoads SideArm = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId !=null
                                     && x.allCivilInstId == CivilFound.allCivilInstId && x.sideArmId== MWInstallationViewModel.installationConfig.sideArmId 
                                     && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
@@ -8641,21 +8581,17 @@ namespace TLIS_Service.Services
                                      && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                
-                                        List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
-                                    x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+
+                                    List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                     .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
+                                      && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
+                                     .ThenInclude(x => x.MwDishLibrary).ToList();
 
                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
-                                    if (!string.IsNullOrEmpty(mwODU.Serial_Number))
-                                    {
-                                        bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
-                                        if (CheckSerialNumber)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                    }
+
                                     if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
@@ -9124,6 +9060,12 @@ namespace TLIS_Service.Services
 
                                 if (MWInstallationViewModel.installationConfig?.sideArmId != null)
                                 {
+                                    if (!string.IsNullOrEmpty(mwODU.Serial_Number))
+                                    {
+                                        bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id && !x.Dismantle);
+                                        if (CheckSerialNumber)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
+                                    }
                                     TLIcivilLoads SideArm = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null
                                     && x.allCivilInstId == CivilFound.allCivilInstId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId
                                     && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
@@ -9138,22 +9080,17 @@ namespace TLIS_Service.Services
                                     && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                     if (tLImwDish == null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                    
-                                    List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
-                                    && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower(),
-                                    x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
+                                    List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                    .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
+                                     && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
+                                    .ThenInclude(x => x.MwDishLibrary).ToList();
 
                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
-                                    if (!string.IsNullOrEmpty(mwODU.Serial_Number))
-                                    {
-                                        bool CheckSerialNumber = _unitOfWork.MW_ODURepository.Any(x => x.Serial_Number == mwODU.Serial_Number && x.Id != mwODU.Id);
-                                        if (CheckSerialNumber)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwODU.Serial_Number} is already exists", (int)ApiReturnCode.fail);
-                                    }
-                      
+
+
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
 
                                     if (Message != "Success")
