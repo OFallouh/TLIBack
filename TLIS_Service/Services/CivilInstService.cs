@@ -2635,25 +2635,32 @@ namespace TLIS_Service.Services
                             if (initialLegInfo != null)
                             {
                                 var initialLegAzimuth = initialLegInfo.LegAzimuth;
-
-                                for (int i = 0; i < 4; i++)
+                                if (initialLegAzimuth >= 0 && initialLegAzimuth <= 90)
                                 {
-                                    var legAzimuth = initialLegAzimuth + (90 * i);
-
-                          
-                                    var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                    for (int i = 0; i < 4; i++)
                                     {
-                                        CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
-                                        LegAzimuth = legAzimuth,
-                                        LegLetter = item.LegLetter,
-                                        Notes = item.Notes,
-                                        CivilWithLegInstId = civilWithLegs.Id
-                                    }).ToList();
+                                        var legAzimuth = initialLegAzimuth + (90 * i);
 
-                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+
+                                        var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                        {
+                                            CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
+                                            LegAzimuth = legAzimuth,
+                                            LegLetter = item.LegLetter,
+                                            Notes = item.Notes,
+                                            CivilWithLegInstId = civilWithLegs.Id
+                                        }).ToList();
+
+                                        _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                    }
+
+                                    _unitOfWork.SaveChanges();
+
                                 }
-
-                                _unitOfWork.SaveChanges();
+                            }
+                            else
+                            {
+                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must between 0 to 90 ", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         } 
                         if (structureType != null && structureType.Name.ToLower() == "triangular")
@@ -2663,25 +2670,31 @@ namespace TLIS_Service.Services
                             if (initialLegInfo != null)
                             {
                                 var initialLegAzimuth = initialLegInfo.LegAzimuth;
-
-                                for (int i = 0; i < 3; i++)
+                                if (initialLegAzimuth >= 0 && initialLegAzimuth <= 120)
                                 {
-                                    var legAzimuth = initialLegAzimuth + (120 * i);
-
-
-                                    var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                    for (int i = 0; i < 3; i++)
                                     {
-                                        CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
-                                        LegAzimuth = legAzimuth,
-                                        LegLetter = item.LegLetter,
-                                        Notes = item.Notes,
-                                        CivilWithLegInstId = civilWithLegs.Id
-                                    }).ToList();
+                                        var legAzimuth = initialLegAzimuth + (120 * i);
 
-                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+
+                                        var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                        {
+                                            CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
+                                            LegAzimuth = legAzimuth,
+                                            LegLetter = item.LegLetter,
+                                            Notes = item.Notes,
+                                            CivilWithLegInstId = civilWithLegs.Id
+                                        }).ToList();
+
+                                        _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                    }
+
+                                    _unitOfWork.SaveChanges();
                                 }
-
-                                _unitOfWork.SaveChanges();
+                            }
+                            else
+                            {
+                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must between 0 to 120 ", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
                         _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
