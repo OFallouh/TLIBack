@@ -45,6 +45,7 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
         public List<LoadandsidearmViewDto> LoadOthers { get; set; }
         public class LoadandsidearmViewDto
         {
+            public int  Id { get; set; }
             public string Name { get; set; }
         }
     }

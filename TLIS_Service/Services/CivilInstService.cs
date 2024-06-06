@@ -2628,22 +2628,62 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                         }
                         var structureType = _dbContext.TLIstructureType.FirstOrDefault(x => x.Id == civilwithleglibrary.structureTypeId);
-                        if (structureType != null && (structureType.Name.ToLower() == "square" || structureType.Name.ToLower() == "triangular"))
+                        if (structureType != null && structureType.Name.ToLower() == "square")
                         {
-                            var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                            
+                            var initialLegInfo = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
+                            if (initialLegInfo != null)
                             {
-                                CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
-                                LegAzimuth = item.LegAzimuth,
-                                LegLetter = item.LegLetter,
-                                Notes = item.Notes,
-                                CivilWithLegInstId = civilWithLegs.Id
-                            });
+                                var initialLegAzimuth = initialLegInfo.LegAzimuth;
 
-                            _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    var legAzimuth = initialLegAzimuth + (90 * i);
 
-                            _unitOfWork.SaveChanges();
+                          
+                                    var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                    {
+                                        CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
+                                        LegAzimuth = legAzimuth,
+                                        LegLetter = item.LegLetter,
+                                        Notes = item.Notes,
+                                        CivilWithLegInstId = civilWithLegs.Id
+                                    }).ToList();
+
+                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                }
+
+                                _unitOfWork.SaveChanges();
+                            }
+                        } 
+                        if (structureType != null && structureType.Name.ToLower() == "triangular")
+                        {
+
+                            var initialLegInfo = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
+                            if (initialLegInfo != null)
+                            {
+                                var initialLegAzimuth = initialLegInfo.LegAzimuth;
+
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    var legAzimuth = initialLegAzimuth + (120 * i);
+
+
+                                    var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                    {
+                                        CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
+                                        LegAzimuth = legAzimuth,
+                                        LegLetter = item.LegLetter,
+                                        Notes = item.Notes,
+                                        CivilWithLegInstId = civilWithLegs.Id
+                                    }).ToList();
+
+                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                }
+
+                                _unitOfWork.SaveChanges();
+                            }
                         }
-
                         _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
 
                         if (TaskId != null)
@@ -12550,58 +12590,47 @@ namespace TLIS_Service.Services
                     });
 
 
-                    List<List<BaseInstAttViews>> baseInstAttViewsList4 = new List<List<BaseInstAttViews>>();
-                    string[] legLetters = { "A", "B", "C", "D" };
-                    float[] legAzimuths = { 0, 90, 180, 270 };
+                    List<List<BaseInstAttViews>> baseInstAttViewsList = new List<List<BaseInstAttViews>>();
+                    string[] legLetters;
+                    float[] legAzimuths;
 
-                    List<List<BaseInstAttViews>> baseInstAttViewsList3 = new List<List<BaseInstAttViews>>();
-                    string[] legLetters3 = { "A", "B", "C" };
-                    float[] legAzimuths3 = { 0, 120, 240};
-
-                    if ( NumberofNumber == 3)
+                    if (NumberofNumber == 3)
                     {
-                        baseInstAttViewsList3 = Enumerable.Range(0, NumberofNumber)
-                            .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
-                                .Select(att => new BaseInstAttViews
-                                {
-                                    Key = att.Key,
-                                    Desc = att.Desc,
-                                    Label = att.Label,
-                                    Manage = att.Manage,
-                                    Required = att.Required,
-                                    enable = att.enable,
-                                    AutoFill = att.AutoFill,
-                                    DataTypeId = att.DataTypeId,
-                                    DataType = att.DataType,
-                                    Options = att.Options,
-                                    Value = att.Label.ToLower() == "legletter" ? legLetters3[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths3[i] : null)
-                                }).ToList())
-                            .ToList();
-                        objectInst.LegsInfo = baseInstAttViewsList3;
+                        legLetters = new string[] { "A", "B", "C" };
+                        legAzimuths = new float[] { 0, 120, 240 };
                     }
                     else if (NumberofNumber == 4)
                     {
-                        baseInstAttViewsList4 = Enumerable.Range(0, NumberofNumber)
-                            .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
-                                .Select(att => new BaseInstAttViews
-                                {
-                                    Key = att.Key,
-                                    Desc = att.Desc,
-                                    Label = att.Label,
-                                    Manage = att.Manage,
-                                    Required = att.Required,
-                                    enable = att.enable,
-                                    AutoFill = att.AutoFill,
-                                    DataTypeId = att.DataTypeId,
-                                    DataType = att.DataType,
-                                    Options = att.Options,
-                                    Value = att.Label.ToLower() == "legletter" ? legLetters[i] : (att.Label.ToLower() == "legazimuth" ? legAzimuths[i] : null)
-                                }).ToList())
-                            .ToList();
-                        objectInst.LegsInfo = baseInstAttViewsList4;
+                        legLetters = new string[] { "A", "B", "C", "D" };
+                        legAzimuths = new float[] { 0, 90, 180, 270 };
+                    }
+                    else
+                    {
+                        throw new ArgumentException("NumberofNumber must be either 3 or 4.");
                     }
 
-                   
+                    baseInstAttViewsList = Enumerable.Range(0, NumberofNumber)
+                        .Select(i => _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(
+                            Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CiviLegName", "CivilWithLegInstId")
+                            .Select(att => new BaseInstAttViews
+                            {
+                                Key = att.Key,
+                                Desc = att.Desc,
+                                Label = att.Label,
+                                Manage = att.Manage,
+                                Required = att.Required,
+                                enable = att.enable,
+                                AutoFill = att.AutoFill,
+                                DataTypeId = att.DataTypeId,
+                                DataType = att.DataType,
+                                Options = att.Options,
+                                Value = att.Label.ToLower() == "legletter" ? legLetters[i] : null
+                            }).ToList())
+                        .ToList();
+
+                    objectInst.LegsInfo = baseInstAttViewsList;
+
+
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
