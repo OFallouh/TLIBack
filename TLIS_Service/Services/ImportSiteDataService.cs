@@ -14569,965 +14569,965 @@ namespace TLIS_Service.Services
                         _unitOfWork.DynamicAttRepository.AddRange(RadioAntennaMissedAttributes);
                         _unitOfWork.SaveChanges();
 
-                        for (int j = 0; j <= RadioAntannaDataTable.Rows.Count - 1; j++)
-                        {
-                            using (TransactionScope RadioAntennaTransaction = new TransactionScope(TransactionScopeOption.Required,
-                                new System.TimeSpan(0, 15, 0)))
-                            {
-                                try
-                                {
-                                    //
-                                    // Library Information..
-                                    //
-
-                                    string RadioAntennaLibraryModel = RadioAntannaDataTable.Rows[j]["Ant-Model"].ToString();
-                                    int RadioAntennaLibraryId = 0;
-                                    if (!string.IsNullOrEmpty(RadioAntennaLibraryModel))
-                                    {
-                                        TLIradioAntennaLibrary RadioAntennaLibraryEntity = _unitOfWork.RadioAntennaLibraryRepository
-                                            .GetWhereFirst(x => x.Model.ToLower() == RadioAntennaLibraryModel.ToLower() && !x.Deleted);
-
-                                        if (RadioAntennaLibraryEntity == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Ant-Model) coulumn's value: ({RadioAntennaLibraryModel}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = true,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                        RadioAntennaLibraryId = RadioAntennaLibraryEntity.Id;
-
-                                        string RadioAntennaLibraryVendor = RadioAntannaDataTable.Rows[j]["Ant-Vendor"].ToString();
-                                        if (!string.IsNullOrEmpty(RadioAntennaLibraryVendor))
-                                            AddLogistical(RadioAntannaDataTable.Rows[j]["Ant-Vendor"].ToString(), "Vendor",
-                                                "Radio", "TLIradioAntennaLibrary", RadioAntennaLibraryId);
-                                    }
-                                    else
-                                    {
-                                        RadioAntennaTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(Ant-Model) coulumn's value can't be null or empty",
-                                            IsDeleted = false,
-                                            IsLib = true,
-                                            RefTable = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
-                                            SheetName = "Radio Antenna info",
-                                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-
-                                    string RadioAntenna_SiteCodeAfterCheck = string.Empty;
-                                    string RadioAntenna_SiteCode = RadioAntannaDataTable.Rows[j]["Site Code"].ToString();
-                                    string RadioAntenna_SiteName = RadioAntannaDataTable.Rows[j]["Site Name"].ToString();
-                                    string RadioAntenna_Site = RadioAntannaDataTable.Rows[j]["Site"].ToString();
-
-                                    if (!string.IsNullOrEmpty(RadioAntenna_SiteCode))
-                                    {
-                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteCode.ToLower() == RadioAntenna_SiteCode.ToLower());
-
-                                        if (CheckSiteCode == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Site Code) coulumn's value: ({RadioAntenna_SiteCode}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntenna_SiteCodeAfterCheck = RadioAntenna_SiteCode;
-                                    }
-                                    else if (!string.IsNullOrEmpty(RadioAntenna_SiteName))
-                                    {
-                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteName.ToLower() == RadioAntenna_SiteName.ToLower());
-
-                                        if (CheckSiteCode == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Site Name) coulumn's value: ({RadioAntenna_SiteName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntenna_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
-                                    }
-                                    else if (!string.IsNullOrEmpty(RadioAntenna_Site))
-                                    {
-                                        TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteCode.ToLower() == RadioAntenna_Site.ToLower());
-
-                                        if (CheckSiteCode == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Site) coulumn's value: ({RadioAntenna_Site}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntenna_SiteCodeAfterCheck = RadioAntenna_Site;
-                                    }
-                                    else
-                                    {
-                                        RadioAntennaTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
-                                            SheetName = "Radio Antenna info",
-                                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-
-                                    string RadioAntennaName = RadioAntannaDataTable.Rows[j]["Antenna Name"].ToString();
-                                    string RadioAntennaSideArmName = RadioAntannaDataTable.Rows[j]["Side Arm Name"].ToString();
-                                    string RadioAntennaLegName = RadioAntannaDataTable.Rows[j]["Leg name"].ToString();
-                                    string RadioAntennaHeightBaseString = RadioAntannaDataTable.Rows[j]["Antenna Height H1"].ToString();
-                                    string RadioAntennaAzimuthString = RadioAntannaDataTable.Rows[j]["Ant-Azimuth"].ToString();
-
-                                    float RadioAntennaHeightBase = 0;
-                                    float RadioAntennaAzimuth = 0;
-
-                                    if (string.IsNullOrEmpty(RadioAntennaName))
-                                    {
-                                        if (!string.IsNullOrEmpty(RadioAntennaSideArmName))
-                                            RadioAntennaName = RadioAntennaSideArmName;
-
-                                        else if (!string.IsNullOrEmpty(RadioAntennaLegName))
-                                            RadioAntennaName = RadioAntennaLegName;
-
-                                        else
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"When (Antenna Name) column's value is empty then " +
-                                                    $"one of those columns must have a value (Side Arm Name, Leg name)",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        if (!string.IsNullOrEmpty(RadioAntennaHeightBaseString))
-                                        {
-                                            CheckParser = float.TryParse(RadioAntennaHeightBaseString, out FloatParser);
-
-                                            if (CheckParser)
-                                                RadioAntennaHeightBase = FloatParser;
-
-                                            else
-                                            {
-                                                RadioAntennaTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Antenna Height H1) coulumn's value: ({RadioAntennaHeightBaseString}) must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                    SheetName = "Radio Antenna info",
-                                                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Antenna Height H1) coulumn's value can't be null or empty",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        if (!string.IsNullOrEmpty(RadioAntennaAzimuthString))
-                                        {
-                                            CheckParser = float.TryParse(RadioAntennaAzimuthString, out FloatParser);
-
-                                            if (CheckParser)
-                                                RadioAntennaAzimuth = FloatParser;
-
-                                            else
-                                            {
-                                                RadioAntennaTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Ant-Azimuth) coulumn's value: ({RadioAntennaHeightBaseString}) must be a number",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                    SheetName = "Radio Antenna info",
-                                                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Ant-Azimuth) coulumn's value can't be null or empty",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntennaName = $"{RadioAntennaName} {RadioAntennaHeightBaseString} {RadioAntennaAzimuthString}";
-                                    }
-
-                                    // Check If This Radio Antenna Name is Already Exist in This Site Code..
-
-                                    TLIcivilLoads CheckRadioAntennaName = _unitOfWork.CivilLoadsRepository
-                                        .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
-                                            (x.allLoadInstId != null ? (x.allLoadInst.radioAntennaId != null ?
-                                                (x.allLoadInst.radioAntenna.Name.ToLower() == RadioAntennaName.ToLower() && !x.allLoadInst.Draft) : false) : false),
-                                                    x => x.allLoadInst, x => x.allLoadInst.radioAntenna);
-
-                                    if (CheckRadioAntennaName != null)
-                                    {
-                                        RadioAntennaTransaction.Dispose();
-
-                                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                        {
-                                            CreatedAt = DateTime.Now,
-                                            ErrMsg = $"(Antenna Name) column's value: ({RadioAntennaName}) is already exist in " +
-                                                $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
-                                            IsDeleted = false,
-                                            IsLib = false,
-                                            RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                            SheetName = "Radio Antenna info",
-                                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                        };
-
-                                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                        _unitOfWork.SaveChanges();
-
-                                        continue;
-                                    }
-
-                                    string RadioAntenaaCivilType = RadioAntannaDataTable.Rows[j]["type"].ToString();
-                                    string RadioAntennaCivilName = RadioAntannaDataTable.Rows[j]["Civil Steel Name"].ToString();
-
-                                    int RadioAntennaAllCivilInstId = 0;
-                                    int? RadioAntennaAllCivilSteelSupportCategoryId = 0;
-                                    int? RadioAntennaLegId = null;
-                                    int? RadioAntennaSideArmId = null;
-
-                                    if (!string.IsNullOrEmpty(RadioAntenaaCivilType))
-                                    {
-                                        if (string.IsNullOrEmpty(RadioAntennaCivilName))
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Civil Steel Name) column's value can't be null or empty",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        if (RadioAntenaaCivilType.ToLower() == "Tower".ToLower())
-                                        {
-                                            TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
-                                                .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                                                    x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
-                                                    x.allCivilInst.civilWithLegsId != null ?
-                                                        (x.allCivilInst.civilWithLegs.Name.ToLower() == RadioAntennaCivilName.ToLower()) : false,
-                                                            x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib);
-
-                                            if (CheckRadioAntennaCivilName == null)
-                                            {
-                                                RadioAntennaTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
-                                                        $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                    SheetName = "Radio Antenna info",
-                                                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
-                                            RadioAntennaAllCivilSteelSupportCategoryId = CheckRadioAntennaCivilName.allCivilInst.civilWithLegs.CivilWithLegsLib.civilSteelSupportCategoryId;
-
-                                            TLIleg CheckRadioAntennaLegName = _unitOfWork.LegRepository
-                                                .GetWhereFirst(x => x.CiviLegName.ToLower() == RadioAntennaLegName.ToLower() &&
-                                                    x.CivilWithLegInstId == CheckRadioAntennaCivilName.allCivilInst.civilWithLegsId.Value);
-
-                                            if (CheckRadioAntennaLegName != null)
-                                            {
-                                                RadioAntennaLegId = CheckRadioAntennaLegName.Id;
-                                            }
-                                        }
-                                        else if (RadioAntenaaCivilType.ToLower() == "Mast".ToLower())
-                                        {
-                                            string RadioAntennaMastCategoryName = Helpers.Constants.CivilWithoutLegCategories.Mast.ToString();
-
-                                            TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
-                                                .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                                                    x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
-                                                    x.allCivilInst.civilWithoutLegId != null ?
-                                                        (x.allCivilInst.civilWithoutLeg.Name.ToLower() == RadioAntennaCivilName.ToLower() &&
-                                                        x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == RadioAntennaMastCategoryName.ToLower()) : false,
-                                                            x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
-                                                            x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
-
-                                            if (CheckRadioAntennaCivilName == null)
-                                            {
-                                                RadioAntennaTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
-                                                        $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                    SheetName = "Radio Antenna info",
-                                                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
-                                            RadioAntennaAllCivilSteelSupportCategoryId = CheckRadioAntennaCivilName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
-                                        }
-                                        else if (RadioAntenaaCivilType.ToLower() == "Monopole".ToLower())
-                                        {
-                                            string RadioAntennaMonopoleCategoryName = Helpers.Constants.CivilWithoutLegCategories.Monopole.ToString();
-
-                                            TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
-                                                .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                                                    x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
-                                                    x.allCivilInst.civilWithoutLegId != null ?
-                                                        (x.allCivilInst.civilWithoutLeg.Name.ToLower() == RadioAntennaCivilName.ToLower() &&
-                                                        x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == RadioAntennaMonopoleCategoryName.ToLower()) : false,
-                                                            x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
-                                                            x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
-
-                                            if (CheckRadioAntennaCivilName == null)
-                                            {
-                                                RadioAntennaTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
-                                                        $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                    SheetName = "Radio Antenna info",
-                                                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
-                                            RadioAntennaAllCivilSteelSupportCategoryId = CheckRadioAntennaCivilName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
-                                        }
-                                        else if (RadioAntenaaCivilType.ToLower() == "Non Steel".ToLower())
-                                        {
-                                            TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
-                                                .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
-                                                    x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
-                                                    x.allCivilInst.civilNonSteelId != null ?
-                                                        (x.allCivilInst.civilNonSteel.Name.ToLower() == RadioAntennaCivilName.ToLower()) : false,
-                                                            x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
-
-                                            if (CheckRadioAntennaCivilName == null)
-                                            {
-                                                RadioAntennaTransaction.Dispose();
-
-                                                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                {
-                                                    CreatedAt = DateTime.Now,
-                                                    ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
-                                                        $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
-                                                    IsDeleted = false,
-                                                    IsLib = false,
-                                                    RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                    SheetName = "Radio Antenna info",
-                                                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                };
-
-                                                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                _unitOfWork.SaveChanges();
-
-                                                continue;
-                                            }
-
-                                            RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
-                                        }
-                                        else
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(type) column's value must be one of those values (Tower, Mast, Monopole, Non Steel)",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-
-                                    if (!string.IsNullOrEmpty(RadioAntennaSideArmName))
-                                    {
-                                        TLIcivilLoads CheckRadioAntennaSideArm = _unitOfWork.CivilLoadsRepository
-                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.allCivilInstId == RadioAntennaAllCivilInstId &&
-                                                x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() && x.sideArmId != null ?
-                                                (!x.sideArm.Draft && x.sideArm.Name.ToLower() == RadioAntennaSideArmName.ToLower()) : false);
-
-                                        if (CheckRadioAntennaSideArm == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Side Arm Name) column's value: ({RadioAntennaSideArmName}) doesn't exist in this site: ({RadioAntenna_SiteCodeAfterCheck}) " +
-                                                    $"nor on this tower: ({RadioAntennaCivilName})",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntennaSideArmId = CheckRadioAntennaSideArm.sideArmId;
-                                    }
-
-                                    //
-                                    // Installation Information..
-                                    //
-
-                                    string RadioAntennaSerialNumber = RadioAntannaDataTable.Rows[j]["Serial Number"].ToString();
-
-                                    string RadioAntennaMechanicalTiltString = RadioAntannaDataTable.Rows[j]["Ant-Mechanical-Tilt"].ToString();
-                                    float? RadioAntennaMechanicalTilt = null;
-                                    if (!string.IsNullOrEmpty(RadioAntennaMechanicalTiltString))
-                                    {
-                                        CheckParser = float.TryParse(RadioAntennaMechanicalTiltString, out FloatParser);
-
-                                        if (CheckParser)
-                                            RadioAntennaMechanicalTilt = FloatParser;
-
-                                        else
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Ant-Mechanical-Tilt) coulumn's value: ({RadioAntennaMechanicalTiltString}) must be a number",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-
-                                    string RadioAntennaHBAString = RadioAntannaDataTable.Rows[j]["HBA From Land"].ToString();
-                                    float RadioAntennaHBA = 0;
-                                    if (!string.IsNullOrEmpty(RadioAntennaHBAString))
-                                    {
-                                        CheckParser = float.TryParse(RadioAntennaHBAString, out FloatParser);
-
-                                        if (CheckParser)
-                                            RadioAntennaHBA = FloatParser;
-
-                                        else
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(HBA From Land) coulumn's value: ({RadioAntennaHBAString}) must be a number",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-                                    }
-
-                                    // Owner
-                                    string RadioAntennaOwnerName = RadioAntannaDataTable.Rows[j]["Ant-Owner"].ToString();
-                                    int? RadioAntennaOwnerId = null;
-
-                                    if (!string.IsNullOrEmpty(RadioAntennaOwnerName))
-                                    {
-                                        TLIowner CheckRadioAntennaOwnerIfExist = _unitOfWork.OwnerRepository
-                                            .GetWhereFirst(x => x.OwnerName.ToLower() == RadioAntennaOwnerName.ToLower() && !x.Deleted);
-
-                                        if (CheckRadioAntennaOwnerIfExist == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Ant-Owner) coulumn's value: ({RadioAntennaOwnerName}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIowner.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntennaOwnerId = CheckRadioAntennaOwnerIfExist.Id;
-                                    }
-
-                                    // Installation Place..
-                                    string RadioAntennaInstallationPlace = RadioAntannaDataTable.Rows[j]["Ant-installation place"].ToString();
-                                    int? RadioAntennaInstallationPlaceId = null;
-
-                                    if (!string.IsNullOrEmpty(RadioAntennaInstallationPlace))
-                                    {
-                                        TLIinstallationPlace CheckRadioAntennaInstallationPlaceIfExist = _unitOfWork.InstallationPlaceRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == RadioAntennaInstallationPlace.ToLower() && !x.Deleted);
-
-                                        if (CheckRadioAntennaInstallationPlaceIfExist == null)
-                                        {
-                                            RadioAntennaTransaction.Dispose();
-
-                                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                            {
-                                                CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Ant-installation place) coulumn's value: ({RadioAntennaInstallationPlace}) doesn't exist in TLIS",
-                                                IsDeleted = false,
-                                                IsLib = false,
-                                                RefTable = Helpers.Constants.TablesNames.TLIinstallationPlace.ToString(),
-                                                SheetName = "Radio Antenna info",
-                                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                            };
-
-                                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                            _unitOfWork.SaveChanges();
-
-                                            continue;
-                                        }
-
-                                        RadioAntennaInstallationPlaceId = CheckRadioAntennaInstallationPlaceIfExist.Id;
-                                    }
-
-                                    TLIradioAntenna NewRadioAntennaEntity = new TLIradioAntenna()
-                                    {
-                                        Name = RadioAntennaName,
-                                        radioAntennaLibraryId = RadioAntennaLibraryId,
-                                        Notes = RadioAntannaDataTable.Rows[j]["Note"].ToString(),
-                                        HBASurface = RadioAntannaDataTable.Rows[j]["HBA From Surface"].ToString(),
-                                        HeightBase = RadioAntennaHeightBase,
-                                        Azimuth = RadioAntennaAzimuth,
-                                        SerialNumber = RadioAntennaSerialNumber,
-                                        MechanicalTilt = RadioAntennaMechanicalTilt,
-                                        HBA = RadioAntennaHBA,
-                                        ownerId = RadioAntennaOwnerId,
-                                        installationPlaceId = RadioAntennaInstallationPlaceId
-                                    };
-
-                                    _unitOfWork.RadioAntennaRepository.Add(NewRadioAntennaEntity);
-                                    _unitOfWork.SaveChanges();
-
-                                    //
-                                    // Dynamic Attribute..
-                                    //
-
-                                    List<TLIdynamicAttInstValue> RadioAntennaDynamicValues = new List<TLIdynamicAttInstValue>();
-
-                                    foreach (TLIdynamicAtt MissedAttribute in RadioAntennaMissedAttributes)
-                                    {
-                                        if (!string.IsNullOrEmpty(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString()))
-                                        {
-                                            TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
-                                            {
-                                                tablesNamesId = RadioAntennaTableNameId,
-                                                disable = false,
-                                                DynamicAttId = MissedAttribute.Id,
-                                                InventoryId = NewRadioAntennaEntity.Id
-                                            };
-
-                                            if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
-                                                MissedAttributeValue.ValueString = RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString();
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
-                                                MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
-                                            {
-                                                double DoubleParser = 0;
-
-                                                CheckParser = double.TryParse(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
-
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueDouble = DoubleParser;
-
-                                                else
-                                                {
-                                                    RadioAntennaTransaction.Dispose();
-
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({RadioAntannaDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIdynamicAtt.ToString(),
-                                                        SheetName = "Radio Antenna info",
-                                                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                    };
-
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
-
-                                                    continue;
-                                                }
-                                            }
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
-                                            {
-                                                bool BooleanParser = false;
-
-                                                CheckParser = bool.TryParse(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
-
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueBoolean = BooleanParser;
-
-                                                else
-                                                {
-                                                    RadioAntennaTransaction.Dispose();
-
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({RadioAntannaDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIdynamicAtt.ToString(),
-                                                        SheetName = "Radio Antenna info",
-                                                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                    };
-
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
-
-                                                    continue;
-                                                }
-                                            }
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
-                                            {
-                                                DateTime DateTimeParser = DateTime.Now;
-
-                                                CheckParser = DateTime.TryParse(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
-
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueDateTime = DateTimeParser;
-
-                                                else
-                                                {
-                                                    RadioAntennaTransaction.Dispose();
-
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({RadioAntannaDataTable.Rows[j][MissedAttribute.Key]}) must be date",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIdynamicAtt.ToString(),
-                                                        SheetName = "Radio Antenna info",
-                                                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                                    };
-
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
-
-                                                    continue;
-                                                }
-                                            }
-
-                                            RadioAntennaDynamicValues.Add(MissedAttributeValue);
-                                        }
-                                    }
-
-                                    if (RadioAntennaDynamicValues.Count() > 0)
-                                    {
-                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(RadioAntennaDynamicValues);
-                                        _unitOfWork.SaveChanges();
-                                    }
-
-                                    //
-                                    // All Load Installation..
-                                    //
-
-                                    TLIallLoadInst NewRadioAntennaAlLLoadInstEntity = new TLIallLoadInst();
-
-                                    NewRadioAntennaAlLLoadInstEntity.radioAntennaId = NewRadioAntennaEntity.Id;
-
-                                    string RadioAntennaActiveComponent = RadioAntannaDataTable.Rows[j]["Active component"].ToString();
-                                    NewRadioAntennaAlLLoadInstEntity.Active = true;
-
-                                    if (!string.IsNullOrEmpty(RadioAntennaActiveComponent))
-                                    {
-                                        if (RadioAntennaActiveComponent.ToLower() == "Yes".ToLower())
-                                            NewRadioAntennaAlLLoadInstEntity.Active = false;
-                                    }
-
-                                    string RadioAntennaCurrentStatus = RadioAntannaDataTable.Rows[j]["Current Status"].ToString();
-                                    if (!string.IsNullOrEmpty(RadioAntennaCurrentStatus))
-                                    {
-                                        TLIitemStatus CheckCurrentStatusradioAntenna = _unitOfWork.ItemStatusRepository
-                                            .GetWhereFirst(x => x.Name.ToLower() == RadioAntennaCurrentStatus.ToLower() && !x.Deleted);
-
-                                        if (CheckCurrentStatusradioAntenna != null)
-                                            NewRadioAntennaAlLLoadInstEntity.ItemStatusId = CheckCurrentStatusradioAntenna.Id;
-
-                                        else
-                                        {
-                                            TLIitemStatus NewItemStatus = new TLIitemStatus()
-                                            {
-                                                Name = RadioAntennaCurrentStatus,
-                                                Active = true,
-                                                Deleted = false
-                                            };
-
-                                            _unitOfWork.ItemStatusRepository.Add(NewItemStatus);
-                                            _unitOfWork.SaveChanges();
-
-                                            NewRadioAntennaAlLLoadInstEntity.ItemStatusId = NewItemStatus.Id;
-                                        }
-                                    }
-
-                                    _unitOfWork.AllLoadInstRepository.Add(NewRadioAntennaAlLLoadInstEntity);
-                                    _unitOfWork.SaveChanges();
-
-                                    //
-                                    // Civil Installation..
-                                    //
-
-                                    TLIcivilLoads NewCivilLoadsForRadioAntenna = new TLIcivilLoads();
-
-                                    NewCivilLoadsForRadioAntenna.allLoadInstId = NewRadioAntennaAlLLoadInstEntity.Id;
-                                    NewCivilLoadsForRadioAntenna.SiteCode = RadioAntenna_SiteCodeAfterCheck;
-                                    NewCivilLoadsForRadioAntenna.sideArmId = RadioAntennaSideArmId;
-                                    NewCivilLoadsForRadioAntenna.allCivilInstId = RadioAntennaAllCivilInstId;
-                                    NewCivilLoadsForRadioAntenna.civilSteelSupportCategoryId = RadioAntennaAllCivilSteelSupportCategoryId;
-                                    NewCivilLoadsForRadioAntenna.legId = RadioAntennaLegId;
-
-                                    string InstallationDateString = RadioAntannaDataTable.Rows[j]["Status Date"].ToString();
-
-                                    if (!string.IsNullOrEmpty(InstallationDateString))
-                                    {
-                                        DateTime DateTimeParser = DateTime.Now;
-
-                                        CheckParser = DateTime.TryParse(InstallationDateString, out DateTimeParser);
-
-                                        if (CheckParser)
-                                            NewCivilLoadsForRadioAntenna.InstallationDate = DateTimeParser;
-
-                                        else
-                                            NewCivilLoadsForRadioAntenna.InstallationDate = DateTime.Now;
-                                    }
-                                    else
-                                        NewCivilLoadsForRadioAntenna.InstallationDate = DateTime.Now;
-
-                                    _unitOfWork.CivilLoadsRepository.Add(NewCivilLoadsForRadioAntenna);
-                                    _unitOfWork.SaveChanges();
-
-                                    RadioAntennaTransaction.Complete();
-                                }
-                                catch (Exception err)
-                                {
-                                    RadioAntennaTransaction.Dispose();
-
-                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                    {
-                                        CreatedAt = DateTime.Now,
-                                        ErrMsg = err.Message,
-                                        IsDeleted = false,
-                                        IsLib = false,
-                                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
-                                        SheetName = "Radio Antenna info",
-                                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
-                                    };
-
-                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                    _unitOfWork.SaveChanges();
-
-                                    continue;
-                                }
-                            }
-                        }
+                        //for (int j = 0; j <= RadioAntannaDataTable.Rows.Count - 1; j++)
+                        //{
+                        //    using (TransactionScope RadioAntennaTransaction = new TransactionScope(TransactionScopeOption.Required,
+                        //        new System.TimeSpan(0, 15, 0)))
+                        //    {
+                        //        try
+                        //        {
+                        //            //
+                        //            // Library Information..
+                        //            //
+
+                        //            string RadioAntennaLibraryModel = RadioAntannaDataTable.Rows[j]["Ant-Model"].ToString();
+                        //            int RadioAntennaLibraryId = 0;
+                        //            if (!string.IsNullOrEmpty(RadioAntennaLibraryModel))
+                        //            {
+                        //                TLIradioAntennaLibrary RadioAntennaLibraryEntity = _unitOfWork.RadioAntennaLibraryRepository
+                        //                    .GetWhereFirst(x => x.Model.ToLower() == RadioAntennaLibraryModel.ToLower() && !x.Deleted);
+
+                        //                if (RadioAntennaLibraryEntity == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Ant-Model) coulumn's value: ({RadioAntennaLibraryModel}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = true,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //                RadioAntennaLibraryId = RadioAntennaLibraryEntity.Id;
+
+                        //                string RadioAntennaLibraryVendor = RadioAntannaDataTable.Rows[j]["Ant-Vendor"].ToString();
+                        //                if (!string.IsNullOrEmpty(RadioAntennaLibraryVendor))
+                        //                    AddLogistical(RadioAntannaDataTable.Rows[j]["Ant-Vendor"].ToString(), "Vendor",
+                        //                        "Radio", "TLIradioAntennaLibrary", RadioAntennaLibraryId);
+                        //            }
+                        //            else
+                        //            {
+                        //                RadioAntennaTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(Ant-Model) coulumn's value can't be null or empty",
+                        //                    IsDeleted = false,
+                        //                    IsLib = true,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(),
+                        //                    SheetName = "Radio Antenna info",
+                        //                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+
+                        //            string RadioAntenna_SiteCodeAfterCheck = string.Empty;
+                        //            string RadioAntenna_SiteCode = RadioAntannaDataTable.Rows[j]["Site Code"].ToString();
+                        //            string RadioAntenna_SiteName = RadioAntannaDataTable.Rows[j]["Site Name"].ToString();
+                        //            string RadioAntenna_Site = RadioAntannaDataTable.Rows[j]["Site"].ToString();
+
+                        //            if (!string.IsNullOrEmpty(RadioAntenna_SiteCode))
+                        //            {
+                        //                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        //                    .GetWhereFirst(x => x.SiteCode.ToLower() == RadioAntenna_SiteCode.ToLower());
+
+                        //                if (CheckSiteCode == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Site Code) coulumn's value: ({RadioAntenna_SiteCode}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntenna_SiteCodeAfterCheck = RadioAntenna_SiteCode;
+                        //            }
+                        //            else if (!string.IsNullOrEmpty(RadioAntenna_SiteName))
+                        //            {
+                        //                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        //                    .GetWhereFirst(x => x.SiteName.ToLower() == RadioAntenna_SiteName.ToLower());
+
+                        //                if (CheckSiteCode == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Site Name) coulumn's value: ({RadioAntenna_SiteName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntenna_SiteCodeAfterCheck = CheckSiteCode.SiteCode;
+                        //            }
+                        //            else if (!string.IsNullOrEmpty(RadioAntenna_Site))
+                        //            {
+                        //                TLIsite CheckSiteCode = _unitOfWork.SiteRepository
+                        //                    .GetWhereFirst(x => x.SiteCode.ToLower() == RadioAntenna_Site.ToLower());
+
+                        //                if (CheckSiteCode == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Site) coulumn's value: ({RadioAntenna_Site}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntenna_SiteCodeAfterCheck = RadioAntenna_Site;
+                        //            }
+                        //            else
+                        //            {
+                        //                RadioAntennaTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"One of those columns must have a value (Site Code, Site Name, Site)",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
+                        //                    SheetName = "Radio Antenna info",
+                        //                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+
+                        //            string RadioAntennaName = RadioAntannaDataTable.Rows[j]["Antenna Name"].ToString();
+                        //            string RadioAntennaSideArmName = RadioAntannaDataTable.Rows[j]["Side Arm Name"].ToString();
+                        //            string RadioAntennaLegName = RadioAntannaDataTable.Rows[j]["Leg name"].ToString();
+                        //            string RadioAntennaHeightBaseString = RadioAntannaDataTable.Rows[j]["Antenna Height H1"].ToString();
+                        //            string RadioAntennaAzimuthString = RadioAntannaDataTable.Rows[j]["Ant-Azimuth"].ToString();
+
+                        //            float RadioAntennaHeightBase = 0;
+                        //            float RadioAntennaAzimuth = 0;
+
+                        //            if (string.IsNullOrEmpty(RadioAntennaName))
+                        //            {
+                        //                if (!string.IsNullOrEmpty(RadioAntennaSideArmName))
+                        //                    RadioAntennaName = RadioAntennaSideArmName;
+
+                        //                else if (!string.IsNullOrEmpty(RadioAntennaLegName))
+                        //                    RadioAntennaName = RadioAntennaLegName;
+
+                        //                else
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"When (Antenna Name) column's value is empty then " +
+                        //                            $"one of those columns must have a value (Side Arm Name, Leg name)",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                if (!string.IsNullOrEmpty(RadioAntennaHeightBaseString))
+                        //                {
+                        //                    CheckParser = float.TryParse(RadioAntennaHeightBaseString, out FloatParser);
+
+                        //                    if (CheckParser)
+                        //                        RadioAntennaHeightBase = FloatParser;
+
+                        //                    else
+                        //                    {
+                        //                        RadioAntennaTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"(Antenna Height H1) coulumn's value: ({RadioAntennaHeightBaseString}) must be a number",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                            SheetName = "Radio Antenna info",
+                        //                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+                        //                }
+                        //                else
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Antenna Height H1) coulumn's value can't be null or empty",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                if (!string.IsNullOrEmpty(RadioAntennaAzimuthString))
+                        //                {
+                        //                    CheckParser = float.TryParse(RadioAntennaAzimuthString, out FloatParser);
+
+                        //                    if (CheckParser)
+                        //                        RadioAntennaAzimuth = FloatParser;
+
+                        //                    else
+                        //                    {
+                        //                        RadioAntennaTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"(Ant-Azimuth) coulumn's value: ({RadioAntennaHeightBaseString}) must be a number",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                            SheetName = "Radio Antenna info",
+                        //                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+                        //                }
+                        //                else
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Ant-Azimuth) coulumn's value can't be null or empty",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntennaName = $"{RadioAntennaName} {RadioAntennaHeightBaseString} {RadioAntennaAzimuthString}";
+                        //            }
+
+                        //            // Check If This Radio Antenna Name is Already Exist in This Site Code..
+
+                        //            TLIcivilLoads CheckRadioAntennaName = _unitOfWork.CivilLoadsRepository
+                        //                .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
+                        //                    (x.allLoadInstId != null ? (x.allLoadInst.radioAntennaId != null ?
+                        //                        (x.allLoadInst.radioAntenna.Name.ToLower() == RadioAntennaName.ToLower() && !x.allLoadInst.Draft) : false) : false),
+                        //                            x => x.allLoadInst, x => x.allLoadInst.radioAntenna);
+
+                        //            if (CheckRadioAntennaName != null)
+                        //            {
+                        //                RadioAntennaTransaction.Dispose();
+
+                        //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                {
+                        //                    CreatedAt = DateTime.Now,
+                        //                    ErrMsg = $"(Antenna Name) column's value: ({RadioAntennaName}) is already exist in " +
+                        //                        $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
+                        //                    IsDeleted = false,
+                        //                    IsLib = false,
+                        //                    RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                    SheetName = "Radio Antenna info",
+                        //                    UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                };
+
+                        //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                _unitOfWork.SaveChanges();
+
+                        //                continue;
+                        //            }
+
+                        //            string RadioAntenaaCivilType = RadioAntannaDataTable.Rows[j]["type"].ToString();
+                        //            string RadioAntennaCivilName = RadioAntannaDataTable.Rows[j]["Civil Steel Name"].ToString();
+
+                        //            int RadioAntennaAllCivilInstId = 0;
+                        //            int? RadioAntennaAllCivilSteelSupportCategoryId = 0;
+                        //            int? RadioAntennaLegId = null;
+                        //            int? RadioAntennaSideArmId = null;
+
+                        //            if (!string.IsNullOrEmpty(RadioAntenaaCivilType))
+                        //            {
+                        //                if (string.IsNullOrEmpty(RadioAntennaCivilName))
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Civil Steel Name) column's value can't be null or empty",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                if (RadioAntenaaCivilType.ToLower() == "Tower".ToLower())
+                        //                {
+                        //                    TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
+                        //                        .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                        //                            x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
+                        //                            x.allCivilInst.civilWithLegsId != null ?
+                        //                                (x.allCivilInst.civilWithLegs.Name.ToLower() == RadioAntennaCivilName.ToLower()) : false,
+                        //                                    x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib);
+
+                        //                    if (CheckRadioAntennaCivilName == null)
+                        //                    {
+                        //                        RadioAntennaTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
+                        //                                $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                            SheetName = "Radio Antenna info",
+                        //                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+
+                        //                    RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
+                        //                    RadioAntennaAllCivilSteelSupportCategoryId = CheckRadioAntennaCivilName.allCivilInst.civilWithLegs.CivilWithLegsLib.civilSteelSupportCategoryId;
+
+                        //                    TLIleg CheckRadioAntennaLegName = _unitOfWork.LegRepository
+                        //                        .GetWhereFirst(x => x.CiviLegName.ToLower() == RadioAntennaLegName.ToLower() &&
+                        //                            x.CivilWithLegInstId == CheckRadioAntennaCivilName.allCivilInst.civilWithLegsId.Value);
+
+                        //                    if (CheckRadioAntennaLegName != null)
+                        //                    {
+                        //                        RadioAntennaLegId = CheckRadioAntennaLegName.Id;
+                        //                    }
+                        //                }
+                        //                else if (RadioAntenaaCivilType.ToLower() == "Mast".ToLower())
+                        //                {
+                        //                    string RadioAntennaMastCategoryName = Helpers.Constants.CivilWithoutLegCategories.Mast.ToString();
+
+                        //                    TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
+                        //                        .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                        //                            x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
+                        //                            x.allCivilInst.civilWithoutLegId != null ?
+                        //                                (x.allCivilInst.civilWithoutLeg.Name.ToLower() == RadioAntennaCivilName.ToLower() &&
+                        //                                x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == RadioAntennaMastCategoryName.ToLower()) : false,
+                        //                                    x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
+                        //                                    x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
+
+                        //                    if (CheckRadioAntennaCivilName == null)
+                        //                    {
+                        //                        RadioAntennaTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
+                        //                                $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                            SheetName = "Radio Antenna info",
+                        //                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+
+                        //                    RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
+                        //                    RadioAntennaAllCivilSteelSupportCategoryId = CheckRadioAntennaCivilName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
+                        //                }
+                        //                else if (RadioAntenaaCivilType.ToLower() == "Monopole".ToLower())
+                        //                {
+                        //                    string RadioAntennaMonopoleCategoryName = Helpers.Constants.CivilWithoutLegCategories.Monopole.ToString();
+
+                        //                    TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
+                        //                        .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                        //                            x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
+                        //                            x.allCivilInst.civilWithoutLegId != null ?
+                        //                                (x.allCivilInst.civilWithoutLeg.Name.ToLower() == RadioAntennaCivilName.ToLower() &&
+                        //                                x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory.Name.ToLower() == RadioAntennaMonopoleCategoryName.ToLower()) : false,
+                        //                                    x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
+                        //                                    x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory);
+
+                        //                    if (CheckRadioAntennaCivilName == null)
+                        //                    {
+                        //                        RadioAntennaTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
+                        //                                $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                            SheetName = "Radio Antenna info",
+                        //                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+
+                        //                    RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
+                        //                    RadioAntennaAllCivilSteelSupportCategoryId = CheckRadioAntennaCivilName.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilSteelSupportCategoryId;
+                        //                }
+                        //                else if (RadioAntenaaCivilType.ToLower() == "Non Steel".ToLower())
+                        //                {
+                        //                    TLIcivilSiteDate CheckRadioAntennaCivilName = _unitOfWork.CivilSiteDateRepository
+                        //                        .GetIncludeWhereFirst(x => !x.Dismantle && !x.allCivilInst.Draft &&
+                        //                            x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() &&
+                        //                            x.allCivilInst.civilNonSteelId != null ?
+                        //                                (x.allCivilInst.civilNonSteel.Name.ToLower() == RadioAntennaCivilName.ToLower()) : false,
+                        //                                    x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
+
+                        //                    if (CheckRadioAntennaCivilName == null)
+                        //                    {
+                        //                        RadioAntennaTransaction.Dispose();
+
+                        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                        {
+                        //                            CreatedAt = DateTime.Now,
+                        //                            ErrMsg = $"(Civil Steel Name) column's value: ({RadioAntennaCivilName}) doesn't exist in" +
+                        //                                $"this site: ({RadioAntenna_SiteCodeAfterCheck})",
+                        //                            IsDeleted = false,
+                        //                            IsLib = false,
+                        //                            RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                            SheetName = "Radio Antenna info",
+                        //                            UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                        };
+
+                        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                        _unitOfWork.SaveChanges();
+
+                        //                        continue;
+                        //                    }
+
+                        //                    RadioAntennaAllCivilInstId = CheckRadioAntennaCivilName.allCivilInstId;
+                        //                }
+                        //                else
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(type) column's value must be one of those values (Tower, Mast, Monopole, Non Steel)",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilSiteDate.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+
+                        //            if (!string.IsNullOrEmpty(RadioAntennaSideArmName))
+                        //            {
+                        //                TLIcivilLoads CheckRadioAntennaSideArm = _unitOfWork.CivilLoadsRepository
+                        //                    .GetIncludeWhereFirst(x => !x.Dismantle && x.allCivilInstId == RadioAntennaAllCivilInstId &&
+                        //                        x.SiteCode.ToLower() == RadioAntenna_SiteCodeAfterCheck.ToLower() && x.sideArmId != null ?
+                        //                        (!x.sideArm.Draft && x.sideArm.Name.ToLower() == RadioAntennaSideArmName.ToLower()) : false);
+
+                        //                if (CheckRadioAntennaSideArm == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Side Arm Name) column's value: ({RadioAntennaSideArmName}) doesn't exist in this site: ({RadioAntenna_SiteCodeAfterCheck}) " +
+                        //                            $"nor on this tower: ({RadioAntennaCivilName})",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIcivilLoads.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntennaSideArmId = CheckRadioAntennaSideArm.sideArmId;
+                        //            }
+
+                        //            //
+                        //            // Installation Information..
+                        //            //
+
+                        //            string RadioAntennaSerialNumber = RadioAntannaDataTable.Rows[j]["Serial Number"].ToString();
+
+                        //            string RadioAntennaMechanicalTiltString = RadioAntannaDataTable.Rows[j]["Ant-Mechanical-Tilt"].ToString();
+                        //            float? RadioAntennaMechanicalTilt = null;
+                        //            if (!string.IsNullOrEmpty(RadioAntennaMechanicalTiltString))
+                        //            {
+                        //                CheckParser = float.TryParse(RadioAntennaMechanicalTiltString, out FloatParser);
+
+                        //                if (CheckParser)
+                        //                    RadioAntennaMechanicalTilt = FloatParser;
+
+                        //                else
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Ant-Mechanical-Tilt) coulumn's value: ({RadioAntennaMechanicalTiltString}) must be a number",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+
+                        //            string RadioAntennaHBAString = RadioAntannaDataTable.Rows[j]["HBA From Land"].ToString();
+                        //            float RadioAntennaHBA = 0;
+                        //            if (!string.IsNullOrEmpty(RadioAntennaHBAString))
+                        //            {
+                        //                CheckParser = float.TryParse(RadioAntennaHBAString, out FloatParser);
+
+                        //                if (CheckParser)
+                        //                    RadioAntennaHBA = FloatParser;
+
+                        //                else
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(HBA From Land) coulumn's value: ({RadioAntennaHBAString}) must be a number",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+                        //            }
+
+                        //            // Owner
+                        //            string RadioAntennaOwnerName = RadioAntannaDataTable.Rows[j]["Ant-Owner"].ToString();
+                        //            int? RadioAntennaOwnerId = null;
+
+                        //            if (!string.IsNullOrEmpty(RadioAntennaOwnerName))
+                        //            {
+                        //                TLIowner CheckRadioAntennaOwnerIfExist = _unitOfWork.OwnerRepository
+                        //                    .GetWhereFirst(x => x.OwnerName.ToLower() == RadioAntennaOwnerName.ToLower() && !x.Deleted);
+
+                        //                if (CheckRadioAntennaOwnerIfExist == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Ant-Owner) coulumn's value: ({RadioAntennaOwnerName}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIowner.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntennaOwnerId = CheckRadioAntennaOwnerIfExist.Id;
+                        //            }
+
+                        //            // Installation Place..
+                        //            string RadioAntennaInstallationPlace = RadioAntannaDataTable.Rows[j]["Ant-installation place"].ToString();
+                        //            int? RadioAntennaInstallationPlaceId = null;
+
+                        //            if (!string.IsNullOrEmpty(RadioAntennaInstallationPlace))
+                        //            {
+                        //                TLIinstallationPlace CheckRadioAntennaInstallationPlaceIfExist = _unitOfWork.InstallationPlaceRepository
+                        //                    .GetWhereFirst(x => x.Name.ToLower() == RadioAntennaInstallationPlace.ToLower() && !x.Deleted);
+
+                        //                if (CheckRadioAntennaInstallationPlaceIfExist == null)
+                        //                {
+                        //                    RadioAntennaTransaction.Dispose();
+
+                        //                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                    {
+                        //                        CreatedAt = DateTime.Now,
+                        //                        ErrMsg = $"(Ant-installation place) coulumn's value: ({RadioAntennaInstallationPlace}) doesn't exist in TLIS",
+                        //                        IsDeleted = false,
+                        //                        IsLib = false,
+                        //                        RefTable = Helpers.Constants.TablesNames.TLIinstallationPlace.ToString(),
+                        //                        SheetName = "Radio Antenna info",
+                        //                        UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                    };
+
+                        //                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    continue;
+                        //                }
+
+                        //                RadioAntennaInstallationPlaceId = CheckRadioAntennaInstallationPlaceIfExist.Id;
+                        //            }
+
+                        //            //TLIradioAntenna NewRadioAntennaEntity = new TLIradioAntenna()
+                        //            //{
+                        //            //    Name = RadioAntennaName,
+                        //            //    radioAntennaLibraryId = RadioAntennaLibraryId,
+                        //            //    Notes = RadioAntannaDataTable.Rows[j]["Note"].ToString(),
+                        //            //    HBASurface = RadioAntannaDataTable.Rows[j]["HBA From Surface"].ToString(),
+                        //            //    HeightBase = RadioAntennaHeightBase,
+                        //            //    Azimuth = RadioAntennaAzimuth,
+                        //            //    SerialNumber = RadioAntennaSerialNumber,
+                        //            //    MechanicalTilt = RadioAntennaMechanicalTilt,
+                        //            //    HBA = RadioAntennaHBA,
+                        //            //    ownerId = RadioAntennaOwnerId,
+                        //            //    installationPlaceId = RadioAntennaInstallationPlaceId
+                        //            //};
+
+                        //            //_unitOfWork.RadioAntennaRepository.Add(NewRadioAntennaEntity);
+                        //            //_unitOfWork.SaveChanges();
+
+                        //            //
+                        //            // Dynamic Attribute..
+                        //            //
+
+                        //            List<TLIdynamicAttInstValue> RadioAntennaDynamicValues = new List<TLIdynamicAttInstValue>();
+
+                        //            foreach (TLIdynamicAtt MissedAttribute in RadioAntennaMissedAttributes)
+                        //            {
+                        //                if (!string.IsNullOrEmpty(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString()))
+                        //                {
+                        //                    //TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
+                        //                    //{
+                        //                    //    tablesNamesId = RadioAntennaTableNameId,
+                        //                    //    disable = false,
+                        //                    //    DynamicAttId = MissedAttribute.Id,
+                        //                    //    InventoryId = NewRadioAntennaEntity.Id
+                        //                    //};
+
+                        //                    if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
+                        //                        MissedAttributeValue.ValueString = RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString();
+                        //                    else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
+                        //                        MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
+                        //                    {
+                        //                        double DoubleParser = 0;
+
+                        //                        CheckParser = double.TryParse(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
+
+                        //                        if (CheckParser)
+                        //                            MissedAttributeValue.ValueDouble = DoubleParser;
+
+                        //                        else
+                        //                        {
+                        //                            RadioAntennaTransaction.Dispose();
+
+                        //                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                            {
+                        //                                CreatedAt = DateTime.Now,
+                        //                                ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({RadioAntannaDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
+                        //                                IsDeleted = false,
+                        //                                IsLib = false,
+                        //                                RefTable = Helpers.Constants.TablesNames.TLIdynamicAtt.ToString(),
+                        //                                SheetName = "Radio Antenna info",
+                        //                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                            };
+
+                        //                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                            _unitOfWork.SaveChanges();
+
+                        //                            continue;
+                        //                        }
+                        //                    }
+                        //                    else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
+                        //                    {
+                        //                        bool BooleanParser = false;
+
+                        //                        CheckParser = bool.TryParse(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
+
+                        //                        if (CheckParser)
+                        //                            MissedAttributeValue.ValueBoolean = BooleanParser;
+
+                        //                        else
+                        //                        {
+                        //                            RadioAntennaTransaction.Dispose();
+
+                        //                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                            {
+                        //                                CreatedAt = DateTime.Now,
+                        //                                ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({RadioAntannaDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
+                        //                                IsDeleted = false,
+                        //                                IsLib = false,
+                        //                                RefTable = Helpers.Constants.TablesNames.TLIdynamicAtt.ToString(),
+                        //                                SheetName = "Radio Antenna info",
+                        //                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                            };
+
+                        //                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                            _unitOfWork.SaveChanges();
+
+                        //                            continue;
+                        //                        }
+                        //                    }
+                        //                    else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
+                        //                    {
+                        //                        DateTime DateTimeParser = DateTime.Now;
+
+                        //                        CheckParser = DateTime.TryParse(RadioAntannaDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
+
+                        //                        if (CheckParser)
+                        //                            MissedAttributeValue.ValueDateTime = DateTimeParser;
+
+                        //                        else
+                        //                        {
+                        //                            RadioAntennaTransaction.Dispose();
+
+                        //                            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //                            {
+                        //                                CreatedAt = DateTime.Now,
+                        //                                ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({RadioAntannaDataTable.Rows[j][MissedAttribute.Key]}) must be date",
+                        //                                IsDeleted = false,
+                        //                                IsLib = false,
+                        //                                RefTable = Helpers.Constants.TablesNames.TLIdynamicAtt.ToString(),
+                        //                                SheetName = "Radio Antenna info",
+                        //                                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //                            };
+
+                        //                            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //                            _unitOfWork.SaveChanges();
+
+                        //                            continue;
+                        //                        }
+                        //                    }
+
+                        //                    RadioAntennaDynamicValues.Add(MissedAttributeValue);
+                        //                }
+                        //            }
+
+                        //            if (RadioAntennaDynamicValues.Count() > 0)
+                        //            {
+                        //                _unitOfWork.DynamicAttInstValueRepository.AddRange(RadioAntennaDynamicValues);
+                        //                _unitOfWork.SaveChanges();
+                        //            }
+
+                        //            //
+                        //            // All Load Installation..
+                        //            //
+
+                        //            TLIallLoadInst NewRadioAntennaAlLLoadInstEntity = new TLIallLoadInst();
+
+                        //            NewRadioAntennaAlLLoadInstEntity.radioAntennaId = NewRadioAntennaEntity.Id;
+
+                        //            string RadioAntennaActiveComponent = RadioAntannaDataTable.Rows[j]["Active component"].ToString();
+                        //            NewRadioAntennaAlLLoadInstEntity.Active = true;
+
+                        //            if (!string.IsNullOrEmpty(RadioAntennaActiveComponent))
+                        //            {
+                        //                if (RadioAntennaActiveComponent.ToLower() == "Yes".ToLower())
+                        //                    NewRadioAntennaAlLLoadInstEntity.Active = false;
+                        //            }
+
+                        //            string RadioAntennaCurrentStatus = RadioAntannaDataTable.Rows[j]["Current Status"].ToString();
+                        //            if (!string.IsNullOrEmpty(RadioAntennaCurrentStatus))
+                        //            {
+                        //                TLIitemStatus CheckCurrentStatusradioAntenna = _unitOfWork.ItemStatusRepository
+                        //                    .GetWhereFirst(x => x.Name.ToLower() == RadioAntennaCurrentStatus.ToLower() && !x.Deleted);
+
+                        //                if (CheckCurrentStatusradioAntenna != null)
+                        //                    NewRadioAntennaAlLLoadInstEntity.ItemStatusId = CheckCurrentStatusradioAntenna.Id;
+
+                        //                else
+                        //                {
+                        //                    TLIitemStatus NewItemStatus = new TLIitemStatus()
+                        //                    {
+                        //                        Name = RadioAntennaCurrentStatus,
+                        //                        Active = true,
+                        //                        Deleted = false
+                        //                    };
+
+                        //                    _unitOfWork.ItemStatusRepository.Add(NewItemStatus);
+                        //                    _unitOfWork.SaveChanges();
+
+                        //                    NewRadioAntennaAlLLoadInstEntity.ItemStatusId = NewItemStatus.Id;
+                        //                }
+                        //            }
+
+                        //            _unitOfWork.AllLoadInstRepository.Add(NewRadioAntennaAlLLoadInstEntity);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            //
+                        //            // Civil Installation..
+                        //            //
+
+                        //            TLIcivilLoads NewCivilLoadsForRadioAntenna = new TLIcivilLoads();
+
+                        //            NewCivilLoadsForRadioAntenna.allLoadInstId = NewRadioAntennaAlLLoadInstEntity.Id;
+                        //            NewCivilLoadsForRadioAntenna.SiteCode = RadioAntenna_SiteCodeAfterCheck;
+                        //            NewCivilLoadsForRadioAntenna.sideArmId = RadioAntennaSideArmId;
+                        //            NewCivilLoadsForRadioAntenna.allCivilInstId = RadioAntennaAllCivilInstId;
+                        //            NewCivilLoadsForRadioAntenna.civilSteelSupportCategoryId = RadioAntennaAllCivilSteelSupportCategoryId;
+                        //            NewCivilLoadsForRadioAntenna.legId = RadioAntennaLegId;
+
+                        //            string InstallationDateString = RadioAntannaDataTable.Rows[j]["Status Date"].ToString();
+
+                        //            if (!string.IsNullOrEmpty(InstallationDateString))
+                        //            {
+                        //                DateTime DateTimeParser = DateTime.Now;
+
+                        //                CheckParser = DateTime.TryParse(InstallationDateString, out DateTimeParser);
+
+                        //                if (CheckParser)
+                        //                    NewCivilLoadsForRadioAntenna.InstallationDate = DateTimeParser;
+
+                        //                else
+                        //                    NewCivilLoadsForRadioAntenna.InstallationDate = DateTime.Now;
+                        //            }
+                        //            else
+                        //                NewCivilLoadsForRadioAntenna.InstallationDate = DateTime.Now;
+
+                        //            _unitOfWork.CivilLoadsRepository.Add(NewCivilLoadsForRadioAntenna);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            RadioAntennaTransaction.Complete();
+                        //        }
+                        //        catch (Exception err)
+                        //        {
+                        //            RadioAntennaTransaction.Dispose();
+
+                        //            TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                        //            {
+                        //                CreatedAt = DateTime.Now,
+                        //                ErrMsg = err.Message,
+                        //                IsDeleted = false,
+                        //                IsLib = false,
+                        //                RefTable = Helpers.Constants.TablesNames.TLIradioAntenna.ToString(),
+                        //                SheetName = "Radio Antenna info",
+                        //                UniqueName = $"(Antenna Name) : {RadioAntannaDataTable.Rows[j]["Antenna Name"]}"
+                        //            };
+
+                        //            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                        //            _unitOfWork.SaveChanges();
+
+                        //            continue;
+                        //        }
+                        //    }
+                        //}
 
                     ////////////////////////////////////////////////////////////
                     /////////////////// MW RFU /////////////////////////////////

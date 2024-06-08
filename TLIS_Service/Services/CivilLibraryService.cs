@@ -3806,7 +3806,7 @@ namespace TLIS_Service.Services
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     attributes.AttributesActivatedLibrary = Test;
-                    NameAttribute.Value = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
+                    NameAttribute.Value = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                 }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
@@ -3872,7 +3872,7 @@ namespace TLIS_Service.Services
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     attributes.AttributesActivatedLibrary = Test;
-                    NameAttribute.Value = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
+                    NameAttribute.Value = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                 }
  
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -3924,7 +3924,7 @@ namespace TLIS_Service.Services
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     attributes.AttributesActivatedLibrary = Test;
-                    NameAttribute.Value = db.MV_CIVIL_NONSTEEL_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
+                    NameAttribute.Value = db.MV_CIVIL_NONSTEEL_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                 }
 
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);

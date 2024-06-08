@@ -40,6 +40,7 @@ using TLIS_DAL.ViewModels.AsTypeDTOs;
 using TLIS_DAL.ViewModels.PolarityTypeDTOs;
 using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL;
+using Nancy.Extensions;
 
 namespace TLIS_Service.Services
 {
@@ -1639,36 +1640,64 @@ namespace TLIS_Service.Services
                 if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                 {
                     TLIradioAntennaLibrary RadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id);
-                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioAntennaLibrary, null).ToList();
-                   
-                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
-                    attributes.AttributesActivatedLibrary = listofAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
-                    List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                    BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
-                    if (NameAttribute != null)
+                        x.Id == Id && !x.Deleted && x.Active);
+                    if (RadioAntennaLibrary != null)
                     {
-                        BaseInstAttViews Swap = Test.ToList()[0];
-                        Test[Test.IndexOf(NameAttribute)] = Swap;
-                        Test[0] = NameAttribute;
-                        attributes.AttributesActivatedLibrary = Test;
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioAntennaLibrary, null).ToList();
+
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_RADIO_ANTENNA_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this RadioAntenna is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                //else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
-                //{
-                //    TLIradioRRULibrary RadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x =>
-                //        x.Id == Id);
+                else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
+                {
+                    TLIradioAntennaLibrary RadioRRULibrary = _unitOfWork.RadioAntennaLibraryRepository.GetIncludeWhereFirst(x =>
+                      x.Id == Id && !x.Deleted && x.Active);
+                    if (RadioRRULibrary != null)
+                    {
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioRRULibrary, null).ToList();
 
-                //    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, RadioRRULibrary, null).ToList();
-                //}
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_RADIO_RRU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this RadioRRU is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
                 //else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                 //{
                 //    TLIradioOtherLibrary RadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetWhereFirst(x =>
                 //        x.Id == Id);
 
                 //    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, RadioOtherLibrary, null).ToList();
-                //}        
+                //}
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -1851,44 +1880,44 @@ namespace TLIS_Service.Services
                                  //   _unitOfWork.TablesHistoryRepository.AddHistory(radioOther.Id, "Add", "TLIradioOtherLibrary");
                                
                             }
-                            else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString().ToLower() == TableName.ToLower())
-                            {
-                                AddRadioRRULibraryObject addRadioRRULibrary = _mapper.Map<AddRadioRRULibraryObject>(RadioLibraryViewModel);
-                                TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(addRadioRRULibrary.LibraryAttribute);
-                                if (radioRRULibrary.L_W_H_cm3 == null || radioRRULibrary.L_W_H_cm3 == "")
-                                {
-                                    radioRRULibrary.L_W_H_cm3 = radioRRULibrary.Length + "_" + radioRRULibrary.Width + "_" + radioRRULibrary.Height;
-                                }
+                            //else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString().ToLower() == TableName.ToLower())
+                            //{
+                            //    AddRadioRRULibraryObject addRadioRRULibrary = _mapper.Map<AddRadioRRULibraryObject>(RadioLibraryViewModel);
+                            //    TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(addRadioRRULibrary.LibraryAttribute);
+                            //    if (radioRRULibrary.L_W_H_cm3 == null || radioRRULibrary.L_W_H_cm3 == "")
+                            //    {
+                            //        radioRRULibrary.L_W_H_cm3 = radioRRULibrary.Length + "_" + radioRRULibrary.Width + "_" + radioRRULibrary.Height;
+                            //    }
                          
-                                string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
+                            //    string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
-                                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                            //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //        return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                                string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addRadioRRULibrary.dynamicAttribute, TableNameEntity.TableName);
+                            //    string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addRadioRRULibrary.dynamicAttribute, TableNameEntity.TableName);
 
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                            //    if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //        return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
                                
-                                var CheckModel = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Model == radioRRULibrary.Model && !x.Deleted);
-                                if (CheckModel != null)
-                                return new Response<AllItemAttributes>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            //    var CheckModel = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Model == radioRRULibrary.Model && !x.Deleted);
+                            //    if (CheckModel != null)
+                            //    return new Response<AllItemAttributes>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                             
-                                _unitOfWork.RadioRRULibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, radioRRULibrary);
-                                _unitOfWork.SaveChanges();
+                            //    _unitOfWork.RadioRRULibraryRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, radioRRULibrary);
+                            //    _unitOfWork.SaveChanges();
 
-                                dynamic LogisticalItemIds = new ExpandoObject();
-                                LogisticalItemIds = addRadioRRULibrary.LogisticalItems;
+                            //    dynamic LogisticalItemIds = new ExpandoObject();
+                            //    LogisticalItemIds = addRadioRRULibrary.LogisticalItems;
 
-                                AddLogisticalItemWithRadio(LogisticalItemIds, radioRRULibrary, TableNameEntity.Id);
+                            //    AddLogisticalItemWithRadio(LogisticalItemIds, radioRRULibrary, TableNameEntity.Id);
 
-                                //if (addRadioRRULibrary.dynamicAttribute.Count > 0)
-                                //{
-                                //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioRRULibrary.dynamicAttribute, TableNameEntity.Id, radioRRULibrary.Id);
-                                //}
-                                //_unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, "Add", "TLIradioRRULibrary");
+                            //    //if (addRadioRRULibrary.dynamicAttribute.Count > 0)
+                            //    //{
+                            //    //    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(addRadioRRULibrary.dynamicAttribute, TableNameEntity.Id, radioRRULibrary.Id);
+                            //    //}
+                            //    //_unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, "Add", "TLIradioRRULibrary");
                                 
-                            }
+                            //}
                             transaction.Complete();
                             tran.Commit();
                             return new Response<AllItemAttributes>();
@@ -1945,7 +1974,7 @@ namespace TLIS_Service.Services
                             {
                                 _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(radioAntennaLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
+                            _unitOfWork.TablesHistoryRepository.AddHistory(radioAntennaLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioAntennaLibrary.ToString().ToLower());
                             
                           
                             transaction.Complete();
@@ -1964,6 +1993,160 @@ namespace TLIS_Service.Services
                 }
             }
 
+        }
+        public Response<AddRadioRRULibraryObject> AddRadioRRULibrary(string TableName, AddRadioRRULibraryObject RadioLibraryViewModel, string connectionString, int UserId)
+        {
+            using (var con = new OracleConnection(connectionString))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    using (TransactionScope transaction = new TransactionScope())
+                    {
+                        try
+                        {
+                            string ErrorMessage = string.Empty;
+                            TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
+
+                            TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
+                            //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                            var CheckModel = _unitOfWork.RadioAntennaLibraryRepository
+                                .GetWhereFirst(x => x.Model == radioRRULibrary.Model && !x.Deleted);
+
+                            if (CheckModel != null)
+                                return new Response<AddRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            _unitOfWork.RadioRRULibraryRepository.AddWithHistory(UserId, radioRRULibrary);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = RadioLibraryViewModel.LogisticalItems;
+                            AddLogisticalItemWithCivil(UserId, LogisticalItemIds, radioRRULibrary, TableNameEntity.Id);
+
+                            if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id);
+                            }
+                            _unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioRRULibrary.ToString().ToLower());
+
+
+                            transaction.Complete();
+                            tran.Commit();
+
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+
+                            return new Response<AddRadioRRULibraryObject>();
+                        }
+                        catch (Exception err)
+                        {
+                            tran.Rollback();
+                            return new Response<AddRadioRRULibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
+            }
+
+        }
+        public Response<GetEnableAttribute> GetRadioRRULibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "RadioRRULibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MV_RADIO_RRU_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MV_RADIO_RRU_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Notes = x.Notes,
+                        Height = x.Height,
+                        Weight = x.Weight,
+                        Width = x.Width,
+                        Depth = x.Depth,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        Length = x.Length,
+                        Type = x.Type,
+                        Band = x.Band,
+                        ChannelBandwidth = x.ChannelBandwidth,
+                        L_W_H_cm3 = x.L_W_H_cm3,
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
         }
         #region Helper Methods
         public string CheckDependencyValidationForRadioTypes(object Input, string RadioType)
@@ -3048,15 +3231,13 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
 
                         TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
-                        var RadioAntenna = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioAntennaLibrary.Id);
-                        radioAntennaLibrary.Active = RadioAntenna.Active;
-                        radioAntennaLibrary.Deleted = RadioAntenna.Deleted;
+                        var OldRadioAntenna = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioAntennaLibrary.Id);
                         var CheckModel = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == radioAntennaLibrary.Model.ToLower() &&
                             x.Id != radioAntennaLibrary.Id && !x.Deleted);
                         if (CheckModel != null)
                          return new Response<EditRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                         
-                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, RadioAntenna, radioAntennaLibrary);
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntenna, radioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
                         //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
                         //if (!string.IsNullOrEmpty(CheckDependency))
@@ -3131,7 +3312,7 @@ namespace TLIS_Service.Services
 
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, UserId, resultId, RadioAntenna.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, UserId, resultId, radioAntennaLibrary.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -3143,6 +3324,115 @@ namespace TLIS_Service.Services
                 catch (Exception err)
                 {
                     return new Response<EditRadioAntennaLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public async Task<Response<EditRadioRRULibraryObject>> EditRadioRRULibrary(string TableName, EditRadioRRULibraryObject RadioLibraryViewModel, int UserId, string connectionString)
+        {
+            using (TransactionScope transaction =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+                    int resultId = 0;
+                    var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
+
+                    TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
+                    var OldRadioRRU= _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioRRULibrary.Id);
+
+                    var CheckModel = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Model.ToLower() == radioRRULibrary.Model.ToLower() &&
+                        x.Id != radioRRULibrary.Id && !x.Deleted);
+                    if (CheckModel != null)
+                        return new Response<EditRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRU, radioRRULibrary);
+                    await _unitOfWork.SaveChangesAsync();
+                    //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
+                    //if (!string.IsNullOrEmpty(CheckDependency))
+                    //{
+                    //    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    //string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
+                    //if (!string.IsNullOrEmpty(CheckValidation))
+                    //{
+                    //    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    dynamic LogisticalItemIds = new ExpandoObject();
+                    LogisticalItemIds = RadioLibraryViewModel;
+
+                    AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+                    var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == radioRRULibrary.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckVendorId != null)
+                        OldLogisticalItemIds.Vendor = Convert.ToInt32(CheckVendorId.logisticalId);
+
+                    var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == radioRRULibrary.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckSupplierId != null)
+                        OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
+
+                    var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == radioRRULibrary.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckDesignerId != null)
+                        OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
+
+
+                    var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == radioRRULibrary.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckManufacturerId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+
+                    var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                 .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                     x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == radioRRULibrary.Id, x => x.logistical,
+                         x => x.logistical.logisticalType);
+
+                    if (CheckContractorId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == radioRRULibrary.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+
+                    EditLogisticalItemss(UserId, RadioLibraryViewModel.LogisticalItems, radioRRULibrary, TableNameEntity.Id, OldLogisticalItemIds);
+
+                    if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
+                    {
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id, UserId, resultId, radioRRULibrary.Id);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                    return new Response<EditRadioRRULibraryObject>();
+                }
+                catch (Exception err)
+                {
+                    return new Response<EditRadioRRULibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
         }
@@ -4299,29 +4589,7 @@ namespace TLIS_Service.Services
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                 if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIradioAntennaLibrary.ToString(), null, null)
-                    .Select(FKitem =>
-                    {
-                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                        {
-                            switch (FKitem.Label.ToLower())
-                            {
-                                case "polaritytype_name":
-                                    FKitem.Options = _unitOfWork.PolarityTypeRepository
-                                        .GetWhere(x => !x.Delete && !x.Disable)
-                                        .Select(x => _mapper.Map<PolarityTypeViewModel>(x))
-                                        .ToList();
-                                    break;
-                                case "astype_name":
-                                    FKitem.Options = _unitOfWork.AsTypeRepository
-                                        .GetWhere(x => !x.Delete && !x.Disable)
-                                        .Select(x => _mapper.Map<AsTypeViewModel>(x))
-                                        .ToList();
-                                    break;
-                            }
-                        }
-                        return FKitem;
-                    }).ToList();
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIradioAntennaLibrary.ToString(), null, null);
                     var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
@@ -4363,11 +4631,45 @@ namespace TLIS_Service.Services
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(), null, null).ToList();
-                    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio"));
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIradioRRULibrary.ToString(), null, null);
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio");
+                    attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
-                   
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                   .GetDynamicLibAtt(TableNameEntity.Id, null)
+                   .Select(DynamicAttribute =>
+                   {
+                       TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                       if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                       {
+                           switch (DynamicAttribute.DataType.ToLower())
+                           {
+                               case "string":
+                                   DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                                   break;
+                               case "int":
+                                   DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "double":
+                                   DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "bool":
+                                   DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "datetime":
+                                   DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                           }
+                       }
+                       else
+                       {
+                           DynamicAttribute.Value = " ".Split(' ')[0];
+                       }
+                       return DynamicAttribute;
+                   });
+
+                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
+
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                 {

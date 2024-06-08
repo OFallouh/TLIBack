@@ -454,79 +454,89 @@ namespace TLIS_Service.Services
                 else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                 {
                     TLImwDishLibrary MWDishLibrary = _unitOfWork.MW_DishLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id, x => x.asType, x => x.polarityType);
-
-         
-                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWDishLibrary, null).ToList();
-                    listofAttributesActivated
-                        .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
-                        .ToList()
-                        .Select(FKitem =>
-                        {
-                            if (FKitem.Label.ToLower() == "polaritytype_name")
-                            {
-                                FKitem.Options = _mapper.Map<List<PolarityTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<PolarityTypeViewModel>(MWDishLibrary.polarityType);
-                            }
-                            else if (FKitem.Label.ToLower() == "astype_name")
-                            {
-                                FKitem.Options = _mapper.Map<List<AsTypeViewModel>>(_unitOfWork.AsTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<AsTypeViewModel>(MWDishLibrary.asType);
-                            }
-
-                            return FKitem;
-                        })
-                        .ToList();
-                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
-                    attributes.AttributesActivatedLibrary = listofAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
-                    List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                    BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
-                    if (NameAttribute != null)
+                        x.Id == Id && x.Active && !x.Deleted, x => x.asType, x => x.polarityType);
+                    if (MWDishLibrary != null)
                     {
-                        BaseInstAttViews Swap = Test.ToList()[0];
-                        Test[Test.IndexOf(NameAttribute)] = Swap;
-                        Test[0] = NameAttribute;
-                        attributes.AttributesActivatedLibrary = Test;
-                        NameAttribute.Value = db.MV_MWDISH_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
-                    }
 
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWDishLibrary, null).ToList();
+                        listofAttributesActivated
+                            .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                            .ToList()
+                            .Select(FKitem =>
+                            {
+                                if (FKitem.Label.ToLower() == "polaritytype_name")
+                                {
+                                    FKitem.Options = _mapper.Map<List<PolarityTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                    FKitem.Value = _mapper.Map<PolarityTypeViewModel>(MWDishLibrary.polarityType);
+                                }
+                                else if (FKitem.Label.ToLower() == "astype_name")
+                                {
+                                    FKitem.Options = _mapper.Map<List<AsTypeViewModel>>(_unitOfWork.AsTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                    FKitem.Value = _mapper.Map<AsTypeViewModel>(MWDishLibrary.asType);
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_MWDISH_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWDISH is not found", (int)Helpers.Constants.ApiReturnCode.success);
+                    }
 
                 }
                 else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                 {
                     TLImwODULibrary MWODUULibrary = _unitOfWork.MW_ODULibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id, x => x.parity);
-
-                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWODUULibrary, null).ToList();
-                    listofAttributesActivated
-                        .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
-                        .ToList()
-                        .Select(FKitem =>
-                        {
-                            if (FKitem.Label.ToLower() == "parity_name")
-                            {
-                                FKitem.Options = _mapper.Map<List<ParityViewModel>>(_unitOfWork.ParityRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<ParityViewModel>(MWODUULibrary.parity);
-                            }
-                           
-                            return FKitem;
-                        })
-                        .ToList();
-                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
-                    attributes.AttributesActivatedLibrary = listofAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
-                    List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                    BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
-                    if (NameAttribute != null)
+                        x.Id == Id && x.Active && !x.Deleted, x => x.parity);
+                    if (MWODUULibrary != null)
                     {
-                        BaseInstAttViews Swap = Test.ToList()[0];
-                        Test[Test.IndexOf(NameAttribute)] = Swap;
-                        Test[0] = NameAttribute;
-                        attributes.AttributesActivatedLibrary = Test;
-                        NameAttribute.Value = db.MV_MWODU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
-                    }
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWODUULibrary, null).ToList();
+                        listofAttributesActivated
+                            .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                            .ToList()
+                            .Select(FKitem =>
+                            {
+                                if (FKitem.Label.ToLower() == "parity_name")
+                                {
+                                    FKitem.Options = _mapper.Map<List<ParityViewModel>>(_unitOfWork.ParityRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                    FKitem.Value = _mapper.Map<ParityViewModel>(MWODUULibrary.parity);
+                                }
 
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_MWODU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWODU is not  found", (int)Helpers.Constants.ApiReturnCode.success);
+                    }
                 }
                 else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                 {

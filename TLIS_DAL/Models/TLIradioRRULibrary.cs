@@ -14,15 +14,16 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         // [Index(IsUnique = true)]
         public string Model { get; set; }
-        public string Type { get; set; }
-        public string Band { get; set; }
-        public float? ChannelBandwidth { get; set; }
-        public float? Weight { get; set; }
-        public string L_W_H_cm3 { get; set; }
+        public string? Type { get; set; }
+        public string? Band { get; set; }
+        public float ChannelBandwidth { get; set; }
+        public float Weight { get; set; }
+        public string? L_W_H_cm3 { get; set; }
         public float Length { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
+        public float Depth { get; set; }
         public float SpaceLibrary { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }

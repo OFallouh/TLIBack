@@ -176,9 +176,9 @@ namespace TLIS_Service.Services
 
         }
         //Function to add dynamic intallation attributed value
-        public Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string ConnectionString)
+        public Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string connectionString)
         {
-            using (var con = new OracleConnection(ConnectionString))
+            using (var con = new OracleConnection(connectionString))
             {
                 con.Open();
                 using (var tran = con.BeginTransaction())
@@ -393,6 +393,146 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             //FOR ENTITIES
                             transaction.Complete();
+                            if (addDependencyInstViewModel.TableName == "TLIcivilWithLegs")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIcivilWithoutLeg")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIcivilNonSteel")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIcivilNonSteelLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIcivilWithLegLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIcivilWithoutLegLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIsideArm")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIsideArmLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLIradioAntenna")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+                            }
+                            //else if (addDependencyInstViewModel.TableName == "TLIradioOther")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIradioRRU")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIradioOtherLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            else if (addDependencyInstViewModel.TableName == "TLIradioAntennaLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                            }
+                            //else if (addDependencyInstViewModel.TableName == "TLIradioRRULibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLImwBU")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLImwRFU")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            else if (addDependencyInstViewModel.TableName == "TLImwDish")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLImwODU")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
+                            }
+                            //else if (addDependencyInstViewModel.TableName == "TLImwOther")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLImwBULibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLImwRFULibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            else if (addDependencyInstViewModel.TableName == "TLImwDishLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyInstViewModel.TableName == "TLImwODULibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                            }
+                            //else if (addDependencyInstViewModel.TableName == "TLImwOtherLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIpower")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIpowerLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIloadOther")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIloadOtherLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIcabinet")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIsolar")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIgenerator")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIsolarLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIgeneratorLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIcabinetPowerLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyInstViewModel.TableName == "TLIcabinetTelecomLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
                             return new Response<AddDependencyInstViewModel>();
                         }
                         catch (Exception err)
@@ -412,8 +552,8 @@ namespace TLIS_Service.Services
                 if (CategoryId == null)
                 {
                     List<DependencyColumn> Data = _unitOfWork.AttributeActivatedRepository
-                        .GetWhere(x => x.Tabel.ToLower() == TableName.ToLower() && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted" 
-                         && x.Key.ToLower() != "model"&&
+                        .GetWhere(x => x.Tabel.ToLower() == TableName.ToLower() && x.Key.ToLower() != "id" && x.Key.ToLower() != "active" && x.Key.ToLower() != "deleted"
+                         && x.Key.ToLower() != "model" &&
                         !x.Key.ToLower().Contains("id"))
                         .Select(x => new DependencyColumn(x.Label, x.DataType, false, null, x.Id)).ToList();
 
@@ -7734,9 +7874,9 @@ namespace TLIS_Service.Services
             }
         }
         #endregion
-        public Response<AddDependencyViewModel> AddDynamicAtts(AddDependencyViewModel addDependencyViewModel, string ConnectionString)
+        public Response<AddDependencyViewModel> AddDynamicAtts(AddDependencyViewModel addDependencyViewModel, string connectionString)
         {
-            using (var con = new OracleConnection(ConnectionString))
+            using (var con = new OracleConnection(connectionString))
             {
                 con.Open();
                 using (var tran = con.BeginTransaction())
@@ -8079,6 +8219,146 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
 
+                            if (addDependencyViewModel.TableName == "TLIcivilWithLegs")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIcivilWithoutLeg")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIcivilNonSteel")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIcivilNonSteelLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIcivilWithLegLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIcivilWithoutLegLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIsideArm")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIsideArmLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLIradioAntenna")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+                            }
+                            //else if (addDependencyViewModel.TableName == "TLIradioOther")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIradioRRU")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIradioOtherLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            else if (addDependencyViewModel.TableName == "TLIradioAntennaLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                            }
+                            //else if (addDependencyViewModel.TableName == "TLIradioRRULibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLImwBU")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLImwRFU")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            else if (addDependencyViewModel.TableName == "TLImwDish")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLImwODU")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
+                            }
+                            //else if (addDependencyViewModel.TableName == "TLImwOther")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLImwBULibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLImwRFULibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            else if (addDependencyViewModel.TableName == "TLImwDishLibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                            }
+                            else if (addDependencyViewModel.TableName == "TLImwODULibrary")
+                            {
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                            }
+                            //else if (addDependencyViewModel.TableName == "TLImwOtherLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIpower")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIpowerLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIloadOther")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIloadOtherLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIcabinet")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIsolar")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIgenerator")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIsolarLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIgeneratorLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIcabinetPowerLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
+                            //else if (addDependencyViewModel.TableName == "TLIcabinetTelecomLibrary")
+                            //{
+                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                            //}
                             return new Response<AddDependencyViewModel>();
                         }
                         catch (Exception err)
@@ -8251,52 +8531,85 @@ namespace TLIS_Service.Services
             }
         }
         //Function Update dynamic attribute
-        public async Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel DynamicAttViewModel)
+        public async Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel DynamicAttViewModel, string connectionString)
         {
-            try
+            using (TransactionScope transaction = new TransactionScope())
             {
-                TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).AsQueryable().AsNoTracking()
-                    .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttViewModel.Id);
-
-                if (OldDynamicAttData.DataTypeId != DynamicAttViewModel.DataTypeId)
+                try
                 {
-                    TLIdataType NewDataType = _unitOfWork.DataTypeRepository
-                        .GetWhereFirst(x => x.Id == DynamicAttViewModel.DataTypeId.Value);
+                    TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).AsQueryable().AsNoTracking()
+                        .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttViewModel.Id);
 
-                    if (NewDataType.Name.ToLower() == "string".ToLower())
+                    if (OldDynamicAttData.DataTypeId != DynamicAttViewModel.DataTypeId)
                     {
-                        if (OldDynamicAttData.LibraryAtt)
-                        {
-                            List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id).ToList();
+                        TLIdataType NewDataType = _unitOfWork.DataTypeRepository
+                            .GetWhereFirst(x => x.Id == DynamicAttViewModel.DataTypeId.Value);
 
-                            if (OldDynamicAttData.DataType.Name.ToLower() == "double".ToLower())
+                        if (NewDataType.Name.ToLower() == "string".ToLower())
+                        {
+                            if (OldDynamicAttData.LibraryAtt)
                             {
-                                foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id).ToList();
+
+                                if (OldDynamicAttData.DataType.Name.ToLower() == "double".ToLower())
                                 {
-                                    if (DynamicAttValue.ValueDouble != null)
+                                    foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                    {
+                                        if (DynamicAttValue.ValueDouble != null)
+                                        {
+                                            DynamicAttValue.ValueString = DynamicAttValue.ValueDouble.ToString();
+                                            DynamicAttValue.ValueDouble = null;
+                                        }
+                                    }
+                                }
+                                else if (OldDynamicAttData.DataType.Name.ToLower() == "bool".ToLower())
+                                {
+                                    foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                    {
+                                        if (DynamicAttValue.ValueBoolean != null)
+                                        {
+                                            DynamicAttValue.ValueString = DynamicAttValue.ValueBoolean.ToString();
+                                            DynamicAttValue.ValueBoolean = null;
+                                        }
+                                    }
+                                }
+                                else if (OldDynamicAttData.DataType.Name.ToLower() == "datetime".ToLower())
+                                {
+                                    foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                    {
+                                        if (DynamicAttValue.ValueDateTime != null)
+                                        {
+                                            DynamicAttValue.ValueString = DynamicAttValue.ValueDateTime.ToString();
+                                            DynamicAttValue.ValueDateTime = null;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id).ToList();
+
+                                if (OldDynamicAttData.DataType.Name.ToLower() == "double".ToLower())
+                                {
+                                    foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
                                     {
                                         DynamicAttValue.ValueString = DynamicAttValue.ValueDouble.ToString();
                                         DynamicAttValue.ValueDouble = null;
                                     }
                                 }
-                            }
-                            else if (OldDynamicAttData.DataType.Name.ToLower() == "bool".ToLower())
-                            {
-                                foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                else if (OldDynamicAttData.DataType.Name.ToLower() == "bool".ToLower())
                                 {
-                                    if (DynamicAttValue.ValueBoolean != null)
+                                    foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
                                     {
                                         DynamicAttValue.ValueString = DynamicAttValue.ValueBoolean.ToString();
                                         DynamicAttValue.ValueBoolean = null;
                                     }
                                 }
-                            }
-                            else if (OldDynamicAttData.DataType.Name.ToLower() == "datetime".ToLower())
-                            {
-                                foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                else if (OldDynamicAttData.DataType.Name.ToLower() == "datetime".ToLower())
                                 {
-                                    if (DynamicAttValue.ValueDateTime != null)
+                                    foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
                                     {
                                         DynamicAttValue.ValueString = DynamicAttValue.ValueDateTime.ToString();
                                         DynamicAttValue.ValueDateTime = null;
@@ -8304,155 +8617,267 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        else
+                        else if (NewDataType.Name.ToLower() == "double".ToLower())
                         {
-                            List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id).ToList();
+                            if (OldDynamicAttData.LibraryAtt)
+                            {
+                                List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
+                                        !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
 
-                            if (OldDynamicAttData.DataType.Name.ToLower() == "double".ToLower())
-                            {
-                                foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
+                                foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
                                 {
-                                    DynamicAttValue.ValueString = DynamicAttValue.ValueDouble.ToString();
-                                    DynamicAttValue.ValueDouble = null;
+                                    DynamicAttValue.ValueDouble = double.Parse(DynamicAttValue.ValueString);
+                                    DynamicAttValue.ValueString = null;
                                 }
                             }
-                            else if (OldDynamicAttData.DataType.Name.ToLower() == "bool".ToLower())
+                            else
                             {
+                                List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
+                                        !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
+
                                 foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
                                 {
-                                    DynamicAttValue.ValueString = DynamicAttValue.ValueBoolean.ToString();
-                                    DynamicAttValue.ValueBoolean = null;
-                                }
-                            }
-                            else if (OldDynamicAttData.DataType.Name.ToLower() == "datetime".ToLower())
-                            {
-                                foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
-                                {
-                                    DynamicAttValue.ValueString = DynamicAttValue.ValueDateTime.ToString();
-                                    DynamicAttValue.ValueDateTime = null;
+                                    DynamicAttValue.ValueDouble = double.Parse(DynamicAttValue.ValueString);
+                                    DynamicAttValue.ValueString = null;
                                 }
                             }
                         }
+                        else if (NewDataType.Name.ToLower() == "bool".ToLower())
+                        {
+                            if (OldDynamicAttData.LibraryAtt)
+                            {
+                                List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
+                                        !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
+
+                                foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                {
+                                    DynamicAttValue.ValueBoolean = bool.Parse(DynamicAttValue.ValueString);
+                                    DynamicAttValue.ValueString = null;
+                                }
+                            }
+                            else
+                            {
+                                List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
+                                        !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
+
+                                foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
+                                {
+                                    DynamicAttValue.ValueBoolean = bool.Parse(DynamicAttValue.ValueString);
+                                    DynamicAttValue.ValueString = null;
+                                }
+                            }
+                        }
+                        else if (NewDataType.Name.ToLower() == "datetime".ToLower())
+                        {
+                            if (OldDynamicAttData.LibraryAtt)
+                            {
+                                List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
+                                        !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
+
+                                foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
+                                {
+                                    DynamicAttValue.ValueDateTime = DateTime.Parse(DynamicAttValue.ValueString);
+                                    DynamicAttValue.ValueString = null;
+                                }
+                            }
+                            else
+                            {
+                                List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
+                                    .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
+                                        !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
+
+                                foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
+                                {
+                                    DynamicAttValue.ValueDateTime = DateTime.Parse(DynamicAttValue.ValueString);
+                                    DynamicAttValue.ValueString = null;
+                                }
+                            }
+                        }
                     }
-                    else if (NewDataType.Name.ToLower() == "double".ToLower())
+
+                    TLItablesNames TableName = _unitOfWork.TablesNamesRepository
+                        .GetWhereFirst(x => x.Id == DynamicAttViewModel.tablesNamesId);
+
+                    TLIdynamicAtt CheckNameInTLIDynamic = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x =>
+                        x.Key.ToLower() == DynamicAttViewModel.Key.ToLower() && x.Id != DynamicAttViewModel.Id &&
+                        x.tablesNamesId == DynamicAttViewModel.tablesNamesId && x.CivilWithoutLegCategoryId == DynamicAttViewModel.CivilWithoutLegCategoryId,
+                            x => x.tablesNames);
+
+                    if (CheckNameInTLIDynamic != null)
+                        return new Response<DynamicAttViewModel>(true, null, null, $"This Key {DynamicAttViewModel.Key} is Already Exist", (int)Constants.ApiReturnCode.fail);
+
+                    // Validation For Dynamic Attribute Key (Can't Add New Dynamic Attribute Key If It is Already Exist in Atttribute Activated Table (TLIattributeActivated))..
+                    TLIattributeActivated CheckNameInTLIAttribute = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(x =>
+                        x.Key.ToLower() == DynamicAttViewModel.Key.ToLower() &&
+                        x.Tabel.ToLower() == TableName.TableName.ToLower());
+
+                    if (CheckNameInTLIAttribute != null)
+                        return new Response<DynamicAttViewModel>(true, null, null, $"This Key {DynamicAttViewModel.Key} is Already Exist in Table {TableName.TableName} as a Static Attribute", (int)Constants.ApiReturnCode.fail);
+
+                    //---------------------------------------------------
+
+                    TLIdynamicAtt DynamicAtt = _mapper.Map<TLIdynamicAtt>(DynamicAttViewModel);
+                    DynamicAtt.DefaultValue = OldDynamicAttData.DefaultValue;
+
+                    await _unitOfWork.DynamicAttRepository.UpdateItem(DynamicAtt);
+                    await _unitOfWork.SaveChangesAsync();
+                    transaction.Complete();
+                    if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithLegs")
                     {
-                        if (OldDynamicAttData.LibraryAtt)
-                        {
-                            List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
-                                    !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
-
-                            foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
-                            {
-                                DynamicAttValue.ValueDouble = double.Parse(DynamicAttValue.ValueString);
-                                DynamicAttValue.ValueString = null;
-                            }
-                        }
-                        else
-                        {
-                            List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
-                                    !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
-
-                            foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
-                            {
-                                DynamicAttValue.ValueDouble = double.Parse(DynamicAttValue.ValueString);
-                                DynamicAttValue.ValueString = null;
-                            }
-                        }
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
                     }
-                    else if (NewDataType.Name.ToLower() == "bool".ToLower())
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithoutLeg")
                     {
-                        if (OldDynamicAttData.LibraryAtt)
-                        {
-                            List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
-                                    !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
-
-                            foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
-                            {
-                                DynamicAttValue.ValueBoolean = bool.Parse(DynamicAttValue.ValueString);
-                                DynamicAttValue.ValueString = null;
-                            }
-                        }
-                        else
-                        {
-                            List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
-                                    !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
-
-                            foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
-                            {
-                                DynamicAttValue.ValueBoolean = bool.Parse(DynamicAttValue.ValueString);
-                                DynamicAttValue.ValueString = null;
-                            }
-                        }
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
                     }
-                    else if (NewDataType.Name.ToLower() == "datetime".ToLower())
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilNonSteel")
                     {
-                        if (OldDynamicAttData.LibraryAtt)
-                        {
-                            List<TLIdynamicAttLibValue> DynamicAttValues = _unitOfWork.DynamicAttLibRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
-                                    !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
-
-                            foreach (TLIdynamicAttLibValue DynamicAttValue in DynamicAttValues)
-                            {
-                                DynamicAttValue.ValueDateTime = DateTime.Parse(DynamicAttValue.ValueString);
-                                DynamicAttValue.ValueString = null;
-                            }
-                        }
-                        else
-                        {
-                            List<TLIdynamicAttInstValue> DynamicAttValues = _unitOfWork.DynamicAttInstValueRepository
-                                .GetWhere(x => x.DynamicAttId == DynamicAttViewModel.Id && !string.IsNullOrEmpty(x.ValueString) &&
-                                    !string.IsNullOrWhiteSpace(x.ValueString)).ToList();
-
-                            foreach (TLIdynamicAttInstValue DynamicAttValue in DynamicAttValues)
-                            {
-                                DynamicAttValue.ValueDateTime = DateTime.Parse(DynamicAttValue.ValueString);
-                                DynamicAttValue.ValueString = null;
-                            }
-                        }
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
                     }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilNonSteelLibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithLegLibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithoutLegLibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIsideArm")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIsideArmLibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIradioAntenna")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+                    }
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioOther")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioRRU")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioOtherLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLIradioAntennaLibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                    }
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioRRULibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwBU")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwRFU")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwDish")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwODU")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
+                    }
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwOther")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwBULibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwRFULibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwDishLibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                    }
+                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwODULibrary")
+                    {
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                    }
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwOtherLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIpower")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIpowerLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIloadOther")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIloadOtherLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIcabinet")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIsolar")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIgenerator")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIsolarLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIgeneratorLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIcabinetPowerLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIcabinetTelecomLibrary")
+                    //{
+                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    //}
+                    return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                 }
+                catch (Exception err)
+                {
 
-                TLItablesNames TableName = _unitOfWork.TablesNamesRepository
-                    .GetWhereFirst(x => x.Id == DynamicAttViewModel.tablesNamesId);
-
-                TLIdynamicAtt CheckNameInTLIDynamic = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x =>
-                    x.Key.ToLower() == DynamicAttViewModel.Key.ToLower() && x.Id != DynamicAttViewModel.Id &&
-                    x.tablesNamesId == DynamicAttViewModel.tablesNamesId && x.CivilWithoutLegCategoryId == DynamicAttViewModel.CivilWithoutLegCategoryId,
-                        x => x.tablesNames);
-
-                if (CheckNameInTLIDynamic != null)
-                    return new Response<DynamicAttViewModel>(true, null, null, $"This Key {DynamicAttViewModel.Key} is Already Exist", (int)Constants.ApiReturnCode.fail);
-
-                // Validation For Dynamic Attribute Key (Can't Add New Dynamic Attribute Key If It is Already Exist in Atttribute Activated Table (TLIattributeActivated))..
-                TLIattributeActivated CheckNameInTLIAttribute = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(x =>
-                    x.Key.ToLower() == DynamicAttViewModel.Key.ToLower() &&
-                    x.Tabel.ToLower() == TableName.TableName.ToLower());
-
-                if (CheckNameInTLIAttribute != null)
-                    return new Response<DynamicAttViewModel>(true, null, null, $"This Key {DynamicAttViewModel.Key} is Already Exist in Table {TableName.TableName} as a Static Attribute", (int)Constants.ApiReturnCode.fail);
-
-                //---------------------------------------------------
-
-                TLIdynamicAtt DynamicAtt = _mapper.Map<TLIdynamicAtt>(DynamicAttViewModel);
-                DynamicAtt.DefaultValue = OldDynamicAttData.DefaultValue;
-
-                await _unitOfWork.DynamicAttRepository.UpdateItem(DynamicAtt);
-                await _unitOfWork.SaveChangesAsync();
-
-                return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
-            }
-            catch (Exception err)
-            {
-
-                return new Response<DynamicAttViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+                    return new Response<DynamicAttViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+                }
             }
         }
+
+
         //Get dependency Installation attributes depened on layer name and table name 
         #region Helper Method..
         public string GetTableNameByLayer(string Layer, bool IsLibrary)

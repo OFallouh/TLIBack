@@ -45,11 +45,12 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString());
             return Ok(response);
         }
-        [HttpPost("GetRadioRRULibrariesWithEnabledAttribute")]
+        [HttpPost("GetRadioRRULibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetRadioRRULibrariesWithEnabledAttribute([FromBody] CombineFilters CombineFilters, [FromQuery]ParameterPagination parameterPagination )
+        public IActionResult GetRadioRRULibrariesEnabledAtt( )
         {
-            var response = _unitOfWorkService.RadioLibraryService.GetRadioRRULibrariesWithEnabledAttribute(CombineFilters, parameterPagination);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.RadioLibraryService.GetRadioRRULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetRadioRRULibraryById/{Id}")]
@@ -59,41 +60,78 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.RadioLibraryService.GetById(Id, Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString());
             return Ok(response);
         }
-        //[HttpPost("AddRadioRRULibrary")]
-        //[ProducesResponseType(200, Type = typeof(AddRadioRRULibraryObject))]
-        //public IActionResult AddRadioRRULibrary(AddRadioRRULibraryObject addRadioRRU)
-        //{
-        //    if (TryValidateModel(addRadioRRU, nameof(AddRadioRRULibraryObject)))
-        //    {
-        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //        var response = _unitOfWorkService.RadioLibraryService.AddRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, ConnectionString);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddRadioRRULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
-        //[HttpPost("UpdateRadioRRULibrary")]
-        //[ProducesResponseType(200, Type = typeof(EditRadioRRULibraryViewModel))]
-        //public async Task<IActionResult> UpdateRadioRRULibrary(EditRadioRRULibraryViewModel editRadioRRU)
-        //{
-        //    if (TryValidateModel(editRadioRRU, nameof(EditRadioRRULibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.RadioLibraryService.EditRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), editRadioRRU);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditRadioRRULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("AddRadioRRULibrary")]
+        [ProducesResponseType(200, Type = typeof(AddRadioRRULibraryObject))]
+        public IActionResult AddRadioRRULibrary(AddRadioRRULibraryObject addRadioRRU)
+        {
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRULibraryObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioLibraryService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, ConnectionString, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddRadioRRULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("EditRadioRRULibrary")]
+        [ProducesResponseType(200, Type = typeof(EditRadioRRULibraryObject))]
+        public async Task<IActionResult> EditRadioRRULibrary(EditRadioRRULibraryObject editRadioRRU)
+        {
+            if (TryValidateModel(editRadioRRU, nameof(EditRadioRRULibraryObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.RadioLibraryService.EditRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), editRadioRRU, userId, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditRadioRRULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [HttpPost("DisableRadioRRULibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableRadioRRULibrary(int Id)

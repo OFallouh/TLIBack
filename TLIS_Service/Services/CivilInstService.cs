@@ -3045,7 +3045,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MV_CIVIL_NONSTEEL_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
                         return new Response<ObjectInstAtts>();
                     }
 
@@ -3077,7 +3077,7 @@ namespace TLIS_Service.Services
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithLegs", x => new { x.Id }).Id;
                     TLIcivilWithLegs civilWithLegsEntity = _mapper.Map<TLIcivilWithLegs>(editCivilWithLegsInstallationObject.installationAttributes);
 
-                    var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.CivilWithLegsLib)
+                    var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.CivilWithLegsLib).ThenInclude(x=>x.structureType)
                         .FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.installationAttributes.Id);
                  
                     var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
@@ -3263,16 +3263,77 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(userId, OldValuecivilsupportdistance, civilsupportdistance);
                             _unitOfWork.SaveChanges();
                         }
-                        var legEntities = editCivilWithLegsInstallationObject.legsInfo.Select(item => new TLIleg
+                        var oldLegs = _unitOfWork.LegRepository.GetAllAsQueryable()
+                         .AsNoTracking()
+                         .Where(x => x.CivilWithLegInstId == civilWithLegsEntity.Id)
+                         .ToList();
+                        if (CivilWithLegInst.CivilWithLegsLib.structureType != null && CivilWithLegInst.CivilWithLegsLib.structureType.Name.ToLower() == "triangular")
                         {
-                            CiviLegName = civilWithLegsEntity.Name + ' ' + item.LegLetter,
-                            LegAzimuth = item.LegAzimuth,
-                            LegLetter = item.LegLetter,
-                            Notes = item.Notes,
-                            CivilWithLegInstId = civilWithLegsEntity.Id
-                        });
-                        _unitOfWork.LegRepository.AddRange(legEntities);
-                        _unitOfWork.SaveChanges();
+                            var legLetters = new[] { "a", "b", "c" };
+                            var azimuthOffsets = new[] { 0, 120, 240 };
+
+                            for (int i = 0; i < legLetters.Length; i++)
+                            {
+                                var letter = legLetters[i];
+                                var oldLeg = oldLegs.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
+                                var newLegInfo = editCivilWithLegsInstallationObject.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
+
+                                if (newLegInfo != null && oldLeg != null)
+                                {
+                                    if (i == 0 && (newLegInfo.LegAzimuth < 0 || newLegInfo.LegAzimuth > 120))
+                                    {
+                                        return new Response<ObjectInstAtts>(false, null, null, "First LegAzimuth must be between 0 and 120.", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+
+                                    var oldLegEntity = _unitOfWork.LegRepository.GetAllAsQueryable()
+                                        .AsNoTracking()
+                                        .FirstOrDefault(x => x.Id == oldLeg.Id);
+
+                                    oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} {newLegInfo.LegLetter}";
+                                    oldLeg.LegAzimuth = newLegInfo.LegAzimuth + azimuthOffsets[i];
+                                    oldLeg.LegLetter = newLegInfo.LegLetter;
+                                    oldLeg.Notes = newLegInfo.Notes;
+                                    oldLeg.CivilWithLegInstId = civilWithLegsEntity.Id;
+
+                                    _unitOfWork.LegRepository.UpdateWithHistory(userId, oldLegEntity, oldLeg);
+                                    _unitOfWork.SaveChanges();
+                                }
+                            }
+                        }
+                        if (CivilWithLegInst.CivilWithLegsLib.structureType != null && CivilWithLegInst.CivilWithLegsLib.structureType.Name.ToLower() == "square")
+                        {
+
+                            var legLetters = new[] { "a", "b", "c", "d" };
+                            var azimuthOffsets = new[] { 0, 90, 180, 270 };
+
+                            for (int i = 0; i < legLetters.Length; i++)
+                            {
+                                var letter = legLetters[i];
+                                var oldLeg = oldLegs.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
+                                var newLegInfo = editCivilWithLegsInstallationObject.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
+
+                                if (newLegInfo != null && oldLeg != null)
+                                {
+                                    if (i == 0 && (newLegInfo.LegAzimuth < 0 || newLegInfo.LegAzimuth > 90))
+                                    {
+                                        return new Response<ObjectInstAtts>(false, null, null, "First LegAzimuth must be between 0 and 90.", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+
+                                    var oldLegEntity = _unitOfWork.LegRepository.GetAllAsQueryable()
+                                        .AsNoTracking()
+                                        .FirstOrDefault(x => x.Id == oldLeg.Id);
+
+                                    oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} {newLegInfo.LegLetter}";
+                                    oldLeg.LegAzimuth = newLegInfo.LegAzimuth + azimuthOffsets[i];
+                                    oldLeg.LegLetter = newLegInfo.LegLetter;
+                                    oldLeg.Notes = newLegInfo.Notes;
+                                    oldLeg.CivilWithLegInstId = civilWithLegsEntity.Id;
+
+                                    _unitOfWork.LegRepository.UpdateWithHistory(userId, oldLegEntity, oldLeg);
+                                    _unitOfWork.SaveChanges();
+                                }
+                            }
+                        }
 
                         if (editCivilWithLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
@@ -3739,7 +3800,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MV_CIVIL_NONSTEEL_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)

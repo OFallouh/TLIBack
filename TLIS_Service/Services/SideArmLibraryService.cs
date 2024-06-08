@@ -2342,7 +2342,7 @@ namespace TLIS_Service.Services
                     Test[Test.IndexOf(NameAttribute)] = Swap;
                     Test[0] = NameAttribute;
                     attributes.AttributesActivatedLibrary = Test;
-                    NameAttribute.Value = db.MV_SIDEARM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id);
+                    NameAttribute.Value = db.MV_SIDEARM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                 }
 
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);

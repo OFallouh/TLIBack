@@ -13,19 +13,19 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public float Azimuth { get; set; }
-        public float? MechanicalTilt { get; set; }
-        public float? ElectricalTilt { get; set; }
+        public float MechanicalTilt { get; set; }
+        public float ElectricalTilt { get; set; }
         public string SerialNumber { get; set; }
-        public string HBASurface { get; set; }
-        public string Notes { get; set; }
+        public float HBASurface { get; set; }
+        public string? Notes { get; set; }
         public float HeightBase { get; set; }
         public float HeightLand { get; set; }
         public float SpaceInstallation { get; set; }
-        public string VisibleStatus { get; set; }
+        public string? VisibleStatus { get; set; }
         public TLIowner owner { get; set; }
         public int? ownerId { get; set; }
         public TLIinstallationPlace installationPlace { get; set; }
-        public int? installationPlaceId { get; set; }
+        public int installationPlaceId { get; set; }
         public TLIradioAntennaLibrary radioAntennaLibrary { get; set; }
         public int radioAntennaLibraryId { get; set; }
         public float CenterHigh { get; set; }

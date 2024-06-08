@@ -3053,8 +3053,8 @@ namespace TLIS_Service.Services
 
                         //if (!string.IsNullOrEmpty(CheckDependencyValidation))
                         //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-                        SideArm.sideArmInstallationPlaceId = SideArmInst.sideArmInstallationPlaceId;
-                        SideArm.sideArmTypeId = SideArmInst.sideArmTypeId;
+                        SideArm.sideArmInstallationPlaceId = SideArmViewModel.installationConfig.installationPlaceId;
+                        SideArm.sideArmTypeId = SideArmViewModel.installationConfig.sideArmTypeId;
                         SideArm.sideArmLibraryId = SideArmViewModel.civilType.sideArmLibraryId;
                         _unitOfWork.SideArmRepository.UpdateWithHistory(UserId, SideArmInst, SideArm);
                         _unitOfWork.SaveChanges();
@@ -3105,6 +3105,12 @@ namespace TLIS_Service.Services
                                 {
                                     CivilLoads.Leg2Id = null;
                                 }
+                            }
+                            else if (SideArmViewModel.installationConfig?.legId == null && SideArmViewModel.installationConfig?.legId.Count == 0)
+                            {
+                                CivilLoads.legId = null;
+                                CivilLoads.Leg2Id = null;
+
                             }
                             CivilLoads.allCivilInstId = AllCivilInst;
                             CivilLoads.Dismantle = false;

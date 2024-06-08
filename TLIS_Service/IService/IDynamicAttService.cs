@@ -28,7 +28,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<DynamicAttViewModel>> GetDynamicAtts(List<FilterObjectList> filters, ParameterPagination parameters);
         Response<ReturnWithFilters<DynamicAttViewModel>> GetDynamicAttsByTableName(List<FilterObjectList> filters, ParameterPagination parameters, string TableName, int? CategoryId);
         Response<DynamicAttViewModel> GetById(int Id);
-        Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel dynamicAttViewModel);
+        Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel dynamicAttViewModel,string connectionString);
         Response<DependencyColumnForAdd> GetDependencyInst(string Layer, int? CategoryId, bool IsLibrary = false);
         //Response<DynamicAttLibForAddViewModel>
         Response<DynamicAttViewModel> Disable(int RecordId);

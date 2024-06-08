@@ -161,7 +161,8 @@ namespace TLIS_API.Controllers.DynamicAtt
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public async Task<IActionResult> EditDynamicAtt([FromBody] EditDynamicAttViewModel dynamicAttViewModel)
         {
-            var response = await _unitOfWorkService.DynamicAttService.Edit(dynamicAttViewModel);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.DynamicAttService.Edit(dynamicAttViewModel, ConnectionString);
             return Ok(response);
         }
         [HttpPost("Disable")]

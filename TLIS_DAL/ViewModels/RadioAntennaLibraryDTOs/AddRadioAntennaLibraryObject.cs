@@ -16,13 +16,13 @@ namespace TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs
         public class RadioAntennaLibraryAttributes
         {
             public string Model { get; set; }
-            public string? FrequencyBand { get; set; }
-            public float Weight { get; set; }
-            public float Width { get; set; }
-            public float Depth { get; set; }
-            public float Length { get; set; }
-            public string? Notes { get; set; }
-            public float SpaceLibrary { get; set; }
+            public string? FrequencyBand { get; set; } = "";
+            public float Weight { get; set; } = 0;
+            public float Width { get; set; } = 0;
+            public float Depth { get; set; } = 0;
+            public float Length { get; set; } = 0;
+            public string? Notes { get; set; } = "";
+            public float SpaceLibrary { get; set; } = 0;
             public bool Active { get; set; } = true;
             public bool Deleted { get; set; } = false;
         }
