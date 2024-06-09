@@ -6391,7 +6391,7 @@ namespace TLIS_Service.Services
 
                     if (NumberofNumber == 3)
                     {
-                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).Select(x => x.Notes).ToList();
+                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).ToList();
 
                         foreach (var i in Enumerable.Range(0, NumberofNumber))
                         {
@@ -6425,14 +6425,14 @@ namespace TLIS_Service.Services
                                         baseInstAttView.Value = legLetters3[i];
                                         break;
                                     case "legazimuth":
-                                        baseInstAttView.Value = legAzimuths3[i];
+                                        baseInstAttView.Value = tliLegData[i].LegAzimuth;
                                         break;
                                     case "civilegname":
                                         baseInstAttView.Value = CivilWithLegsInst?.allCivilInst?.civilWithLegs?.Name + " " + legLetters[i];
                                         break;
                                     case "notes":
 
-                                        baseInstAttView.Value = tliLegData[i];
+                                        baseInstAttView.Value = tliLegData[i].Notes;
                                         break;
                                     default:
                                         break;
@@ -6447,7 +6447,7 @@ namespace TLIS_Service.Services
                     }
                     else if (NumberofNumber == 4)
                     {
-                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).Select(x => x.Notes).ToList();
+                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).ToList();
 
                         foreach (var i in Enumerable.Range(0, NumberofNumber))
                         {
@@ -6481,14 +6481,14 @@ namespace TLIS_Service.Services
                                         baseInstAttView.Value = legLetters[i];
                                         break;
                                     case "legazimuth":
-                                        baseInstAttView.Value = legAzimuths[i];
+                                        baseInstAttView.Value = tliLegData[i].LegAzimuth;
                                         break;
                                     case "civilegname":
                                         baseInstAttView.Value = CivilWithLegsInst?.allCivilInst?.civilWithLegs?.Name + " " + legLetters[i];
                                         break;
                                     case "notes":
 
-                                        baseInstAttView.Value = tliLegData[i];
+                                        baseInstAttView.Value = tliLegData[i].Notes;
                                         break;
                                     default:
                                         break;

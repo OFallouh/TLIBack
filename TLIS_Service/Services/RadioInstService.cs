@@ -1574,15 +1574,16 @@ namespace TLIS_Service.Services
                                     if (AddRadioAntenna.installationConfig.civilWithLegId != null)
                                     {
                                         TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                         AddRadioAntenna.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                         AddRadioAntenna.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower()==SiteCode.ToLower()
+                                         , x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                          x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                         if (AllcivilinstId != null)
                                         {
                                             if (AddRadioAntenna.installationConfig.legId != null)
                                             {
-                                                var Leg = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                             AddRadioAntenna.installationConfig.civilWithLegId && !x.Dismantle && x.legId == AddRadioAntenna.installationConfig.legId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                             x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                var Leg = _unitOfWork.LegRepository.GetIncludeWhereFirst(x => x.CivilWithLegInstId ==
+                                                 AddRadioAntenna.installationConfig.civilWithLegId  && x.Id == AddRadioAntenna.installationConfig.legId
+                                                 , x => x.CivilWithLegInst);
                                                 if (Leg != null)
                                                 {
                                                     if (!string.IsNullOrEmpty(RadioAntenna.SerialNumber))
@@ -2668,7 +2669,6 @@ namespace TLIS_Service.Services
                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                         if (EditRadioAntenna.installationConfig.InstallationPlaceId == 1)
                         {
-
                             if (EditRadioAntenna.installationConfig.civilWithLegId != null)
                             {
                                 TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
@@ -2681,9 +2681,9 @@ namespace TLIS_Service.Services
                                         if (EditRadioAntenna.installationConfig.sideArmId != null)
                                         {
 
-                                            var Leg = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                             EditRadioAntenna.installationConfig.civilWithLegId && !x.Dismantle && x.legId == EditRadioAntenna.installationConfig.legId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                             x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                            var Leg = _unitOfWork.LegRepository.GetIncludeWhereFirst(x => x.CivilWithLegInstId ==
+                                                EditRadioAntenna.installationConfig.civilWithLegId && x.Id == EditRadioAntenna.installationConfig.legId
+                                                , x => x.CivilWithLegInst);
                                             if (Leg != null)
                                             {
                                                 if (!string.IsNullOrEmpty(RadioAntenna.SerialNumber))
