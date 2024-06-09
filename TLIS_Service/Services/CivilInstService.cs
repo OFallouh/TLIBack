@@ -2554,7 +2554,7 @@ namespace TLIS_Service.Services
                         civilWithLegs.Name = sitename + " " + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented+"HE";
 
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => !x.Dismantle &&
                              (x.Id != null ? x.Name.ToLower() == civilWithLegs.Name.ToLower() : false
                                 && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
@@ -2637,16 +2637,16 @@ namespace TLIS_Service.Services
                                 if (initialLegAzimuth >= 0 && initialLegAzimuth <= 90)
                                 {
                                     var legEntities = new List<TLIleg>();
-
+                                    string[] legLetters = { "A", "B", "C" ,"D" };
                                     for (int i = 0; i < 4; i++)
                                     {
                                         var legAzimuth = initialLegAzimuth + (90 * i);
-
+                                        
                                         var legEntity = new TLIleg
                                         {
-                                            CiviLegName = civilWithLegs.Name + ' ' + initialLegInfo.LegLetter,
+                                            CiviLegName = civilWithLegs.Name+' ' + "Leg"+ ' ' + initialLegInfo.LegLetter,
                                             LegAzimuth = legAzimuth,
-                                            LegLetter = initialLegInfo.LegLetter,
+                                            LegLetter = legLetters[i],
                                             Notes = initialLegInfo.Notes,
                                             CivilWithLegInstId = civilWithLegs.Id
                                         };
@@ -2677,16 +2677,16 @@ namespace TLIS_Service.Services
                                 if (initialLegAzimuth >= 0 && initialLegAzimuth <= 120)
                                 {
                                     var legEntities = new List<TLIleg>();
-
+                                    string[] legLetters = { "A", "B", "C"};
                                     for (int i = 0; i < 3; i++)
                                     {
                                         var legAzimuth = initialLegAzimuth + (120 * i);
 
                                         var legEntity = new TLIleg
                                         {
-                                            CiviLegName = civilWithLegs.Name + ' ' + initialLegInfo.LegLetter,
+                                            CiviLegName = civilWithLegs.Name + ' ' + "Leg" + ' ' + initialLegInfo.LegLetter,
                                             LegAzimuth = legAzimuth,
-                                            LegLetter = initialLegInfo.LegLetter,
+                                            LegLetter = legLetters[i],
                                             Notes = initialLegInfo.Notes,
                                             CivilWithLegInstId = civilWithLegs.Id
                                         };
@@ -2793,7 +2793,7 @@ namespace TLIS_Service.Services
 
                         civilwithoutlegs.Name = sitename + " " + Model + " " + ownername + " " + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => !x.Dismantle &&
                          (x.Id != null ? x.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false
                            && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
@@ -3115,7 +3115,7 @@ namespace TLIS_Service.Services
 
                         civilWithLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithLegsEntity.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => !x.Dismantle &&
                              (x.Id != null ? x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
                                && x.Id != civilWithLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
 
@@ -3426,7 +3426,7 @@ namespace TLIS_Service.Services
 
                         civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithoutLegsEntity.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => !x.Dismantle &&
                          (x.Id != null ? x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() : false
                            && x.Id != civilWithoutLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
                         if (CheckName != null)
