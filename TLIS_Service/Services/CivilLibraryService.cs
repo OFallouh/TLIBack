@@ -130,13 +130,19 @@ namespace TLIS_Service.Services
 
                                 }
                                 var model = vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegEntites.Height_Designed+"HE";
-                                var CheckName = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => x.Model == model && !x.Deleted);
-                                if(CheckName !=null)
-                                {
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                
-                                if(structureTypeName!=null && structureTypeName .ToLower()== "triangular")
+                               
+                                var CheckName = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
+                               .Where(x => x.Model != null &&
+                                           x.Model.ToLower() == model.ToLower() &&
+                                           !x.Deleted)
+                               .ToList();
+
+
+                                if (CheckName.Count > 0)
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                                if (structureTypeName!=null && structureTypeName .ToLower()== "triangular")
                                     CivilWithLegEntites.NumberOfLegs = 3;
 
                                 else if (structureTypeName != null && structureTypeName.ToLower() == "square")
@@ -225,11 +231,17 @@ namespace TLIS_Service.Services
                             }
                             var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegEntites.CivilWithoutLegCategoryId) ?.Name;
                             var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithoutLegEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithoutLegEntites.Height_Designed+"HE";
-                            var CheckName = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => x.Model == model && !x.Deleted);
-                           if(CheckName !=null)
-                            {
-                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
+                          
+                            var CheckName = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
+                             .Where(x => x.Model != null &&
+                                         x.Model.ToLower() == model.ToLower() &&
+                                         !x.Deleted)
+                             .ToList();
+
+
+                            if (CheckName.Count > 0)
+                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
                             string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithoutLegsLibraryObject, TableName);
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -1595,11 +1607,17 @@ namespace TLIS_Service.Services
 
                     }
                     var model = vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegLibraryEntites.Height_Designed + "HE";
-                    var CheckName = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => x.Model == model && x.Id != CivilWithLegLibraryEntites.Id && !x.Deleted);
-                    if(CheckName!=null)
-                    {
-                        return new Response<EditCivilWithLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+                   
+                    var CheckName = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
+                    .Where(x => x.Model != null&& x.Id != CivilWithLegLibraryEntites .Id&&
+                               x.Model.ToLower() == model.ToLower() &&
+                               !x.Deleted)
+                    .ToList();
+
+
+                    if (CheckName.Count > 0)
+                        return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
                     if (structureTypeName != null && structureTypeName.ToLower() == "triangular")
                         CivilWithLegLibraryEntites.NumberOfLegs = 3;
 
@@ -1744,11 +1762,17 @@ namespace TLIS_Service.Services
                     }
                     var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithLegLibraryEntites.CivilWithoutLegCategoryId)?.Name;
                     var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegLibraryEntites.Height_Designed + "HE";
-                    var CheckName = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => x.Model == model && !x.Deleted && x.Id != CivilWithLegLibraryEntites.Id);
-                    if (CheckName != null)
-                    {
-                        return new Response<EditCivilWithoutLegsLibraryObject>(true, null, null, $"This model {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+               
+                    var CheckName = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
+                    .Where(x => x.Model != null && x.Id != CivilWithLegLibraryEntites.Id &&
+                               x.Model.ToLower() == model.ToLower() &&
+                               !x.Deleted)
+                    .ToList();
+
+
+                    if (CheckName.Count > 0)
+                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
                     CivilWithLegLibraryEntites.Model = model;
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;

@@ -2726,12 +2726,16 @@ namespace TLIS_Service.Services
                                                         SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + "Leg" + ' ' + LegLetter + " " + SideArmViewModel.installationAttributes.HeightBase + "HE" + " " + SideArmViewModel.installationAttributes.Azimuth + "AZ";
                                                     }
 
-                                                    var CheckName = _dbContext.MV_SIDEARM_VIEW.Where(x => !x.Dismantle && x.Id != SideArm.Id
-                                                     &&(x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                            && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                                   .Where(x => x.Name != null && x.Id != SideArm.Id&&
+                                                              x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                              !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                                   .ToList();
 
-                                                    if (CheckName != null)
+
+                                                    if (CheckName.Count > 0)
                                                         return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
 
                                                     //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
 
@@ -2804,11 +2808,14 @@ namespace TLIS_Service.Services
                                                             SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + "Leg" + ' ' + LegLetter + " " + "Leg" + ' ' + LegLetter2 + " " + SideArmViewModel.installationAttributes.HeightBase+"HE" + " " + SideArmViewModel.installationAttributes.Azimuth+"AZ";
 
                                                         }
-                                                        var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        x.Id != SideArm.Id&&(x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                          && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                                           .Where(x => x.Name != null && x.Id != SideArm.Id &&
+                                                                      x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                                      !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                                           .ToList();
 
-                                                        if (CheckName != null)
+
+                                                        if (CheckName.Count > 0)
                                                             return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                         //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
@@ -2898,11 +2905,14 @@ namespace TLIS_Service.Services
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                                 }
                                                 SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + SideArmViewModel.installationAttributes.HeightBase+"HE" + " " + SideArmViewModel.installationAttributes.Azimuth+"AZ";
-                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.Where(x => !x.Dismantle && x.Id != SideArm.Id&&
-                                                        (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                           && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                                     .Where(x => x.Name != null && x.Id != SideArm.Id &&
+                                                                x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                                !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                                     .ToList();
 
-                                                if (CheckName != null)
+
+                                                if (CheckName.Count > 0)
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
@@ -2988,11 +2998,14 @@ namespace TLIS_Service.Services
                                                 }   
                                                 SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + SideArmViewModel.installationAttributes.HeightBase+"HE" + " " + SideArmViewModel.installationAttributes.Azimuth+"AZ";
 
-                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.Where(x => !x.Dismantle && x.Id != SideArm.Id&&
-                                                                 (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                                    && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                                   .Where(x => x.Name != null && x.Id != SideArm.Id &&
+                                                              x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                              !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                                   .ToList();
 
-                                                if (CheckName != null)
+
+                                                if (CheckName.Count > 0)
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(SideArmViewModel, SiteCode);
@@ -3915,14 +3928,17 @@ namespace TLIS_Service.Services
                                                     SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " "+ "Leg" +' '+ LegLetter + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
                                                 }
+                                                var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                                .Where(x => x.Name != null &&
+                                                           x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                           !x.Dismantle && x.SITECODE.ToLower()==SiteCode.ToLower())
+                                                .ToList();
 
-                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                     (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                        && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
-                                                if (CheckName != null)
+                                                if (CheckName.Count > 0)
                                                     return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                               
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
                                                 //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -4023,12 +4039,16 @@ namespace TLIS_Service.Services
                                                     SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " "+ "Leg" + ' ' + LegLetter  + " " +"Leg"+ ' ' + LegLetter2 + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
                                                 }
-                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                             (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                                && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                               .Where(x => x.Name != null &&
+                                                          x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                          !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                               .ToList();
 
-                                                if (CheckName != null)
+
+                                                if (CheckName.Count > 0)
                                                     return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
 
                                                 //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -4136,14 +4156,18 @@ namespace TLIS_Service.Services
                                             return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
 
-                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";  
+                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
-                                            var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                    (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                       && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                               .Where(x => x.Name != null &&
+                                                          x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                          !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                               .ToList();
 
-                                            if (CheckName != null)
+
+                                            if (CheckName.Count > 0)
                                                 return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
 
                                             //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -4271,12 +4295,16 @@ namespace TLIS_Service.Services
 
                                             SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
-                                            var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                             (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                                && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_SIDEARM_VIEW
+                                               .Where(x => x.Name != null &&
+                                                          x.Name.ToLower() == SideArm.Name.ToLower() &&
+                                                          !x.Dismantle && x.SITECODE.ToLower() == SiteCode.ToLower())
+                                               .ToList();
 
-                                            if (CheckName != null)
+
+                                            if (CheckName.Count > 0)
                                                 return new Response<SideArmViewDto>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
 
                                             //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArms, SiteCode);
 
@@ -4288,7 +4316,7 @@ namespace TLIS_Service.Services
                                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                                             //    return new Response<AllItemAttributes>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                                            
+
                                             SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                             SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                             SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;

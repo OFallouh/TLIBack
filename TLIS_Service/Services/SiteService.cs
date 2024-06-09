@@ -176,7 +176,7 @@ namespace TLIS_Service.Services
                             (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
-                        (x => x.SiteName == EditSiteViewModel.SiteName && x.SiteCode != EditSiteViewModel.SiteCode);
+                        (x=>x.SiteCode == EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
                     _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId,OldSiteInfo, Site);
 

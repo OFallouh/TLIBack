@@ -2554,12 +2554,17 @@ namespace TLIS_Service.Services
                         civilWithLegs.Name = sitename + " " + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented+"HE";
 
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => !x.Dismantle &&
-                             (x.Id != null ? x.Name.ToLower() == civilWithLegs.Name.ToLower() : false
-                                && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW
+                        .Where(x => x.Name != null &&
+                                    x.Name.ToLower() == civilWithLegs.Name.ToLower() &&
+                                    !x.Dismantle &&
+                                    x.SITECODE.ToLower() == SiteCode.ToLower())
+                        .ToList();
 
-                        if (CheckName != null)
+
+                        if (CheckName.Count > 0)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithLegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                         var locatiionType = _dbContext.TLIlocationType.FirstOrDefault(x => x.Id == civilWithLegs.locationTypeId)?.Name;
                         if (locatiionType.ToLower() == "roof top" && civilWithLegs.LocationHeight == 0)
                         {
@@ -2793,12 +2798,17 @@ namespace TLIS_Service.Services
 
                         civilwithoutlegs.Name = sitename + " " + Model + " " + ownername + " " + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => !x.Dismantle &&
-                         (x.Id != null ? x.Name.ToLower() == civilwithoutlegs.Name.ToLower() : false
-                           && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                          .Where(x => x.Name != null &&
+                                      x.Name.ToLower() == civilwithoutlegs.Name.ToLower() &&
+                                      !x.Dismantle &&
+                                      x.SITECODE.ToLower() == SiteCode.ToLower())
+                          .ToList();
 
-                        if (CheckName != null)
+
+                        if (CheckName.Count > 0)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilwithoutlegs.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                       
                         if (civilwithoutlegs.HeightImplemented < 6)
                         {
                             civilwithoutlegs.NumberOfCivilParts = 1;
@@ -3115,11 +3125,16 @@ namespace TLIS_Service.Services
 
                         civilWithLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithLegsEntity.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => !x.Dismantle &&
-                             (x.Id != null ? x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() : false
-                               && x.Id != civilWithLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
+                        var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW
+                        .Where(x => x.Id != civilWithLegsEntity.Id &&
+                                    x.Name != null &&
+                                    x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() &&
+                                    !x.Dismantle &&
+                                    x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower())
+                        .ToList();
 
-                        if (CheckName != null)
+
+                        if (CheckName.Count >0)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         
@@ -3426,10 +3441,16 @@ namespace TLIS_Service.Services
 
                         civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithoutLegsEntity.HeightImplemented+"HE";
 
-                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => !x.Dismantle &&
-                         (x.Id != null ? x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() : false
-                           && x.Id != civilWithoutLegsEntity.Id && x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower()));
-                        if (CheckName != null)
+                        var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                        .Where(x => x.Id != civilWithoutLegsEntity.Id &&
+                                    x.Name != null &&
+                                    x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() &&
+                                    !x.Dismantle &&
+                                    x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower())
+                        .ToList();
+
+
+                        if (CheckName.Count > 0)
                             return new Response<ObjectInstAtts>(false, null, null, $"The name {civilWithoutLegsEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         if (civilWithoutLegsEntity.HeightImplemented < 6)
