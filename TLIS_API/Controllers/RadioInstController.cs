@@ -131,7 +131,7 @@ namespace TLIS_API.Controllers
         //    }
         //}
         // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetMWDishInstallationById")]
+        [HttpGet("GetRadioAntennaInstallationById")]
         [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMW_DishById(int MW_Dish)
         {

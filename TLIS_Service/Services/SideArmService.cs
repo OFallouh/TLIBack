@@ -2720,15 +2720,14 @@ namespace TLIS_Service.Services
                                                         return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationConfig.legId[0])?.CiviLegName;
-                                                    if (civilwithlegname != null && LegName != null)
+                                                    var LegLetter= _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationConfig.legId[0])?.CiviLegName;
+                                                    if (civilwithlegname != null && LegLetter != null)
                                                     {
-                                                        SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + LegName + " " + SideArmViewModel.installationAttributes.HeightBase + " " + SideArmViewModel.installationAttributes.Azimuth;
-
+                                                        SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + "Leg" + ' ' + LegLetter + " " + SideArmViewModel.installationAttributes.HeightBase + "HE" + " " + SideArmViewModel.installationAttributes.Azimuth + "AZ";
                                                     }
 
-                                                    var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                            (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                    var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != SideArm.Id
+                                                     &&(x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
                                                             && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                                     if (CheckName != null)
@@ -2798,16 +2797,16 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (civilwithlegname != null)
                                                     {
-                                                        var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationConfig.legId[0])?.CiviLegName;
-                                                        var LegName2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationConfig.legId[1])?.CiviLegName;
-                                                        if (LegName != null && LegName2 != null && civilwithlegname != null)
+                                                        var LegLetter = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationConfig.legId[0])?.LegLetter;
+                                                        var LegLetter2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationConfig.legId[1])?.LegLetter;
+                                                        if (LegLetter != null && LegLetter2 != null && civilwithlegname != null)
                                                         {
-                                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + LegName + " " + LegName2 + " " + SideArmViewModel.installationAttributes.HeightBase + " " + SideArmViewModel.installationAttributes.Azimuth;
+                                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + "Leg" + ' ' + LegLetter + " " + "Leg" + ' ' + LegLetter2 + " " + SideArmViewModel.installationAttributes.HeightBase+"HE" + " " + SideArmViewModel.installationAttributes.Azimuth+"AZ";
 
                                                         }
                                                         var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                     (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
-                                                                        && x.SITECODE.ToLower() == SiteCode.ToLower()));
+                                                        x.Id != SideArm.Id&&(x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
+                                                          && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
                                                         if (CheckName != null)
                                                             return new Response<EditSidearmInstallationObject>(false, null, null, $"The name {SideArm.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2898,9 +2897,8 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                                 }
-                                                SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + SideArmViewModel.installationAttributes.HeightBase + " " + SideArmViewModel.installationAttributes.Azimuth;
-
-                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + SideArmViewModel.installationAttributes.HeightBase+"HE" + " " + SideArmViewModel.installationAttributes.Azimuth+"AZ";
+                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != SideArm.Id&&
                                                         (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
                                                            && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
@@ -2987,11 +2985,10 @@ namespace TLIS_Service.Services
                                                 if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                                 {
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
-                                                }
+                                                }   
+                                                SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + SideArmViewModel.installationAttributes.HeightBase+"HE" + " " + SideArmViewModel.installationAttributes.Azimuth+"AZ";
 
-                                                SideArm.Name = civilwithlegname.allCivilInst.civilNonSteel.Name + " " + SideArmViewModel.installationAttributes.HeightBase + " " + SideArmViewModel.installationAttributes.Azimuth;
-
-                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != SideArm.Id&&
                                                                  (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
                                                                     && x.SITECODE.ToLower() == SiteCode.ToLower()));
 
@@ -3912,10 +3909,10 @@ namespace TLIS_Service.Services
                                                 return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                             }
                                             
-                                                var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.installationConfig.legId[0])?.CiviLegName;
-                                                if (civilwithlegname != null && LegName != null)
+                                                var LegLetter = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.installationConfig.legId[0])?.LegLetter;
+                                                if (civilwithlegname != null && LegLetter != null)
                                                 {
-                                                    SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " "+ LegName + " " + addSideArms.installationAttributes.HeightBase + " " + addSideArms.installationAttributes.Azimuth;
+                                                    SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " "+ "Leg" +' '+ LegLetter + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
                                                 }
 
@@ -4019,11 +4016,11 @@ namespace TLIS_Service.Services
                                                     return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on heightbase selected because found other sidearm in same heightbase", (int)ApiReturnCode.fail);
                                                 }
                                            
-                                                var LegName = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.installationConfig.legId[0])?.CiviLegName;
-                                                var LegName2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.installationConfig.legId[1])?.CiviLegName;
-                                                if (LegName != null && LegName2 != null && civilwithlegname != null)
+                                                var LegLetter = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.installationConfig.legId[0])?.LegLetter;
+                                                var LegLetter2 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == addSideArms.installationConfig.legId[1])?.LegLetter;
+                                                if (LegLetter != null && LegLetter2 != null && civilwithlegname != null)
                                                 {
-                                                    SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + LegName + " " + LegName2 + " " + addSideArms.installationAttributes.HeightBase + " " + addSideArms.installationAttributes.Azimuth;
+                                                    SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " "+ "Leg" + ' ' + LegLetter  + " " +"Leg"+ ' ' + LegLetter2 + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
                                                 }
                                                 var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -4138,9 +4135,8 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
-                                      
 
-                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + addSideArms.installationAttributes.HeightBase + " " + addSideArms.installationAttributes.Azimuth;
+                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithoutLeg.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";  
 
                                             var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                     (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false
@@ -4272,8 +4268,8 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
-                                     
-                                            SideArm.Name = civilwithlegname.allCivilInst.civilNonSteel.Name + " " + addSideArms.installationAttributes.HeightBase + " " + addSideArms.installationAttributes.Azimuth;
+
+                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
                                             var CheckName = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                              (x.Id != null ? x.Name.ToLower() == SideArm.Name.ToLower() : false

@@ -2630,73 +2630,84 @@ namespace TLIS_Service.Services
                         var structureType = _dbContext.TLIstructureType.FirstOrDefault(x => x.Id == civilwithleglibrary.structureTypeId);
                         if (structureType != null && structureType.Name.ToLower() == "square")
                         {
-                            
                             var initialLegInfo = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
                             if (initialLegInfo != null)
                             {
                                 var initialLegAzimuth = initialLegInfo.LegAzimuth;
                                 if (initialLegAzimuth >= 0 && initialLegAzimuth <= 90)
                                 {
+                                    var legEntities = new List<TLIleg>();
+
                                     for (int i = 0; i < 4; i++)
                                     {
                                         var legAzimuth = initialLegAzimuth + (90 * i);
 
-
-                                        var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                        var legEntity = new TLIleg
                                         {
-                                            CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
+                                            CiviLegName = civilWithLegs.Name + ' ' + initialLegInfo.LegLetter,
                                             LegAzimuth = legAzimuth,
-                                            LegLetter = item.LegLetter,
-                                            Notes = item.Notes,
+                                            LegLetter = initialLegInfo.LegLetter,
+                                            Notes = initialLegInfo.Notes,
                                             CivilWithLegInstId = civilWithLegs.Id
-                                        }).ToList();
+                                        };
 
-                                        _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                        legEntities.Add(legEntity);
                                     }
 
+                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
                                     _unitOfWork.SaveChanges();
-
+                                }
+                                else
+                                {
+                                    return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 90", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                             }
                             else
                             {
-                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must between 0 to 90 ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 90", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
-                        } 
-                        if (structureType != null && structureType.Name.ToLower() == "triangular")
-                        {
+                        }
 
+                       else if (structureType != null && structureType.Name.ToLower() == "triangular")
+                        {
                             var initialLegInfo = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
                             if (initialLegInfo != null)
                             {
                                 var initialLegAzimuth = initialLegInfo.LegAzimuth;
                                 if (initialLegAzimuth >= 0 && initialLegAzimuth <= 120)
                                 {
+                                    var legEntities = new List<TLIleg>();
+
                                     for (int i = 0; i < 3; i++)
                                     {
                                         var legAzimuth = initialLegAzimuth + (120 * i);
 
-
-                                        var legEntities = AddCivilWithLegsViewModel.legsInfo.Select(item => new TLIleg
+                                        var legEntity = new TLIleg
                                         {
-                                            CiviLegName = civilWithLegs.Name + ' ' + item.LegLetter,
+                                            CiviLegName = civilWithLegs.Name + ' ' + initialLegInfo.LegLetter,
                                             LegAzimuth = legAzimuth,
-                                            LegLetter = item.LegLetter,
-                                            Notes = item.Notes,
+                                            LegLetter = initialLegInfo.LegLetter,
+                                            Notes = initialLegInfo.Notes,
                                             CivilWithLegInstId = civilWithLegs.Id
-                                        }).ToList();
+                                        };
 
-                                        _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                        legEntities.Add(legEntity);
                                     }
 
+                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
                                     _unitOfWork.SaveChanges();
+                                }
+                                else
+                                {
+                                    return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 120", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                             }
                             else
                             {
-                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must between 0 to 120 ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 120", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
+
                         _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
 
                         if (TaskId != null)
@@ -9442,7 +9453,6 @@ namespace TLIS_Service.Services
 
 
                         var LoadOnSide = GetLoadForSideArm((int)q.sideArmId, q.allCivilInstId);
-                        item.CivilLoadWithSideArm = LoadOnSide;
 
 
 
@@ -9513,78 +9523,93 @@ namespace TLIS_Service.Services
             }
         }
 
-        public List<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid)
+        public Response<LoadOnSideArm>  GetLoadForSideArm(int sidearmid, int civilid)
         {
-            var sideArm = _dbContext.TLIsideArm.FirstOrDefault(x => x.Id == sidearmid);
-            var loadsid = _dbContext.TLIcivilLoads.Where(x => x.sideArmId == sidearmid && x.allCivilInstId == civilid && x.Dismantle == false).Select(y => y.allLoadInstId).ToList();
-            List<LoadOnSideArm> FinalResult = new List<LoadOnSideArm>();
-            List<LoadOnCivil> listOfload = new List<LoadOnCivil>();
-            LoadOnSideArm loadOnSideArm = new LoadOnSideArm();
-
-            loadOnSideArm.SideArmId = sidearmid;
-            loadOnSideArm.SideArmName = sideArm.Name;
-            foreach (var lid in loadsid)
+            try
             {
-                var resultLoad = _dbContext.TLIallLoadInst.FirstOrDefault(x => x.Id == lid && x.Active == true);
+                var loadsid = _dbContext.TLIcivilLoads.Where(x => (x.sideArmId == sidearmid || x.sideArm2Id == sidearmid)
+                && x.allCivilInstId == civilid && !x.Dismantle).ToList();
 
-                LoadOnCivil loadOnCivil = new LoadOnCivil();
-                if (resultLoad != null)
+                LoadOnSideArm loadOnSideArm = new LoadOnSideArm();
+                CivilLoads civilLoad = new CivilLoads();
+                LoadandsidearmViewDto loadOnCivil = new LoadandsidearmViewDto();
+                List<CivilLoads> ListcivilLoad = new List<CivilLoads>();
+                foreach (var lid in loadsid)
                 {
-                    string loadName = null;
+                    loadOnSideArm.SideArmName = lid.sideArm?.Name;
+                    var resultLoad = _dbContext.TLIallLoadInst.FirstOrDefault(x => x.Id == lid.allLoadInstId && x.Active == true);
 
-                    var keyName = GetKeyName(resultLoad);
-                    if (keyName == "mwBUId")
+                    if (resultLoad != null)
                     {
-                        loadName = _dbContext.TLImwBU.Where(x => x.Id == resultLoad.mwBUId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "mwDishId")
-                    {
-                        loadName = _dbContext.TLImwDish.Where(x => x.Id == resultLoad.mwDishId).Select(x => x.DishName).FirstOrDefault();
-                    }
-                    else if (keyName == "mwODUId")
-                    {
-                        loadName = _dbContext.TLImwODU.Where(x => x.Id == resultLoad.mwODUId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "mwRFUId")
-                    {
-                        loadName = _dbContext.TLImwRFU.Where(x => x.Id == resultLoad.mwRFUId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "mwOtherId")
-                    {
-                        loadName = _dbContext.TLImwOther.Where(x => x.Id == resultLoad.mwOtherId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "radioAntennaId")
-                    {
-                        loadName = _dbContext.TLIradioAntenna.Where(x => x.Id == resultLoad.radioAntennaId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "radioRRUId")
-                    {
-                        loadName = _dbContext.TLIRadioRRU.Where(x => x.Id == resultLoad.radioRRUId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "radioOtherId")
-                    {
-                        loadName = _dbContext.TLIradioOther.Where(x => x.Id == resultLoad.radioOtherId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "powerId")
-                    {
-                        loadName = _dbContext.TLIpower.Where(x => x.Id == resultLoad.powerId).Select(x => x.Name).FirstOrDefault();
-                    }
-                    else if (keyName == "loadOtherId")
-                    {
-                        loadName = _dbContext.TLIloadOther.Where(x => x.Id == resultLoad.loadOtherId).Select(x => x.Name).FirstOrDefault();
-                    }
 
-                    loadOnCivil.LoadId = (int)lid;
-                    loadOnCivil.LoadName = loadName;
-                    listOfload.Add(loadOnCivil);
-                    loadOnSideArm.LoadRelatedSide = listOfload;
+                        var keyName = GetKeyName(resultLoad);
+                        if (keyName == "mwBUId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwBU.Where(x => x.Id == resultLoad.mwBUId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.MW_BUs.Add(loadOnCivil);
+                        }
+                        else if (keyName == "mwDishId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwDish.Where(x => x.Id == resultLoad.mwDishId).Select(x => x.DishName).FirstOrDefault());
+                            civilLoad.MW_Dishes.Add(loadOnCivil);
+                        }
+                        else if (keyName == "mwODUId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwODU.Where(x => x.Id == resultLoad.mwODUId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.MW_ODUs.Add(loadOnCivil);
+                        }
+                        else if (keyName == "mwRFUId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwRFU.Where(x => x.Id == resultLoad.mwRFUId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.MW_RFUs.Add(loadOnCivil);
+                        }
+                        else if (keyName == "mwOtherId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwOther.Where(x => x.Id == resultLoad.mwOtherId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.MW_Others.Add(loadOnCivil);
+                        }
+                        else if (keyName == "radioAntennaId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIradioAntenna.Where(x => x.Id == resultLoad.radioAntennaId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.RadioAntennas.Add(loadOnCivil);
+                        }
+                        else if (keyName == "radioRRUId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIRadioRRU.Where(x => x.Id == resultLoad.radioRRUId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.RadioRRUs.Add(loadOnCivil);
+                        }
+                        else if (keyName == "radioOtherId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIradioOther.Where(x => x.Id == resultLoad.radioOtherId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.RadioOthers.Add(loadOnCivil);
+                        }
+                        else if (keyName == "powerId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIpower.Where(x => x.Id == resultLoad.powerId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.Powers.Add(loadOnCivil);
+                        }
+                        else if (keyName == "loadOtherId")
+                        {
+                            loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIloadOther.Where(x => x.Id == resultLoad.loadOtherId).Select(x => x.Name).FirstOrDefault());
+                            civilLoad.LoadOthers.Add(loadOnCivil);
+                        }
+
+                        ListcivilLoad.Add(civilLoad);
+                    }
 
                 }
+                loadOnSideArm.SideArmId = sidearmid;
+
+                loadOnSideArm.LoadRelatedSide.AddRange(ListcivilLoad);
+
+
+                return new Response<LoadOnSideArm>(true, loadOnSideArm, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception ex)
+            {
+                return new Response<LoadOnSideArm>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
             }
-            FinalResult.Add(loadOnSideArm);
-
-            return FinalResult;
 
 
         }
@@ -9647,8 +9672,6 @@ namespace TLIS_Service.Services
                         loadName = _dbContext.TLIloadOther.Where(x => x.Id == result.loadOtherId).Select(x => x.Name).FirstOrDefault();
                     }
 
-                    loadOnCivil.LoadId = (int)lid;
-                    loadOnCivil.LoadName = loadName;
                     listOfload.Add(loadOnCivil);
                 }
 
@@ -11063,39 +11086,73 @@ namespace TLIS_Service.Services
             {
                 if (TableName == Helpers.Constants.TablesNames.TLImwBU.ToString())
                 {
-                    var RFU = _dbContext.TLImwPort.Where(x => x.MwBUId == loadId).Select(x => x.Id).ToList();
-                    foreach (var item in RFU)
+                    var PortCascuded = _dbContext.TLImwPort.Where(x => x.MwBUId == loadId).ToList();
+
+                    var hasRFU = PortCascuded
+                        .SelectMany(item => _dbContext.TLImwRFU.Where(x => x.MwPortId == item.Id))
+                        .Any();
+
+                    if (hasRFU)
                     {
-                        var BU = _dbContext.TLImwRFU.Where(x => x.MwPortId == item).ToList();
-                        if (BU.Count > 0)
-                        {
-                            return new Response<bool>(true, false, null, "will dismantle the cascaded BU and the RFUs installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        return new Response<bool>(true, false, null, "will dismantle the RFUs installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    var hasBU = PortCascuded
+                        .SelectMany(item => _dbContext.TLImwBU.Where(x => x.PortCascadeId == item.Id))
+                        .Any();
+
+                    if (hasBU)
+                    {
+                        return new Response<bool>(true, false, null, "will dismantle the Cascuded BU installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
+                if (TableName == Helpers.Constants.TablesNames.TLImwBU.ToString())
+                {
+                    var PortCascuded = _dbContext.TLImwPort.Where(x => x.MwBUId == loadId).ToList();
 
+                    var hasRFU = PortCascuded
+                        .SelectMany(item => _dbContext.TLImwRFU.Where(x => x.MwPortId == item.Id))
+                        .Any();
+
+                    if (hasRFU)
+                    {
+                        return new Response<bool>(true, false, null, "will dismantle the RFUs installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    var hasBU = PortCascuded
+                        .SelectMany(item => _dbContext.TLImwBU.Where(x => x.PortCascadeId == item.Id))
+                        .Any();
+
+                    if (hasBU)
+                    {
+                        return new Response<bool>(true, false, null, "will dismantle the Cascuded BU installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
                 else if (TableName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                 {
-                    var BU = _dbContext.TLImwBU.Where(x => x.MainDishId == loadId).ToList();
-                    var ODU = _dbContext.TLImwODU.Where(x => x.Mw_DishId == loadId).ToList();
-                    if (ODU.Count > 0)
+                    var hasBU = _dbContext.TLImwBU.Any(x => x.MainDishId == loadId || x.SdDishId == loadId);
+                    var hasODU = _dbContext.TLImwODU.Any(x => x.Mw_DishId == loadId);
+
+                    if (hasODU)
                     {
                         return new Response<bool>(true, false, null, "it’s better to dismantle the ODU as it will be useless", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    if (BU.Count > 0)
+
+                    if (hasBU)
                     {
                         return new Response<bool>(true, false, null, "the MWDish is Main Dish to MwBU must delete relation And Dismantle Or Change Relation  ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-
                 else if (TableName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
-                    var RadioRRU = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == loadId).ToList();
-                    if (RadioRRU.Count > 0)
+                    var hasRadioRRU = _dbContext.TLIRadioRRU.Any(x => x.radioAntennaId == loadId);
+
+                    if (hasRadioRRU)
                     {
-                        return new Response<bool>(true, false, null, "the RadioAntenna is Related  to RadioRRU must delete relation And Dismantle Or Change Relation  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "the RadioAntenna is Related to RadioRRU must delete relation And Dismantle Or Change Relation  ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
+
 
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
@@ -11105,7 +11162,7 @@ namespace TLIS_Service.Services
                 return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-      
+
         public Response<List<LogicalOperationViewModel>> GetlogicalOperation()
         {
             try

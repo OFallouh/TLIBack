@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 
 namespace TLIS_DAL.ViewModels.DismantleDto
 {
@@ -20,13 +21,13 @@ namespace TLIS_DAL.ViewModels.DismantleDto
         public int SideArmId { get; set; }
         public string SideArmName { get; set; }
 
-        public List<LoadOnCivil> LoadRelatedSide { get; set; }
+        public List<CivilLoads> LoadRelatedSide { get; set; }
     }
 
 
     public class LoadOnCivil
     {
-        public int LoadId { get; set; }
-        public string LoadName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

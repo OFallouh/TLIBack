@@ -47,7 +47,7 @@ namespace TLIS_Service.IService
         Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string SiteCode, string ConnectionString);
         //Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, string SiteCode);
         Response<List<ListOfCivilLoadDto>> GetAllCivilLoad(string SearchName, ParameterPagination parameters);
-        List<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);
+        Response<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);
         List<LoadOnCivil> GetLoadWithoutSideArm(int civilid);
         Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString);
         string GetKeyName(TLIallLoadInst m);
