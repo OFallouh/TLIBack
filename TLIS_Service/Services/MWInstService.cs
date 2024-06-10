@@ -5747,7 +5747,7 @@ namespace TLIS_Service.Services
 
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
                     TLImwDish mwDish = _mapper.Map<TLImwDish>(MWInstallationViewModel.installationAttributes);
-                    TLIcivilLoads MWDishInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                    TLIcivilLoads MWDishInst = _dbContext.TLIcivilLoads.AsNoTracking()
                         .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.mwDish.MwDishLibrary).Include(x => x.allCivilInst)
                         .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                         .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
@@ -5925,13 +5925,20 @@ namespace TLIS_Service.Services
                                                     .AsNoTracking()
                                                     .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                                TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                              .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                                  == MWInstallationViewModel.installationAttributes.Id);
+
+                                                
+
                                                 MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                 MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -6077,13 +6084,20 @@ namespace TLIS_Service.Services
                                                     .AsNoTracking()
                                                     .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                                TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                              .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                                  == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                                 MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                 MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -6236,13 +6250,20 @@ namespace TLIS_Service.Services
                                                     .AsNoTracking()
                                                     .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                                TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                              .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                                  == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                                 MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                 MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
                                             }
 
@@ -6375,13 +6396,20 @@ namespace TLIS_Service.Services
                                                     .AsNoTracking()
                                                     .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                                TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                              .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                                  == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                                 MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                 MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -6606,14 +6634,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
 
@@ -6785,14 +6819,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -6972,14 +7012,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -7143,14 +7189,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -7359,14 +7411,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -7544,14 +7602,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -7730,14 +7794,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -7902,14 +7972,20 @@ namespace TLIS_Service.Services
                                                 .AsNoTracking()
                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                            TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                          .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                              == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                             MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
                                             MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
@@ -8101,14 +8177,20 @@ namespace TLIS_Service.Services
                                             .AsNoTracking()
                                             .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwDishId == mwDish.Id && !x.Dismantle);
 
+
+                                        TLIcivilLoads TLIMWDish = _dbContext.TLIcivilLoads.Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
+                                      .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwDishId
+                                          == MWInstallationViewModel.installationAttributes.Id);
+
+
+
                                         MWDishInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                         MWDishInst.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                        MWDishInst.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                        MWDishInst.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
-                                            MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                        MWDishInst.legId = MWInstallationViewModel.installationConfig?.legId;
+                                        MWDishInst.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                         MWDishInst.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                         MWDishInst.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, MWDishInst);
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                         _unitOfWork.SaveChanges();
                                     }
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
