@@ -8289,13 +8289,13 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    propertyNamesStatic.Add("LEG_NAME");
                     propertyNamesStatic.Add("CIVILNAME");
                     propertyNamesStatic.Add("CIVIL_ID");
                     propertyNamesStatic.Add("SIDEARMNAME");
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
-                    propertyNamesStatic.Add("LEG_ID");
+                    propertyNamesStatic.Add("LEGID");
+                    propertyNamesStatic.Add("LEGNAME");
 
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -8336,7 +8336,8 @@ namespace TLIS_Service.Services
                            SIDEARMNAME = x.SIDEARMNAME,
                            SIDEARM_ID = x.SIDEARM_ID,
                            ALLCIVILINST_ID = x.ALLCIVILINST_ID,
-                           LEGID = x.LEGID
+                           LEGID = x.LEGID,
+                           OWNER = x.OWNER
 
 
                        })

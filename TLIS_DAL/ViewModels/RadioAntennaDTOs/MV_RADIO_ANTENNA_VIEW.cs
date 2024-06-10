@@ -34,6 +34,7 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
         public string INSTALLATIONPLACE { get; set; }
         public string RADIOANTENNALIBRARY { get; set; }
         public string? LEGNAME { get; set; }
+        public string? OWNER { get; set; }
         public int? LEGID { get; set; }
         public string CIVILNAME { get; set; }
         public int CIVIL_ID { get; set; }
@@ -80,6 +81,7 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
             outputData.Add("Dismantle", Dismantle);
             outputData.Add("SIDEARM_ID", SIDEARM_ID);
             outputData.Add("ALLCIVILINST_ID", ALLCIVILINST_ID);
+            outputData.Add("OWNER ", OWNER);
             if (!string.IsNullOrEmpty(Key))
             {
                 outputData.Add(Key, INPUTVALUE);
