@@ -2642,17 +2642,17 @@ namespace TLIS_Service.Services
                                 if (initialLegAzimuth >= 0 && initialLegAzimuth <= 90)
                                 {
                                     var legEntities = new List<TLIleg>();
-                                    string[] legLetters = { "A", "B", "C" ,"D" };
+                                    string[] legLetters = { "A", "B", "C", "D" };
                                     for (int i = 0; i < 4; i++)
                                     {
                                         var legAzimuth = initialLegAzimuth + (90 * i);
-                                        
+
                                         var legEntity = new TLIleg
                                         {
-                                            CiviLegName = civilWithLegs.Name+' ' + "Leg"+ ' ' + initialLegInfo.LegLetter,
+                                            CiviLegName = $"{civilWithLegs.Name} Leg {legLetters[i]}",
                                             LegAzimuth = legAzimuth,
                                             LegLetter = legLetters[i],
-                                            Notes = initialLegInfo.Notes,
+                                            Notes = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == legLetters[i].ToLower())?.Notes,
                                             CivilWithLegInstId = civilWithLegs.Id
                                         };
 
@@ -2669,11 +2669,10 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 90", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ObjectInstAtts>(false, null, null, "Leg information for letter 'A' not found", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
-
-                       else if (structureType != null && structureType.Name.ToLower() == "triangular")
+                        else if (structureType != null && structureType.Name.ToLower() == "triangular")
                         {
                             var initialLegInfo = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
                             if (initialLegInfo != null)
@@ -2682,17 +2681,17 @@ namespace TLIS_Service.Services
                                 if (initialLegAzimuth >= 0 && initialLegAzimuth <= 120)
                                 {
                                     var legEntities = new List<TLIleg>();
-                                    string[] legLetters = { "A", "B", "C"};
+                                    string[] legLetters = { "A", "B", "C" };
                                     for (int i = 0; i < 3; i++)
                                     {
                                         var legAzimuth = initialLegAzimuth + (120 * i);
 
                                         var legEntity = new TLIleg
                                         {
-                                            CiviLegName = civilWithLegs.Name + ' ' + "Leg" + ' ' + initialLegInfo.LegLetter,
+                                            CiviLegName = $"{civilWithLegs.Name} Leg {legLetters[i]}",
                                             LegAzimuth = legAzimuth,
                                             LegLetter = legLetters[i],
-                                            Notes = initialLegInfo.Notes,
+                                            Notes = AddCivilWithLegsViewModel.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == legLetters[i].ToLower())?.Notes,
                                             CivilWithLegInstId = civilWithLegs.Id
                                         };
 
@@ -2704,14 +2703,15 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 120", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<ObjectInstAtts>(false, null, null, "First LegAzimuth must be between 0 to 120", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                             }
                             else
                             {
-                                return new Response<ObjectInstAtts>(false, null, null, "first LegAzimuth must be between 0 to 120", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<ObjectInstAtts>(false, null, null, "Leg information for letter 'A' not found", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
+
 
                         _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id);
 
