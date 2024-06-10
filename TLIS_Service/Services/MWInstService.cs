@@ -69,6 +69,7 @@ using static TLIS_DAL.ViewModels.MW_ODULibraryDTOs.EditMWODULibraryObject;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using static Dapper.SqlMapper;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using TLIS_DAL.ViewModels.RadioRRUDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -15102,8 +15103,6 @@ namespace TLIS_Service.Services
                 //return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-
-
         //public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId)
         //{
         //    using (TransactionScope transactionScope = new TransactionScope())
@@ -15339,28 +15338,29 @@ namespace TLIS_Service.Services
         //                    RadioAntennaLoad.Dismantle = true;
 
         //                    var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
-        //                       .AsNoTracking().FirstOrDefault(x => x.Id == OtherLoad.Id);
+        //                       .AsNoTracking().FirstOrDefault(x => x.Id == RadioAntennaLoad.Id);
 
-        //                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldOtherLoad, OtherLoad);
+        //                   var RadioRRULoadDto=_unitOfWork.CivilLoadsRepository
+        //                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldOtherLoad, RadioAntennaLoad);
         //                    _unitOfWork.SaveChanges();
-        //                    if (OtherLoad.ReservedSpace == true)
+        //                    if (RadioAntennaLoad.ReservedSpace == true)
         //                    {
-        //                        if (OtherLoad.allCivilInst.civilWithLegsId != null)
+        //                        if (RadioAntennaLoad.allCivilInst.civilWithLegsId != null)
         //                        {
-        //                            OtherLoad.allCivilInst.civilWithLegs.CurrentLoads -= OtherLoad.allLoadInst.loadOther.EquivalentSpace;
+        //                            RadioAntennaLoad.allCivilInst.civilWithLegs.CurrentLoads -= RadioAntennaLoad.allLoadInst.radioAntenna.EquivalentSpace;
         //                            var OldCivilWithlegs = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable()
-        //                             .AsNoTracking().FirstOrDefault(x => x.Id == OtherLoad.allCivilInst.civilWithLegsId);
+        //                             .AsNoTracking().FirstOrDefault(x => x.Id == RadioAntennaLoad.allCivilInst.civilWithLegsId);
 
-        //                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldCivilWithlegs, OtherLoad.allCivilInst.civilWithLegs);
+        //                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldCivilWithlegs, RadioAntennaLoad.allCivilInst.civilWithLegs);
         //                            _unitOfWork.SaveChanges();
         //                        }
-        //                        else if (OtherLoad.allCivilInst.civilWithoutLegId != null)
+        //                        else if (RadioAntennaLoad.allCivilInst.civilWithoutLegId != null)
         //                        {
-        //                            OtherLoad.allCivilInst.civilWithoutLeg.CurrentLoads -= OtherLoad.allLoadInst.loadOther.EquivalentSpace;
+        //                            RadioAntennaLoad.allCivilInst.civilWithoutLeg.CurrentLoads -= RadioAntennaLoad.allLoadInst.radioAntenna.EquivalentSpace;
         //                            var OldCivilWithoutLegs = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable()
-        //                            .AsNoTracking().FirstOrDefault(x => x.Id == OtherLoad.allCivilInst.civilWithoutLegId);
+        //                            .AsNoTracking().FirstOrDefault(x => x.Id == RadioAntennaLoad.allCivilInst.civilWithoutLegId);
 
-        //                            _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldCivilWithoutLegs, OtherLoad.allCivilInst.civilWithoutLeg);
+        //                            _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldCivilWithoutLegs, RadioAntennaLoad.allCivilInst.civilWithoutLeg);
         //                            _unitOfWork.SaveChanges();
         //                        }
         //                    }

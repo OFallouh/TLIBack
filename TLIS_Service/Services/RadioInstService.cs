@@ -2631,6 +2631,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_RADIO_ANTENNA_VIEW"));
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                         catch (Exception err)
@@ -2649,7 +2650,7 @@ namespace TLIS_Service.Services
         //map ViewModel to Entity
         //update Entity
         //update dynamic attributes
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int? TaskId, int UserId)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int? TaskId, int UserId,string ConnectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4352,157 +4353,7 @@ namespace TLIS_Service.Services
                             }
 
                         }
-                    }
-
-                    //else if (LoadSubType.TLIradioRRU.ToString().ToLower() == TableName.ToLower())
-                    //{
-                    //    int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIradioRRU.ToString().ToLower()).Id;
-                    //    EditRadioRRUViewModel RadioRRUModel = _mapper.Map<EditRadioRRUViewModel>(RadioInstallationViewModel);
-
-                    //    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                    //        x.allLoadInst.radioRRUId == RadioRRUModel.Id : false), x => x.allLoadInst);
-
-                    //    string SiteCode = "";
-
-                    //    if (CivilLoads != null)
-                    //        SiteCode = CivilLoads.SiteCode;
-
-                    //    else
-                    //        SiteCode = null;
-
-                    //    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                    //        !x.allLoadInst.Draft && (x.allLoadInst.radioRRUId != null ?
-                    //            (x.allLoadInst.radioRRU.Name.ToLower() == RadioRRUModel.Name.ToLower() && x.allLoadInst.radioRRUId != RadioRRUModel.Id) : false) : false) &&
-                    //            x.SiteCode.ToLower() == SiteCode.ToLower(),
-                    //            x => x.allLoadInst, x => x.allLoadInst.radioRRU);
-
-                    //    if (CheckName != null)
-                    //        return new Response<ObjectInstAtts>(true, null, null, $"This name [{RadioRRUModel.Name}] is already exists", (int)ApiReturnCode.fail);
-
-                    //    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(RadioRRUModel.DynamicInstAttsValue, TableName);
-
-                    //    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //        return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                    //    string CheckDependencyValidation = CheckDependencyValidationEditVersion(RadioInstallationViewModel, SiteCode, TableName);
-
-                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //        return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                    //    TLIRadioRRU RadioRRUEntity = _mapper.Map<TLIRadioRRU>(RadioRRUModel);
-
-                    //    TLIRadioRRU OldRadioRRU = _unitOfWork.RadioRRURepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RadioRRUModel.Id);
-                    //    if (RadioRRUEntity.HBA == OldRadioRRU.HBA && RadioRRUEntity.CenterHigh == OldRadioRRU.CenterHigh && RadioRRUEntity.SpaceInstallation == OldRadioRRU.SpaceInstallation && RadioRRUEntity.Azimuth != OldRadioRRU.Azimuth && RadioRRUModel.TLIcivilLoads.ReservedSpace == true)
-                    //    {
-                    //        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(RadioRRUModel.TLIcivilLoads.allCivilInstId, OldRadioRRU.Id, RadioRRUEntity.Azimuth, RadioRRUEntity.CenterHigh).Message;
-                    //        if (message != "Success")
-                    //        {
-                    //            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                    //        }
-                    //    }
-                    //    if (RadioRRUEntity.HBA != OldRadioRRU.HBA || RadioRRUEntity.CenterHigh != OldRadioRRU.CenterHigh || RadioRRUEntity.SpaceInstallation != OldRadioRRU.SpaceInstallation && RadioRRUModel.TLIcivilLoads.ReservedSpace == true)
-                    //    {
-                    //        var radioRRULibrar = _dbContext.TLIradioRRULibrary.Where(x => x.Id == RadioRRUEntity.radioRRULibraryId).FirstOrDefault();
-                    //        if (RadioRRUEntity.CenterHigh == 0 || RadioRRUEntity.CenterHigh == null)
-                    //        {
-                    //            RadioRRUEntity.CenterHigh = RadioRRUEntity.HBA + radioRRULibrar.Length / 2;
-                    //        }
-                    //        var message = _unitOfWork.CivilWithLegsRepository.CheckloadsOnCivil(RadioRRUModel.TLIcivilLoads.allCivilInstId, OldRadioRRU.Id, RadioRRUEntity.Azimuth, RadioRRUEntity.CenterHigh).Message;
-                    //        if (message != "Success")
-                    //        {
-                    //            return new Response<ObjectInstAtts>(true, null, null, message, (int)ApiReturnCode.fail);
-                    //        }
-                    //        if (RadioRRUModel.TLIcivilLoads.ReservedSpace == true && (RadioRRUModel.TLIcivilLoads.sideArmId == null || RadioRRUModel.TLIcivilLoads.sideArmId == 0))
-                    //        {
-                    //            RadioRRUEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(RadioRRUModel.TLIcivilLoads.allCivilInstId, TableName, RadioRRUEntity.SpaceInstallation, RadioRRUEntity.CenterHigh, RadioRRUEntity.radioRRULibraryId, RadioRRUEntity.HBA).Data;
-                    //        }
-                    //    }
-                    //    _unitOfWork.RadioRRURepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldRadioRRU, RadioRRUEntity);
-                    //    await _unitOfWork.SaveChangesAsync();
-                    //    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.radioRRUId == RadioRRUModel.Id).Id;
-                    //    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    //    CivilLoads.InstallationDate = RadioRRUModel.TLIcivilLoads.InstallationDate;
-                    //    CivilLoads.ItemOnCivilStatus = RadioRRUModel.TLIcivilLoads.ItemOnCivilStatus;
-                    //    CivilLoads.ItemStatus = RadioRRUModel.TLIcivilLoads.ItemStatus;
-                    //    CivilLoads.ReservedSpace = RadioRRUModel.TLIcivilLoads.ReservedSpace;
-                    //    CivilLoads.sideArmId = RadioRRUModel.TLIcivilLoads.sideArmId;
-                    //    CivilLoads.allCivilInstId = RadioRRUModel.TLIcivilLoads.allCivilInstId;
-                    //    CivilLoads.legId = RadioRRUModel.TLIcivilLoads.legId;
-                    //    CivilLoads.Leg2Id = RadioRRUModel.TLIcivilLoads.Leg2Id;
-
-                    //    _unitOfWork.SaveChanges();
-                    //    if (RadioRRUModel.DynamicInstAttsValue != null ? RadioRRUModel.DynamicInstAttsValue.Count > 0 : false)
-                    //        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(RadioRRUModel.DynamicInstAttsValue, TableNameId, RadioRRUEntity.Id);
-
-                    //}
-                    //else if (LoadSubType.TLIradioOther.ToString().ToLower() == TableName.ToLower())
-                    //{
-                    //    int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIradioOther.ToString().ToLower()).Id;
-                    //    EditRadioOtherViewModel RadioOtherModel = _mapper.Map<EditRadioOtherViewModel>(RadioInstallationViewModel);
-
-                    //    TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                    //        x.allLoadInst.radioOtherId == RadioOtherModel.Id : false), x => x.allLoadInst);
-
-                    //    string SiteCode = "";
-
-                    //    if (CivilLoads != null)
-                    //        SiteCode = CivilLoads.SiteCode;
-
-                    //    else
-                    //        SiteCode = null;
-
-                    //    TLIcivilLoads CheckName = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => !x.Dismantle && (x.allLoadInstId != null ?
-                    //        !x.allLoadInst.Draft && (x.allLoadInst.radioOtherId != null ?
-                    //            (x.allLoadInst.radioOther.Name.ToLower() == RadioOtherModel.Name.ToLower() && x.allLoadInst.radioOtherId != RadioOtherModel.Id) : false) : false) &&
-                    //            x.SiteCode.ToLower() == SiteCode.ToLower(),
-                    //            x => x.allLoadInst, x => x.allLoadInst.radioOther);
-
-                    //    if (CheckName != null)
-                    //        return new Response<GetForAddMWDishInstallationObject>(true, null, null, $"This name [{RadioOtherModel.Name}] is already exists", (int)ApiReturnCode.fail);
-
-                    //    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(RadioOtherModel.DynamicInstAttsValue, TableName);
-
-                    //    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //        return new Response<GetForAddMWDishInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                    //    string CheckDependencyValidation = CheckDependencyValidationEditVersion(RadioInstallationViewModel, SiteCode, TableName);
-
-                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //        return new Response<GetForAddMWDishInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                    //    TLIradioOther RadioOtherEntity = _mapper.Map<TLIradioOther>(RadioOtherModel);
-
-                    //    var OldRadioOther = _unitOfWork.RadioOtherRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RadioOtherModel.Id);
-                    //    if (RadioOtherEntity.HBA != OldRadioOther.HBA || RadioOtherEntity.CenterHigh != OldRadioOther.CenterHigh || RadioOtherEntity.Spaceinstallation != OldRadioOther.Spaceinstallation && RadioOtherModel.TLIcivilLoads.ReservedSpace == true)
-                    //    {
-                    //        var radioOtherLibrary = _dbContext.TLIradioOtherLibrary.Where(x => x.Id == RadioOtherEntity.radioOtherLibraryId).FirstOrDefault();
-                    //        if (RadioOtherEntity.CenterHigh == 0 || RadioOtherEntity.CenterHigh == null)
-                    //        {
-                    //            RadioOtherEntity.CenterHigh = RadioOtherEntity.HBA + radioOtherLibrary.Length / 2;
-                    //        }
-                    //        if (RadioOtherModel.TLIcivilLoads.ReservedSpace == true && (RadioOtherModel.TLIcivilLoads.sideArmId == null || RadioOtherModel.TLIcivilLoads.sideArmId == 0))
-                    //        {
-                    //            RadioOtherEntity.EquivalentSpace = _unitOfWork.CivilWithLegsRepository.Checkspaceload(RadioOtherModel.TLIcivilLoads.allCivilInstId, TableName, RadioOtherEntity.Spaceinstallation, RadioOtherEntity.CenterHigh, RadioOtherEntity.radioOtherLibraryId, RadioOtherEntity.HBA).Data;
-                    //        }
-                    //    }
-                    //    _unitOfWork.RadioOtherRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldRadioOther, RadioOtherEntity);
-                    //    await _unitOfWork.SaveChangesAsync();
-                    //    var allloads = _unitOfWork.AllLoadInstRepository.GetWhereFirst(x => x.radioOtherId == RadioOtherModel.Id).Id;
-                    //    var civilloads = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allLoadInstId == allloads);
-                    //    CivilLoads.InstallationDate = RadioOtherModel.TLIcivilLoads.InstallationDate;
-                    //    CivilLoads.ItemOnCivilStatus = RadioOtherModel.TLIcivilLoads.ItemOnCivilStatus;
-                    //    CivilLoads.ItemStatus = RadioOtherModel.TLIcivilLoads.ItemStatus;
-                    //    CivilLoads.ReservedSpace = RadioOtherModel.TLIcivilLoads.ReservedSpace;
-                    //    CivilLoads.sideArmId = RadioOtherModel.TLIcivilLoads.sideArmId;
-                    //    CivilLoads.allCivilInstId = RadioOtherModel.TLIcivilLoads.allCivilInstId;
-                    //    CivilLoads.legId = RadioOtherModel.TLIcivilLoads.legId;
-                    //    CivilLoads.Leg2Id = RadioOtherModel.TLIcivilLoads.Leg2Id;
-
-                    //    _unitOfWork.SaveChanges();
-                    //    if (RadioOtherModel.DynamicInstAttsValue != null ? RadioOtherModel.DynamicInstAttsValue.Count > 0 : false)
-                    //        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(RadioOtherModel.DynamicInstAttsValue, TableNameId, RadioOtherEntity.Id);
-
-                    //}
+                    }                    
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -4523,6 +4374,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_RADIO_ANTENNA_VIEW"));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
