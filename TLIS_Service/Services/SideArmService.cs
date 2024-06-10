@@ -3107,7 +3107,8 @@ namespace TLIS_Service.Services
                                 }
                                 if (SideArmViewModel.installationConfig?.legId.Count > 1)
                                 {
-                                    CivilLoads.legId = SideArmViewModel.installationConfig?.legId[1] ?? null;
+                                    CivilLoads.legId = SideArmViewModel.installationConfig?.legId[0] ?? null;
+                                    CivilLoads.Leg2Id = SideArmViewModel.installationConfig?.legId[1] ?? null;
 
                                 }
                                 else
