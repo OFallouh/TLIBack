@@ -7997,13 +7997,12 @@ namespace TLIS_Service.Services
                 var RadioAntenna = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioId
                 && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                 x => x.allLoadInst, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioAntenna.radioAntennaLibrary,
-                x => x.allLoadInst.mwDish.RepeaterType, x => x.allLoadInst.mwDish.owner, x => x.allLoadInst.mwDish.PolarityOnLocation,
-                x => x.allLoadInst.radioAntenna.installationPlace, x => x.allLoadInst.radioAntenna.owner
+                x => x.allLoadInst.radioAntenna.owner, x => x.allLoadInst.radioAntenna.installationPlace
                , x => x.sideArm, x => x.leg);
 
                 if (RadioAntenna != null)
                 {
-                    EditRadioAntennaLibraryAttributes RadioAntennaLibrary = _mapper.Map<EditRadioAntennaLibraryAttributes>(RadioAntenna.allLoadInst.mwDish.MwDishLibrary);
+                    EditRadioAntennaLibraryAttributes RadioAntennaLibrary = _mapper.Map<EditRadioAntennaLibraryAttributes>(RadioAntenna.allLoadInst.radioAntenna.radioAntennaLibrary);
 
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetLibrary(TablesNames.TLIradioAntennaLibrary.ToString(), RadioAntennaLibrary, null).ToList();
@@ -8151,7 +8150,7 @@ namespace TLIS_Service.Services
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
                                     Key = "legId",
-                                    Value = Leg1.Id,
+                                    Value = sectionsLegTypeViewModel,
                                     Label = "Select Leg",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
