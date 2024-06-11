@@ -6392,7 +6392,7 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
-                    List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
+               
                     var NumberOfLeg = LibraryAttributes.FirstOrDefault(x => x.Key == "NumberOfLegs");
                     if (NumberOfLeg != null)
                     {
@@ -6420,7 +6420,7 @@ namespace TLIS_Service.Services
                             var attributes = _unitOfWork.AttributeActivatedRepository
                                 .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
                                 .ToList();
-
+                            List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
                             foreach (var att in attributes)
                             {
                                 BaseInstAttViews baseInstAttView = new BaseInstAttViews
@@ -6473,7 +6473,7 @@ namespace TLIS_Service.Services
                             var attributes = _unitOfWork.AttributeActivatedRepository
                                 .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
                                 .ToList();
-
+                            List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
                             foreach (var att in attributes)
                             {
                                 BaseInstAttViews baseInstAttView = new BaseInstAttViews
