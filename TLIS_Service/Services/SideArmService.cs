@@ -4293,7 +4293,7 @@ namespace TLIS_Service.Services
                                             return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
 
-                                            SideArm.Name = civilwithlegname.allCivilInst.civilWithLegs.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
+                                            SideArm.Name = civilwithlegname.allCivilInst.civilNonSteel.Name + " " + addSideArms.installationAttributes.HeightBase+"HE" + " " + addSideArms.installationAttributes.Azimuth+"AZ";
 
                                             var CheckName = _dbContext.MV_SIDEARM_VIEW
                                                .Where(x => x.Name != null &&
