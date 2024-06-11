@@ -1898,7 +1898,7 @@ namespace TLIS_Service.Services
                     var ItemStatus = new BaseInstAttViews()
                     {
                         Key = "ItemStatus",
-                        Value = sideArm.InstallationDate,
+                        Value = sideArm.ItemStatus,
                         DataType = "string",
                         Label = "ItemStatus",
 
