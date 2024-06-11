@@ -180,7 +180,7 @@ namespace TLIS_Service.Services
 
                             if (addSideArmLibraryViewModel.dynamicAttributes !=null)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,addSideArmLibraryViewModel.dynamicAttributes, TableNameEntity.Id, tLIsideArmLibrary.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,addSideArmLibraryViewModel.dynamicAttributes, TableNameEntity.Id, tLIsideArmLibrary.Id,connectionString);
                             }
                             transaction.Complete();
                             tran.Commit();
@@ -945,7 +945,7 @@ namespace TLIS_Service.Services
 
                 if (editSideArmLibraryViewModel.dynamicAttributes.Count > 0)
                 {
-                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editSideArmLibraryViewModel.dynamicAttributes, TableNames.Id, tLIsideArmLibrary.Id, UserId, resultId, SidArm.Id);
+                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editSideArmLibraryViewModel.dynamicAttributes,connectionString, TableNames.Id, tLIsideArmLibrary.Id, UserId, resultId, SidArm.Id);
                 }
                 await _unitOfWork.SaveChangesAsync();
                 Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));

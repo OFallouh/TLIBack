@@ -1821,11 +1821,13 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                       
+                                                        if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                            }
                                                         }
 
                                                     }
@@ -2007,11 +2009,12 @@ namespace TLIS_Service.Services
 
                                                                 }
 
-                                                                if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                                if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
                                                                 {
-
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
-
+                                                                    foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                                    {
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                    }
                                                                 }
                                                             }
                                                             else
@@ -2119,11 +2122,12 @@ namespace TLIS_Service.Services
 
                                                                 }
 
-                                                                if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                                if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
                                                                 {
-
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
-
+                                                                    foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                                    {
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                    }
                                                                 }
 
                                                             }
@@ -2302,11 +2306,12 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                            if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
                                                             {
-
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
-
+                                                                foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                                {
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                }
                                                             }
                                                         }
 
@@ -2416,11 +2421,12 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                            if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
                                                             {
-
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
-
+                                                                foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                                {
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                }
                                                             }
 
                                                         }
@@ -2574,11 +2580,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                        if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                            }
                                                         }
 
                                                     }
@@ -2807,7 +2814,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
 
                                                 }
                                                 if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
@@ -2915,8 +2922,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                 }
                                                 if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                 {
@@ -3033,8 +3039,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                 }
                                                 if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                 {
@@ -3135,8 +3140,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                 }
                                             }
                                             else
@@ -3312,10 +3316,8 @@ namespace TLIS_Service.Services
 
 
                                                             }
-
                                                             if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                         }
                                                         if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                         {
@@ -3423,8 +3425,7 @@ namespace TLIS_Service.Services
                                                             }
 
                                                             if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                         }
                                                         if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                         {
@@ -3541,8 +3542,7 @@ namespace TLIS_Service.Services
                                                             }
 
                                                             if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                         }
                                                         if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                         {
@@ -3643,8 +3643,7 @@ namespace TLIS_Service.Services
                                                             }
 
                                                             if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                         }
 
                                                     }
@@ -3821,8 +3820,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                     }
                                                     if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                     {
@@ -3930,8 +3928,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                     }
                                                     if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                     {
@@ -4048,8 +4045,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                     }
                                                     if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                     {
@@ -4150,8 +4146,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                                     }
 
 
@@ -4314,8 +4309,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id);
-
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
 
                                                     }
 

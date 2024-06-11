@@ -3504,7 +3504,7 @@ namespace TLIS_Service.Services
 
                                 if (MW_RFULibraryViewModel.dynamicAttribute.Count > 0)
                                 {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, MW_RFULibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_RFULibraryEntity.Id);
+                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, MW_RFULibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_RFULibraryEntity.Id,connectionString);
                                 }
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_RFULibraryEntity.Id, "Add", "TLImwRFULibrary");
 
@@ -3540,7 +3540,7 @@ namespace TLIS_Service.Services
 
                                 if (MW_OtherLibraryViewModel.dynamicAttribute.Count > 0)
                                 {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, MW_OtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_OtherLibraryEntity.Id);
+                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, MW_OtherLibraryViewModel.dynamicAttribute, TableNameEntity.Id, MW_OtherLibraryEntity.Id,connectionString);
                                 }
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_OtherLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwOtherLibrary.ToString().ToLower());
                             }
@@ -3607,7 +3607,7 @@ namespace TLIS_Service.Services
 
                                 if (addMWDishLibraryObject.DynamicAttributes.Count > 0)
                                 {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWDishLibraryObject.DynamicAttributes, TableNameEntity.Id, MW_DishLibraryEntity.Id);
+                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWDishLibraryObject.DynamicAttributes, TableNameEntity.Id, MW_DishLibraryEntity.Id,connectionString);
                                 }
                                 _unitOfWork.TablesHistoryRepository.AddHistory(MW_DishLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
 
@@ -3681,7 +3681,7 @@ namespace TLIS_Service.Services
 
                             if (aDDMWODULibraryObject.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, aDDMWODULibraryObject.DynamicAttributes, TableNameEntity.Id, MW_ODULibraryEntity.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, aDDMWODULibraryObject.DynamicAttributes, TableNameEntity.Id, MW_ODULibraryEntity.Id,connectionString);
                             }
                             _unitOfWork.TablesHistoryRepository.AddHistory(MW_ODULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
 
@@ -3751,7 +3751,7 @@ namespace TLIS_Service.Services
 
                             if (addMWBULibraryObject.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWBULibraryObject.DynamicAttributes, TableNameEntity.Id, MW_BULibraryEntity.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWBULibraryObject.DynamicAttributes, TableNameEntity.Id, MW_BULibraryEntity.Id,connectionString);
                             }
                             _unitOfWork.TablesHistoryRepository.AddHistory(MW_BULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
 
@@ -4821,7 +4821,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName)
+        public async Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName,string connectionString)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -4936,7 +4936,7 @@ namespace TLIS_Service.Services
 
                         if (editMWBULibrary.dynamicAttributes != null ? editMWBULibrary.dynamicAttributes.Count > 0 : false)
                         {
-                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWBULibrary.dynamicAttributes, TableNameEntity.Id, MWBULibraryEntites.Id, userId, resultId, MWBULegLib.Id);
+                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWBULibrary.dynamicAttributes,connectionString, TableNameEntity.Id, MWBULibraryEntites.Id, userId, resultId, MWBULegLib.Id);
                         }
 
                         await _unitOfWork.SaveChangesAsync();
@@ -5063,7 +5063,7 @@ namespace TLIS_Service.Services
 
                     if (editMWDishLibraryObject.DynamicAttributes != null ? editMWDishLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWDishLibraryObject.DynamicAttributes, TableNameEntity.Id, MWDishLibraryEntites.Id, userId, resultId, MWDishLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWDishLibraryObject.DynamicAttributes,connectionString, TableNameEntity.Id, MWDishLibraryEntites.Id, userId, resultId, MWDishLegLib.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -5194,7 +5194,7 @@ namespace TLIS_Service.Services
 
                     if (editMWODULibraryObject.DynamicAttributes != null ? editMWODULibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWODULibraryObject.DynamicAttributes, TableNameEntity.Id, MWODULibraryEntites.Id, userId, resultId, MWODULegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWODULibraryObject.DynamicAttributes,connectionString, TableNameEntity.Id, MWODULibraryEntites.Id, userId, resultId, MWODULegLib.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();

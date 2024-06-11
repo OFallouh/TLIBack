@@ -3137,12 +3137,12 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
 
                                                 }
-
-                                                if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                 {
-
-                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                    foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                    {
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                    }
                                                 }
                                             }
                                             else
@@ -3225,11 +3225,12 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                 {
-
-                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                    foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                    {
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                    }
                                                 }
                                             }
                                             else
@@ -3312,11 +3313,12 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                 {
-
-                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                    foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                    {
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                    }
                                                 }
                                             }
                                         }
@@ -3481,11 +3483,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                        if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                            }
                                                         }
                                                     }
                                                     else
@@ -3577,11 +3580,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                        if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -3752,11 +3756,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                        if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                            }
                                                         }
                                                     }
                                                     else
@@ -3848,11 +3853,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                        if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -3998,13 +4004,13 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (AddMW_ODU.dynamicAttribute.Count > 0)
+                                                    if (AddMW_ODU.dynamicAttribute != null ? AddMW_ODU.dynamicAttribute.Count > 0 : false)
                                                     {
-
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_ODU.dynamicAttribute, TableNameEntity.Id, mwODU.Id);
-
+                                                        foreach (var DynamicAttInstValue in AddMW_ODU.dynamicAttribute)
+                                                        {
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwODU.Id, ConnectionString);
+                                                        }
                                                     }
-
                                                 }
                                                 else
                                                 {
@@ -4348,11 +4354,12 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                            }
                                                         }
 
                                                     }
@@ -4497,12 +4504,12 @@ namespace TLIS_Service.Services
                                                             _unitOfWork.SaveChanges();
 
                                                         }
-
-                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                            }
                                                         }
 
                                                     }
@@ -4741,14 +4748,12 @@ namespace TLIS_Service.Services
                                                             _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
                                                             _unitOfWork.SaveChanges();
                                                         }
-
-
-
-                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                            }
                                                         }
 
 
@@ -4921,11 +4926,12 @@ namespace TLIS_Service.Services
                                                             _unitOfWork.SaveChanges();
                                                         }
 
-                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                            }
                                                         }
 
                                                     }
@@ -5148,11 +5154,12 @@ namespace TLIS_Service.Services
                                                             _unitOfWork.SaveChanges();
                                                         }
 
-                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                            }
                                                         }
 
 
@@ -5322,11 +5329,12 @@ namespace TLIS_Service.Services
                                                             _unitOfWork.SaveChanges();
                                                         }
 
-                                                        if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                        if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                            foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                            {
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                            }
                                                         }
 
 
@@ -5532,11 +5540,12 @@ namespace TLIS_Service.Services
                                                         _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
                                                         _unitOfWork.SaveChanges();
                                                     }
-                                                    if (AddMW_Dish.dynamicAttribute.Count > 0)
+                                                    if (AddMW_Dish.dynamicAttribute != null ? AddMW_Dish.dynamicAttribute.Count > 0 : false)
                                                     {
-
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddMW_Dish.dynamicAttribute, TableNameEntity.Id, mwDish.Id);
-
+                                                        foreach (var DynamicAttInstValue in AddMW_Dish.dynamicAttribute)
+                                                        {
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, mwDish.Id, ConnectionString);
+                                                        }
                                                     }
                                                 }
                                                 else
@@ -5942,7 +5951,7 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                         }
@@ -6101,7 +6110,7 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                         }
@@ -6266,9 +6275,8 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
                                             }
-
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                         }
@@ -6413,7 +6421,7 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                         }
@@ -6652,8 +6660,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
-
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
                                     }
                                     else if (MWInstallationViewModel.civilLoads.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
@@ -6836,7 +6843,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                     }
@@ -7029,7 +7036,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                     }
@@ -7206,7 +7213,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                     }
@@ -7428,7 +7435,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
 
@@ -7619,8 +7626,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
-
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
                                     }
@@ -7811,7 +7817,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
 
 
@@ -7989,7 +7995,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
                                     }
                                     else
                                     {
@@ -8194,7 +8200,7 @@ namespace TLIS_Service.Services
                                         _unitOfWork.SaveChanges();
                                     }
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id);
+                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
                                 }
                                 else
@@ -8327,7 +8333,7 @@ namespace TLIS_Service.Services
                                     }
 
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
 
 
                                 }
@@ -8411,7 +8417,7 @@ namespace TLIS_Service.Services
                                     }
 
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                 }
                                 else
                                 {
@@ -8493,8 +8499,7 @@ namespace TLIS_Service.Services
                                     }
 
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-
+                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
 
                                 }
                                 else
@@ -8669,8 +8674,7 @@ namespace TLIS_Service.Services
                                             }
 
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                         }
                                         else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
@@ -8786,7 +8790,7 @@ namespace TLIS_Service.Services
                                             }
 
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                         }
                                         else if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
@@ -8897,10 +8901,9 @@ namespace TLIS_Service.Services
                                             }
 
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
 
-
-                                    }
+                                        }
                                         else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
@@ -8997,8 +9000,7 @@ namespace TLIS_Service.Services
                                             }
 
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                         }
                                     }
                                     else
@@ -9170,9 +9172,8 @@ namespace TLIS_Service.Services
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                             await _unitOfWork.SaveChangesAsync();
                                         }
-
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                     }
                                     else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
@@ -9288,8 +9289,7 @@ namespace TLIS_Service.Services
                                         }
 
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                     }
                                     else if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
@@ -9398,10 +9398,9 @@ namespace TLIS_Service.Services
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                             await _unitOfWork.SaveChangesAsync();
                                         }
-
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-                                        }
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
+                                    }
                                     else if (TLIMWODU.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
@@ -9498,8 +9497,8 @@ namespace TLIS_Service.Services
                                         }
 
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-                                        }
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
+                                    }
                                     else
                                     {
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWDish to installed this MWODU", (int)ApiReturnCode.fail);
@@ -9652,9 +9651,8 @@ namespace TLIS_Service.Services
                                     }
 
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
-                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id);
-
-                                        else
+                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
+                                    else
                                     {
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWDish to installed this MWODU", (int)ApiReturnCode.fail);
                                     }

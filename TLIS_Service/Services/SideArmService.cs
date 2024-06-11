@@ -3130,7 +3130,7 @@ namespace TLIS_Service.Services
                         }
                         int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
                         if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count() > 0 : false)
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id);
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id, ConnectionString);
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3978,7 +3978,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
                                                     {
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id, ConnectionString);
                                                     }
                                                 }
                                             }
@@ -4091,7 +4091,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
                                                     {
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id, ConnectionString);
                                                     }
                                                 }
                                             }
@@ -4230,7 +4230,7 @@ namespace TLIS_Service.Services
                                             {
                                                 foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
                                                 {
-                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id, ConnectionString);
                                                 }
                                             }
                                         }
@@ -4366,7 +4366,7 @@ namespace TLIS_Service.Services
                                             {
                                                 foreach (var DynamicAttInstValue in addSideArms.dynamicAttribute)
                                                 {
-                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id);
+                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, SideArm.Id, ConnectionString);
                                                 }
                                             }
                                         }

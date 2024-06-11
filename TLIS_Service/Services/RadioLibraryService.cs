@@ -1842,7 +1842,7 @@ namespace TLIS_Service.Services
                                 AddLogisticalItemWithRadio(LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id);
                                 if (addRadioAntenna.DynamicAttributes.Count > 0)
                                 {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addRadioAntenna.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id);
+                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addRadioAntenna.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id,connectionString);
                                 }
                                 _unitOfWork.TablesHistoryRepository.AddHistory(radioAntennaLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
                             }
@@ -1972,7 +1972,7 @@ namespace TLIS_Service.Services
 
                             if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, connectionString);
                             }
                             _unitOfWork.TablesHistoryRepository.AddHistory(radioAntennaLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioAntennaLibrary.ToString().ToLower());
                             
@@ -2034,7 +2034,7 @@ namespace TLIS_Service.Services
 
                             if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id, connectionString);
                             }
                             _unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioRRULibrary.ToString().ToLower());
 
@@ -3312,7 +3312,7 @@ namespace TLIS_Service.Services
 
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, UserId, resultId, radioAntennaLibrary.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, connectionString ,TableNameEntity.Id, radioAntennaLibrary.Id, UserId, resultId, radioAntennaLibrary.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -3421,7 +3421,7 @@ namespace TLIS_Service.Services
 
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id, UserId, resultId, radioRRULibrary.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, connectionString, TableNameEntity.Id, radioRRULibrary.Id, UserId, resultId, radioRRULibrary.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();

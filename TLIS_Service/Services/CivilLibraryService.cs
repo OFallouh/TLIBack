@@ -171,7 +171,7 @@ namespace TLIS_Service.Services
 
                                 if (AddCivilWithLegsLibraryObject.dynamicAttributes != null ? AddCivilWithLegsLibraryObject.dynamicAttributes.Count > 0 : false)
                                 {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegEntites.Id);
+                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegEntites.Id, connectionString);
                                 }
                                 
                                 
@@ -265,7 +265,7 @@ namespace TLIS_Service.Services
 
                             if (AddCivilWithoutLegsLibraryObject.dynamicAttributes != null ? AddCivilWithoutLegsLibraryObject.dynamicAttributes.Count > 0 : false)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,AddCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithoutLegEntites.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId,AddCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithoutLegEntites.Id, connectionString);
                             }
 
                             transaction.Complete();
@@ -324,7 +324,7 @@ namespace TLIS_Service.Services
 
                             if (AddCivilNonSteelLibraryObject.dynamicAttributes != null ? AddCivilNonSteelLibraryObject.dynamicAttributes.Count > 0 : false)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, AddCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilNonSteelEntites.Id);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, AddCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilNonSteelEntites.Id, connectionString);
                             }
 
                             transaction.Complete();
@@ -1702,7 +1702,7 @@ namespace TLIS_Service.Services
 
                     if (editCivilWithLegsLibrary.dynamicAttributes != null ? editCivilWithLegsLibrary.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id,userId, resultId, CivilWithLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithLegsLibrary.dynamicAttributes, connectionString, TableNameEntity.Id, CivilWithLegLibraryEntites.Id,userId, resultId, CivilWithLegLib.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -1851,7 +1851,7 @@ namespace TLIS_Service.Services
 
                     if (editCivilWithoutLegsLibraryObject.dynamicAttributes != null ? editCivilWithoutLegsLibraryObject.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, userId, resultId, CivilWithLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, connectionString, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, userId, resultId, CivilWithLegLib.Id);
                     }
                     civilLibId = CivilWithLegLibraryEntites.Id;
                     tablesNameId = TableNameEntity.Id;
@@ -1967,7 +1967,7 @@ namespace TLIS_Service.Services
 
                     if (editCivilNonSteelLibraryObject.dynamicAttributes != null ? editCivilNonSteelLibraryObject.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilNonSteelLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilNonSteelibraryEntites.Id, userId, resultId, CivilNonSteelLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilNonSteelLibraryObject.dynamicAttributes, connectionString, TableNameEntity.Id, CivilNonSteelibraryEntites.Id, userId, resultId, CivilNonSteelLib.Id);
                     }
                     civilLibId = CivilNonSteelibraryEntites.Id;
                     tablesNameId = TableNameEntity.Id;
