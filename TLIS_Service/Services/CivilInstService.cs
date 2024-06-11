@@ -3303,6 +3303,7 @@ namespace TLIS_Service.Services
                                 var letter = legLetters[i];
                                 var oldLeg = oldLegs.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
                                 var newLegInfo = editCivilWithLegsInstallationObject.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
+                                var newLegInfoFirst = editCivilWithLegsInstallationObject.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
 
                                 if (newLegInfo != null && oldLeg != null)
                                 {
@@ -3310,13 +3311,16 @@ namespace TLIS_Service.Services
                                     {
                                         return new Response<ObjectInstAtts>(false, null, null, "First LegAzimuth must be between 0 and 120.", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
-
+                                    if(i==1 || i == 2)
+                                    {
+                                        newLegInfo.LegAzimuth = 0;
+                                    }
                                     var oldLegEntity = _unitOfWork.LegRepository.GetAllAsQueryable()
                                         .AsNoTracking()
                                         .FirstOrDefault(x => x.Id == oldLeg.Id);
 
                                     oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} {newLegInfo.LegLetter}";
-                                    oldLeg.LegAzimuth = newLegInfo.LegAzimuth + azimuthOffsets[i];
+                                    oldLeg.LegAzimuth = newLegInfoFirst.LegAzimuth + azimuthOffsets[i];
                                     oldLeg.LegLetter = newLegInfo.LegLetter;
                                     oldLeg.Notes = newLegInfo.Notes;
                                     oldLeg.CivilWithLegInstId = civilWithLegsEntity.Id;
@@ -3337,20 +3341,23 @@ namespace TLIS_Service.Services
                                 var letter = legLetters[i];
                                 var oldLeg = oldLegs.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
                                 var newLegInfo = editCivilWithLegsInstallationObject.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == letter);
-
+                                var newLegInfoFirst = editCivilWithLegsInstallationObject.legsInfo.FirstOrDefault(x => x.LegLetter.ToLower() == "a");
                                 if (newLegInfo != null && oldLeg != null)
                                 {
                                     if (i == 0 && (newLegInfo.LegAzimuth < 0 || newLegInfo.LegAzimuth > 90))
                                     {
                                         return new Response<ObjectInstAtts>(false, null, null, "First LegAzimuth must be between 0 and 90.", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
-
+                                    if (i == 1 || i == 2)
+                                    {
+                                        newLegInfo.LegAzimuth = 0;
+                                    }
                                     var oldLegEntity = _unitOfWork.LegRepository.GetAllAsQueryable()
                                         .AsNoTracking()
                                         .FirstOrDefault(x => x.Id == oldLeg.Id);
 
                                     oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} {newLegInfo.LegLetter}";
-                                    oldLeg.LegAzimuth = newLegInfo.LegAzimuth + azimuthOffsets[i];
+                                    oldLeg.LegAzimuth = newLegInfoFirst.LegAzimuth + azimuthOffsets[i];
                                     oldLeg.LegLetter = newLegInfo.LegLetter;
                                     oldLeg.Notes = newLegInfo.Notes;
                                     oldLeg.CivilWithLegInstId = civilWithLegsEntity.Id;
