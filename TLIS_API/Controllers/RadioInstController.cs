@@ -133,9 +133,9 @@ namespace TLIS_API.Controllers
         // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetRadioAntennaInstallationById")]
         [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
-        public IActionResult GetMW_DishById(int MW_Dish)
+        public IActionResult GetRadioAntennaInstallationById(int RadioId)
         {
-            var response = _unitOfWorkService.RadioInstService.GetRadioAntennaInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString());
+            var response = _unitOfWorkService.RadioInstService.GetRadioAntennaInstallationById(RadioId, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

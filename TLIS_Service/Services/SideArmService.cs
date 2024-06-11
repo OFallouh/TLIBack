@@ -3116,7 +3116,7 @@ namespace TLIS_Service.Services
                                     CivilLoads.Leg2Id = null;
                                 }
                             }
-                            else if (SideArmViewModel.installationConfig?.legId == null && SideArmViewModel.installationConfig?.legId?.Count == 0)
+                            else if (SideArmViewModel.installationConfig?.legId == null)
                             {
                                 CivilLoads.legId = null;
                                 CivilLoads.Leg2Id = null;

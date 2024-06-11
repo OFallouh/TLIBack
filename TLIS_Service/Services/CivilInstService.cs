@@ -6392,7 +6392,7 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
-
+                    List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
                     var NumberOfLeg = LibraryAttributes.FirstOrDefault(x => x.Key == "NumberOfLegs");
                     if (NumberOfLeg != null)
                     {
@@ -6412,13 +6412,11 @@ namespace TLIS_Service.Services
 
                     if (NumberofNumber == 3)
                     {
-                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).ToList();
+                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).OrderBy(x => x.LegLetter.ToLower()).ToList();
 
                         foreach (var i in Enumerable.Range(0, NumberofNumber))
                         {
-                            List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
-
-
+                         
                             var attributes = _unitOfWork.AttributeActivatedRepository
                                 .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
                                 .ToList();
@@ -6452,7 +6450,6 @@ namespace TLIS_Service.Services
                                         baseInstAttView.Value = CivilWithLegsInst?.allCivilInst?.civilWithLegs?.Name + " " + legLetters[i];
                                         break;
                                     case "notes":
-
                                         baseInstAttView.Value = tliLegData[i].Notes;
                                         break;
                                     default:
@@ -6466,15 +6463,13 @@ namespace TLIS_Service.Services
                         }
                         objectInst.LegsInfo = baseInstAttViewsList;
                     }
+
                     else if (NumberofNumber == 4)
                     {
-                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).ToList();
+                        var tliLegData = _dbContext.TLIleg.Where(x => x.CivilWithLegInstId == CivilInsId).OrderBy(x=>x.LegLetter.ToLower()).ToList();
 
                         foreach (var i in Enumerable.Range(0, NumberofNumber))
                         {
-                            List<BaseInstAttViews> instanceAttributes = new List<BaseInstAttViews>();
-
-
                             var attributes = _unitOfWork.AttributeActivatedRepository
                                 .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIleg.ToString(), null, "CivilWithLegInstId")
                                 .ToList();

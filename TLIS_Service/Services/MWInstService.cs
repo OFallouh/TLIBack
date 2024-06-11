@@ -17763,8 +17763,7 @@ namespace TLIS_Service.Services
                                 FKitem.Key = "installationPlaceId";
                                 FKitem.Label = "Select Installation Place";
                                 FKitem.Value = _mapper.Map<InstallationPlaceViewModel>(MWDish.allLoadInst.mwDish.InstallationPlace);
-                                FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_unitOfWork.InstallationPlaceRepository
-                                    .GetWhere(x => x.Id == MWDish.allLoadInst.mwDish.InstallationPlaceId));
+                                FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_unitOfWork.InstallationPlaceRepository);
                                 break;
 
 
