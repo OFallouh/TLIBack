@@ -18005,7 +18005,7 @@ namespace TLIS_Service.Services
                                 sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModelss);
                             }
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "SideArmd";
+                            baseInstAttViews.Key = "SideArmId";
                             baseInstAttViews.Value = ints;
                             baseInstAttViews.Label = "Select SideArm'";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
@@ -18015,7 +18015,7 @@ namespace TLIS_Service.Services
                         if (MWDish.sideArm == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "SideArmd";
+                            baseInstAttViews.Key = "SideArmId";
                             baseInstAttViews.Value = null;
                             baseInstAttViews.Label = "Select SideArm'";
                             baseInstAttViews.Options = new object[0];

@@ -3742,7 +3742,7 @@ namespace TLIS_Service.Services
                                         return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                 }
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilWithLegs", editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId, civilWithoutLegsEntity.SpaceInstallation, null).Message;
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilWithoutLeg", editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId, civilWithoutLegsEntity.SpaceInstallation, null).Message;
                                 if (CheckSpace != "Success")
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3840,15 +3840,15 @@ namespace TLIS_Service.Services
                     var CivilNonSteelInst = _unitOfWork.CivilNonSteelRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.CivilNonsteelLibrary)
                         .FirstOrDefault(x => x.Id == editCivilNonSteelInstallationObject.installationAttributes.Id);
 
-                    string SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
+                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
                         ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == editCivilNonSteelInstallationObject.installationAttributes.Id : false) &&
-                            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst).SiteCode;
+                            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst);
                     if(SiteCode != null) { 
                     TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.Id != civilNonSteelEntity.Id &&
                       !x.Dismantle && !x.allCivilInst.Draft &&
                           (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteelEntity.Name.ToLower() : false
                           &&
-                          x.SiteCode.ToLower() == SiteCode.ToLower()),
+                          x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()),
                           x => x.allCivilInst, x => x.allCivilInst.civilNonSteel).FirstOrDefault();
                         if (CheckName != null)
                             return new Response<ObjectInstAtts>(true, null, null, $"The Name {civilNonSteelEntity.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3857,39 +3857,61 @@ namespace TLIS_Service.Services
                     {
                         return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    if (civilNonSteelEntity.SpaceInstallation != CivilNonSteelInst.SpaceInstallation && CivilNonSteelInst.SpaceInstallation != 0 && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
-                    {
+                        if (SiteCode.ReservedSpace == true && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
+                        {
+                            if (civilNonSteelEntity.SpaceInstallation != CivilNonSteelInst.SpaceInstallation && CivilNonSteelInst.SpaceInstallation == 0 && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
+                            {
 
-                        var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
-                        var tLIsite = OldValueSite;
-                        var Site = _dbContext.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
-                        Site.ReservedSpace = Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
-                        Site.ReservedSpace = Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
-                        _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
-                        _dbContext.SaveChanges();
-                    }
-                    if (civilNonSteelEntity.SpaceInstallation != CivilNonSteelInst.SpaceInstallation && CivilNonSteelInst.SpaceInstallation == 0 && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
-                    {
+                                var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
+                                var tLIsite = OldValueSite;
+                                var Site = _dbContext.TLIsite.Where(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).AsNoTracking().FirstOrDefault();
+                                Site.ReservedSpace = Site.ReservedSpace - CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary;
+                                Site.ReservedSpace = Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
+                                _dbContext.SaveChanges();
+                            }
+                        }
+                        else if (SiteCode.ReservedSpace == true && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == false)
+                        {
+                            var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
+                                 .FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
+                            SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
+                            _unitOfWork.SiteRepository.UpdateWithHistory(userId, OldSite, SiteCode.Site);
+                            _dbContext.SaveChanges();
+                        }
+                        else if (SiteCode.ReservedSpace == false && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
+                        {
+                            if (editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
+                            {
+                                if (civilNonSteelEntity.SpaceInstallation == 0)
+                                {
+                                    if (CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary == 0)
+                                    {
+                                        civilNonSteelEntity.SpaceInstallation = CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary;
+                                    }
+                                    else
+                                    {
+                                        return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilNonSteel", editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId, civilNonSteelEntity.SpaceInstallation, null).Message;
+                                if (CheckSpace != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+                        }
+                        //string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilNonSteelInstallationObject.dynamicAttribute, CivilType, null);
 
-                        var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
-                        var tLIsite = OldValueSite;
-                        var Site = _dbContext.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
-                        Site.ReservedSpace = Site.ReservedSpace - CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary;
-                        Site.ReservedSpace = Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
-                        _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
-                        _dbContext.SaveChanges();
-                    }
-                    //string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilNonSteelInstallationObject.dynamicAttribute, CivilType, null);
+                        //if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
+                        //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    //if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
-                    //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
+                        //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersions(editCivilNonSteelInstallationObject, CivilType, SiteCode, null);
 
-                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersions(editCivilNonSteelInstallationObject, CivilType, SiteCode, null);
-
-                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //civilNonSteelEntity.CivilNonSteelLibraryId = editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId;
-                    civilNonSteelEntity.CivilNonSteelLibraryId = editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId;
+                        //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                        //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                        //civilNonSteelEntity.CivilNonSteelLibraryId = editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId;
+                        civilNonSteelEntity.CivilNonSteelLibraryId = editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId;
                     _unitOfWork.CivilNonSteelRepository.UpdateWithHistory(userId, CivilNonSteelInst, civilNonSteelEntity);
                     _unitOfWork.SaveChanges();
                     ////////////////////////UpdateCivilSiteDate=////////////////////////
