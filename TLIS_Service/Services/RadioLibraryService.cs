@@ -2019,7 +2019,7 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                            var CheckModel = _unitOfWork.RadioAntennaLibraryRepository
+                            var CheckModel = _unitOfWork.RadioRRULibraryRepository
                                 .GetWhereFirst(x => x.Model == radioRRULibrary.Model && !x.Deleted);
 
                             if (CheckModel != null)
