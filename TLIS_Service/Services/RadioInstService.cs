@@ -48,6 +48,7 @@ using static TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs.EditRadioAntennaLibrary
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.SectionsLegTypeDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.EditRadioRRULibraryObject;
 
 namespace TLIS_Service.Services
 {
@@ -7987,16 +7988,16 @@ namespace TLIS_Service.Services
                 GetForAddMWDishInstallationObject objectInst = new GetForAddMWDishInstallationObject();
                 List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
 
-                EditRadioAntennaLibraryAttributes RadioAntennaLibrary = _mapper.Map<EditRadioAntennaLibraryAttributes>(_unitOfWork.RadioAntennaLibraryRepository
+                EditRadioRRULibraryAttributes RadioRRULibrary = _mapper.Map<EditRadioRRULibraryAttributes>(_unitOfWork.RadioRRULibraryRepository
                     .GetIncludeWhereFirst(x => x.Id == LibraryID));
-                if (RadioAntennaLibrary != null)
+                if (RadioRRULibrary != null)
                 {
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                        .GetAttributeActivatedGetForAdd(TablesNames.TLIradioAntennaLibrary.ToString(), RadioAntennaLibrary, null).ToList();
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLIradioRRULibrary.ToString(), RadioRRULibrary, null).ToList();
 
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.Radio.ToString(), Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString(), RadioAntennaLibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.Radio.ToString(), Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString(), RadioRRULibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 

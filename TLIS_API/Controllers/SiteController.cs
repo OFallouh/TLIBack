@@ -127,7 +127,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetAllLocationTypesForSiteOperation();
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getAllSites")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
         public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
