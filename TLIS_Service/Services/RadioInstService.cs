@@ -1721,7 +1721,7 @@ namespace TLIS_Service.Services
                                                         if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
 
                                                         }
                                                     }

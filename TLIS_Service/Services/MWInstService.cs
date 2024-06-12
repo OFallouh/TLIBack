@@ -3343,8 +3343,7 @@ namespace TLIS_Service.Services
                                             if (AddMW_ODU.installationConfig?.sideArmId != null)
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
-                                                x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                                x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId&& x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 
@@ -3617,7 +3616,7 @@ namespace TLIS_Service.Services
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
                                                 x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                                &&x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 
@@ -3891,7 +3890,7 @@ namespace TLIS_Service.Services
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
                                                 x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                && x.sideArmId == AddMW_ODU.installationConfig.sideArmId && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                                && && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 

@@ -324,13 +324,14 @@ namespace TLIS_Repository.Repositories
             }
             return dynamicAttInstViewModels;
         }
-        public void AddDdynamicAttributeInstallations(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicInstAttValue, int TableNameId, int Id)
+        public void AddDdynamicAttributeInstallations(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicInstAttValue, int TableNameId, int Id,string connectionString)
         {
+            var TabelName = _context.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId)?.TableName;
             var dynamicAttLibValueEntities = addDynamicInstAttValue.Select(DynamicLibAttValue =>
             {
                 var DynamicAtt = _context.TLIdynamicAtt
                    .Where(x => x.Id == DynamicLibAttValue.id)
-                   .Include(x => x.DataType)
+                   .Include(x => x.DataType).Include(x=>x.tablesNames)
                    .FirstOrDefault();
                 TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
                 dynamicAttInstValue.InventoryId = Id;
@@ -409,6 +410,146 @@ namespace TLIS_Repository.Repositories
 
             AddRangeWithHistory(UserId, dynamicAttLibValueEntities);
             _context.SaveChanges();
+            if (TabelName == "TLIcivilWithLegs")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            }
+            else if (TabelName == "TLIcivilWithoutLeg")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+            }
+            else if (TabelName == "TLIcivilNonSteel")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
+            }
+            else if (TabelName == "TLIcivilNonSteelLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+            }
+            else if (TabelName == "TLIcivilWithLegLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+            }
+            else if (TabelName == "TLIcivilWithoutLegLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+            }
+            else if (TabelName == "TLIsideArm")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_SIDEARM_VIEW"));
+            }
+            else if (TabelName == "TLIsideArmLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+            }
+            else if (TabelName == "TLIradioAntenna")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+            }
+            //else if (TabelName == "TLIradioOther")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIradioRRU")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIradioOtherLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            else if (TabelName == "TLIradioAntennaLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+            }
+            //else if (TabelName == "TLIradioRRULibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLImwBU")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLImwRFU")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            else if (TabelName == "TLImwDish")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_MWDISH_VIEW"));
+            }
+            else if (TabelName == "TLImwODU")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_MWODU_VIEW"));
+            }
+            //else if (TabelName == "TLImwOther")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLImwBULibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLImwRFULibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            else if (TabelName == "TLImwDishLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+            }
+            else if (TabelName == "TLImwODULibrary")
+            {
+                Task.Run(() => RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+            }
+            //else if (TabelName == "TLImwOtherLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIpower")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIpowerLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIloadOther")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIloadOtherLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIcabinet")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIsolar")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIgenerator")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIsolarLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIgeneratorLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIcabinetPowerLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TabelName == "TLIcabinetTelecomLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
         }
         public List<BaseInstAttViewDynamic> GetDynamicInstAtt(int TableNameId, int Id, int? CategoryId = null)
         {

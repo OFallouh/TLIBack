@@ -7281,10 +7281,10 @@ namespace TLIS_Service.Services
                     {
                         var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null &&!x.Dismantle&&
                         x.allLoadInst.mwODU.MwODULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                        var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
+                        var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
                         if (CivilLoad != null && CivilLoad.Count > 0)
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
-                        var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                        var MW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewMW_ODULibrary.Deleted = true;
                         NewMW_ODULibrary.Model = NewMW_ODULibrary.Model + "_" + DateTime.Now.ToString();
 

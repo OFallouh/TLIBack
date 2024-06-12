@@ -2711,16 +2711,10 @@ namespace TLIS_Service.Services
                                 return new Response<ObjectInstAtts>(false, null, null, "Leg information for letter 'A' not found", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
-
-                        if (AddCivilWithLegsViewModel.dynamicAttribute != null ? AddCivilWithLegsViewModel.dynamicAttribute.Count > 0 : false)
-                        {
-                            foreach (var DynamicAttInstValue in AddCivilWithLegsViewModel.dynamicAttribute)
-                            {
-                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, civilWithLegs.Id, connectionString);
-                            }
-                        }
-                      
-
+                  
+                     _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id, connectionString);
+                        
+                     
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -2925,13 +2919,9 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
                             _unitOfWork.SaveChanges();
                         }
-                        if (addCivilWithoutLegViewModel.dynamicAttribute != null ? addCivilWithoutLegViewModel.dynamicAttribute.Count > 0 : false)
-                        {
-                            foreach (var DynamicAttInstValue in addCivilWithoutLegViewModel.dynamicAttribute)
-                            {
-                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, civilwithoutlegs.Id, connectionString);
-                            }
-                        }
+                      
+                          _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCivilWithoutLegViewModel.dynamicAttribute, TableNameEntity.Id, civilwithoutlegs.Id, connectionString);
+                           
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3050,13 +3040,9 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
                             _unitOfWork.SaveChanges();
                         }
-                        if (addCivilNonSteelObject.dynamicAttribute != null ? addCivilNonSteelObject.dynamicAttribute.Count > 0 : false)
-                        {
-                            foreach (var DynamicAttInstValue in addCivilNonSteelObject.dynamicAttribute)
-                            {
-                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, civilNonSteel.Id, connectionString);
-                            }
-                        }
+                       
+                          _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCivilNonSteelObject.dynamicAttribute, TableNameEntity.Id, civilNonSteel.Id, connectionString);
+                            
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
