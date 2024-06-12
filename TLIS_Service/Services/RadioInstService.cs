@@ -8247,6 +8247,31 @@ namespace TLIS_Service.Services
                             baseInstAttViews.DataType = "list";
                             Config.Add(baseInstAttViews);
                         }
+                        if (RadioAntenna.sideArm == null)
+                        {
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "SideArmd";
+                            baseInstAttViews.Value = null;
+                            baseInstAttViews.Label = "Select SideArm'";
+                            baseInstAttViews.Options = new object[0];
+                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.visible = false;
+                            Config.Add(baseInstAttViews);
+
+                        }
+                        if (RadioAntenna.legId == null)
+                        {
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews
+                            {
+                                Key = "legId",
+                                Value = null,
+                                Label = "Select Leg",
+                                Options = new object[0],
+                                DataType = "list",
+                                visible = false
+                            };
+                            Config.Add(baseInstAttViews);
+                        }
                         objectInst.installationConfig = Config;
                     }
                     var InstallationDate = new BaseInstAttViews()
