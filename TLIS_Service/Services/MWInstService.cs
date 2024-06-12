@@ -3890,7 +3890,7 @@ namespace TLIS_Service.Services
                                             {
                                                 TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
                                                 x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                && && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                                && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
 
