@@ -5113,7 +5113,7 @@ namespace TLIS_Service.Services
                             MWODULibraryEntites.SpaceLibrary = MWODULibraryEntites.Height * MWODULibraryEntites.Width;
                         }
                     }
-                    if (_unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Model == MWODULibraryEntites.Model && x.Id != MWODULibraryEntites.Id && !x.Deleted) != null)
+                    if (_unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Model == MWODULibraryEntites.Model && x.Id != MWODULibraryEntites.Id && !x.Deleted) != null)
                     {
                         return new Response<EditMWODULibraryObject>(false, null, null, $"This model {MWODULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
