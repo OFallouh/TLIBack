@@ -18007,9 +18007,34 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "SideArmd";
                             baseInstAttViews.Value = ints;
-                            baseInstAttViews.Label = "leg_name";
+                            baseInstAttViews.Label = "Select SideArm'";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
                             baseInstAttViews.DataType = "list";
+                            Config.Add(baseInstAttViews);
+                        }
+                        if (MWDish.sideArm == null)
+                        {
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "SideArmd";
+                            baseInstAttViews.Value = null;
+                            baseInstAttViews.Label = "Select SideArm'";
+                            baseInstAttViews.Options = new object[0];
+                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.visible = false;
+                            Config.Add(baseInstAttViews);
+
+                        }
+                        if (MWDish.legId == null)
+                        {
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews
+                            {
+                                Key = "legId",
+                                Value = null,
+                                Label = "Select Leg",
+                                Options = new object[0],
+                                DataType = "list",
+                                visible = false
+                            };
                             Config.Add(baseInstAttViews);
                         }
                         objectInst.installationConfig = Config;
