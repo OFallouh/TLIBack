@@ -33,6 +33,7 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
             public int InstallationPlaceId { get; set; }
             public int? civilSteelType { get; set; }
             public int? civilWithLegId { get; set; }
+            public int? LegId { get; set; }
             public int? civilWithoutLegId { get; set; }
             public int? civilNonSteelId { get; set; }
             public int? sideArmId { get; set; }

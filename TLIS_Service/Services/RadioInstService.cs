@@ -8136,8 +8136,7 @@ namespace TLIS_Service.Services
                                 FKitem.Key = "installationPlaceId";
                                 FKitem.Label = "Select Installation Place";
                                 FKitem.Value = _mapper.Map<InstallationPlaceViewModel>(RadioAntenna.allLoadInst.radioAntenna.installationPlace);
-                                FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_unitOfWork.InstallationPlaceRepository
-                                    .GetWhere(x => x.Id == RadioAntenna.allLoadInst.radioAntenna.installationPlaceId));
+                                FKitem.Options = _mapper.Map<List<InstallationPlaceViewModel>>(_dbContext.TLIinstallationPlace.ToList());
                                 break;
 
 
