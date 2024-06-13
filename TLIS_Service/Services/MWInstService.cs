@@ -17963,7 +17963,7 @@ namespace TLIS_Service.Services
                         {
                             ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", MWDish.allCivilInst.civilWithLegs, _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.Id == MWDish.allCivilInst.civilWithLegsId));
                         }
-                        if (MWDish.legId != null && MWDish.sideArmId == null)
+                        if (MWDish.legId != null)
                         {
 
                             var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == MWDish.legId);
@@ -17989,7 +17989,7 @@ namespace TLIS_Service.Services
                             }
 
                         }
-                        if (MWDish.legId == null && MWDish.sideArmId != null)
+                        if (MWDish.sideArmId != null)
                         {
                             List<int> ints = new List<int>();
                             List<SectionsLegTypeViewModel> sectionsLegTypeViewModelsidearm = new List<SectionsLegTypeViewModel>();

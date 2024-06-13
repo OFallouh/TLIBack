@@ -8251,7 +8251,7 @@ namespace TLIS_Service.Services
                         {
                             ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", RadioAntenna.allCivilInst.civilWithLegs, _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.Id == RadioAntenna.allCivilInst.civilWithLegsId));
                         }
-                        if (RadioAntenna.legId != null && RadioAntenna.sideArmId == null)
+                        if (RadioAntenna.legId != null )
                         {
 
                             var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == RadioAntenna.legId);
@@ -8277,7 +8277,7 @@ namespace TLIS_Service.Services
                             }
 
                         }
-                        if (RadioAntenna.legId == null && RadioAntenna.sideArmId != null)
+                        if (RadioAntenna.sideArmId != null)
                         {
                             List<SectionsLegTypeViewModel> sectionsLegTypeViewModelsidearm = new List<SectionsLegTypeViewModel>();
                             SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
