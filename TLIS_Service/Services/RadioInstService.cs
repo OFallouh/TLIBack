@@ -8287,8 +8287,8 @@ namespace TLIS_Service.Services
                             };
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "SideArmId";
-                            baseInstAttViews.Value = sectionsLegTypeViewModel.Id;
-                            baseInstAttViews.Label = "leg_name";
+                            baseInstAttViews.Value = sectionsLegTypeViewModel;
+                            baseInstAttViews.Label = "Select SideArm";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
                             baseInstAttViews.DataType = "list";
                             Config.Add(baseInstAttViews);
@@ -8298,7 +8298,7 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "SideArmId";
                             baseInstAttViews.Value = null;
-                            baseInstAttViews.Label = "Select SideArm'";
+                            baseInstAttViews.Label = "Select SideArm";
                             baseInstAttViews.Options = new object[0];
                             baseInstAttViews.DataType = "list";
                             baseInstAttViews.visible = false;
