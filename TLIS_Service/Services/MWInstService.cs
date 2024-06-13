@@ -18020,7 +18020,7 @@ namespace TLIS_Service.Services
                             baseInstAttViews.Value = ints;
                             baseInstAttViews.Label = "Select SideArm'";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
-                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.DataType = "MultiSelect";
                             Config.Add(baseInstAttViews);
                         }
                         if (MWDish.sideArm == null)
@@ -18030,7 +18030,7 @@ namespace TLIS_Service.Services
                             baseInstAttViews.Value = null;
                             baseInstAttViews.Label = "Select SideArm'";
                             baseInstAttViews.Options = new object[0];
-                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.DataType = "MultiSelect";
                             baseInstAttViews.visible = false;
                             Config.Add(baseInstAttViews);
 
