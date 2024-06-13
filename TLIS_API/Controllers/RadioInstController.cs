@@ -50,6 +50,14 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode);
             return Ok(response);
         }
+        //  [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddRadioRRUInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddRadioRRUInstallation(int LibId, string SiteCode)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode);
+            return Ok(response);
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddRadioAntennaInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioAntennaInstallationObject))]
