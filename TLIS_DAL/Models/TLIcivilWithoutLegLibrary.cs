@@ -13,7 +13,6 @@ namespace TLIS_DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Model { get; set; }
-
         public string? Note { get; set; }
         public float Height_Designed { get; set; }
         public float Max_Load { get; set; }
