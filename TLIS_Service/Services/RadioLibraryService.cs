@@ -1639,7 +1639,7 @@ namespace TLIS_Service.Services
 
                 if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                 {
-                    TLIradioAntennaLibrary RadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetIncludeWhereFirst(x =>
+                    TLIradioAntennaLibrary RadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x =>
                         x.Id == Id && !x.Deleted && x.Active);
                     if (RadioAntennaLibrary != null)
                     {
@@ -1666,7 +1666,7 @@ namespace TLIS_Service.Services
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                 {
-                    TLIradioRRULibrary RadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetIncludeWhereFirst(x =>
+                    TLIradioRRULibrary RadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x =>
                       x.Id == Id && !x.Deleted && x.Active);
                     if (RadioRRULibrary != null)
                     {
