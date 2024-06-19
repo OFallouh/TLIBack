@@ -170,6 +170,7 @@ using static TLIS_DAL.ViewModels.RadioAntennaDTOs.AddRadioAntennaInstallationObj
 using static TLIS_DAL.ViewModels.RadioAntennaDTOs.EditRadioAntennaInstallationObject;
 using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.AddRadioRRULibraryObject;
 using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.EditRadioRRULibraryObject;
+using static TLIS_DAL.ViewModels.RadioRRUDTOs.AddRadioRRUInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -205,6 +206,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLImwDishLibrary, EditMWDishLibraryAttributes>().ReverseMap();
             CreateMap<installationAttributesMWDishObject, TLImwDish>().ReverseMap();
             CreateMap<InstallationRadioAntennaAttributeObject, TLIradioAntenna>().ReverseMap();
+            CreateMap<EditInstallationRadioAntennaAttributeObject, TLIRadioRRU>().ReverseMap();
+            CreateMap<InstallationRadioRRUConfigObject, TLIRadioRRU>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

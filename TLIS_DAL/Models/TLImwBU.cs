@@ -20,7 +20,7 @@ namespace TLIS_DAL.Models
         public string Visiable_Status { get; set; }
         public float SpaceInstallation { get; set; }
         public TLIbaseBU baseBU { get; set; }
-        public int BaseBUId { get; set; }
+        public int? BaseBUId { get; set; }
         public TLIinstallationPlace InstallationPlace { get; set; }
         public int InstallationPlaceId { get; set; }
         public TLIowner Owner { get; set; }
@@ -35,7 +35,7 @@ namespace TLIS_DAL.Models
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
-        public int PortCascadeId { get; set; }
+        public int? PortCascadeId { get; set; }
         public IEnumerable<TLImwPort> MwPort { get; set; }
         public IEnumerable<TLIallLoadInst> allLoadInsts { get; set; }
     }

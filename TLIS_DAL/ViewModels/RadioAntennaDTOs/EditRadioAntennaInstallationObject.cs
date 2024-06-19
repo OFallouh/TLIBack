@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
 {
     public class EditRadioAntennaInstallationObject
     {
-        public InstallationRadioAntennaConfigObject installationConfig { get; set; }
+        public EditInstallationRadioAntennaConfigObject installationConfig { get; set; }
         public AddCivilLoad civilLoads { get; set; }
         public LibraryAttributesRadioAntennaObject civilType { get; set; }
         public EditInstallationRadioAntennaAttributeObject installationAttributes { get; set; }
@@ -45,7 +45,16 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
 
 
         }
-
+        public class EditInstallationRadioAntennaConfigObject
+        {
+            public int InstallationPlaceId { get; set; }
+            public int? civilSteelType { get; set; }
+            public int? civilWithLegId { get; set; }
+            public int? civilWithoutLegId { get; set; }
+            public int? civilNonSteelId { get; set; }
+            public int? sideArmId { get; set; }
+            public int? legId { get; set; }
+        }
 
     }
 }

@@ -357,14 +357,52 @@ namespace TLIS_API.Controllers
         [HttpPost("DismantleMW_BU")]
         public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int? TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_ODU")]
         public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -372,7 +410,26 @@ namespace TLIS_API.Controllers
 
         public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -380,7 +437,26 @@ namespace TLIS_API.Controllers
 
         public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -388,7 +464,26 @@ namespace TLIS_API.Controllers
 
         public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

@@ -10347,6 +10347,7 @@ namespace TLIS_Service.Services
                         && !x.Dismantle && x.SiteCode.ToLower()==SiteCode.ToLower()).ToList();
                         if(LoadsOnCivil !=null && LoadsOnCivil.Count()>0)
                             return new Response<bool>(false, false, null, "You can not delete this civil because it has loads associated with it. If you want to delete it, you must first remove the existing loads on it", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         var civilSiteDate = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                         if (civilSiteDate != null)
                         {

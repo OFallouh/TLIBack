@@ -28,12 +28,7 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
             public float HeightLand { get; set; } = 0;
             public float SpaceInstallation { get; set; } = 0;
             public string? VisibleStatus { get; set; } = "";
-            public TLIowner owner { get; set; }
             public int? ownerId { get; set; }
-            public TLIinstallationPlace installationPlace { get; set; }
-            public int installationPlaceId { get; set; }
-            public TLIradioAntennaLibrary radioAntennaLibrary { get; set; }
-            public int radioAntennaLibraryId { get; set; }
             public float CenterHigh { get; set; } = 0;
             public float HBA { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;

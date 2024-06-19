@@ -146,6 +146,13 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RadioInstService.GetRadioAntennaInstallationById(RadioId, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString());
             return Ok(response);
         }
+        [HttpGet("GetRadioRRUInstallationById")]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
+        public IActionResult GetRadioRRUInstallationById(int RadioId)
+        {
+            var response = _unitOfWorkService.RadioInstService.GetRadioRRUInstallationById(RadioId, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString());
+            return Ok(response);
+        }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
@@ -218,6 +225,43 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("EditRadioRRUInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditRadioAntennaInstallationObject))]
+        public async Task<IActionResult> EditRadioRRUInstallation([FromBody] EditRadioAntennaInstallationObject editRadioAntenna, int? TaskId)
+        {
+            if (TryValidateModel(editRadioAntenna, nameof(EditRadioAntennaInstallationObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioAntenna, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
         //[HttpPost("EditRadioRRUInstallation")]
         //[ProducesResponseType(200, Type = typeof(EditRadioRRUViewModel))]
@@ -253,7 +297,7 @@ namespace TLIS_API.Controllers
         //                            select error.ErrorMessage;
         //        return Ok(new Response<EditRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
-       // }
+        // }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetRadioRRUsList")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<RadioRRUViewModel>))]

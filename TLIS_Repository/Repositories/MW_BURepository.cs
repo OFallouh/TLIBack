@@ -61,7 +61,7 @@ namespace TLIS_Repository.Repositories
 
             if (PortCascadeId != null && PortCascadeId != 0)
             {
-                List<int> UsedPorts = _context.TLImwBU
+                List<int?> UsedPorts = _context.TLImwBU
                     .Where(x => x.PortCascadeId > 0).Select(x => x.PortCascadeId).ToList();
 
                 List<DropDownListFilters> PortsLists = _mapper.Map<List<DropDownListFilters>>(_context.TLImwPort

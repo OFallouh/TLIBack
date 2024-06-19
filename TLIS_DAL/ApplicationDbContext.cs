@@ -22,6 +22,7 @@ using TLIS_DAL.ViewModels.MW_ODUDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaDTOs;
 using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
+using TLIS_DAL.ViewModels.RadioRRUDTOs;
 
 
 namespace TLIS_DAL
@@ -194,6 +195,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_RADIO_ANTENNA_LIBRARY_VIEW> MV_RADIO_ANTENNA_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_RADIO_ANTENNA_VIEW> MV_RADIO_ANTENNA_VIEW { get; set; }
         public virtual DbSet<MV_RADIO_RRU_LIBRARY_VIEW> MV_RADIO_RRU_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_RADIO_RRU_VIEW> MV_RADIO_RRU_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -324,6 +326,11 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_RADIO_RRU_LIBRARY_VIEW");
+            });
+            builder.Entity<MV_RADIO_RRU_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_RADIO_RRU_VIEW");
             });
             builder.Entity<TLIsession>();
 
