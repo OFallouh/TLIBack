@@ -10979,7 +10979,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    FKitem.Value = new object[0];
+                                    FKitem.Value = null;
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 break;
@@ -11214,13 +11214,13 @@ namespace TLIS_Service.Services
                 var RadioRRU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioId
                 && x.allLoadInst.radioAntennaId==null
                 && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                x => x.allLoadInst, x => x.allLoadInst.radioRRU, x => x.allLoadInst.radioRRU.radioRRULibraryId,
+                x => x.allLoadInst, x => x.allLoadInst.radioRRU, x => x.allLoadInst.radioRRU.radioRRULibrary,
                 x => x.allLoadInst.radioRRU.owner, x => x.allLoadInst.radioRRU.installationPlace,x=>x.allLoadInst.radioRRU.radioAntenna
                , x => x.sideArm, x => x.leg);
 
                 if (RadioRRU != null)
                 {
-                    EditRadioRRULibraryAttributes RadioRRULibrary = _mapper.Map<EditRadioRRULibraryAttributes>(RadioRRU.allLoadInst.radioRRU.radioRRULibraryId);
+                    EditRadioRRULibraryAttributes RadioRRULibrary = _mapper.Map<EditRadioRRULibraryAttributes>(RadioRRU.allLoadInst.radioRRU.radioRRULibrary);
 
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetLibrary(TablesNames.TLIradioRRULibrary.ToString(), RadioRRULibrary, null).ToList();
@@ -11259,7 +11259,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    FKitem.Value = new object[0];
+                                    FKitem.Value = null;
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                                 }
                                 break;

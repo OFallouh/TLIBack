@@ -4601,10 +4601,7 @@ namespace TLIS_Service.Services
                                                  x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (AllcivilinstId == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The civil is not found", (int)ApiReturnCode.fail);
-
-                                            if (AddMW_Dish.installationConfig.legId != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected leg because installation place is sidearm", (int)ApiReturnCode.fail);
-
+ 
                                             if (AddMW_Dish.installationConfig.sideArmId != null)
                                             {
                                                 var SideArm1 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
@@ -5030,10 +5027,7 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The civil is not found", (int)ApiReturnCode.fail);
 
                                             if (AddMW_Dish.installationConfig.sideArmId != null)
-                                            {
-                                                if (AddMW_Dish.installationConfig.legId != null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected leg because installation place is sidearm", (int)ApiReturnCode.fail);
-
+                                            {    
                                                 var SideArm1 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
                                                   == AddMW_Dish.installationConfig.civilWithoutLegId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[0]);
                                                 if (SideArm1 == null)
@@ -5446,9 +5440,6 @@ namespace TLIS_Service.Services
 
                                             if (AddMW_Dish.installationConfig.sideArmId != null)
                                             {
-                                                if (AddMW_Dish.installationConfig.legId != null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected leg because installation place is sidearm", (int)ApiReturnCode.fail);
-
                                                 var SideArm1 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
                                                  == AddMW_Dish.installationConfig.civilNonSteelId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[0]);
                                                 if (SideArm1 == null)
@@ -6550,9 +6541,7 @@ namespace TLIS_Service.Services
 
                             if (AllcivilinstId != null)
                             {
-                                if (MWInstallationViewModel.installationConfig.legId != null)
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected leg  because installation place is sidearm", (int)ApiReturnCode.fail);
-
+                               
                                 if (MWInstallationViewModel.installationConfig.sideArmId != null)
                                 {
                                     if (!string.IsNullOrEmpty(mwDish.Serial_Number))
@@ -7332,9 +7321,7 @@ namespace TLIS_Service.Services
                         }
                         else if (MWInstallationViewModel.installationConfig.civilWithoutLegId != null)
                         {
-                            if (MWInstallationViewModel.installationConfig.legId != null)
-                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected leg  because installation place is sidearm", (int)ApiReturnCode.fail);
-
+                          
                             if (MWInstallationViewModel.installationConfig.sideArmId != null)
                             {
                                 if (!string.IsNullOrEmpty(mwDish.Serial_Number))
@@ -8117,10 +8104,7 @@ namespace TLIS_Service.Services
                             }
                         }
                         if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
-                        {
-                            if (MWInstallationViewModel.installationConfig.legId != null)
-                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected leg because installation place is sidearm", (int)ApiReturnCode.fail);
-
+                        { 
                             if (MWInstallationViewModel.installationConfig.sideArmId != null)
                             {
                                 if (!string.IsNullOrEmpty(mwDish.Serial_Number))
