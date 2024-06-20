@@ -56,9 +56,9 @@ namespace TLIS_Service.IService
         bool ReCalcualateSiteFreeSpace(int civilid, string sitecode, int loadid);
         Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId,int? TaskId, string connectionString);
         Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId , int? TaskId, string connectionString);
-        public Response<bool> CheckLoadsBeforDismantle(string TableName, int loadId);
+        Response<bool> CheckLoadsBeforDismantle(string TableName, int LoadId, string sitecode);
         bool CheckRelatedLoad(string sitecode, int civilid, int sidearm, int loadid);
-        public Response<CivilLoads> GetRelationshipBetweenloads(int loadid, string Loadname);
+        Response<CivilLoads> GetRelationshipBetweenloads(int LoadId, string Loadname, string sitecode);
         //public Response<bool> DismantleCivil(string SiteCode, int CivilId, string CivilName, int? TaskId);
         //Response<bool> OtherLoadDismantale(string sidecode, int loadid);
         string GetOtherLoadKey(int loadid);

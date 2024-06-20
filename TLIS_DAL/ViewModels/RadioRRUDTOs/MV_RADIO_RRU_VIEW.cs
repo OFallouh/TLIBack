@@ -25,7 +25,6 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
         public float SpaceInstallation { get; set; }
         public string? VisibleStatus { get; set; }
         public string? RADIOANTENNA { get; set; }
-        public int? ownerId { get; set; }
         public string RADIORRULIBRARY { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }

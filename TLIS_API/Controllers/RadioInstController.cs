@@ -96,27 +96,45 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("AddRadioRRUInstallation")]
-        //[ProducesResponseType(200, Type = typeof(AddRadioRRUViewModel))]
-        //public IActionResult AddRadioRRUInstallation([FromBody]AddRadioRRUViewModel addRadioRRU, string SiteCode, int? TaskId)
-        //{
-        //    if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
-        //        addRadioRRU.TLIcivilLoads.sideArmId = null;
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUViewModel)))
-        //    {
-        //        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString, TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddRadioRRUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddRadioRRUInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddRadioRRUViewModel))]
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUInstallationObject)))
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddRadioAntennaViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+
+        }
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
         //[HttpPost("AddRadioOtherInstallation")]
         //[ProducesResponseType(200, Type = typeof(AddRadioOtherViewModel))]
@@ -166,7 +184,26 @@ namespace TLIS_API.Controllers
 
         public IActionResult DismantleRadioRRU(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
@@ -175,16 +212,53 @@ namespace TLIS_API.Controllers
 
         public IActionResult DismantleRadioOther(string sitecode, int LoadId, string LoadName,int? TaskId)
         {
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismatleRadioAntenna")]
-
         public IActionResult DismatleRadioAntenna(string sitecode, int LoadId, string LoadName,int? TaskId)
         {
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
@@ -329,6 +403,15 @@ namespace TLIS_API.Controllers
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.RadioInstService.GetRadioAntennaInstallationWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetRadioRRUInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetRadioRRUInstallationWithEnableAtt([FromQuery] string SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.RadioInstService.GetRadioRRUInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

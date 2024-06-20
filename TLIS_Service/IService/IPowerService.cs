@@ -15,7 +15,7 @@ namespace TLIS_Service.IService
     public interface IPowerService
     {
         Response<ObjectInstAtts> GetAttForAdd(int Id, string SiteCode);
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
+        Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString);
         Response<ObjectInstAtts> AddPower(AddPowerViewModel PowerViewModel, string SiteCode, string ConnectionString, int? TaskId);
         Task<Response<ObjectInstAtts>> EditPower(EditPowerViewModel PowerViewModel, int? TaskId);
         Response<ObjectInstAttsForSideArm> GetById(int Id);

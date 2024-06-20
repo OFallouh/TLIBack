@@ -293,9 +293,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetRelationshipBetweenloads")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetRelationshipBetweenloads(int loadid, string Loadname)
+        public IActionResult GetRelationshipBetweenloads(int loadid, string Loadname,string SiteCode)
         {
-            var response = _unitOfWorkService.CivilInstService.GetRelationshipBetweenloads(loadid, Loadname);
+            var response = _unitOfWorkService.CivilInstService.GetRelationshipBetweenloads(loadid, Loadname, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -510,9 +510,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("CheckLoadsBeforDismantle")]
 
-        public IActionResult CheckLoadsBeforDismantle(string TableName, int loadId)
+        public IActionResult CheckLoadsBeforDismantle(string TableName, int loadId, string SiteCode)
         {
-            var response = _unitOfWorkService.CivilInstService.CheckLoadsBeforDismantle(TableName, loadId);
+            var response = _unitOfWorkService.CivilInstService.CheckLoadsBeforDismantle(TableName, loadId, SiteCode);
             return Ok(response);
 
         }

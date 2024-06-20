@@ -3130,9 +3130,9 @@ namespace TLIS_Service.Services
                     var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.CivilWithLegsLib).ThenInclude(x=>x.structureType)
                         .FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.installationAttributes.Id);
                  
-                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
-                        ((x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == editCivilWithLegsInstallationObject.installationAttributes.Id : false) &&
-                            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst,x=>x.Site);
+                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().Include(x=>x.allCivilInst).Include(x=>x.Site)
+                        .FirstOrDefault(x => x.allCivilInst != null ?((x.allCivilInst.civilWithLegsId != null ? x.allCivilInst.civilWithLegsId == editCivilWithLegsInstallationObject.installationAttributes.Id : false) &&
+                            !x.Dismantle && !x.allCivilInst.Draft) : false);
 
                     if (SiteCode != null)
                     {
@@ -3493,9 +3493,10 @@ namespace TLIS_Service.Services
                     var CivilWithoutLegInst = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable().AsNoTracking()
                         .Include(x => x.CivilWithoutlegsLib).FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.installationAttributes.Id);
 
-                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
+                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking()
+                        .Include(x=>x.Site).Include(x=>x.allCivilInst).FirstOrDefault(x => x.allCivilInst != null ?
                     ((x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == editCivilWithoutLegsInstallationObject.installationAttributes.Id : false) &&
-                        !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst,x=>x.Site);
+                        !x.Dismantle && !x.allCivilInst.Draft) : false);
                     if (SiteCode != null)
                     {
                         if (civilWithoutLegsEntity.HeightBase <= 0)
@@ -6778,7 +6779,52 @@ namespace TLIS_Service.Services
                                         }).ToList();
                                     }
                                 }
+                                else
+                                {
+                                    var allCivil = _unitOfWork.CivilSiteDateRepository
+                                        .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                            x => x.allCivilInst,
+                                            x => x.allCivilInst.civilWithLegs,
+                                            x => x.allCivilInst.civilWithoutLeg,
+                                            x => x.allCivilInst.civilNonSteel)?.ToList();
+                                    options = allCivil.SelectMany(item =>
+                                    {
+                                        var innerOptions = new List<SupportTypeImplementedViewModel>();
 
+                                        if (item.allCivilInst.civilWithLegs != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allCivilInst.Id,
+                                                Name = item.allCivilInst.civilWithLegs?.Name
+                                            };
+
+                                            innerOptions.Add(civilWithLegsOption);
+                                        }
+
+                                        if (item.allCivilInst.civilWithoutLeg != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allCivilInst.Id,
+                                                Name = item.allCivilInst.civilWithoutLeg?.Name
+                                            };
+                                            innerOptions.Add(civilWithoutLegOption);
+                                        }
+
+                                        if (item.allCivilInst.civilNonSteel != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allCivilInst.Id,
+                                                Name = item.allCivilInst.civilNonSteel?.Name
+                                            };
+                                            innerOptions.Add(civilNonSteelOption);
+                                        }
+
+                                        return innerOptions;
+                                    }).ToList();
+                                }
                                 attr.Options = options;
 
                                 return attr;
@@ -10190,7 +10236,7 @@ namespace TLIS_Service.Services
 
         //    }
         //}
-        public Response<CivilLoads> GetRelationshipBetweenloads(int loadid, string Loadname)
+        public Response<CivilLoads> GetRelationshipBetweenloads(int LoadId, string Loadname,string sitecode)
         {
             try
             {
@@ -10198,22 +10244,71 @@ namespace TLIS_Service.Services
 
                 if (Loadname == Helpers.Constants.TablesNames.TLImwBU.ToString())
                 {
-                    var mwport = _dbContext.TLImwPort.Where(x => x.MwBUId == loadid).Select(x => x.Id).FirstOrDefault();
+                    var RadioRFULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
+                     x.allLoadInst.mwRFU.MwPort.MwBUId == LoadId && !x.Dismantle &&
+                     x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU)
+                     .Select(x=>x.allLoadInst.mwRFU);
 
-                    OutPut.MW_RFUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLImwRFU.Where
-                                       (x => x.MwPortId == mwport).Distinct().ToList());
+                    OutPut.MW_RFUs = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRFULoad);
+
+                    var CascudedMWBU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.PortCascadeId == LoadId
+                    && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
+                        .Select(x=>x.allLoadInst.mwBU).ToList();
+                    var BaseMWBU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.BaseBUId == LoadId
+                    && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
+                        .Select(x => x.allLoadInst.mwBU).ToList();
+
+                    var combinedMWBU = CascudedMWBU.Union(BaseMWBU).ToList();
+                    OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(combinedMWBU);
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLImwDish.ToString())
                 {
-                    OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLImwODU.Where
-                                           (x => x.Mw_DishId == loadid).Distinct().ToList());
-                    OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLImwBU.Where
-                        (x => x.MainDishId == loadid).Distinct().ToList());
+
+                    var ODULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId ==
+                    LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower()
+                    , x => x.allLoadInst).Select(x=>x.allLoadInst.mwODU).ToList();
+
+                    OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(ODULoad);
+
+
+
+                    var MWBULoadSdDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.SdDishId ==
+                          LoadId
+                           && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst)
+                        .Select(x=>x.allLoadInst.mwBU).ToList();
+
+                    var MWBULoadMainDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.MainDishId
+                    == LoadId
+                      && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
+                        .Select(x => x.allLoadInst.mwBU).ToList();
+
+                    var combinedMWBU = MWBULoadSdDish.Union(MWBULoadMainDish).ToList();
+                    OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(combinedMWBU);
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
-                    OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(_dbContext.TLIRadioRRU.Where
-                                           (x => x.radioAntennaId == loadid).Distinct().ToList());
+                    var RadioRRuLoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
+                            x.allLoadInst.radioAntennaId == LoadId &&
+                            x.allLoadInst.radioRRUId != null &&
+                            !x.Dismantle &&
+                            x.SiteCode.ToLower() == sitecode.ToLower() &&
+                            _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y =>
+                                y.allLoadInst.radioRRUId == x.allLoadInst.radioRRUId &&
+                                !y.Dismantle &&
+                                y.SiteCode.ToLower() == sitecode.ToLower()
+                             , y => y.allLoadInst).Any(), x => x.allLoadInst
+                           ).ToList();
+
+                    OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRRuLoad);
+                }
+                if (Loadname == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                {
+                    var RadioAntenna = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.radioRRUId
+                    == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allLoadInst.radioAntennaId != null
+                    && _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y => y.allLoadInst.radioAntennaId == x.allLoadInst.radioAntennaId
+                    && !y.Dismantle && y.SiteCode.ToLower() == sitecode.ToLower(), y => y.allLoadInst).Any(), x => x.allLoadInst).ToList();
+
+                    OutPut.RadioAntennas = _mapper.Map<List<LoadandsidearmViewDto>>(RadioAntenna);
                 }
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
@@ -11234,76 +11329,110 @@ namespace TLIS_Service.Services
         //        }
         //    }
         //}
-        public Response<bool> CheckLoadsBeforDismantle(string TableName, int loadId)
+        public Response<bool> CheckLoadsBeforDismantle(string TableName, int LoadId,string sitecode)
         {
             try
             {
                 if (TableName == Helpers.Constants.TablesNames.TLImwBU.ToString())
                 {
-                    var PortCascuded = _dbContext.TLImwPort.Where(x => x.MwBUId == loadId).ToList();
+                    var RadioRFULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
+                    x.allLoadInst.mwRFU.MwPort.MwBUId == LoadId && !x.Dismantle &&
+                    x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU)
+                    .Select(x => x.allLoadInst.mwRFU);
 
-                    var hasRFU = PortCascuded
-                        .SelectMany(item => _dbContext.TLImwRFU.Where(x => x.MwPortId == item.Id))
-                        .Any();
-
-                    if (hasRFU)
+                    if (RadioRFULoad !=null)
                     {
-                        return new Response<bool>(true, false, null, "will dismantle the RFUs installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "will dismantle the RFUs installed on it or you can change the relationship and break the connection between the two item ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    var hasBU = PortCascuded
-                        .SelectMany(item => _dbContext.TLImwBU.Where(x => x.PortCascadeId == item.Id))
-                        .Any();
+                    var CascudedMWBU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.PortCascadeId == LoadId
+                    && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
+                        .Select(x => x.allLoadInst.mwBU).ToList();
 
-                    if (hasBU)
+                    if (CascudedMWBU !=null)
                     {
-                        return new Response<bool>(true, false, null, "will dismantle the Cascuded BU installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
-                }
-                if (TableName == Helpers.Constants.TablesNames.TLImwBU.ToString())
-                {
-                    var PortCascuded = _dbContext.TLImwPort.Where(x => x.MwBUId == loadId).ToList();
-
-                    var hasRFU = PortCascuded
-                        .SelectMany(item => _dbContext.TLImwRFU.Where(x => x.MwPortId == item.Id))
-                        .Any();
-
-                    if (hasRFU)
-                    {
-                        return new Response<bool>(true, false, null, "will dismantle the RFUs installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "The cascuded between the two items will be cancelled", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    var hasBU = PortCascuded
-                        .SelectMany(item => _dbContext.TLImwBU.Where(x => x.PortCascadeId == item.Id))
-                        .Any();
+                    var BaseMWBU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.BaseBUId == LoadId
+                    && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
+                        .Select(x => x.allLoadInst.mwBU).ToList();
 
-                    if (hasBU)
+                    if (BaseMWBU != null)
                     {
-                        return new Response<bool>(true, false, null, "will dismantle the Cascuded BU installed on it", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "The relation between the two items will be cancelled", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+
                 }
                 else if (TableName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                 {
-                    var hasBU = _dbContext.TLImwBU.Any(x => x.MainDishId == loadId || x.SdDishId == loadId);
-                    var hasODU = _dbContext.TLImwODU.Any(x => x.Mw_DishId == loadId);
+                    var ODULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId ==
+                    LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower()
+                    , x => x.allLoadInst).Select(x => x.allLoadInst.mwODU).ToList();
 
-                    if (hasODU)
+                    if (ODULoad !=null)
                     {
-                        return new Response<bool>(true, false, null, "it’s better to dismantle the ODU as it will be useless", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "will dismantle the ODU item installed on it or you can change the relationship and break the connection between the two item", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    if (hasBU)
+                    var MWBULoadSdDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.SdDishId ==
+                          LoadId
+                           && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst)
+                        .Select(x => x.allLoadInst.mwBU).ToList();
+                    if (MWBULoadSdDish != null)
                     {
-                        return new Response<bool>(true, false, null, "the MWDish is Main Dish to MwBU must delete relation And Dismantle Or Change Relation  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "the MWDish is SD Dish to MwBU will dismantle the BU item or you can change the relationship and break the connection between the two item", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+
+                    var MWBULoadMainDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.MainDishId
+                    == LoadId
+                      && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
+                        .Select(x => x.allLoadInst.mwBU).ToList();
+
+
+                    if (MWBULoadMainDish != null)
+                    {
+                        return new Response<bool>(true, false, null, "the MWDish is Main Dish to MwBU will dismantle the BU item or you can change the relationship and break the connection between the two item\"", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
                 }
                 else if (TableName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
-                    var hasRadioRRU = _dbContext.TLIRadioRRU.Any(x => x.radioAntennaId == loadId);
 
-                    if (hasRadioRRU)
+
+                    var RadioRRuLoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
+                           x.allLoadInst.radioAntennaId == LoadId &&
+                           x.allLoadInst.radioRRUId != null &&
+                           !x.Dismantle &&
+                           x.SiteCode.ToLower() == sitecode.ToLower() &&
+                           _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y =>
+                               y.allLoadInst.radioRRUId == x.allLoadInst.radioRRUId &&
+                               !y.Dismantle &&
+                               y.SiteCode.ToLower() == sitecode.ToLower()
+                            , y => y.allLoadInst).Any(), x => x.allLoadInst
+                          ).ToList();
+
+                   
+
+                    if (RadioRRuLoad !=null)
                     {
-                        return new Response<bool>(true, false, null, "the RadioAntenna is Related to RadioRRU must delete relation And Dismantle Or Change Relation  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<bool>(true, false, null, "the RadioAntenna is Related to RadioRRU will dismantle the RRU item or you can change the relationship and break the connection between the two item\"", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                } 
+                else if (TableName == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
+                {
+
+
+                    var RadioAntenna = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.radioRRUId
+                      == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allLoadInst.radioAntennaId != null
+                      && _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y => y.allLoadInst.radioAntennaId == x.allLoadInst.radioAntennaId
+                      && !y.Dismantle && y.SiteCode.ToLower() == sitecode.ToLower(), y => y.allLoadInst).Any(), x => x.allLoadInst).ToList();
+
+
+
+                    if (RadioAntenna != null)
+                    {
+                        return new Response<bool>(true, false, null, "The relation between Radio Antenna and Radio RRU will be cancelled", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
 

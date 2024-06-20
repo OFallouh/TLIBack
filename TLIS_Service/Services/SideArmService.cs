@@ -294,18 +294,27 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilLoadObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId,string ConnectionString)
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId, string ConnectionString, int UserId)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
                 try
                 {
-                    var civilLoads = _dbContext.TLIcivilLoads.Where(x => x.sideArmId == sideArmId && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
-                    foreach (var sidearm in civilLoads)
+                    var SideArm = _dbContext.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == sideArmId &&
+                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
+                    var OldSideArm = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.sideArmId == sideArmId &&
+                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
+
+                    if (SideArm != null)
                     {
-                        sidearm.Dismantle = true;
+                        SideArm.Dismantle = true;
+                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldSideArm, SideArm);
+                        _unitOfWork.SaveChanges();
                     }
-                    _dbContext.SaveChanges();
+                    else
+                    {
+                        return new Response<bool>(true, false, null, "this item is not found", (int)ApiReturnCode.fail);
+                    }
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -329,6 +338,7 @@ namespace TLIS_Service.Services
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
+
                 catch (Exception er)
                 {
 

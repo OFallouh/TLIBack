@@ -15,6 +15,7 @@ using TLIS_Service.ServiceBase;
 using TLIS_DAL.ViewModels.PowerTypeDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_API.Middleware.WorkFlow;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace TLIS_API.Controllers
 {
@@ -64,7 +65,26 @@ namespace TLIS_API.Controllers
 
         public IActionResult DismantlePower(string sitecode, int LoadId, string LoadName, int TaskId)
         {
-            var response = _unitOfWorkService.PowerService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.PowerService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
             return Ok(response);
 
         }

@@ -25,14 +25,11 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
             public float SpaceInstallation { get; set; } = 0;
             public string? VisibleStatus { get; set; } = "";
             public int? ownerId { get; set; }
-            public int? radioAntennaId { get; set; }
             public float CenterHigh { get; set; } = 0;
             public float HBA { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;
             public float EquivalentSpace { get; set; } = 0;
             public float Azimuth { get; set; } = 0;
-
-
         }
         public class InstallationAttributesRadioRRUConfigObject
         {

@@ -15,7 +15,7 @@ namespace TLIS_Service.IService
     public interface ILoadOtherService
     {
         Response<ObjectInstAtts> GetAttForAdd(int LibId, string SiteCode);
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
+        Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString);
         Response<ObjectInstAtts> AddLoadOther(AddLoadOtherViewModel LoadOtherViewModel, string SiteCode, string ConnectionString, int? TaskId);
         Task<Response<ObjectInstAtts>> EditLoadOther(EditLoadOtherViewModel LoadOtherViewModel, int? TaskId);
         Response<ObjectInstAttsForSideArm> GetById(int Id);

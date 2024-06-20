@@ -28,7 +28,7 @@ namespace TLIS_Service.IService
         Response<GetForAddMWDishInstallationObject> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);      
         Response<ObjectInstAttsForSideArm> GetById(int RadioInsId, string TableName);
         Response<GetForAddLoadObject> GetRadioAntennaInstallationById(int RadioId, string TableName);
-        Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId);
+        Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString);
         Response<ReturnWithFilters<RadioRRUViewModel>> GetRadioRRUsList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<RadioAntennaViewModel>> GetRadioAntennasList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<RadioOtherViewModel>> GetRadioOtherList(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
