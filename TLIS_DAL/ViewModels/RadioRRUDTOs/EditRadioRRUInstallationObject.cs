@@ -13,17 +13,17 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
 {
     public class EditRadioRRUInstallationObject
     {
-        public EditInstallationAttributesRadioRRUConfigObject installationConfig { get; set; }
+        public EditInstallationAttributesRadioRRUConfigObjects installationConfig { get; set; }
         public AddCivilLoad civilLoads { get; set; }
-        public LibraryAttributesRadioAntennaObject civilType { get; set; }
-        public EditInstallationRadioAntennaAttributeObject installationAttributes { get; set; }
+        public LibraryAttributesRadioRRUObjects civilType { get; set; }
+        public EditInstallationRadioRRUAttributeObject installationAttributes { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class LibraryAttributesRadioAntennaObject
+        public class LibraryAttributesRadioRRUObjects
         {
             public int radioRRULibraryId { get; set; }
 
         }
-        public class EditInstallationRadioAntennaAttributeObject
+        public class EditInstallationRadioRRUAttributeObject
         {
             public int Id { get; set; }
             public string SerialNumber { get; set; }
@@ -34,7 +34,6 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
             public float SpaceInstallation { get; set; } = 0;
             public string? VisibleStatus { get; set; } = "";
             public int? ownerId { get; set; }
-            public int? radioAntennaId { get; set; }
             public float CenterHigh { get; set; } = 0;
             public float HBA { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;
@@ -43,7 +42,7 @@ namespace TLIS_DAL.ViewModels.RadioRRUDTOs
 
         }
 
-        public class EditInstallationAttributesRadioRRUConfigObject
+        public class EditInstallationAttributesRadioRRUConfigObjects
         {
             public int InstallationPlaceId { get; set; }
             public int? civilSteelType { get; set; }

@@ -301,10 +301,10 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditRadioAntennaInstallationObject))]
-        public async Task<IActionResult> EditRadioRRUInstallation([FromBody] EditRadioAntennaInstallationObject editRadioAntenna, int? TaskId)
+        [ProducesResponseType(200, Type = typeof(EditRadioRRUInstallationObject))]
+        public async Task<IActionResult> EditRadioRRUInstallation([FromBody] EditRadioRRUInstallationObject editRadioRRUInstallationObject, int? TaskId)
         {
-            if (TryValidateModel(editRadioAntenna, nameof(EditRadioAntennaInstallationObject)))
+            if (TryValidateModel(editRadioRRUInstallationObject, nameof(EditRadioRRUInstallationObject)))
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -325,7 +325,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioAntenna, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioRRUInstallationObject, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else

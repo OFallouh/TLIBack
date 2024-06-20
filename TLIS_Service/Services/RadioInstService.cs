@@ -3829,6 +3829,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     TLIcivilSiteDate AllcivilinstId = null;
+                    List<TLIallLoadInst> RadioAntennas = new List<TLIallLoadInst>();
                     if (LoadSubType.TLIradioAntenna.ToString() == TableName)
                     {
                         var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIradioAntenna.ToString().ToLower()).Id;
@@ -3840,7 +3841,7 @@ namespace TLIS_Service.Services
                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && x.allLoadInst.radioRRUId ==null && !x.Dismantle);
 
                         if (RadioAntennaInst == null)
-                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "RadioAntenna is not found", (int)ApiReturnCode.fail);
                         if (EditRadioAntenna.installationConfig.InstallationPlaceId == 1)
                         {
                             if (EditRadioAntenna.installationConfig.civilWithLegId != null)
@@ -5548,7 +5549,7 @@ namespace TLIS_Service.Services
                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && x.allLoadInst.radioAntennaId==null && !x.Dismantle);
 
                         if (RadioRRUInst == null)
-                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "RadioRR is not found", (int)ApiReturnCode.fail);
                         if (EditRadioRRU.installationConfig.InstallationPlaceId == 1)
                         {
                             if (EditRadioRRU.installationConfig.civilWithLegId != null)
@@ -5669,9 +5670,9 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 if(EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                     && x.radioAntennaId != null).ToList();
-                                                    foreach (var item in RadioAntenna)
+                                                    foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                         == item.Id);
@@ -5788,9 +5789,9 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                     && x.radioAntennaId != null).ToList();
-                                                    foreach (var item in RadioAntenna)
+                                                    foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                         == item.Id);
@@ -5915,9 +5916,9 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                     && x.radioAntennaId != null).ToList();
-                                                    foreach (var item in RadioAntenna)
+                                                    foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                         == item.Id);
@@ -6026,9 +6027,9 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                     && x.radioAntennaId != null).ToList();
-                                                    foreach (var item in RadioAntenna)
+                                                    foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                         == item.Id);
@@ -6216,9 +6217,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -6333,9 +6334,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -6461,9 +6462,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -6573,9 +6574,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -6766,9 +6767,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -6885,9 +6886,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -7011,9 +7012,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -7123,9 +7124,9 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                         && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntenna)
+                                                        foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                             == item.Id);
@@ -7297,9 +7298,9 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
                                                     && x.radioAntennaId != null).ToList();
-                                                    foreach (var item in RadioAntenna)
+                                                    foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
                                                         == item.Id);
