@@ -18884,31 +18884,18 @@ namespace TLIS_Service.Services
                             }
 
                         }
-                        if (MWODU.legId != null)
+                        if (MWODU.legId == null)
                         {
-
-                            var Leg1 = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == MWODU.legId);
-                            if (Leg1 != null)
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {
-                                List<SectionsLegTypeViewModel> sectionsLegTypeViewModel = new List<SectionsLegTypeViewModel>();
-                                sectionsLegTypeViewModel.Add(new SectionsLegTypeViewModel
-                                {
-                                    Id = Leg1.Id,
-                                    Name = Leg1.CiviLegName
-                                });
-
-                                BaseInstAttViews baseInstAttViews = new BaseInstAttViews
-                                {
-                                    Key = "legId",
-                                    Value = Leg1.Id,
-                                    Label = "Select Leg",
-                                    Options = sectionsLegTypeViewModel,
-                                    DataType = "list",
-                                    visible = false
-                                };
-                                Config.Add(baseInstAttViews);
-                            }
-
+                                Key = "legId",
+                                Value = null,
+                                Label = "Select Leg",
+                                Options = new object[0],
+                                DataType = "list",
+                                visible = false
+                            };
+                            Config.Add(baseInstAttViews);
                         }
                         string[] prefixes = new string[]
                         {
@@ -18917,6 +18904,7 @@ namespace TLIS_Service.Services
                             "civilwithleg",
                             "civilwithoutleg",
                             "civilnonsteel",
+                            "legid"
                             "sidearmid",
                             "mwdishid"
                         };
