@@ -3058,7 +3058,8 @@ namespace TLIS_Service.Services
                         {
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
-
+                            TLIcivilSiteDate CivilFound = null;
+                            TLIcivilSiteDate AllcivilinstId = null;
                             if (LoadSubType.TLImwODU.ToString() == TableName)
                             {
                                 AddMwODUinstallationObject AddMW_ODU = _mapper.Map<AddMwODUinstallationObject>(MWInstallationViewModel);
@@ -3075,7 +3076,7 @@ namespace TLIS_Service.Services
                                         if (AddMW_ODU.installationConfig?.civilWithLegId != null)
                                         {
                                             TLIcivilLoads tLImwDish = null;
-                                            TLIcivilSiteDate CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
                                             == AddMW_ODU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() ==
                                             SiteCode.ToLower());
                                             if (CivilFound == null)
@@ -3182,7 +3183,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilWithoutLegId != null)
                                         {
-                                            TLIcivilSiteDate CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId == AddMW_ODU.installationConfig.civilWithoutLegId
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId == AddMW_ODU.installationConfig.civilWithoutLegId
                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -3275,7 +3276,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilNonSteelId != null)
                                         {
-                                            TLIcivilSiteDate CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId == AddMW_ODU.installationConfig.civilNonSteelId
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId == AddMW_ODU.installationConfig.civilNonSteelId
                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -3368,7 +3369,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilWithLegId != null)
                                         {
-                                            TLIcivilSiteDate CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                             AddMW_ODU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -3657,7 +3658,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilWithoutLegId != null)
                                         {
-                                            TLIcivilSiteDate CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
                                             == AddMW_ODU.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -3931,7 +3932,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilNonSteelId != null)
                                         {
-                                            TLIcivilSiteDate CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
                                             == AddMW_ODU.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -4217,7 +4218,7 @@ namespace TLIS_Service.Services
 
                                     if (AddMW_Dish.installationConfig.civilWithLegId != null)
                                     {
-                                        TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                         AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                          AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                          x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                         if (AllcivilinstId != null)
@@ -4596,7 +4597,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_Dish.installationConfig.civilWithLegId != null)
                                         {
-                                            var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                             AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                                  AddMW_Dish.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                                                  x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (AllcivilinstId == null)
@@ -4609,12 +4610,14 @@ namespace TLIS_Service.Services
                                                 && (x.legId == AddMW_Dish.installationConfig.legId || x.Leg2Id == AddMW_Dish.installationConfig.legId));
                                                 if (SideArm1 == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The one SideArm is not found on civil", (int)ApiReturnCode.fail);
-                                                var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
-                                                == AddMW_Dish.installationConfig.civilWithLegId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[1]
-                                                && (x.legId == AddMW_Dish.installationConfig.legId || x.Leg2Id == AddMW_Dish.installationConfig.legId));
-                                                if (SideArm2 == null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
-
+                                                if (AddMW_Dish.installationConfig.sideArmId != null && AddMW_Dish.installationConfig.sideArmId?.Count == 2)
+                                                {
+                                                    var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
+                                                    == AddMW_Dish.installationConfig.civilWithLegId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[1]
+                                                    && (x.legId == AddMW_Dish.installationConfig.legId || x.Leg2Id == AddMW_Dish.installationConfig.legId));
+                                                    if (SideArm2 == null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                                }
                                                 if (!string.IsNullOrEmpty(mwDish.Serial_Number))
                                                 {
                                                     bool CheckSerialNumber = _dbContext.MV_MWDISH_VIEW.Any(x => x.Serial_Number == mwDish.Serial_Number && !x.Dismantle);
@@ -5020,7 +5023,7 @@ namespace TLIS_Service.Services
                                         if (AddMW_Dish.installationConfig.civilWithoutLegId != null)
                                         {
 
-                                            var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
+                                            AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
                                            AddMW_Dish.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                            x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (AllcivilinstId == null)
@@ -5032,11 +5035,13 @@ namespace TLIS_Service.Services
                                                   == AddMW_Dish.installationConfig.civilWithoutLegId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[0]);
                                                 if (SideArm1 == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The one SideArm is not found on civil", (int)ApiReturnCode.fail);
-                                                var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
-                                               == AddMW_Dish.installationConfig.civilWithoutLegId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[1]);
-                                                if (SideArm2 == null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
-
+                                                if (AddMW_Dish.installationConfig.sideArmId != null && AddMW_Dish.installationConfig.sideArmId?.Count == 2)
+                                                {
+                                                    var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
+                                                     == AddMW_Dish.installationConfig.civilWithoutLegId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                    if (SideArm2 == null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                                }
 
                                                 if (AddMW_Dish.civilLoads.ReservedSpace == true)
                                                 {
@@ -5432,7 +5437,7 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_Dish.installationConfig.civilNonSteelId != null)
                                         {
-                                            var AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
+                                             AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
                                                 AddMW_Dish.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                                 x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib, x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary);
                                             if (AllcivilinstId == null)
@@ -5444,11 +5449,13 @@ namespace TLIS_Service.Services
                                                  == AddMW_Dish.installationConfig.civilNonSteelId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[0]);
                                                 if (SideArm1 == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The one SideArm is not found on civil", (int)ApiReturnCode.fail);
-                                                var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
-                                               == AddMW_Dish.installationConfig.civilNonSteelId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[1]);
-                                                if (SideArm2 == null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
-
+                                                if (AddMW_Dish.installationConfig.sideArmId != null && AddMW_Dish.installationConfig.sideArmId?.Count == 2)
+                                                {
+                                                    var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
+                                                    == AddMW_Dish.installationConfig.civilNonSteelId && x.sideArmId == AddMW_Dish.installationConfig.sideArmId[1]);
+                                                    if (SideArm2 == null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                                }
                                                 if (mwDish.CenterHigh <= 0)
                                                 {
                                                     if (mwDish.HBA_Surface <= 0)
@@ -5828,7 +5835,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     int TableNameId = 0;
-
+                    TLIcivilSiteDate AllcivilinstId = null;
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
                     TLImwDish mwDish = _mapper.Map<TLImwDish>(MWInstallationViewModel.installationAttributes);
                     TLIcivilLoads MWDishInst = _dbContext.TLIcivilLoads.AsNoTracking()
@@ -5844,7 +5851,7 @@ namespace TLIS_Service.Services
 
                         if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
                         {
-                            TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                            AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                          MWInstallationViewModel.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                          x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                             if (AllcivilinstId != null)
@@ -6533,11 +6540,16 @@ namespace TLIS_Service.Services
 
                         if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
                         {
-                            TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
-                                 Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
-                                .Include(x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).Include(x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary)
-                                .FirstOrDefault(x => x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId && !x.Dismantle);
+                              AllcivilinstId = _dbContext.TLIcivilSiteDate.AsNoTracking()
+                              .Include(x => x.allCivilInst)
+                              .Include(x => x.allCivilInst.civilWithLegs)
+                              .Include(x => x.allCivilInst.civilWithoutLeg)
+                              .Include(x => x.allCivilInst.civilNonSteel)
+                              .Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
+                              .Include(x => x.allCivilInst.civilWithLegs.CivilWithLegsLib)
+                              .Include(x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary)
+                              .FirstOrDefault(x => x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
+                              && !x.Dismantle );
 
                             if (AllcivilinstId != null)
                             {
@@ -6555,13 +6567,15 @@ namespace TLIS_Service.Services
                                                     && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
                                     if (SideArm1 == null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The one SideArm is not found on civil", (int)ApiReturnCode.fail);
-                                    var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
-                                    == MWInstallationViewModel.installationConfig.civilWithLegId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                    && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
-                                    if (SideArm2 == null)
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
-
-                                    if (MWInstallationViewModel.civilLoads.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                    if (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId?.Count == 2)
+                                    {
+                                        var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
+                                        == MWInstallationViewModel.installationConfig.civilWithLegId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
+                                        && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
+                                        if (SideArm2 == null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                    }
+                                    if (MWDishInst.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
@@ -6753,7 +6767,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
                                     }
-                                    else if (MWInstallationViewModel.civilLoads.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    else if (MWDishInst.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
@@ -6937,7 +6951,7 @@ namespace TLIS_Service.Services
 
 
                                     }
-                                    else if (MWInstallationViewModel.civilLoads.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                    else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
@@ -7130,7 +7144,7 @@ namespace TLIS_Service.Services
 
 
                                     }
-                                    else if (MWInstallationViewModel.civilLoads.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
@@ -7330,7 +7344,20 @@ namespace TLIS_Service.Services
                                     if (CheckSerialNumber)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                 }
-                                TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
+                                var SideArm1 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
+                                                  == MWInstallationViewModel.installationConfig.civilWithoutLegId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                  && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
+                                if (SideArm1 == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The one SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                if (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId?.Count == 2)
+                                {
+                                    var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
+                                    == MWInstallationViewModel.installationConfig.civilWithoutLegId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
+                                    && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
+                                    if (SideArm2 == null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                }
+                                 AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
                                    Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                    .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
                                   .Include(x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).Include(x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary)
@@ -7338,7 +7365,7 @@ namespace TLIS_Service.Services
                                 MWInstallationViewModel.installationConfig.civilWithoutLegId && !x.Dismantle);
                                 if (AllcivilinstId != null)
                                 {
-                                    if (MWInstallationViewModel.civilLoads.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                    if (MWDishInst.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
@@ -7530,7 +7557,7 @@ namespace TLIS_Service.Services
 
 
                                     }
-                                    else if (MWInstallationViewModel.civilLoads.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    else if (MWDishInst.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
@@ -7720,7 +7747,7 @@ namespace TLIS_Service.Services
 
 
                                     }
-                                    else if (MWInstallationViewModel.civilLoads.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                    else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
 
                                         if (mwDish.CenterHigh <= 0)
@@ -7912,7 +7939,7 @@ namespace TLIS_Service.Services
 
 
                                     }
-                                    else if (MWInstallationViewModel.civilLoads.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
 
                                         if (mwDish.CenterHigh <= 0)
@@ -8113,7 +8140,20 @@ namespace TLIS_Service.Services
                                     if (CheckSerialNumber)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwDish.Serial_Number} is already exists", (int)ApiReturnCode.fail);
                                 }
-                                TLIcivilSiteDate AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
+                                var SideArm1 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
+                                                 == MWInstallationViewModel.installationConfig.civilNonSteelId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                 && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
+                                if (SideArm1 == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The one SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                if (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId?.Count == 2)
+                                {
+                                    var SideArm2 = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
+                                    == MWInstallationViewModel.installationConfig.civilWithoutLegId && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
+                                    && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId));
+                                    if (SideArm2 == null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The tow SideArm is not found on civil", (int)ApiReturnCode.fail);
+                                }
+                                AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().
                                 Include(x => x.allCivilInst).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib)
                                .Include(x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).Include(x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary)
@@ -8341,7 +8381,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     int TableNameId = 0;
-
+                    TLIcivilLoads CivilFound = null;
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
                     TLIcivilLoads TLIMWODU = _dbContext.TLIcivilLoads.AsNoTracking()
                     .Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.MwODULibrary)
@@ -8357,7 +8397,7 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
                             {
-                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
                                 && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                 if (CivilFound == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -8462,7 +8502,7 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig.civilWithoutLegId != null)
                             {
-                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
                                  && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                 if (CivilFound == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -8552,7 +8592,7 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
                             {
-                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
                                 && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                 if (CivilFound == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -8646,7 +8686,7 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig?.civilWithLegId != null)
                             {
-                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
                                 && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                 if (CivilFound == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
@@ -8681,12 +8721,12 @@ namespace TLIS_Service.Services
                                             {
 
                                                 TLIcivilLoads tLImwDishLeg = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                         .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary).Include(x => x.allCivilInst)
-                                         .Include(x => x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
-                                         && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                         && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId ==
-                                         MWInstallationViewModel.installationConfig.mwDishId && x.legId == MWInstallationViewModel.installationConfig.LegId
-                                         && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
+                                                .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary).Include(x => x.allCivilInst)
+                                                .Include(x => x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
+                                                && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
+                                                && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId ==
+                                                MWInstallationViewModel.installationConfig.mwDishId && x.legId == MWInstallationViewModel.installationConfig.LegId
+                                                && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                                 if (tLImwDishLeg == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
@@ -9163,7 +9203,7 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig?.civilWithoutLegId != null)
                             {
-                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
                                 && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId &&
                                 x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                 if (CivilFound == null)
@@ -9663,7 +9703,7 @@ namespace TLIS_Service.Services
                         {
                             if (MWInstallationViewModel.installationConfig?.civilNonSteelId != null)
                             {
-                                TLIcivilLoads CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
+                                CivilFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle
                                 && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                 if (CivilFound == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
