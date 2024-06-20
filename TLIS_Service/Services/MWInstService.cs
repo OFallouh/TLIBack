@@ -18303,7 +18303,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    FKitem.Value = new object[0];
+                                    FKitem.Value = null;
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
                                 }
@@ -18313,13 +18313,13 @@ namespace TLIS_Service.Services
                                 {
                                     FKitem.Value = _mapper.Map<OwnerViewModel>(_unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == MWDish.allLoadInst.mwDish.MW_LinkId));
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst != null && x.allLoadInst.mwDishId != null
-                                    && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
+                                    && x.Id != MWInsId && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
                                 }
                                 else
                                 {
-                                    FKitem.Value = new object[0];
+                                    FKitem.Value = null;
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst != null && x.allLoadInst.mwDishId != null
-                                    && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
+                                    && x.Id != MWInsId && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
 
                                 }
                                 break;
@@ -18631,7 +18631,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    FKitem.Value = new object[0];
+                                    FKitem.Value = null;
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
 
                                 }
