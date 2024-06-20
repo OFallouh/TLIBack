@@ -18313,13 +18313,13 @@ namespace TLIS_Service.Services
                                 {
                                     FKitem.Value = _mapper.Map<OwnerViewModel>(_unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == MWDish.allLoadInst.mwDish.MW_LinkId));
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst != null && x.allLoadInst.mwDishId != null
-                                    && x.Id != MWInsId && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
+                                    && x.allLoadInst.mwDishId != MWInsId && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
                                 }
                                 else
                                 {
                                     FKitem.Value = null;
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst != null && x.allLoadInst.mwDishId != null
-                                    && x.Id != MWInsId && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
+                                    && x.allLoadInst.mwDishId != MWInsId && !x.Dismantle && x.SiteCode == MWDish.SiteCode, x => x.allLoadInst, x => x.allLoadInst.mwDish).Select(x => x.allLoadInst.mwDish).ToList());
 
                                 }
                                 break;
