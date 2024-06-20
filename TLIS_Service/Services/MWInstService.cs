@@ -18904,7 +18904,7 @@ namespace TLIS_Service.Services
                             "civilwithleg",
                             "civilwithoutleg",
                             "civilnonsteel",
-                            "legid"
+                            "legid",
                             "sidearmid",
                             "mwdishid"
                         };
