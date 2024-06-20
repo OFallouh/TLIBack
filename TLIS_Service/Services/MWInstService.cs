@@ -6027,6 +6027,8 @@ namespace TLIS_Service.Services
 
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -6034,6 +6036,7 @@ namespace TLIS_Service.Services
                                                 TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
+
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -6186,6 +6189,9 @@ namespace TLIS_Service.Services
 
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -6193,6 +6199,7 @@ namespace TLIS_Service.Services
                                                 TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
+
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -6352,6 +6359,9 @@ namespace TLIS_Service.Services
 
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -6359,6 +6369,7 @@ namespace TLIS_Service.Services
                                                 TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
+
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -6497,6 +6508,9 @@ namespace TLIS_Service.Services
 
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -6504,6 +6518,7 @@ namespace TLIS_Service.Services
                                                 TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
+
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -6754,6 +6769,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -6761,8 +6779,8 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
-                                        }
 
+                                        }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -6938,6 +6956,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -6945,6 +6966,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -7131,6 +7153,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -7138,6 +7163,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -7308,6 +7334,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -7315,6 +7344,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -7543,6 +7573,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -7550,6 +7583,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -7734,6 +7768,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -7741,6 +7778,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -7925,6 +7963,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -7932,6 +7973,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -8103,6 +8145,9 @@ namespace TLIS_Service.Services
 
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -8110,6 +8155,7 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
                                         }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -8321,6 +8367,9 @@ namespace TLIS_Service.Services
 
 
                                         TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                        TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                        TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+
                                         TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                         TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                         TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -8328,6 +8377,7 @@ namespace TLIS_Service.Services
                                         TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                         _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                         _unitOfWork.SaveChanges();
+
                                     }
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -8474,6 +8524,8 @@ namespace TLIS_Service.Services
                                            == MWInstallationViewModel.installationAttributes.Id);
 
                                         TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                        TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                        TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
@@ -8566,6 +8618,8 @@ namespace TLIS_Service.Services
                                            == MWInstallationViewModel.installationAttributes.Id);
 
                                         TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                        TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                        TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
@@ -8656,6 +8710,8 @@ namespace TLIS_Service.Services
                                            == MWInstallationViewModel.installationAttributes.Id);
 
                                         TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                        TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                        TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
@@ -8846,10 +8902,12 @@ namespace TLIS_Service.Services
                                                        == MWInstallationViewModel.installationAttributes.Id);
 
                                                     TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                    TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                    TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                     TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                     TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                    TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    TLIMWODUs.ReservedSpace = false;
                                                     TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                     _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                     await _unitOfWork.SaveChangesAsync();
@@ -8962,10 +9020,12 @@ namespace TLIS_Service.Services
                                                        == MWInstallationViewModel.installationAttributes.Id);
 
                                                     TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                    TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                    TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                     TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                     TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                    TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    TLIMWODUs.ReservedSpace = false;
                                                     TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                     _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                     await _unitOfWork.SaveChangesAsync();
@@ -9073,10 +9133,12 @@ namespace TLIS_Service.Services
                                                        == MWInstallationViewModel.installationAttributes.Id);
 
                                                     TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                    TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                    TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                     TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                     TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                    TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    TLIMWODUs.ReservedSpace = false;
                                                     TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                     _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                     await _unitOfWork.SaveChangesAsync();
@@ -9171,10 +9233,12 @@ namespace TLIS_Service.Services
                                                        == MWInstallationViewModel.installationAttributes.Id);
 
                                                     TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                    TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                    TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                     TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                     TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                    TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    TLIMWODUs.ReservedSpace = false;
                                                     TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                     _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                     await _unitOfWork.SaveChangesAsync();
@@ -9347,10 +9411,12 @@ namespace TLIS_Service.Services
                                                    == MWInstallationViewModel.installationAttributes.Id);
 
                                                 TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                TLIMWODUs.ReservedSpace = false;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -9462,10 +9528,12 @@ namespace TLIS_Service.Services
                                                    == MWInstallationViewModel.installationAttributes.Id);
 
                                                 TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                TLIMWODUs.ReservedSpace = false;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -9573,10 +9641,12 @@ namespace TLIS_Service.Services
                                                    == MWInstallationViewModel.installationAttributes.Id);
 
                                                 TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                TLIMWODUs.ReservedSpace = false;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -9670,15 +9740,16 @@ namespace TLIS_Service.Services
                                                    == MWInstallationViewModel.installationAttributes.Id);
 
                                                 TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                                TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                                TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                TLIMWODUs.ReservedSpace = false;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
                                             }
-
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwODU.Id, ConnectionString);
                                         }
@@ -9827,10 +9898,12 @@ namespace TLIS_Service.Services
                                                == MWInstallationViewModel.installationAttributes.Id);
 
                                             TLIMWODUs.allCivilInstId = CivilFound.allCivilInstId;
+                                            TLIMWODUs.legId = MWInstallationViewModel.installationConfig?.LegId;
+                                            TLIMWODUs.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId;
                                             TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                            TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            TLIMWODUs.ReservedSpace = false;
                                             TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                             await _unitOfWork.SaveChangesAsync();
