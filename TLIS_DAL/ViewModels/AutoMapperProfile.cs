@@ -243,6 +243,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<SectionsLegTypeViewModel, MV_CIVIL_WITHOUTLEGS_VIEW>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, CivilWithLegView>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, MV_SIDEARM_VIEW>().ReverseMap();
+            CreateMap<OwnerViewModel, MV_SIDEARM_VIEW>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, MV_MWDISH_VIEW>().ReverseMap();
             CreateMap<InstallationRadioAntennaAttributeObject, TLIradioAntenna>().ReverseMap();
             CreateMap<EditInstallationRadioAntennaAttributeObject, TLIradioAntenna>().ReverseMap();
