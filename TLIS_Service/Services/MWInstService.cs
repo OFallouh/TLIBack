@@ -2870,7 +2870,55 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SideArmSec_Id");
                     if(SiteCode == null)
                     {
-                        var query = _dbContext.MV_MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable();
+                        var query = _dbContext.MV_MWDISH_VIEW.Where(x =>!x.Dismantle).AsEnumerable()
+                       .GroupBy(x => new
+                       {
+                           SiteCode = x.SiteCode,
+                           Id = x.Id,
+                           DishName = x.DishName,
+                           Azimuth = x.Azimuth,
+                           Notes = x.Notes,
+                           Far_End_Site_Code = x.Far_End_Site_Code,
+                           HBA_Surface = x.HBA_Surface,
+                           Serial_Number = x.Serial_Number,
+                           MW_LINK = x.MW_LINK,
+                           Visiable_Status = x.Visiable_Status,
+                           SpaceInstallation = x.SpaceInstallation,
+                           HeightBase = x.HeightBase,
+                           HeightLand = x.HeightLand,
+                           Temp = x.Temp,
+                           OWNER = x.OWNER,
+                           REPEATERTYPE = x.REPEATERTYPE,
+                           POLARITYONLOCATION = x.POLARITYONLOCATION,
+                           ITEMCONNECTTO = x.ITEMCONNECTTO,
+                           MWDISHLIBRARY = x.MWDISHLIBRARY,
+                           INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                           CenterHigh = x.CenterHigh,
+                           HBA = x.HBA,
+                           HieghFromLand = x.HieghFromLand,
+                           EquivalentSpace = x.EquivalentSpace,
+                           Dismantle = x.Dismantle,
+                           LEG_NAME = x.LEG_NAME,
+                           CIVILNAME = x.CIVILNAME,
+                           CIVIL_ID = x.CIVIL_ID,
+                           SIDEARMNAME = x.SIDEARMNAME,
+                           SIDEARM_ID = x.SIDEARM_ID,
+                           ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                           LEG_ID = x.LEG_ID,
+                           ODU_COUNT = x.ODU_COUNT,
+                           POLARITYTYPE = x.POLARITYTYPE,
+                           SideArmSec_Name = x.SideArmSec_Name,
+                           SideArmSec_Id = x.SideArmSec_Id
+
+                       })
+                       .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -2996,7 +3044,44 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("MW_DISH_ID");
                     if (SiteCode == null)
                     {
-                        var query = _dbContext.MV_MWODU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable();
+                        var query = _dbContext.MV_MWODU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                        .GroupBy(x => new
+                        {
+                            SiteCode = x.SiteCode,
+                            Id = x.Id,
+                            Name = x.Name,
+                            Serial_Number = x.Serial_Number,
+                            Notes = x.Notes,
+                            Height = x.Height,
+                            ODUConnections = x.ODUConnections,
+                            Visiable_Status = x.Visiable_Status,
+                            SpaceInstallation = x.SpaceInstallation,
+                            OWNER = x.OWNER,
+                            MW_DISH = x.MW_DISH,
+                            ODUINSTALLATIONTYPE = x.ODUINSTALLATIONTYPE,
+                            MWODULIBRARY = x.MWODULIBRARY,
+                            CenterHigh = x.CenterHigh,
+                            HBA = x.HBA,
+                            HieghFromLand = x.HieghFromLand,
+                            EquivalentSpace = x.EquivalentSpace,
+                            Azimuth = x.Azimuth,
+                            SIDEARMID = x.SIDEARMID,
+                            CIVILNAME = x.CIVILNAME,
+                            CIVIL_ID = x.CIVIL_ID,
+                            SIDEARMNAME = x.SIDEARMNAME,
+                            Dismantle = x.Dismantle,
+                            ALLCIVILID = x.ALLCIVILID,
+                            MW_DISH_ID = x.MW_DISH_ID,
+
+                        })
+                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
