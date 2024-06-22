@@ -11090,7 +11090,7 @@ namespace TLIS_Service.Services
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
                                     Key = "legId",
-                                    Value = sectionsLegTypeViewModel,
+                                    Value = Leg1.Id,
                                     Label = "Select Leg",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
