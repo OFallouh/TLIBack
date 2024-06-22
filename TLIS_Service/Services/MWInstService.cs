@@ -3044,38 +3044,38 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("MW_DISH_ID");
                     if (SiteCode == null)
                     {
-                        var query = _dbContext.MV_MWODU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
-                        .GroupBy(x => new
-                        {
-                            SiteCode = x.SiteCode,
-                            Id = x.Id,
-                            Name = x.Name,
-                            Serial_Number = x.Serial_Number,
-                            Notes = x.Notes,
-                            Height = x.Height,
-                            ODUConnections = x.ODUConnections,
-                            Visiable_Status = x.Visiable_Status,
-                            SpaceInstallation = x.SpaceInstallation,
-                            OWNER = x.OWNER,
-                            MW_DISH = x.MW_DISH,
-                            ODUINSTALLATIONTYPE = x.ODUINSTALLATIONTYPE,
-                            MWODULIBRARY = x.MWODULIBRARY,
-                            CenterHigh = x.CenterHigh,
-                            HBA = x.HBA,
-                            HieghFromLand = x.HieghFromLand,
-                            EquivalentSpace = x.EquivalentSpace,
-                            Azimuth = x.Azimuth,
-                            SIDEARMID = x.SIDEARMID,
-                            CIVILNAME = x.CIVILNAME,
-                            CIVIL_ID = x.CIVIL_ID,
-                            SIDEARMNAME = x.SIDEARMNAME,
-                            Dismantle = x.Dismantle,
-                            ALLCIVILID = x.ALLCIVILID,
-                            MW_DISH_ID = x.MW_DISH_ID,
+                        var query = _dbContext.MV_MWODU_VIEW.Where(x =>!x.Dismantle).AsEnumerable()
+                       .GroupBy(x => new
+                       {
+                           SiteCode = x.SiteCode,
+                           Id = x.Id,
+                           Name = x.Name,
+                           Serial_Number = x.Serial_Number,
+                           Notes = x.Notes,
+                           Height = x.Height,
+                           ODUConnections = x.ODUConnections,
+                           Visiable_Status = x.Visiable_Status,
+                           SpaceInstallation = x.SpaceInstallation,
+                           OWNER = x.OWNER,
+                           MW_DISH = x.MW_DISH,
+                           ODUINSTALLATIONTYPE = x.ODUINSTALLATIONTYPE,
+                           MWODULIBRARY = x.MWODULIBRARY,
+                           CenterHigh = x.CenterHigh,
+                           HBA = x.HBA,
+                           HieghFromLand = x.HieghFromLand,
+                           EquivalentSpace = x.EquivalentSpace,
+                           Azimuth = x.Azimuth,
+                           SIDEARMID = x.SIDEARMID,
+                           CIVILNAME = x.CIVILNAME,
+                           CIVIL_ID = x.CIVIL_ID,
+                           SIDEARMNAME = x.SIDEARMNAME,
+                           Dismantle = x.Dismantle,
+                           ALLCIVILID = x.ALLCIVILID,
+                           MW_DISH_ID = x.MW_DISH_ID,
 
-                        })
-                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                       })
+                       .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
 
                         int count = query.Count();
 
@@ -4807,11 +4807,14 @@ namespace TLIS_Service.Services
 
                                                         if (AddMW_Dish.installationConfig.sideArmId.Count == 1)
                                                         {
+                                                           
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] &&
-                                                               x.SiteCode.ToLower()==SiteCode.ToLower())
-                                                              . Distinct().ToList();
+                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                                x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] &&
+                                                                x.SiteCode.ToLower() == SiteCode.ToLower())
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                .Select(g => g.First())
+                                                                .ToList();
 
                                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                             if (CheckAzimuthAndHeightBase != null)
@@ -4830,23 +4833,26 @@ namespace TLIS_Service.Services
                                                                     mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
                                                                 }
                                                             }
+
                                                         }
                                                         if (AddMW_Dish.installationConfig.sideArmId.Count == 2)
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1] &&
-                                                              x.SiteCode.ToLower() == SiteCode.ToLower()).
-                                                            Distinct().ToList();
+                                                              x.SiteCode.ToLower() == SiteCode.ToLower())
+                                                              .GroupBy(x => new { x.Azimuth, x.HeightBase })
+                                                              .Select(g => g.First())
+                                                              .ToList();
 
                                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                             if (CheckAzimuthAndHeightBase != null)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not install the dish on the same azimuth and height because another dish was found at the same angle", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on selected installation place because found three dish in same place ", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not install the dish at the selected installation place because three dishes were found in the same place", (int)ApiReturnCode.fail);
                                                             }
                                                             else
                                                             {
@@ -4857,6 +4863,7 @@ namespace TLIS_Service.Services
                                                                     mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
                                                                 }
                                                             }
+
                                                         }
                                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                                 (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false

@@ -11275,7 +11275,7 @@ namespace TLIS_Service.Services
                     .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "installationplace_name", "radioantennalibrary_name" }
+                    .Where(x => new[] { "installationplace_name", "radiorrulibrary_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
