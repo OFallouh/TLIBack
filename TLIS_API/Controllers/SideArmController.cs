@@ -44,7 +44,7 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getSideArmsWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
-        public IActionResult getSideArmsWithEnabledAtt([FromQuery] string SiteCode)
+        public IActionResult getSideArmsWithEnabledAtt([FromQuery] string? SiteCode)
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _UnitOfWorkService.SideArmService.GetSideArmInstallationWithEnableAtt(SiteCode, ConnectionString);

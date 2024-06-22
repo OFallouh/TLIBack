@@ -639,7 +639,7 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetMWDishInstallationWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] string SiteCode)
+        public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, ConnectionString);
@@ -647,7 +647,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetMWODUInstallationWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMWODUInstallationWithEnableAtt([FromQuery] string SiteCode)
+        public IActionResult GetMWODUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, ConnectionString);

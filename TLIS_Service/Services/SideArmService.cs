@@ -1097,7 +1097,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -1152,7 +1152,10 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("FIRST_LEG_ID");
                     propertyNamesStatic.Add("SECOND_LEG");
                     propertyNamesStatic.Add("SECOND_LEG_ID");
-            
+                    if (SiteCode == null)
+                    {
+                        var query = _dbContext.MV_SIDEARM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable();
+                    }
                     if (propertyNamesDynamic.Count == 0)
                     {
                     

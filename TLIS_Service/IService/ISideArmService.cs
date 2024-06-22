@@ -19,7 +19,7 @@ namespace TLIS_Service.IService
     {
 
         Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, int? TaskId, int UserId, string ConnectionString);
-        Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string SiteCode, string ConnectionString);
+        Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string? SiteCode, string ConnectionString);
         Response<ReturnWithFilters<SideArmDisplayedOnTableViewModel>> getSideArms(CivilLoadsFilter BaseFilter, bool WithFilterData, List<FilterObjectList> filters);
         Response<ReturnWithFilters<object>> GetSideArmsWithEnabledAtt(CivilLoadsFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, CombineFilters CombineFilters, int? CivilId, string CivilType);
         Response<List<KeyValuePair<string, int>>> getSideArmsForAdd(string SiteCode, int CivilId, int? LegId, int? MinHeight, int? MaxHeight, int? NumberOfLoadsOnSideArm, int? MinAzimuth, int? MaxAzimuth);

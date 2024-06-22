@@ -7389,7 +7389,7 @@ namespace TLIS_Service.Services
             });
         }
         #region Get Enabled Attributes Only With Dynamic Objects...
-        public Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string SiteCode,string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode,string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -7440,6 +7440,11 @@ namespace TLIS_Service.Services
                             propertyNamesDynamic.Add(name, datatype);
                         }
 
+                    }
+                    if (SiteCode == null)
+                    {
+                        var query = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                      && !x.Dismantle).AsEnumerable();
                     }
                     if (propertyNamesDynamic.Count == 0) 
                     {
@@ -7521,7 +7526,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -7572,6 +7577,13 @@ namespace TLIS_Service.Services
                             propertyNamesDynamic.Add(name, datatype);
                         }
 
+                    }
+                    if(SiteCode == null)
+                    {
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                        .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle)
+                        .AsEnumerable();
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -7796,7 +7808,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string SiteCode,string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode,string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -7847,6 +7859,11 @@ namespace TLIS_Service.Services
                             propertyNamesDynamic.Add(name, datatype);
                         }
 
+                    }
+                    if (SiteCode == null)
+                    {
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                        x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).AsEnumerable();
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -7938,7 +7955,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -7989,6 +8006,11 @@ namespace TLIS_Service.Services
                             propertyNamesDynamic.Add(name, datatype);
                         }
 
+                    }
+                    if (SiteCode == null)
+                    {
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                        x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable();
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -8349,7 +8371,7 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -8397,6 +8419,10 @@ namespace TLIS_Service.Services
                             propertyNamesDynamic.Add(name, datatype);
                         }
 
+                    }
+                    if (SiteCode == null)
+                    {
+                        var query = _dbContext.MV_CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable();
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {

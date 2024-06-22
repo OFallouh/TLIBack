@@ -2808,7 +2808,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion    
-        public Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -2868,6 +2868,10 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("POLARITYTYPE");
                     propertyNamesStatic.Add("SideArmSec_Name");
                     propertyNamesStatic.Add("SideArmSec_Id");
+                    if(SiteCode == null)
+                    {
+                        var query = _dbContext.MV_MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable();
+                    }
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MV_MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
@@ -2935,7 +2939,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -2990,7 +2994,10 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("CIVIL_ID");
                     propertyNamesStatic.Add("ALLCIVILID");
                     propertyNamesStatic.Add("MW_DISH_ID");
-
+                    if (SiteCode == null)
+                    {
+                        var query = _dbContext.MV_MWODU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable();
+                    }
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MV_MWODU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
@@ -3469,7 +3476,8 @@ namespace TLIS_Service.Services
                                                             var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                             x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
                                                             x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                            mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                            mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower()).
+                                                            Distinct().ToList();
 
                                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                                             {
@@ -3585,7 +3593,9 @@ namespace TLIS_Service.Services
                                                             var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                            x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
                                                            x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                           mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                           mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower()).
+                                                            Distinct().ToList();
+
 
                                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                                             {
@@ -3747,7 +3757,9 @@ namespace TLIS_Service.Services
                                                         var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                         x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
                                                         x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                        mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                        mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower()).
+                                                            Distinct().ToList();
+
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                         {
@@ -3863,7 +3875,10 @@ namespace TLIS_Service.Services
                                                         var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                        x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
                                                        x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                       mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                       mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower())
+                                                           .
+                                                            Distinct().ToList();
+
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                         {
@@ -4014,7 +4029,9 @@ namespace TLIS_Service.Services
                                                     var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                     x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
                                                     x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                    mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                    mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower()).
+                                                            Distinct().ToList();
+
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
                                                     {
@@ -4294,7 +4311,9 @@ namespace TLIS_Service.Services
 
                                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                            x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
+                                                            x.LEG_ID == AddMW_Dish.installationConfig.legId && x.SiteCode.ToLower() == SiteCode.ToLower()).
+                                                            Distinct().ToList();
+
                                                         var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
                                                         mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                         if (CheckAzimuthAndHeightBase != null)
@@ -4465,7 +4484,9 @@ namespace TLIS_Service.Services
 
                                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                            x.LEG_ID == AddMW_Dish.installationConfig.legId).ToList();
+                                                            x.LEG_ID == AddMW_Dish.installationConfig.legId).
+                                                            Distinct().ToList();
+
                                                         var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
                                                         mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                         if (CheckAzimuthAndHeightBase != null)
@@ -4703,7 +4724,10 @@ namespace TLIS_Service.Services
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] &&
+                                                               x.SiteCode.ToLower()==SiteCode.ToLower())
+                                                              . Distinct().ToList();
+
                                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                             if (CheckAzimuthAndHeightBase != null)
                                                             {
@@ -4726,7 +4750,10 @@ namespace TLIS_Service.Services
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                              x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                              x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1] &&
+                                                              x.SiteCode.ToLower() == SiteCode.ToLower()).
+                                                            Distinct().ToList();
+
                                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                             if (CheckAzimuthAndHeightBase != null)
                                                             {
@@ -4898,7 +4925,10 @@ namespace TLIS_Service.Services
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                               x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] && x.SiteCode.ToLower() 
+                                                               == SiteCode.ToLower()).
+                                                            Distinct().ToList();
+
                                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                             if (CheckAzimuthAndHeightBase != null)
                                                             {
@@ -4921,7 +4951,10 @@ namespace TLIS_Service.Services
                                                         {
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                              x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                              x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1] && x.SiteCode.ToLower()
+                                                              == SiteCode.ToLower()).Distinct().
+                                                            Distinct().ToList();
+
                                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                             if (CheckAzimuthAndHeightBase != null)
                                                             {
@@ -5122,7 +5155,8 @@ namespace TLIS_Service.Services
                                                     {
                                                         List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]&& x.SiteCode
+                                                           .ToLower() == SiteCode.ToLower()).Distinct().ToList();
                                                         MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                         if (CheckAzimuthAndHeightBase != null)
                                                         {
@@ -5145,7 +5179,8 @@ namespace TLIS_Service.Services
                                                     {
                                                         List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1] && 
+                                                           x.SiteCode.ToLower() == SiteCode.ToLower()).Distinct().ToList();
                                                         MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                         if (CheckAzimuthAndHeightBase != null)
                                                         {
@@ -5315,7 +5350,8 @@ namespace TLIS_Service.Services
                                                     {
                                                         List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] && x.SiteCode.
+                                                           ToLower() == SiteCode.ToLower()).Distinct().ToList();
                                                         MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                         if (CheckAzimuthAndHeightBase != null)
                                                         {
@@ -5338,7 +5374,8 @@ namespace TLIS_Service.Services
                                                     {
                                                         List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1] && x.SiteCode.
+                                                           ToLower() == SiteCode.ToLower()).Distinct().ToList();
                                                         MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                         if (CheckAzimuthAndHeightBase != null)
                                                         {
@@ -5534,7 +5571,8 @@ namespace TLIS_Service.Services
                                                 {
                                                     List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0]).ToList();
+                                                           x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] && x.SiteCode
+                                                           .ToLower() == SiteCode.ToLower()).Distinct().ToList();
                                                     MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                     if (CheckAzimuthAndHeightBase != null)
                                                     {
@@ -5557,7 +5595,8 @@ namespace TLIS_Service.Services
                                                 {
                                                     List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                            x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]).ToList();
+                                                            x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1] 
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()).Distinct().ToList();
                                                     MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                     if (CheckAzimuthAndHeightBase != null)
                                                     {
@@ -5945,7 +5984,7 @@ namespace TLIS_Service.Services
 
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId).ToList();
+                                                x.LEG_ID == MWDishInst.legId && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
                                             mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
@@ -6114,7 +6153,7 @@ namespace TLIS_Service.Services
                                             }
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId).ToList();
+                                                x.LEG_ID == MWDishInst.legId && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
                                             mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
@@ -6278,7 +6317,7 @@ namespace TLIS_Service.Services
 
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId).ToList();
+                                                x.LEG_ID == MWDishInst.legId && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
                                             mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
@@ -6446,7 +6485,7 @@ namespace TLIS_Service.Services
                                             }
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId).ToList();
+                                                x.LEG_ID == MWDishInst.legId && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             var CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth ==
                                             mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
@@ -6682,7 +6721,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) 
+                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -6707,7 +6747,9 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                 (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id 
+                                                == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -6877,7 +6919,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) 
+                                                    & x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -6902,7 +6945,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                 (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                              && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -7065,7 +7109,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) && x.SiteCode.ToLower() 
+                                                    == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -7090,7 +7135,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                 (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                              && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -7262,7 +7308,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) && x.SiteCode.ToLower() 
+                                                    == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -7287,7 +7334,8 @@ namespace TLIS_Service.Services
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                 (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                                 MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                                 if (CheckAzimuthAndHeightBase != null)
                                                 {
@@ -7492,7 +7540,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -7517,7 +7566,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                             (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                           && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -7688,7 +7738,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) && x.SiteCode.ToLower()
+                                                == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -7713,7 +7764,9 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                             (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id 
+                                            == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                           && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -7883,7 +7936,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) && x.SiteCode.ToLower()
+                                                == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -7908,7 +7962,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                             (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                         && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -8079,7 +8134,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                                || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) && x.SiteCode.ToLower() 
+                                                == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -8104,7 +8160,8 @@ namespace TLIS_Service.Services
                                             List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                             (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                           && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                             MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                             if (CheckAzimuthAndHeightBase != null)
                                             {
@@ -8301,7 +8358,8 @@ namespace TLIS_Service.Services
                                         List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                             && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                            || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                            || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]) 
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                         MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                         if (CheckAzimuthAndHeightBase != null)
                                         {
@@ -8326,7 +8384,8 @@ namespace TLIS_Service.Services
                                         List<MV_MWDISH_VIEW> Checkinstallationplace2 = _dbContext.MV_MWDISH_VIEW.Where(
                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                         (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                        || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])).ToList();
+                                        || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1] && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
+                                        && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()).Distinct().ToList();
                                         MV_MWDISH_VIEW CheckAzimuthAndHeightBase = Checkinstallationplace2.FirstOrDefault(x => x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase);
                                         if (CheckAzimuthAndHeightBase != null)
                                         {
@@ -8522,15 +8581,18 @@ namespace TLIS_Service.Services
                                        .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
                                        .ThenInclude(x => x.polarityType).Include(x => x.allCivilInst).ThenInclude(x => x.civilWithLegs).FirstOrDefault(x => x.allLoadInstId != null
                                        && !x.Dismantle && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId
-                                       && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId && x.legId == MWInstallationViewModel.installationConfig.LegId
+                                       && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId &&
+                                       x.legId == MWInstallationViewModel.installationConfig.LegId
                                        && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
 
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                       .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
-                                          && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
+                                       .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.
+                                       mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
+                                          && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId 
+                                          && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
                                        .ThenInclude(x => x.MwDishLibrary).Include(x => x.allCivilInst).ThenInclude(x => x.civilWithLegs).ToList();
 
                                         if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
@@ -8899,7 +8961,7 @@ namespace TLIS_Service.Services
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                 x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                                 x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                 {
@@ -9013,7 +9075,7 @@ namespace TLIS_Service.Services
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                 x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                                 x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                 {
@@ -9125,7 +9187,7 @@ namespace TLIS_Service.Services
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                 x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                                 x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                 {
@@ -9234,7 +9296,7 @@ namespace TLIS_Service.Services
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                                 x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                                 x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                                mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                 {
@@ -9390,7 +9452,7 @@ namespace TLIS_Service.Services
                                             var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                             x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                             x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                            mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                            mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                             {
@@ -9501,7 +9563,7 @@ namespace TLIS_Service.Services
                                             var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                             x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                             x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                            mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                            mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                             {
@@ -9614,7 +9676,7 @@ namespace TLIS_Service.Services
                                             var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                             x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                             x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                            mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                            mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                             {
@@ -9721,7 +9783,7 @@ namespace TLIS_Service.Services
                                             var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                             x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                             x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                            mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                            mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                             {
@@ -9875,7 +9937,7 @@ namespace TLIS_Service.Services
                                         var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
                                         x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
                                         x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                        mwODU.Azimuth && x.Height == mwODU.Height).ToList();
+                                        mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()).Distinct().ToList();
 
                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                         {

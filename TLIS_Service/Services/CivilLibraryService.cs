@@ -1584,7 +1584,9 @@ namespace TLIS_Service.Services
                   
                     var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilWithLegsLibrary.logisticalItems.Vendor);
                     var vendor = logisticalObject?.Name;
-
+                    if(CivilWithLegLib.structureTypeId != CivilWithLegLibraryEntites.structureTypeId)
+                        return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "can not change structureType of civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                
                     var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
                     var structureTypeName = structureType?.Name;
 
@@ -1618,11 +1620,11 @@ namespace TLIS_Service.Services
                     if (CheckName.Count > 0)
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    if (structureTypeName != null && structureTypeName.ToLower() == "triangular")
-                        CivilWithLegLibraryEntites.NumberOfLegs = 3;
+                    //if (structureTypeName != null && structureTypeName.ToLower() == "triangular")
+                    //    CivilWithLegLibraryEntites.NumberOfLegs = 3;
 
-                    else if (structureTypeName != null && structureTypeName.ToLower() == "square")
-                        CivilWithLegLibraryEntites.NumberOfLegs = 4;
+                    //else if (structureTypeName != null && structureTypeName.ToLower() == "square")
+                    //    CivilWithLegLibraryEntites.NumberOfLegs = 4;
 
                     CivilWithLegLibraryEntites.Model = model;
 
