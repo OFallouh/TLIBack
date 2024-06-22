@@ -39,6 +39,7 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
         public int ALLCIVILID { get; set; }
         public string? SIDEARMNAME { get; set; }
         public bool Dismantle { get; set; }
+        public int MW_DISH_ID { get; set; }
 
         public Dictionary<string, object> GenerateOutputData()
         {
@@ -78,6 +79,7 @@ namespace TLIS_DAL.ViewModels.MW_ODUDTOs
             outputData.Add("CIVIL_ID", CIVIL_ID);
             outputData.Add("SIDEARMNAME", SIDEARMNAME);
             outputData.Add("Dismantle", Dismantle);
+            outputData.Add("MW_DISH_ID", MW_DISH_ID);
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
             {

@@ -2989,6 +2989,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SIDEARMID");
                     propertyNamesStatic.Add("CIVIL_ID");
                     propertyNamesStatic.Add("ALLCIVILID");
+                    propertyNamesStatic.Add("MW_DISH_ID");
 
                     if (propertyNamesDynamic.Count == 0)
                     {
@@ -3027,6 +3028,7 @@ namespace TLIS_Service.Services
                            SIDEARMNAME = x.SIDEARMNAME,
                            Dismantle = x.Dismantle,
                            ALLCIVILID = x.ALLCIVILID,
+                           MW_DISH_ID = x.MW_DISH_ID,
 
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
