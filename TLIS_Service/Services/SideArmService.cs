@@ -2766,7 +2766,12 @@ namespace TLIS_Service.Services
                                                     var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id &&
                                                     x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower() && (x.FIRST_LEG_ID == SideArmViewModel.installationConfig.legId[0] ||
                                                     x.SECOND_LEG_ID == SideArmViewModel.installationConfig.legId[0])
-                                                    && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
+                                                    && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase
+                                                    && x.Id != SideArm.Id)
+                                                           .GroupBy(x => new { x.ALLCIVIL_ID, x.FIRST_LEG_ID, x.SECOND_LEG_ID, x.SITECODE })
+                                                                       .Select(g => g.First())
+                                                                       .ToList();
+                                                                     
                                                     if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                                     {
                                                         return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
@@ -2844,8 +2849,15 @@ namespace TLIS_Service.Services
                                                 if (civilwithlegname != null)
                                                 {
                                                     var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id &&
-                                                    x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower() && x.FIRST_LEG_ID != null && x.SECOND_LEG_ID != null
-                                                    && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
+                                                    x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()
+                                                    &&(x.FIRST_LEG_ID != SideArmViewModel.installationConfig.legId[0] && x.SECOND_LEG_ID
+                                                    == SideArmViewModel.installationConfig.legId[1]|| x.SECOND_LEG_ID != SideArmViewModel.installationConfig.legId[0] && x.FIRST_LEG_ID
+                                                    == SideArmViewModel.installationConfig.legId[1]) 
+                                                    && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id)
+                                                  .GroupBy(x => new { x.ALLCIVIL_ID, x.FIRST_LEG_ID, x.SECOND_LEG_ID, x.SITECODE })
+                                                                       .Select(g => g.First())
+                                                                       .ToList();
+    
                                                     if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                                     {
                                                         return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
@@ -2950,7 +2962,12 @@ namespace TLIS_Service.Services
                                             {
                                                 var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
                                                 && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()
-                                                 && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
+                                                 && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase
+                                                 == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id)
+                                                     .GroupBy(x => new { x.ALLCIVIL_ID,x.SITECODE })
+                                                                       .Select(g => g.First())
+                                                                       .ToList();
+
                                                 if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                                 {
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
@@ -3042,7 +3059,12 @@ namespace TLIS_Service.Services
                                             {
                                                 var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
                                                 && x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()
-                                                && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id).ToList();
+                                                && x.Azimuth == SideArmViewModel.installationAttributes.Azimuth && x.HeightBase
+                                                == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id)
+                                                     .GroupBy(x => new { x.ALLCIVIL_ID,x.SITECODE })
+                                                                       .Select(g => g.First())
+                                                                       .ToList();
+
                                                 if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                                 {
                                                     return new Response<EditSidearmInstallationObject>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
@@ -3967,9 +3989,14 @@ namespace TLIS_Service.Services
                                             if (civilwithlegname != null)
                                             {
                                                 var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && (x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0] || x.SECOND_LEG_ID == addSideArms.installationConfig.legId[0])
-                                            && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
-                                            if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower() && (x.FIRST_LEG_ID == addSideArms.installationConfig.legId[0] 
+                                            || x.SECOND_LEG_ID == addSideArms.installationConfig.legId[0])
+                                            && x.Azimuth == addSideArms.installationAttributes.Azimuth &&
+                                            x.HeightBase == addSideArms.installationAttributes.HeightBase)
+                                                     .GroupBy(x => new { x.ALLCIVIL_ID, x.SECOND_LEG_ID, x.FIRST_LEG_ID, x.SITECODE })
+                                                       .Select(g => g.First())
+                                                       .ToList();
+                                                if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                             {
                                                 return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                             }
@@ -4074,8 +4101,14 @@ namespace TLIS_Service.Services
                                             if (civilwithlegname != null)
                                             {
                                                 var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
-                                                && x.SITECODE.ToLower() == SiteCode.ToLower() &&x.FIRST_LEG_ID !=null && x.SECOND_LEG_ID != null
-                                                && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
+                                                && x.SITECODE.ToLower() == SiteCode.ToLower() &&(x.FIRST_LEG_ID != addSideArms.installationConfig.legId[0]
+                                                && x.SECOND_LEG_ID != addSideArms.installationConfig.legId[1] || 
+                                                x.FIRST_LEG_ID != addSideArms.installationConfig.legId[1]
+                                                && x.SECOND_LEG_ID != addSideArms.installationConfig.legId[2])
+                                                && x.HeightBase == addSideArms.installationAttributes.HeightBase)
+                                                      .GroupBy(x => new { x.ALLCIVIL_ID, x.SECOND_LEG_ID, x.FIRST_LEG_ID, x.SITECODE })
+                                                       .Select(g => g.First())
+                                                       .ToList();
                                                 if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                                 {
                                                     return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on heightbase selected because found other sidearm in same heightbase", (int)ApiReturnCode.fail);
@@ -4194,9 +4227,13 @@ namespace TLIS_Service.Services
                                         if (civilwithlegname != null)
                                         {
                                             var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
-                                            && x.SITECODE.ToLower() == SiteCode.ToLower() 
-                                            && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
-                                        if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
+                                            && x.SITECODE.ToLower() == SiteCode.ToLower()  
+                                            && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase ==
+                                            addSideArms.installationAttributes.HeightBase)
+                                               .GroupBy(x => new { x.ALLCIVIL_ID, x.SITECODE })
+                                                       .Select(g => g.First())
+                                                       .ToList();
+                                            if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                         {
                                             return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
@@ -4326,8 +4363,12 @@ namespace TLIS_Service.Services
                                         {
                                             var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
                                            && x.SITECODE.ToLower() == SiteCode.ToLower() 
-                                           && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase == addSideArms.installationAttributes.HeightBase).ToList();
-                                        if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
+                                           && x.Azimuth == addSideArms.installationAttributes.Azimuth && x.HeightBase 
+                                           == addSideArms.installationAttributes.HeightBase)
+                                                .GroupBy(x => new { x.ALLCIVIL_ID, x.SITECODE })
+                                                       .Select(g => g.First())
+                                                       .ToList();
+                                            if (AzimuthandAndHeightBase != null && AzimuthandAndHeightBase.Count() > 0)
                                         {
                                             return new Response<SideArmViewDto>(false, null, null, "can not installed this sidearm on azimuth and heightbase selected because found other sidearm in same azimuth and heightbase", (int)ApiReturnCode.fail);
                                         }
