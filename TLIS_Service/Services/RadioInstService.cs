@@ -10872,7 +10872,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLIradioAntenna.ToString(), null, "Name", "installationPlaceId", "radioRRULibraryId", "EquivalentSpace").ToList();
+                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLIradioRRU.ToString(), null, "Name", "installationPlaceId", "radioRRULibraryId", "EquivalentSpace").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
