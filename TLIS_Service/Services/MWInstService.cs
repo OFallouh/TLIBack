@@ -3500,7 +3500,8 @@ namespace TLIS_Service.Services
                                                         tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                         && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
                                                         && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.legId == AddMW_ODU.installationConfig.LegId && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                        x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                                        x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish,
+                                                         x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
                                                         if (tLImwDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
@@ -3786,7 +3787,9 @@ namespace TLIS_Service.Services
                                                     TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                     && !x.Dismantle && x.sideArmId != null && x.allCivilInstId == CivilFound.allCivilInstId
                                                     && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish, 
+                                                    x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwDish.MwDishLibrary.polarityType,
+                                                    x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -4068,7 +4071,8 @@ namespace TLIS_Service.Services
                                                     TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                     && !x.Dismantle && x.sideArmId != null && x.allCivilInstId == CivilFound.allCivilInstId
                                                     && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish
+                                                    , x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
