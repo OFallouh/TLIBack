@@ -1146,6 +1146,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SITECODE");
                     propertyNamesStatic.Add("CIVILNAME");
                     propertyNamesStatic.Add("CIVILID");
                     propertyNamesStatic.Add("FIRST_LEG");

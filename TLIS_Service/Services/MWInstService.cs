@@ -2857,6 +2857,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SiteCode");
                     propertyNamesStatic.Add("LEG_NAME");
                     propertyNamesStatic.Add("CIVILNAME");
                     propertyNamesStatic.Add("CIVIL_ID");
@@ -3036,6 +3037,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SiteCode");
                     propertyNamesStatic.Add("SIDEARMNAME");
                     propertyNamesStatic.Add("CIVILNAME");
                     propertyNamesStatic.Add("SIDEARMID");

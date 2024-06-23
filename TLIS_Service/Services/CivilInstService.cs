@@ -7441,6 +7441,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SITECODE");
                     if (SiteCode == null)
                     {
                         var query = _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => 
@@ -7636,7 +7637,8 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    if(SiteCode == null)
+                    propertyNamesStatic.Add("SITECODE");
+                    if (SiteCode == null)
                     {
                         var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => 
                          x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle).Select(x =>
@@ -8048,7 +8050,9 @@ namespace TLIS_Service.Services
                             propertyNamesDynamic.Add(name, datatype);
                         }
 
+
                     }
+                    propertyNamesStatic.Add("SITECODE");
                     if (SiteCode == null)
                     {
                         var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => 
@@ -8264,6 +8268,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SITECODE");
                     if (SiteCode == null)
                     {
                         var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x =>  x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable()
@@ -8743,6 +8748,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SITECODE");
                     if (SiteCode == null)
                     {
                         var query = _dbContext.MV_CIVIL_NONSTEEL_VIEW.Where(x => 
