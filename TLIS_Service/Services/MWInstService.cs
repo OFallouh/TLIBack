@@ -7831,7 +7831,7 @@ namespace TLIS_Service.Services
                                         var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
                                         if (OldVcivilinfo != null)
                                         {
-                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= MWDishInst.allLoadInst.mwDish.EquivalentSpace;
+                                            AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= MWDishInst.allLoadInst.mwDish.EquivalentSpace;
                                             var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
                                             AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                             mwDish.EquivalentSpace = EquivalentSpace;
@@ -9282,7 +9282,7 @@ namespace TLIS_Service.Services
                                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                        TLIMWODUs.ReservedSpace = false;
+                                                        TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                         TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                         _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                         await _unitOfWork.SaveChangesAsync();
@@ -9399,7 +9399,7 @@ namespace TLIS_Service.Services
                                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                        TLIMWODUs.ReservedSpace = false;
+                                                        TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                         TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                         _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                         await _unitOfWork.SaveChangesAsync();
@@ -9510,7 +9510,7 @@ namespace TLIS_Service.Services
                                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                        TLIMWODUs.ReservedSpace = false;
+                                                        TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                         TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                         _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                         await _unitOfWork.SaveChangesAsync();
@@ -9608,7 +9608,7 @@ namespace TLIS_Service.Services
                                                         TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                         TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                         TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                        TLIMWODUs.ReservedSpace = false;
+                                                        TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                         TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                         _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                         await _unitOfWork.SaveChangesAsync();
@@ -9790,7 +9790,7 @@ namespace TLIS_Service.Services
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = false;
+                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -9906,7 +9906,7 @@ namespace TLIS_Service.Services
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = false;
+                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -10018,7 +10018,7 @@ namespace TLIS_Service.Services
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = false;
+                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -10116,7 +10116,7 @@ namespace TLIS_Service.Services
                                                 TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                TLIMWODUs.ReservedSpace = false;
+                                                TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                                 await _unitOfWork.SaveChangesAsync();
@@ -10274,7 +10274,7 @@ namespace TLIS_Service.Services
                                             TLIMWODUs.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWODUs.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             TLIMWODUs.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                            TLIMWODUs.ReservedSpace = false;
+                                            TLIMWODUs.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                             TLIMWODUs.SiteCode = tLImwDish.SiteCode;
                                             _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWODUs);
                                             await _unitOfWork.SaveChangesAsync();
@@ -19075,7 +19075,7 @@ namespace TLIS_Service.Services
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
                         .GetInstAttributeActivatedGetForAdd(TablesNames.TLImwODU.ToString(), MWODU.allLoadInst.mwODU
-                          , "EquivalentSpace").ToList();
+                          ).ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)

@@ -3136,6 +3136,17 @@ namespace TLIS_Service.Services
 
                     if (SiteCode != null)
                     {
+                        if (civilWithLegsEntity.SpaceInstallation == 0)
+                        {
+                            if (CivilWithLegInst.CivilWithLegsLib.SpaceLibrary == 0)
+                            {
+                                civilWithLegsEntity.SpaceInstallation = CivilWithLegInst.CivilWithLegsLib.SpaceLibrary;
+                            }
+                            else
+                            {
+                                return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
                         if (civilWithLegsEntity.HeightBase <= 0)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3280,13 +3291,13 @@ namespace TLIS_Service.Services
                         }
                         if(SiteCode.ReservedSpace ==true && editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
-                            if (civilWithLegsEntity.SpaceInstallation != CivilWithLegInst.SpaceInstallation && CivilWithLegInst.SpaceInstallation == 0 && editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
+                            if (civilWithLegsEntity.SpaceInstallation != CivilWithLegInst.SpaceInstallation)
                             {
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 var tLIsite = OldValueSite;
                                 var Site = _dbContext.TLIsite.Where(x => x.SiteCode == SiteCode.SiteCode).AsNoTracking().FirstOrDefault();
-                                Site.ReservedSpace = Site.ReservedSpace - CivilWithLegInst.CivilWithLegsLib.SpaceLibrary;
+                                Site.ReservedSpace = Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
                                 Site.ReservedSpace = Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
                                 _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
                                 _dbContext.SaveChanges();
@@ -3302,25 +3313,12 @@ namespace TLIS_Service.Services
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
-                            if (editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilWithLegs", editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId, civilWithLegsEntity.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
                             {
-                                if (civilWithLegsEntity.SpaceInstallation == 0)
-                                {
-                                    if (CivilWithLegInst.CivilWithLegsLib.SpaceLibrary == 0)
-                                    {
-                                        civilWithLegsEntity.SpaceInstallation = CivilWithLegInst.CivilWithLegsLib.SpaceLibrary;
-                                    }
-                                    else
-                                    {
-                                        return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                }
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilWithLegs", editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId, civilWithLegsEntity.SpaceInstallation, null).Message;
-                                if (CheckSpace != "Success")
-                                {
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
+                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            
                         }
                         string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilWithLegsInstallationObject.dynamicAttribute, CivilType, null);
 
@@ -3499,6 +3497,17 @@ namespace TLIS_Service.Services
                         !x.Dismantle && !x.allCivilInst.Draft) : false);
                     if (SiteCode != null)
                     {
+                        if (civilWithoutLegsEntity.SpaceInstallation == 0)
+                        {
+                            if (CivilWithoutLegInst.CivilWithoutlegsLib.SpaceLibrary == 0)
+                            {
+                                civilWithoutLegsEntity.SpaceInstallation = CivilWithoutLegInst.CivilWithoutlegsLib.SpaceLibrary;
+                            }
+                            else
+                            {
+                                return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
                         if (civilWithoutLegsEntity.HeightBase <= 0)
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3708,13 +3717,13 @@ namespace TLIS_Service.Services
                         }
                         if (SiteCode.ReservedSpace == true && editCivilWithoutLegsInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
-                            if (civilWithoutLegsEntity.SpaceInstallation != CivilWithoutLegInst.SpaceInstallation && CivilWithoutLegInst.SpaceInstallation == 0 && editCivilWithoutLegsInstallationObject.civilSiteDate.ReservedSpace == true)
+                            if (civilWithoutLegsEntity.SpaceInstallation != CivilWithoutLegInst.SpaceInstallation)
                             {
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 var tLIsite = OldValueSite;
                                 var Site = _dbContext.TLIsite.Where(x => x.SiteCode == SiteCode.SiteCode).AsNoTracking().FirstOrDefault();
-                                Site.ReservedSpace = Site.ReservedSpace - CivilWithoutLegInst.CivilWithoutlegsLib.SpaceLibrary;
+                                Site.ReservedSpace = Site.ReservedSpace - CivilWithoutLegInst.SpaceInstallation;
                                 Site.ReservedSpace = Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
                                 _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
                                 _dbContext.SaveChanges();
@@ -3730,25 +3739,13 @@ namespace TLIS_Service.Services
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilWithoutLegsInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
-                            if (editCivilWithoutLegsInstallationObject.civilSiteDate.ReservedSpace == true)
+                       
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilWithoutLeg", editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId, civilWithoutLegsEntity.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
                             {
-                                if (civilWithoutLegsEntity.SpaceInstallation == 0)
-                                {
-                                    if (CivilWithoutLegInst.CivilWithoutlegsLib.SpaceLibrary == 0)
-                                    {
-                                        civilWithoutLegsEntity.SpaceInstallation = CivilWithoutLegInst.CivilWithoutlegsLib.SpaceLibrary;
-                                    }
-                                    else
-                                    {
-                                        return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                }
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilWithoutLeg", editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId, civilWithoutLegsEntity.SpaceInstallation, null).Message;
-                                if (CheckSpace != "Success")
-                                {
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
+                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            
                         }
 
                         string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilWithoutLegsInstallationObject.dynamicAttribute, CivilType, null);
@@ -3844,8 +3841,19 @@ namespace TLIS_Service.Services
                     var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
                         ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == editCivilNonSteelInstallationObject.installationAttributes.Id : false) &&
                             !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst);
-                    if(SiteCode != null) { 
-                    TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.Id != civilNonSteelEntity.Id &&
+                    if(SiteCode != null) {
+                        if (civilNonSteelEntity.SpaceInstallation == 0)
+                        {
+                            if (CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary == 0)
+                            {
+                                civilNonSteelEntity.SpaceInstallation = CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary;
+                            }
+                            else
+                            {
+                                return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
+                        TLIcivilSiteDate CheckName = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilNonSteel.Id != civilNonSteelEntity.Id &&
                       !x.Dismantle && !x.allCivilInst.Draft &&
                           (x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteel.Name.ToLower() == civilNonSteelEntity.Name.ToLower() : false
                           &&
@@ -3860,13 +3868,13 @@ namespace TLIS_Service.Services
                     }
                         if (SiteCode.ReservedSpace == true && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
-                            if (civilNonSteelEntity.SpaceInstallation != CivilNonSteelInst.SpaceInstallation && CivilNonSteelInst.SpaceInstallation == 0 && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
+                            if (civilNonSteelEntity.SpaceInstallation != CivilNonSteelInst.SpaceInstallation)
                             {
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
                                 var tLIsite = OldValueSite;
                                 var Site = _dbContext.TLIsite.Where(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).AsNoTracking().FirstOrDefault();
-                                Site.ReservedSpace = Site.ReservedSpace - CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary;
+                                Site.ReservedSpace = Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
                                 Site.ReservedSpace = Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
                                 _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
                                 _dbContext.SaveChanges();
@@ -3882,25 +3890,13 @@ namespace TLIS_Service.Services
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
                         {
-                            if (editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
+                              
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilNonSteel", editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId, civilNonSteelEntity.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
                             {
-                                if (civilNonSteelEntity.SpaceInstallation == 0)
-                                {
-                                    if (CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary == 0)
-                                    {
-                                        civilNonSteelEntity.SpaceInstallation = CivilNonSteelInst.CivilNonsteelLibrary.SpaceLibrary;
-                                    }
-                                    else
-                                    {
-                                        return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                }
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(userId, SiteCode.SiteCode, "TLIcivilNonSteel", editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId, civilNonSteelEntity.SpaceInstallation, null).Message;
-                                if (CheckSpace != "Success")
-                                {
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
+                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            
                         }
                         //string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilNonSteelInstallationObject.dynamicAttribute, CivilType, null);
 
