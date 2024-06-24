@@ -1737,7 +1737,7 @@ namespace TLIS_Service.Services
                 List<BaseInstAttViews> Config = new List<BaseInstAttViews>();
                 List<BaseInstAttViews> Civilloads = new List<BaseInstAttViews>();
                 TLIcivilLoads sideArm = _unitOfWork.CivilLoadsRepository
-                    .GetIncludeWhereFirst(x => x.sideArmId ==Id && !x.Dismantle , 
+                    .GetIncludeWhereFirst(x => x.sideArmId ==Id && !x.Dismantle && x.allLoadInst==null , 
                     x => x.sideArm.owner, x => x.sideArm.sideArmType, x => x.sideArm.sideArmInstallationPlace,
                     x => x.sideArm.sideArmInstallationPlace,x=>x.sideArm.sideArmLibrary,x=>x.allCivilInst,
                     x=>x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
@@ -2863,7 +2863,7 @@ namespace TLIS_Service.Services
                                                     var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id &&
                                                     x.Id != SideArm.Id && x.SITECODE.ToLower() == SiteCode.ToLower()
                                                     &&(x.FIRST_LEG_ID != SideArmViewModel.installationConfig.legId[0] && x.SECOND_LEG_ID
-                                                    == SideArmViewModel.installationConfig.legId[1]|| x.SECOND_LEG_ID != SideArmViewModel.installationConfig.legId[0] && x.FIRST_LEG_ID
+                                                    == SideArmViewModel.installationConfig.legId[1])||( x.SECOND_LEG_ID != SideArmViewModel.installationConfig.legId[0] && x.FIRST_LEG_ID
                                                     == SideArmViewModel.installationConfig.legId[1]) 
                                                     && x.HeightBase == SideArmViewModel.installationAttributes.HeightBase && x.Id != SideArm.Id)
                                                   .GroupBy(x => new { x.ALLCIVIL_ID, x.FIRST_LEG_ID, x.SECOND_LEG_ID, x.SITECODE })
@@ -4114,9 +4114,9 @@ namespace TLIS_Service.Services
                                             {
                                                 var AzimuthandAndHeightBase = _dbContext.MV_SIDEARM_VIEW.Where(x => x.ALLCIVIL_ID == civilwithlegname.Id
                                                 && x.SITECODE.ToLower() == SiteCode.ToLower() &&(x.FIRST_LEG_ID != addSideArms.installationConfig.legId[0]
-                                                && x.SECOND_LEG_ID != addSideArms.installationConfig.legId[1] || 
-                                                x.FIRST_LEG_ID != addSideArms.installationConfig.legId[1]
-                                                && x.SECOND_LEG_ID != addSideArms.installationConfig.legId[2])
+                                                && x.SECOND_LEG_ID != addSideArms.installationConfig.legId[1]) || 
+                                               ( x.FIRST_LEG_ID != addSideArms.installationConfig.legId[1]
+                                                && x.SECOND_LEG_ID != addSideArms.installationConfig.legId[0])
                                                 && x.HeightBase == addSideArms.installationAttributes.HeightBase)
                                                       .GroupBy(x => new { x.ALLCIVIL_ID, x.SECOND_LEG_ID, x.FIRST_LEG_ID, x.SITECODE })
                                                        .Select(g => g.First())

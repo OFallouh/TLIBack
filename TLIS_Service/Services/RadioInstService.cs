@@ -1654,13 +1654,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                 x.LEGID == AddRadioAntenna.installationConfig.legId
-                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle);
+                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode })
+                                                                .Select(g => g.First())
+                                                                .ToList(); ;
 
-                                                        if (CheckAzimuthAndHeightBase != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (CheckAzimuthAndHeightBase.Count >0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                         TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddRadioAntenna.installationConfig.legId);
@@ -1778,13 +1781,16 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                 x.LEGID == AddRadioAntenna.installationConfig.legId
-                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle);
+                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
+                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode })
+                                                                .Select(g => g.First())
+                                                                .ToList(); ;
 
-                                                        if (CheckAzimuthAndHeightBase != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (CheckAzimuthAndHeightBase.Count >0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                         TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddRadioAntenna.installationConfig.legId);
@@ -1875,276 +1881,294 @@ namespace TLIS_Service.Services
                                                x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (AllcivilinstId != null)
                                             {
-                                                if (AddRadioAntenna.installationConfig.sideArmId != null)
+                                                if (AddRadioAntenna.installationConfig.legId != null)
                                                 {
-                                                    var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                                      AddRadioAntenna.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId == AddRadioAntenna.installationConfig.sideArmId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                                      x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                                    if (SideArm != null)
+                                                    var LegIsFound = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.legId
+                                                     && x.CivilWithLegInstId == AddRadioAntenna.installationConfig.civilWithLegId);
+                                                    if (LegIsFound == null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "selected Leg is not found on civil", (int)ApiReturnCode.fail);
+
+                                                    if (AddRadioAntenna.installationConfig.sideArmId != null)
                                                     {
-                                                        if (AddRadioAntenna.installationConfig.legId != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
-
-                                                        if (!string.IsNullOrEmpty(RadioAntenna.SerialNumber))
+                                                        var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                                          AddRadioAntenna.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId == AddRadioAntenna.installationConfig.sideArmId
+                                                            && (x.legId == AddRadioAntenna.installationConfig.legId || x.Leg2Id == AddRadioAntenna.installationConfig.legId), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                                          x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                        if (SideArm != null)
                                                         {
-                                                            bool CheckSerialNumber = _dbContext.MV_RADIO_ANTENNA_VIEW.Any(x => x.SerialNumber == RadioAntenna.SerialNumber && !x.Dismantle);
-                                                            if (CheckSerialNumber)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {RadioAntenna.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+
+                                                            if (!string.IsNullOrEmpty(RadioAntenna.SerialNumber))
+                                                            {
+                                                                bool CheckSerialNumber = _dbContext.MV_RADIO_ANTENNA_VIEW.Any(x => x.SerialNumber == RadioAntenna.SerialNumber && !x.Dismantle);
+                                                                if (CheckSerialNumber)
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {RadioAntenna.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+                                                            }
+
+                                                            if (AllcivilinstId != null)
+                                                            {
+                                                                if (AddRadioAntenna.civilLoads.ReservedSpace == true)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (RadioAntenna.CenterHigh <= 0)
+                                                                    {
+                                                                        if (RadioAntenna.HBASurface <= 0)
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RadioAntennaLibrary.Length <= 0)
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                        }
+                                                                    }
+                                                                    if (RadioAntenna.SpaceInstallation == 0)
+                                                                    {
+                                                                        if (RadioAntennaLibrary.SpaceLibrary == 0)
+                                                                        {
+                                                                            if (RadioAntennaLibrary.Length == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            if (RadioAntennaLibrary.Width == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
+                                                                        }
+                                                                    }
+
+                                                                    if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (AddRadioAntenna.installationAttributes.HeightBase <= 0)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
+                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                                          x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
+                                                                          && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase ==
+                                                                          RadioAntenna.HeightBase && !x.Dismantle).
+                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                            .Select(g => g.First())
+                                                                            .ToList();
+
+                                                                    if (CheckAzimuthAndHeightBase.Count >0)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+
+                                                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
+                                                                    if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
+                                                                    {
+                                                                        RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                                    }
+
+                                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                             (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
+                                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                                    if (CheckName != null)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                                    if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                                    {
+                                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                                    }
+                                                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                                    if (OldVcivilinfo != null)
+                                                                    {
+
+                                                                        var EquivalentSpace = RadioAntenna.SpaceInstallation * (RadioAntenna.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+
+                                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                                        RadioAntenna.EquivalentSpace = EquivalentSpace;
+                                                                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                                        _unitOfWork.SaveChanges();
+                                                                    }
+
+
+                                                                    RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
+                                                                    RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
+                                                                    _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                                    _unitOfWork.SaveChanges();
+                                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
+                                                                    if (AddRadioAntenna.civilLoads != null && Id != 0)
+                                                                    {
+                                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                        {
+                                                                            InstallationDate = AddRadioAntenna.civilLoads.InstallationDate,
+                                                                            allLoadInstId = Id,
+                                                                            legId = AddRadioAntenna.installationConfig?.legId,
+                                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                            sideArmId = AddRadioAntenna.installationConfig?.sideArmId,
+                                                                            ItemOnCivilStatus = AddRadioAntenna.civilLoads.ItemOnCivilStatus,
+                                                                            ItemStatus = AddRadioAntenna.civilLoads?.ItemStatus,
+                                                                            Dismantle = false,
+                                                                            ReservedSpace = AddRadioAntenna.civilLoads.ReservedSpace,
+                                                                            SiteCode = SiteCode,
+
+
+                                                                        };
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        _unitOfWork.SaveChanges();
+
+                                                                    }
+
+                                                                    if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                                    {
+                                                                        foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                                        {
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (RadioAntenna.CenterHigh <= 0)
+                                                                    {
+                                                                        if (RadioAntenna.HBASurface <= 0)
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RadioAntennaLibrary.Length <= 0)
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                        }
+                                                                    }
+                                                                    if (RadioAntenna.SpaceInstallation == 0)
+                                                                    {
+                                                                        if (RadioAntennaLibrary.SpaceLibrary == 0)
+                                                                        {
+                                                                            if (RadioAntennaLibrary.Length == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            if (RadioAntennaLibrary.Width == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
+                                                                        }
+                                                                    }
+
+                                                                    if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (AddRadioAntenna.installationAttributes.HeightBase <= 0)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
+                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                                          x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
+                                                                          && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase)
+                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                          .Select(g => g.First())
+                                                                          .ToList();
+
+                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+                                                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
+                                                                    if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
+                                                                    {
+                                                                        RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                                    }
+
+                                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                            (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
+                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                                    if (CheckName != null)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                                    RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
+                                                                    RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
+                                                                    _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                                    _unitOfWork.SaveChanges();
+                                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
+                                                                    if (AddRadioAntenna.civilLoads != null && Id != 0)
+                                                                    {
+                                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                        {
+                                                                            InstallationDate = AddRadioAntenna.civilLoads.InstallationDate,
+                                                                            allLoadInstId = Id,
+                                                                            legId = AddRadioAntenna.installationConfig?.legId,
+                                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                            sideArmId = AddRadioAntenna.installationConfig?.sideArmId,
+                                                                            ItemOnCivilStatus = AddRadioAntenna.civilLoads.ItemOnCivilStatus,
+                                                                            ItemStatus = AddRadioAntenna.civilLoads?.ItemStatus,
+                                                                            Dismantle = false,
+                                                                            ReservedSpace = AddRadioAntenna.civilLoads.ReservedSpace,
+                                                                            SiteCode = SiteCode,
+
+
+                                                                        };
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        _unitOfWork.SaveChanges();
+
+                                                                    }
+
+                                                                    if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                                    {
+                                                                        foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
+                                                                        {
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                            }
                                                         }
-
-                                                        if (AllcivilinstId != null)
+                                                        else
                                                         {
-                                                            if (AddRadioAntenna.civilLoads.ReservedSpace == true)
-                                                            {
-                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                                if (Message != "Success")
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioAntenna.CenterHigh <= 0)
-                                                                {
-                                                                    if (RadioAntenna.HBASurface <= 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioAntennaLibrary.Length <= 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
-                                                                    }
-                                                                }
-                                                                if (RadioAntenna.SpaceInstallation == 0)
-                                                                {
-                                                                    if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                                    {
-                                                                        if (RadioAntennaLibrary.Length == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        if (RadioAntennaLibrary.Width == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                                    }
-                                                                }
-
-                                                                if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (AddRadioAntenna.installationAttributes.HeightBase <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
-                                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                      x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                      && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle);
-
-                                                                if (CheckAzimuthAndHeightBase != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
-                                                                if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
-                                                                {
-                                                                    RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
-                                                                }
-
-                                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                         (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                                                                if (CheckName != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                                if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                                                                {
-                                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                                                                }
-                                                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                                                                if (OldVcivilinfo != null)
-                                                                {
-
-                                                                    var EquivalentSpace = RadioAntenna.SpaceInstallation * (RadioAntenna.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-
-                                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                                                                    RadioAntenna.EquivalentSpace = EquivalentSpace;
-                                                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                                                                    _unitOfWork.SaveChanges();
-                                                                }
-
-
-                                                                RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
-                                                                RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                                _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
-                                                                _unitOfWork.SaveChanges();
-                                                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
-                                                                if (AddRadioAntenna.civilLoads != null && Id != 0)
-                                                                {
-                                                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                    {
-                                                                        InstallationDate = AddRadioAntenna.civilLoads.InstallationDate,
-                                                                        allLoadInstId = Id,
-                                                                        legId = AddRadioAntenna.installationConfig?.legId,
-                                                                        allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                        sideArmId = AddRadioAntenna.installationConfig?.sideArmId,
-                                                                        ItemOnCivilStatus = AddRadioAntenna.civilLoads.ItemOnCivilStatus,
-                                                                        ItemStatus = AddRadioAntenna.civilLoads?.ItemStatus,
-                                                                        Dismantle = false,
-                                                                        ReservedSpace = AddRadioAntenna.civilLoads.ReservedSpace,
-                                                                        SiteCode = SiteCode,
-
-
-                                                                    };
-                                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                    _unitOfWork.SaveChanges();
-
-                                                                }
-
-                                                                if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
-                                                                {
-                                                                    foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
-                                                                    {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                                    }
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                                if (Message != "Success")
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioAntenna.CenterHigh <= 0)
-                                                                {
-                                                                    if (RadioAntenna.HBASurface <= 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioAntennaLibrary.Length <= 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
-                                                                    }
-                                                                }
-                                                                if (RadioAntenna.SpaceInstallation == 0)
-                                                                {
-                                                                    if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                                    {
-                                                                        if (RadioAntennaLibrary.Length == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        if (RadioAntennaLibrary.Width == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                                    }
-                                                                }
-
-                                                                if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (AddRadioAntenna.installationAttributes.HeightBase <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
-                                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                      x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                      && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase);
-
-                                                                if (CheckAzimuthAndHeightBase != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                                var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
-                                                                if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
-                                                                {
-                                                                    RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
-                                                                }
-
-                                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                                                                if (CheckName != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                                RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
-                                                                RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                                _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
-                                                                _unitOfWork.SaveChanges();
-                                                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
-                                                                if (AddRadioAntenna.civilLoads != null && Id != 0)
-                                                                {
-                                                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                    {
-                                                                        InstallationDate = AddRadioAntenna.civilLoads.InstallationDate,
-                                                                        allLoadInstId = Id,
-                                                                        legId = AddRadioAntenna.installationConfig?.legId,
-                                                                        allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                        sideArmId = AddRadioAntenna.installationConfig?.sideArmId,
-                                                                        ItemOnCivilStatus = AddRadioAntenna.civilLoads.ItemOnCivilStatus,
-                                                                        ItemStatus = AddRadioAntenna.civilLoads?.ItemStatus,
-                                                                        Dismantle = false,
-                                                                        ReservedSpace = AddRadioAntenna.civilLoads.ReservedSpace,
-                                                                        SiteCode = SiteCode,
-
-
-                                                                    };
-                                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                    _unitOfWork.SaveChanges();
-
-                                                                }
-
-                                                                if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
-                                                                {
-                                                                    foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
-                                                                    {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                                    }
-                                                                }
-
-                                                            }
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected Leg ", (int)ApiReturnCode.fail);
                                                 }
                                             }
                                             else
@@ -2243,13 +2267,16 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
+                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                   x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                  && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase);
+                                                                  && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase)
+                                                               . GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                  .Select(g => g.First())
+                                                                  .ToList();
 
-                                                            if (CheckAzimuthAndHeightBase != null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
@@ -2376,13 +2403,16 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
+                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                   x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                  && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase);
+                                                                  && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase)
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                  .Select(g => g.First())
+                                                                  .ToList(); ;
 
-                                                            if (CheckAzimuthAndHeightBase != null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
@@ -2537,13 +2567,16 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                               x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                              && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase);
+                                                              && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase)
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                               .Select(g => g.First())
+                                                               .ToList(); 
 
-                                                        if (CheckAzimuthAndHeightBase != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
@@ -2729,13 +2762,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                 x.LEGID == AddRadioRRU.installationConfig.legId
-                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle);
+                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode })
+                                                               .Select(g => g.First())
+                                                               .ToList();
 
-                                                        if (CheckAzimuthAndHeightBase != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
                                               
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                         (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
@@ -2860,13 +2896,16 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                 x.LEGID == AddRadioRRU.installationConfig.legId
-                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle);
+                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle
+                                                                ).GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode })
+                                                               .Select(g => g.First())
+                                                               .ToList();
 
-                                                        if (CheckAzimuthAndHeightBase != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                                                                                (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
                                                                                                                   && x.SiteCode.ToLower() == SiteCode.ToLower()));
@@ -2963,302 +3002,325 @@ namespace TLIS_Service.Services
                                                x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (AllcivilinstId != null)
                                             {
-                                                if (AddRadioRRU.installationConfig.sideArmId != null)
+                                                if (AddRadioRRU.installationConfig.legId != null)
                                                 {
-                                                    var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                                      AddRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId == AddRadioRRU.installationConfig.sideArmId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                                      x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                                    if (SideArm != null)
+                                                    var LegIsFound = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == AddRadioRRU.installationConfig.legId
+                                                   && x.CivilWithLegInstId == AddRadioRRU.installationConfig.civilWithLegId);
+                                                    if (LegIsFound == null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "selected Leg is not found on civil", (int)ApiReturnCode.fail);
+
+                                                    if (AddRadioRRU.installationConfig.sideArmId != null)
                                                     {
-                                                        if (AddRadioRRU.installationConfig.legId != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
+                                                        var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                                          AddRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId == 
+                                                          AddRadioRRU.installationConfig.sideArmId &&(x.legId == AddRadioRRU.installationConfig.legId || x.Leg2Id 
+                                                          == AddRadioRRU.installationConfig.legId), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                                          x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                                        if (SideArm != null)
+                                                        {
+                                                            if (AddRadioRRU.installationConfig.legId != null)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
 
-                                                        for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
-                                                        {
-                                                            var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                                .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                                && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                                AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                            if (RadioAntenna == null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
-                                                        {
-                                                            bool CheckSerialNumber = _dbContext.MV_RADIO_RRU_VIEW.Any(x => x.SerialNumber == RadioRRU.SerialNumber && !x.Dismantle);
-                                                            if (CheckSerialNumber)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {RadioRRU.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-                                                        }
-
-                                                        if (AllcivilinstId != null)
-                                                        {
-                                                            if (AddRadioRRU.civilLoads.ReservedSpace == true)
+                                                            for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
                                                             {
-                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+                                                                var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                                    .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                                    && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                                    AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                                if (RadioAntenna == null)
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                            }
+                                                            if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
+                                                            {
+                                                                bool CheckSerialNumber = _dbContext.MV_RADIO_RRU_VIEW.Any(x => x.SerialNumber == RadioRRU.SerialNumber && !x.Dismantle);
+                                                                if (CheckSerialNumber)
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {RadioRRU.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+                                                            }
 
-                                                                if (Message != "Success")
+                                                            if (AllcivilinstId != null)
+                                                            {
+                                                                if (AddRadioRRU.civilLoads.ReservedSpace == true)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRU.CenterHigh <= 0)
-                                                                {
-                                                                    if (RadioRRU.HBA <= 0)
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                                    if (Message != "Success")
                                                                     {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
                                                                     }
-                                                                    if (RadioRRULibrary.Length <= 0)
+                                                                    if (RadioRRU.CenterHigh <= 0)
                                                                     {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
-                                                                    }
-                                                                }
-                                                                if (RadioRRU.SpaceInstallation == 0)
-                                                                {
-                                                                    if (RadioRRULibrary.SpaceLibrary == 0)
-                                                                    {
-                                                                        if (RadioRRULibrary.Length == 0)
+                                                                        if (RadioRRU.HBA <= 0)
                                                                         {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
-                                                                        if (RadioRRULibrary.Width == 0)
+                                                                        if (RadioRRULibrary.Length <= 0)
                                                                         {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
+                                                                            RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
                                                                         }
                                                                     }
-                                                                    else
+                                                                    if (RadioRRU.SpaceInstallation == 0)
                                                                     {
-                                                                        RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                                    }
-                                                                }
-
-                                                                if (AddRadioRRU.installationAttributes.Azimuth <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (AddRadioRRU.installationAttributes.HeightBase <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
-                                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                      x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                      && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle);
-
-                                                                if (CheckAzimuthAndHeightBase != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);                                                    
-
-                                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                         (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                                                                if (CheckName != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                                if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                                                                {
-                                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                                                                }
-                                                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                                                                if (OldVcivilinfo != null)
-                                                                {
-
-                                                                    var EquivalentSpace = RadioRRU.SpaceInstallation * (RadioRRU.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-
-                                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                                                                    RadioRRU.EquivalentSpace = EquivalentSpace;
-                                                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                                                                    _unitOfWork.SaveChanges();
-                                                                }
-
-
-                                                                RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
-                                                                RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                                _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
-                                                                _unitOfWork.SaveChanges();
-                                                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
-                                                                if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
-                                                                {
-                                                                    for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
-                                                                    {
-                                                                        TLIallLoadInst tLIallLoadInst = new TLIallLoadInst()
+                                                                        if (RadioRRULibrary.SpaceLibrary == 0)
                                                                         {
-                                                                            radioRRUId = RadioRRU.Id,
-                                                                            radioAntennaId = AddRadioRRU.installationConfig.radioAntennaId[i]
-                                                                        };
-                                                                        _unitOfWork.AllLoadInstRepository.Add(tLIallLoadInst);
-                                                                        _unitOfWork.SaveChanges();
-                                                                    }
-
-                                                                }
-                                                                if (AddRadioRRU.civilLoads != null && Id != 0)
-                                                                {
-                                                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                    {
-                                                                        InstallationDate = AddRadioRRU.civilLoads.InstallationDate,
-                                                                        allLoadInstId = Id,
-                                                                        legId = AddRadioRRU.installationConfig?.legId,
-                                                                        allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                        sideArmId = AddRadioRRU.installationConfig?.sideArmId,
-                                                                        ItemOnCivilStatus = AddRadioRRU.civilLoads.ItemOnCivilStatus,
-                                                                        ItemStatus = AddRadioRRU.civilLoads?.ItemStatus,
-                                                                        Dismantle = false,
-                                                                        ReservedSpace = AddRadioRRU.civilLoads.ReservedSpace,
-                                                                        SiteCode = SiteCode,
-
-
-                                                                    };
-                                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                    _unitOfWork.SaveChanges();
-
-                                                                }
-
-                                                                if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
-                                                                {
-                                                                    foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
-                                                                    {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                                    }
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                                if (Message != "Success")
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRU.CenterHigh <= 0)
-                                                                {
-                                                                    if (RadioRRU.HBA <= 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioRRULibrary.Length <= 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
-                                                                    }
-                                                                }
-                                                                if (RadioRRU.SpaceInstallation == 0)
-                                                                {
-                                                                    if (RadioRRULibrary.SpaceLibrary == 0)
-                                                                    {
-                                                                        if (RadioRRULibrary.Length == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        if (RadioRRULibrary.Width == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            if (RadioRRULibrary.Length == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            if (RadioRRULibrary.Width == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
+                                                                            RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
                                                                         }
                                                                     }
-                                                                    else
+
+                                                                    if (AddRadioRRU.installationAttributes.Azimuth <= 0)
                                                                     {
-                                                                        RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                }
-
-                                                                if (AddRadioRRU.installationAttributes.Azimuth <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (AddRadioRRU.installationAttributes.HeightBase <= 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
-                                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                      x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                      && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase);
-
-                                                                if (CheckAzimuthAndHeightBase != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                          
-
-                                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
-                                                                if (CheckName != null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-
-                                                                RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
-                                                                RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                                _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
-                                                                _unitOfWork.SaveChanges();
-                                                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
-                                                                if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
-                                                                {
-                                                                    for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                                    if (AddRadioRRU.installationAttributes.HeightBase <= 0)
                                                                     {
-                                                                        TLIallLoadInst tLIallLoadInst = new TLIallLoadInst()
-                                                                        {
-                                                                            radioRRUId = RadioRRU.Id,
-                                                                            radioAntennaId = AddRadioRRU.installationConfig.radioAntennaId[i]
-                                                                        };
-                                                                        _unitOfWork.AllLoadInstRepository.Add(tLIallLoadInst);
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
+                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                                          x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
+                                                                          && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
+                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                       .Select(g => g.First())
+                                                                       .ToList();
+
+
+
+                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+                                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                             (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
+                                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                                    if (CheckName != null)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                                    if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                                    {
+                                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                                    }
+                                                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                                    if (OldVcivilinfo != null)
+                                                                    {
+
+                                                                        var EquivalentSpace = RadioRRU.SpaceInstallation * (RadioRRU.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+
+                                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                                        RadioRRU.EquivalentSpace = EquivalentSpace;
+                                                                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
                                                                         _unitOfWork.SaveChanges();
                                                                     }
 
-                                                                }
-                                                                if (AddRadioRRU.civilLoads != null && Id != 0)
-                                                                {
-                                                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                    {
-                                                                        InstallationDate = AddRadioRRU.civilLoads.InstallationDate,
-                                                                        allLoadInstId = Id,
-                                                                        legId = AddRadioRRU.installationConfig?.legId,
-                                                                        allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                        sideArmId = AddRadioRRU.installationConfig?.sideArmId,
-                                                                        ItemOnCivilStatus = AddRadioRRU.civilLoads.ItemOnCivilStatus,
-                                                                        ItemStatus = AddRadioRRU.civilLoads?.ItemStatus,
-                                                                        Dismantle = false,
-                                                                        ReservedSpace = AddRadioRRU.civilLoads.ReservedSpace,
-                                                                        SiteCode = SiteCode,
 
-
-                                                                    };
-                                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                    RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
+                                                                    RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
+                                                                    _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
                                                                     _unitOfWork.SaveChanges();
-
-                                                                }
-
-                                                                if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
-                                                                {
-                                                                    foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
+                                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
+                                                                    if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
                                                                     {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                        for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                                        {
+                                                                            TLIallLoadInst tLIallLoadInst = new TLIallLoadInst()
+                                                                            {
+                                                                                radioRRUId = RadioRRU.Id,
+                                                                                radioAntennaId = AddRadioRRU.installationConfig.radioAntennaId[i]
+                                                                            };
+                                                                            _unitOfWork.AllLoadInstRepository.Add(tLIallLoadInst);
+                                                                            _unitOfWork.SaveChanges();
+                                                                        }
+
+                                                                    }
+                                                                    if (AddRadioRRU.civilLoads != null && Id != 0)
+                                                                    {
+                                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                        {
+                                                                            InstallationDate = AddRadioRRU.civilLoads.InstallationDate,
+                                                                            allLoadInstId = Id,
+                                                                            legId = AddRadioRRU.installationConfig?.legId,
+                                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                            sideArmId = AddRadioRRU.installationConfig?.sideArmId,
+                                                                            ItemOnCivilStatus = AddRadioRRU.civilLoads.ItemOnCivilStatus,
+                                                                            ItemStatus = AddRadioRRU.civilLoads?.ItemStatus,
+                                                                            Dismantle = false,
+                                                                            ReservedSpace = AddRadioRRU.civilLoads.ReservedSpace,
+                                                                            SiteCode = SiteCode,
+
+
+                                                                        };
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        _unitOfWork.SaveChanges();
+
+                                                                    }
+
+                                                                    if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                                    {
+                                                                        foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
+                                                                        {
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                        }
                                                                     }
                                                                 }
+                                                                else
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
 
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (RadioRRU.CenterHigh <= 0)
+                                                                    {
+                                                                        if (RadioRRU.HBA <= 0)
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        if (RadioRRULibrary.Length <= 0)
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                        }
+                                                                    }
+                                                                    if (RadioRRU.SpaceInstallation == 0)
+                                                                    {
+                                                                        if (RadioRRULibrary.SpaceLibrary == 0)
+                                                                        {
+                                                                            if (RadioRRULibrary.Length == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            if (RadioRRULibrary.Width == 0)
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
+                                                                        }
+                                                                    }
+
+                                                                    if (AddRadioRRU.installationAttributes.Azimuth <= 0)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    if (AddRadioRRU.installationAttributes.HeightBase <= 0)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    }
+                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
+                                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                                           x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
+                                                                           && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
+                                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                        .Select(g => g.First())
+                                                                        .ToList();
+
+
+                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+
+                                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
+                                                                            (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
+                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                                    if (CheckName != null)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                                                                    RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
+                                                                    RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
+                                                                    _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                                    _unitOfWork.SaveChanges();
+                                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
+                                                                    if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
+                                                                    {
+                                                                        for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                                        {
+                                                                            TLIallLoadInst tLIallLoadInst = new TLIallLoadInst()
+                                                                            {
+                                                                                radioRRUId = RadioRRU.Id,
+                                                                                radioAntennaId = AddRadioRRU.installationConfig.radioAntennaId[i]
+                                                                            };
+                                                                            _unitOfWork.AllLoadInstRepository.Add(tLIallLoadInst);
+                                                                            _unitOfWork.SaveChanges();
+                                                                        }
+
+                                                                    }
+                                                                    if (AddRadioRRU.civilLoads != null && Id != 0)
+                                                                    {
+                                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                        {
+                                                                            InstallationDate = AddRadioRRU.civilLoads.InstallationDate,
+                                                                            allLoadInstId = Id,
+                                                                            legId = AddRadioRRU.installationConfig?.legId,
+                                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                            sideArmId = AddRadioRRU.installationConfig?.sideArmId,
+                                                                            ItemOnCivilStatus = AddRadioRRU.civilLoads.ItemOnCivilStatus,
+                                                                            ItemStatus = AddRadioRRU.civilLoads?.ItemStatus,
+                                                                            Dismantle = false,
+                                                                            ReservedSpace = AddRadioRRU.civilLoads.ReservedSpace,
+                                                                            SiteCode = SiteCode,
+
+
+                                                                        };
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        _unitOfWork.SaveChanges();
+
+                                                                    }
+
+                                                                    if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                                    {
+                                                                        foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
+                                                                        {
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                        }
+                                                                    }
+
+                                                                }
                                                             }
+                                                        }
+                                                        else
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected leg ", (int)ApiReturnCode.fail);
                                                 }
                                             }
                                             else
@@ -3366,13 +3428,16 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
+                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                   x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                  && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase);
+                                                                  && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase)
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                        .Select(g => g.First())
+                                                                        .ToList();
 
-                                                            if (CheckAzimuthAndHeightBase != null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                             var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
@@ -3505,13 +3570,16 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
+                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                   x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                  && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase);
+                                                                  && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase)
+                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                .Select(g => g.First())
+                                                                .ToList();
 
-                                                            if (CheckAzimuthAndHeightBase != null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                             var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                                         (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
@@ -3682,13 +3750,16 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                               x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                              && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase);
+                                                              && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase).
+                                                              GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                                .Select(g => g.First())
+                                                                .ToList();
 
-                                                        if (CheckAzimuthAndHeightBase != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
         
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
                                                                              (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
