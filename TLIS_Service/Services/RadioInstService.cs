@@ -6215,19 +6215,37 @@ namespace TLIS_Service.Services
                                                     RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
                                                     _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
                                                     _unitOfWork.SaveChanges();
-                                                    if (EditRadioRRU.installationConfig.radioAntennaId != null)
+                                                    if (EditRadioRRU.installationConfig.radioAntennaId != null && EditRadioRRU.installationConfig.radioAntennaId.Any())
                                                     {
-                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                        && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntennas)
+                                                        var radioAntennas = _dbContext.TLIallLoadInst
+                                                                            .Where(x => x.radioRRUId == RadioRRU.Id && x.radioAntennaId != null)
+                                                                            .ToList();
+
+                                               
+                                                        var newRadioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[0];
+
+                                               
+                                                        var updatedItems = radioAntennas
+                                                                            .Where(item => item != null)
+                                                                            .Select(item =>
+                                                                            {
+                                                                                var oldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
+                                                                                item.radioAntennaId = newRadioAntennaId;
+                                                                                return new { OldValue = oldValue, UpdatedItem = item };
+                                                                            })
+                                                                            .ToList();
+
+                                                
+                                                        updatedItems.ForEach(update =>
                                                         {
-                                                            var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
-                                                            == item.Id);
-                                                            item.radioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[0];
-                                                            _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, OldValue, item);
-                                                            _unitOfWork.SaveChanges();
-                                                        }
+                                                            _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, update.OldValue, update.UpdatedItem);
+                                                        });
+
+                                          
+                                                        _unitOfWork.SaveChanges();
                                                     }
+
+
                                                     if (EditRadioRRU.civilLoads != null)
                                                     {
 
@@ -6462,17 +6480,33 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                        && x.radioAntennaId != null).ToList();
-                                                        foreach (var item in RadioAntennas)
+                                                  
+                                                        var radioAntennas = _unitOfWork.AllLoadInstRepository
+                                                                            .GetWhere(x => x.radioRRUId == RadioRRU.Id && x.radioAntennaId != null)
+                                                                            .ToList();
+
+                                                        var updatedItems = radioAntennas.Select((item, index) =>
                                                         {
-                                                            var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
-                                                            == item.Id);
-                                                            item.radioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[0];
-                                                            _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, OldValue, item);
-                                                            _unitOfWork.SaveChanges();
-                                                        }
+                                                            var oldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
+                                                            if (index < EditRadioRRU.installationConfig.radioAntennaId.Count)
+                                                            {
+                                                                var newItem = new { OldValue = oldValue, NewValue = item };
+                                                                newItem.NewValue.radioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[index];
+                                                                return newItem;
+                                                            }
+                                                            return null;
+                                                        })
+                                                        .Where(x => x != null)
+                                                        .ToList();
+
+                                                        updatedItems.ForEach(update =>
+                                                        {
+                                                            _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, update.OldValue, update.NewValue);
+                                                        });
+
+                                                        _unitOfWork.SaveChanges();
                                                     }
+
                                                     if (EditRadioRRU.civilLoads != null)
                                                     {
 
@@ -11109,7 +11143,7 @@ namespace TLIS_Service.Services
                                 Name = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => x.Id == RadioAntenna.sideArm.Id)?.Name
                             };
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "SideArmId";
+                            baseInstAttViews.Key = "sideArmId";
                             baseInstAttViews.Value = sectionsLegTypeViewModel;
                             baseInstAttViews.Label = "Select SideArm";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
@@ -11370,7 +11404,7 @@ namespace TLIS_Service.Services
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
                                     Key = "legId",
-                                    Value = sectionsLegTypeViewModel,
+                                    Value = Leg1.Id,
                                     Label = "Select Leg",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
@@ -11397,7 +11431,7 @@ namespace TLIS_Service.Services
                             Config.Add(baseInstAttViews);
                         }
                         var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.allLoadInst.radioRRUId && x.radioAntennaId != null).ToList();
-                        if (RadioAntenna != null)
+                        if (RadioAntenna !=null )
                         {
                             foreach (var item in RadioAntenna)
                             {

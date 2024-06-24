@@ -1155,46 +1155,57 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SECOND_LEG_ID");
                     if (SiteCode == null)
                     {
-                        var query = _dbContext.MV_SIDEARM_VIEW.Where(x =>!x.Dismantle).AsEnumerable()
-                      .GroupBy(x => new
-                      {
-                          SITECODE = x.SITECODE,
-                          Id = x.Id,
-                          Name = x.Name,
-                          CIVILNAME = x.CIVILNAME,
-                          CIVILID = x.CIVILID,
-                          FIRST_LEG = x.FIRST_LEG,
-                          SECOND_LEG = x.SECOND_LEG,
-                          Notes = x.Notes,
-                          HeightBase = x.HeightBase,
-                          Azimuth = x.Azimuth,
-                          ReservedSpace = x.ReservedSpace,
-                          Active = x.Active,
-                          VisibleStatus = x.VisibleStatus,
-                          SpaceInstallation = x.SpaceInstallation,
-                          SIDEARMLIBRARY = x.SIDEARMLIBRARY,
-                          SIDEARMINSTALLATIONPLACE = x.SIDEARMINSTALLATIONPLACE,
-                          OWNER = x.OWNER,
-                          SIDEARMTYPE = x.SIDEARMTYPE,
-                          Draft = x.Draft,
-                          CenterHigh = x.CenterHigh,
-                          HBA = x.HBA,
-                          HieghFromLand = x.HieghFromLand,
-                          EquivalentSpace = x.EquivalentSpace,
-                          FIRST_LEG_ID = x.FIRST_LEG_ID,
-                          SECOND_LEG_ID = x.SECOND_LEG_ID,
-                          ALLCIVIL_ID = x.ALLCIVIL_ID,
-                          Dismantle = x.Dismantle
+                        if (propertyNamesDynamic.Count == 0)
+                        {
 
-                      })
-                      .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                      .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                            var query = _dbContext.MV_SIDEARM_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                        else
+                        {
+                            var query = _dbContext.MV_SIDEARM_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                           .GroupBy(x => new
+                           {
+                               SITECODE = x.SITECODE,
+                               Id = x.Id,
+                               Name = x.Name,
+                               CIVILNAME = x.CIVILNAME,
+                               CIVILID = x.CIVILID,
+                               FIRST_LEG = x.FIRST_LEG,
+                               SECOND_LEG = x.SECOND_LEG,
+                               Notes = x.Notes,
+                               HeightBase = x.HeightBase,
+                               Azimuth = x.Azimuth,
+                               ReservedSpace = x.ReservedSpace,
+                               Active = x.Active,
+                               VisibleStatus = x.VisibleStatus,
+                               SpaceInstallation = x.SpaceInstallation,
+                               SIDEARMLIBRARY = x.SIDEARMLIBRARY,
+                               SIDEARMINSTALLATIONPLACE = x.SIDEARMINSTALLATIONPLACE,
+                               OWNER = x.OWNER,
+                               SIDEARMTYPE = x.SIDEARMTYPE,
+                               Draft = x.Draft,
+                               CenterHigh = x.CenterHigh,
+                               HBA = x.HBA,
+                               HieghFromLand = x.HieghFromLand,
+                               EquivalentSpace = x.EquivalentSpace,
+                               FIRST_LEG_ID = x.FIRST_LEG_ID,
+                               SECOND_LEG_ID = x.SECOND_LEG_ID,
+                               ALLCIVIL_ID = x.ALLCIVIL_ID,
+                               Dismantle = x.Dismantle
 
-                        int count = query.Count();
+                           })
+                           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
 
-                        getEnableAttribute.Model = query;
-                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                            int count = query.Count();
 
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
