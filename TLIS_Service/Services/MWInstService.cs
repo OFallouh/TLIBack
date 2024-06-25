@@ -9592,7 +9592,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        else if (TLIMWODU.allLoadInst.MwODULibrary.Height <= 0)
+                                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
