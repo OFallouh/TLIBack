@@ -9595,7 +9595,7 @@ namespace TLIS_Service.Services
                                                         else if (TLIMWODU.allLoadInst.MwODULibrary.Height <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }.mwODU
+                                                        }
                                                         else
                                                         {
                                                             mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
