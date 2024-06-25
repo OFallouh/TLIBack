@@ -3237,9 +3237,11 @@ namespace TLIS_Service.Services
                                                     mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                        mwDish.MwDishLibrary.polarityType.Name;
                                                 }
-                                                var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                                 (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                                    && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                           !x.Dismantle &&
+                                                           x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                           x.SiteCode.ToLower() == SiteCode.ToLower());
+
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3329,9 +3331,10 @@ namespace TLIS_Service.Services
                                                     mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                        mwDish.MwDishLibrary.polarityType.Name;
                                                 }
-                                                var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                                 (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                                    && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                           !x.Dismantle &&
+                                                           x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                           x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3422,9 +3425,10 @@ namespace TLIS_Service.Services
                                                     mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                        mwDish.MwDishLibrary.polarityType.Name;
                                                 }
-                                                var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                                 (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                                    && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                                    !x.Dismantle &&
+                                                                    x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3598,9 +3602,10 @@ namespace TLIS_Service.Services
                                                                 mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                    mwDish.MwDishLibrary.polarityType.Name;
                                                             }
-                                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                            (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                             !x.Dismantle &&
+                                                             x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                             x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3719,9 +3724,10 @@ namespace TLIS_Service.Services
                                                                 mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                    mwDish.MwDishLibrary.polarityType.Name;
                                                             }
-                                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                            (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                                !x.Dismantle &&
+                                                                x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                                x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3888,9 +3894,10 @@ namespace TLIS_Service.Services
                                                             mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
-                                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                             !x.Dismantle &&
+                                                             x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                             x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -4009,9 +4016,10 @@ namespace TLIS_Service.Services
                                                             mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
-                                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                            !x.Dismantle &&
+                                                            x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                            x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -4166,9 +4174,10 @@ namespace TLIS_Service.Services
                                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
-                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                        && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                           !x.Dismantle &&
+                                                           x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                           x.SiteCode.ToLower() == SiteCode.ToLower());
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -4459,9 +4468,10 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                            !x.Dismantle &&
+                                                            x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                            x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4633,9 +4643,10 @@ namespace TLIS_Service.Services
                                                                 mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
 
                                                             }
-                                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                           (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                              && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                         !x.Dismantle &&
+                                                         x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                         x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4916,9 +4927,11 @@ namespace TLIS_Service.Services
                                                             }
 
                                                         }
-                                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                                   && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                         !x.Dismantle &&
+                                                         x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                         x.SiteCode.ToLower() == SiteCode.ToLower());
+
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5124,9 +5137,10 @@ namespace TLIS_Service.Services
                                                                 }
                                                             }
                                                         }
-                                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                         (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle &&
+                                                        x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                        x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5361,9 +5375,10 @@ namespace TLIS_Service.Services
                                                             }
                                                         }
                                                     }
-                                                    var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                     (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                        && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                                     !x.Dismantle &&
+                                                                     x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                                     x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5564,9 +5579,10 @@ namespace TLIS_Service.Services
                                                             }
                                                         }
                                                     }
-                                                    var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                    (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                     && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle &&
+                                                       x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                       x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5795,9 +5811,10 @@ namespace TLIS_Service.Services
                                                         }
                                                     }
                                                 }
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                            (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle &&
+                                                        x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                        x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6185,9 +6202,12 @@ namespace TLIS_Service.Services
                                                     mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
 
                                                 }
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                  && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle &&
+                                                    x.Id != mwDish.Id &&
+                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
+
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6357,9 +6377,11 @@ namespace TLIS_Service.Services
                                                     mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
 
                                                 }
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                  && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle &&
+                                                    x.Id != mwDish.Id &&
+                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6524,9 +6546,11 @@ namespace TLIS_Service.Services
                                                     mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
 
                                                 }
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                  && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                   !x.Dismantle &&
+                                                   x.Id != mwDish.Id &&
+                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6695,9 +6719,11 @@ namespace TLIS_Service.Services
                                                     mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
 
                                                 }
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                  && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                          !x.Dismantle &&
+                                                          x.Id != mwDish.Id &&
+                                                          x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                          x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6973,9 +6999,11 @@ namespace TLIS_Service.Services
                                                 }
                                             }
 
-                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                     (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                       && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                   !x.Dismantle &&
+                                                   x.Id != mwDish.Id &&
+                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7178,9 +7206,11 @@ namespace TLIS_Service.Services
                                                 }
                                             }
 
-                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                     (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                       && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                  !x.Dismantle &&
+                                                  x.Id != mwDish.Id &&
+                                                  x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                  x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7376,9 +7406,11 @@ namespace TLIS_Service.Services
                                                 }
                                             }
 
-                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                     (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                       && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle &&
+                                                    x.Id != mwDish.Id &&
+                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7583,9 +7615,11 @@ namespace TLIS_Service.Services
                                                 }
                                             }
 
-                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                     (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                       && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                   !x.Dismantle &&
+                                                   x.Id != mwDish.Id &&
+                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7823,9 +7857,11 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                 (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                   && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                   !x.Dismantle &&
+                                                   x.Id != mwDish.Id &&
+                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -8029,9 +8065,11 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                 (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                   && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                  !x.Dismantle &&
+                                                  x.Id != mwDish.Id &&
+                                                  x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                  x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -8234,9 +8272,11 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                 (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                   && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle &&
+                                                    x.Id != mwDish.Id &&
+                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -8440,9 +8480,11 @@ namespace TLIS_Service.Services
                                             }
                                         }
 
-                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                 (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                                   && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                        var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                      !x.Dismantle &&
+                                                      x.Id != mwDish.Id &&
+                                                      x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                      x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -8672,9 +8714,11 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                             (x.Id != null ? x.DishName.ToLower() == mwDish.DishName.ToLower() : false
-                                               && x.Id != mwDish.Id && x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower()));
+                                    var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle &&
+                                                    x.Id != mwDish.Id &&
+                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                     if (CheckName != null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwDish.DishName} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -8871,9 +8915,12 @@ namespace TLIS_Service.Services
                                             mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                 mwDish.MwDishLibrary.polarityType.Name;
                                         }
-                                        var CheckName = _dbContext.MV_MWODU_VIEW.AsNoTracking().FirstOrDefault(x => !x.Dismantle &&
-                                                                            (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()));
+                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                !x.Dismantle &&
+                                                x.Id != mwODU.Id &&
+                                                x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
+
                                         if (CheckName != null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -8973,9 +9020,11 @@ namespace TLIS_Service.Services
                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                             mwDish.MwDishLibrary.polarityType.Name;
                                     }
-                                    var CheckName = _dbContext.MV_MWODU_VIEW.AsNoTracking().FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()));
+                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                !x.Dismantle &&
+                                                x.Id != mwODU.Id &&
+                                                x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                     if (CheckName != null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9068,9 +9117,11 @@ namespace TLIS_Service.Services
                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                             mwDish.MwDishLibrary.polarityType.Name;
                                     }
-                                    var CheckName = _dbContext.MV_MWODU_VIEW.AsNoTracking().FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()));
+                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle &&
+                                                       x.Id != mwODU.Id &&
+                                                       x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                     if (CheckName != null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9240,9 +9291,11 @@ namespace TLIS_Service.Services
                                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
-                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                    (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                        && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                          !x.Dismantle &&
+                                                          x.Id != mwODU.Id &&
+                                                          x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                          x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9358,9 +9411,11 @@ namespace TLIS_Service.Services
                                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
-                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                    && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle &&
+                                                    x.Id != mwODU.Id &&
+                                                    x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                    x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9474,9 +9529,11 @@ namespace TLIS_Service.Services
                                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
-                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                    && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle &&
+                                                       x.Id != mwODU.Id &&
+                                                       x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9535,10 +9592,10 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        else if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height <= 0)
+                                                        else if (TLIMWODU.allLoadInst.MwODULibrary.Height <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
+                                                        }.mwODU
                                                         else
                                                         {
                                                             mwODU.CenterHigh = mwODU.HBA + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height / 2;
@@ -9586,9 +9643,11 @@ namespace TLIS_Service.Services
                                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
-                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                                    && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                      !x.Dismantle &&
+                                                      x.Id != mwODU.Id &&
+                                                      x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                      x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9749,9 +9808,11 @@ namespace TLIS_Service.Services
                                                 mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
-                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                              !x.Dismantle &&
+                                                              x.Id != mwODU.Id &&
+                                                              x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                              x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9865,9 +9926,11 @@ namespace TLIS_Service.Services
                                                 mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
-                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                      !x.Dismantle &&
+                                                      x.Id != mwODU.Id &&
+                                                      x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                      x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -9982,9 +10045,11 @@ namespace TLIS_Service.Services
                                                 mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
-                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                      !x.Dismantle &&
+                                                      x.Id != mwODU.Id &&
+                                                      x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                      x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -10093,9 +10158,11 @@ namespace TLIS_Service.Services
                                                 mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
-                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                            var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle &&
+                                                        x.Id != mwODU.Id &&
+                                                        x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                        x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                             if (CheckName != null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -10251,9 +10318,11 @@ namespace TLIS_Service.Services
                                             mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
                                                 mwDish.MwDishLibrary.polarityType.Name;
                                         }
-                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == mwODU.Name.ToLower() : false
-                                                            && x.Id != mwODU.Id && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower()));
+                                        var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle &&
+                                                       x.Id != mwODU.Id &&
+                                                       x.Name.ToLower() == mwODU.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower());
                                         if (CheckName != null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwODU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 

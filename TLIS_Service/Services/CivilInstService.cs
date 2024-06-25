@@ -11973,99 +11973,125 @@ namespace TLIS_Service.Services
         }
         public Response<SideArmAndLoadsOnCivil> CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType)
         {
-            SideArmAndLoadsOnCivil OutPutData = new SideArmAndLoadsOnCivil();
-            TLIallCivilInst AllCivilInst = new TLIallCivilInst();
-            if (CivilType.ToLower() == TablesNames.TLIcivilWithLegs.ToString().ToLower())
-            {
-                AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.civilWithLegsId == CivilId,x=>x.civilWithLegs,x=>x.civilWithoutLeg,x=>x.civilNonSteel
-                , x => x.civilWithLegs.CivilWithLegsLib, x => x.civilNonSteel.CivilNonsteelLibrary, x => x.civilWithoutLeg.CivilWithoutlegsLib);
-            }
-            else if (CivilType.ToLower() == TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
-            {
-                AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.civilWithoutLegId == CivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel
-                , x => x.civilWithLegs.CivilWithLegsLib, x => x.civilNonSteel.CivilNonsteelLibrary, x => x.civilWithoutLeg.CivilWithoutlegsLib);
-            }
-            else if (CivilType.ToLower() == TablesNames.TLIcivilNonSteel.ToString().ToLower())
-            {
-                AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.civilNonSteelId == CivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel
-                , x => x.civilWithLegs.CivilWithLegsLib, x => x.civilNonSteel.CivilNonsteelLibrary, x => x.civilWithoutLeg.CivilWithoutlegsLib);
-            }
-            var civilload = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id && !x.Dismantle, x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwBU
-            , x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwRFU, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioRRU, x => x.allLoadInst.radioOther,
-            x => x.allLoadInst.power, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU.MwBULibrary, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwODU.MwODULibrary,
-            x => x.allLoadInst.mwRFU.MwRFULibrary, x => x.allLoadInst.mwOther.mwOtherLibrary, x => x.allLoadInst.radioAntenna.radioAntennaLibrary, x => x.allLoadInst.radioRRU.radioRRULibrary,
-            x => x.allLoadInst.radioOther.radioOtherLibrary, x => x.allLoadInst.power.powerLibrary, x => x.allLoadInst.loadOther.loadOtherLibrary).AsQueryable().ToList();
-            OutPutData.SideArmsCount = civilload.Where(x=>x.sideArmId != null && !x.sideArm.Draft).Select(x => x.sideArmId.Value).Count();
+             SideArmAndLoadsOnCivil OutPutData = new SideArmAndLoadsOnCivil();
+            //TLIallCivilInst AllCivilInst = new TLIallCivilInst();
+            //if (CivilType.ToLower() == TablesNames.TLIcivilWithLegs.ToString().ToLower())
+            //{
+            //    AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.civilWithLegsId == CivilId,x=>x.civilWithLegs,x=>x.civilWithoutLeg,x=>x.civilNonSteel
+            //    , x => x.civilWithLegs.CivilWithLegsLib, x => x.civilNonSteel.CivilNonsteelLibrary, x => x.civilWithoutLeg.CivilWithoutlegsLib);
+            //}
+            //else if (CivilType.ToLower() == TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
+            //{
+            //    AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.civilWithoutLegId == CivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel
+            //    , x => x.civilWithLegs.CivilWithLegsLib, x => x.civilNonSteel.CivilNonsteelLibrary, x => x.civilWithoutLeg.CivilWithoutlegsLib);
+            //}
+            //else if (CivilType.ToLower() == TablesNames.TLIcivilNonSteel.ToString().ToLower())
+            //{
+            //    AllCivilInst = _unitOfWork.AllCivilInstRepository.GetIncludeWhereFirst(x => x.civilNonSteelId == CivilId, x => x.civilWithLegs, x => x.civilWithoutLeg, x => x.civilNonSteel
+            //    , x => x.civilWithLegs.CivilWithLegsLib, x => x.civilNonSteel.CivilNonsteelLibrary, x => x.civilWithoutLeg.CivilWithoutlegsLib);
+            //}
+            //var civilload = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id && !x.Dismantle, x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwBU
+            //, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwRFU, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioRRU, x => x.allLoadInst.radioOther,
+            //x => x.allLoadInst.power, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwBU.MwBULibrary, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwODU.MwODULibrary,
+            //x => x.allLoadInst.mwRFU.MwRFULibrary, x => x.allLoadInst.mwOther.mwOtherLibrary, x => x.allLoadInst.radioAntenna.radioAntennaLibrary, x => x.allLoadInst.radioRRU.radioRRULibrary,
+            //x => x.allLoadInst.radioOther.radioOtherLibrary, x => x.allLoadInst.power.powerLibrary, x => x.allLoadInst.loadOther.loadOtherLibrary).AsQueryable().ToList();
+            //OutPutData.SideArmsCount = civilload.Where(x=>x.sideArmId != null && !x.sideArm.Draft).Select(x => x.sideArmId.Value).Count();
 
-            OutPutData.MW_DishesCount = civilload.Where(x=>x.allLoadInstId != null && x.allLoadInst.mwDishId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwDishId.Value).Count();
-            OutPutData.MW_BUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwBUId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.mwBUId.Value).Count();
-            OutPutData.MW_ODUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwODUId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwODUId.Value).Count();
-            OutPutData.MW_RFUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwRFUId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.mwRFUId.Value).Count();
-            OutPutData.OtherMWsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwOtherId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwOtherId.Value).Count();
-            OutPutData.RadioAntennasCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.radioAntennaId.Value).Count();
-            OutPutData.RadioRRUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.radioRRUId.Value).Count();
-            OutPutData.OtherRadiosCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.radioOtherId.Value).Count();
-            OutPutData.PowersCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.powerId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.powerId.Value).Count();
-            OutPutData.OtherLoadsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.loadOtherId.Value).Count();
+            //OutPutData.MW_DishesCount = civilload.Where(x=>x.allLoadInstId != null && x.allLoadInst.mwDishId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwDishId.Value).Count();
+            //OutPutData.MW_BUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwBUId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.mwBUId.Value).Count();
+            //OutPutData.MW_ODUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwODUId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwODUId.Value).Count();
+            //OutPutData.MW_RFUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwRFUId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.mwRFUId.Value).Count();
+            //OutPutData.OtherMWsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.mwOtherId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.mwOtherId.Value).Count();
+            //OutPutData.RadioAntennasCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.radioAntennaId.Value).Count();
+            //OutPutData.RadioRRUsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.radioRRUId.Value).Count();
+            //OutPutData.OtherRadiosCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.radioOtherId.Value).Count();
+            //OutPutData.PowersCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.powerId != null && !x.allLoadInst.Draft ).Select(x => x.allLoadInst.powerId.Value).Count();
+            //OutPutData.OtherLoadsCount = civilload.Where(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId != null && !x.allLoadInst.Draft).Select(x => x.allLoadInst.loadOtherId.Value).Count();
             double Availablespace = 0;
             if (CivilType == "TLIcivilWithLegs")
             {
-                if (AllCivilInst.civilWithLegs != null)
+                var CivilWithLeg = _unitOfWork.CivilWithLegsRepository.GetIncludeWhereFirst(x => x.Id == CivilId,x=>x.CivilWithLegsLib);
+                if (CivilWithLeg != null)
                 {
 
-                    if (AllCivilInst.civilWithLegs.IsEnforeced == true)
+                    if (CivilWithLeg.IsEnforeced == true)
                     {
-                        if (AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement != 0 && AllCivilInst.civilWithLegs.CurrentLoads != 0)
+                        if (CivilWithLeg.SupportMaxLoadAfterInforcement != 0 && CivilWithLeg.CurrentLoads != 0)
                         {
-                            Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
+                            Availablespace = CivilWithLeg.SupportMaxLoadAfterInforcement - CivilWithLeg.CurrentLoads;
 
                         }
-                        OutPutData.CivilMaxLoad = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement;
+                        OutPutData.CivilMaxLoad = CivilWithLeg.SupportMaxLoadAfterInforcement;
                     }
 
-                    else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
+                    else if (CivilWithLeg.Support_Limited_Load != 0)
                     {
-                        if (AllCivilInst.civilWithLegs.CurrentLoads != 0)
+                        if (CivilWithLeg.CurrentLoads != 0)
                         {
-                            Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                            Availablespace = CivilWithLeg.Support_Limited_Load - CivilWithLeg.CurrentLoads;
                         }
-                        OutPutData.CivilMaxLoad = AllCivilInst.civilWithLegs.Support_Limited_Load;
+                        OutPutData.CivilMaxLoad = CivilWithLeg.Support_Limited_Load;
                     }
                     else
                     {
-                        if (AllCivilInst.civilWithLegs.CurrentLoads != 0)
+                        if (CivilWithLeg.CurrentLoads != 0)
                         {
-                            Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                            Availablespace = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load - CivilWithLeg.CurrentLoads;
                         }
-                        OutPutData.CivilMaxLoad = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load;
+                        OutPutData.CivilMaxLoad = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load;
                     }
                 }
-                OutPutData.CurrentLoads = AllCivilInst.civilWithLegs.CurrentLoads;
+                OutPutData.CurrentLoads = CivilWithLeg.CurrentLoads;
                 OutPutData.Availablespace = Availablespace;
             }
             else if (CivilType == "TLIcivilWithoutLeg")
             {
-                if (AllCivilInst.civilWithoutLeg != null)
+                var CivilWithout = _unitOfWork.CivilWithoutLegRepository.GetIncludeWhereFirst(x => x.Id == CivilId, x => x.CivilWithoutlegsLib);
+                if (CivilWithout != null)
                 {
-                    if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
+                    if (CivilWithout.Support_Limited_Load != 0)
                     {
-                        if (AllCivilInst.civilWithoutLeg.CurrentLoads != 0)
+                        if (CivilWithout.CurrentLoads != 0)
                         {
-                            Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                            Availablespace = CivilWithout.Support_Limited_Load - CivilWithout.CurrentLoads;
                         }
-                        OutPutData.CivilMaxLoad = AllCivilInst.civilWithoutLeg.Support_Limited_Load;
+                        OutPutData.CivilMaxLoad = CivilWithout.Support_Limited_Load;
                     }
                     else
                     {
-                        if (AllCivilInst.civilWithoutLeg.CurrentLoads != 0)
+                        if (CivilWithout.CurrentLoads != 0)
                         {
-                            Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                            Availablespace = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load - CivilWithout.CurrentLoads;
                         }
-                        OutPutData.CivilMaxLoad = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load;
-
+                        OutPutData.CivilMaxLoad = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load;
                     }
                 }
-                OutPutData.CurrentLoads = Convert.ToDouble(AllCivilInst.civilWithoutLeg.CurrentLoads);
+                OutPutData.CurrentLoads = CivilWithout.CurrentLoads;
+                OutPutData.Availablespace = Availablespace;
+            }
+            else if (CivilType == "TLIcivilNonSteel")
+            {
+                var CivilNonSteel = _unitOfWork.CivilNonSteelRepository.GetIncludeWhereFirst(x => x.Id == CivilId, x => x.CivilNonsteelLibrary);
+                if (CivilNonSteel != null)
+                {
+                    if (CivilNonSteel.Support_Limited_Load != 0)
+                    {
+                        if (CivilNonSteel.CurrentLoads != 0)
+                        {
+                            Availablespace = CivilNonSteel.Support_Limited_Load - CivilNonSteel.CurrentLoads;
+                        }
+                        OutPutData.CivilMaxLoad = CivilNonSteel.Support_Limited_Load;
+                    }
+                    else
+                    {
+                        if (CivilNonSteel.CurrentLoads != 0)
+                        {
+                            Availablespace = CivilNonSteel.CivilNonsteelLibrary.Manufactured_Max_Load - CivilNonSteel.CurrentLoads;
+                        }
+                        OutPutData.CivilMaxLoad = CivilNonSteel.CivilNonsteelLibrary.Manufactured_Max_Load;
+                    }
+                }
+                OutPutData.CurrentLoads = CivilNonSteel.CurrentLoads;
                 OutPutData.Availablespace = Availablespace;
             }
             return new Response<SideArmAndLoadsOnCivil>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
