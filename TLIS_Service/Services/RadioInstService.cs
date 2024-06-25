@@ -2499,7 +2499,7 @@ namespace TLIS_Service.Services
                                                             if (CheckSerialNumber)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {RadioAntenna.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                                         }
-                                                        if (AddRadioRRU.civilLoads.ReservedSpace == true)
+                                                        if (AddRadioAntenna.civilLoads.ReservedSpace == true)
                                                         {
                                                             var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
 
