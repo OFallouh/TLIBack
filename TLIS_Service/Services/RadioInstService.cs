@@ -1673,10 +1673,11 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
-
+                                                     
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                   !x.Dismantle &&
+                                                                   x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                   x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -1799,9 +1800,11 @@ namespace TLIS_Service.Services
                                                             RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
 
                                                         }
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                                                               (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                                                                  && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                   !x.Dismantle &&
+                                                                   x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                   x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1979,10 +1982,11 @@ namespace TLIS_Service.Services
                                                                         RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
                                                                     }
 
-                                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                             (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
 
+                                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                               !x.Dismantle &&
+                                                                               x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                               x.SiteCode.ToLower() == SiteCode.ToLower());
                                                                     if (CheckName != null)
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -2105,9 +2109,11 @@ namespace TLIS_Service.Services
                                                                         RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
                                                                     }
 
-                                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                            (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                               !x.Dismantle &&
+                                                                               x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                               x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                                     if (CheckName != null)
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2280,10 +2286,11 @@ namespace TLIS_Service.Services
                                                             }
 
 
-                                                            var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                                                                                    (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                                                                                       && x.SiteCode.ToLower() == SiteCode.ToLower()));
 
+                                                            var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                       !x.Dismantle &&
+                                                                       x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                       x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -2408,9 +2415,11 @@ namespace TLIS_Service.Services
                                                             }
 
 
-                                                            var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                            var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                       !x.Dismantle &&
+                                                                       x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                       x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2574,9 +2583,10 @@ namespace TLIS_Service.Services
 
 
 
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                             (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                   !x.Dismantle &&
+                                                                   x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                   x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2759,10 +2769,11 @@ namespace TLIS_Service.Services
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                              
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                    !x.Dismantle &&
+                                                                    x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
+                                
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2893,9 +2904,10 @@ namespace TLIS_Service.Services
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                                                               (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                                                                  && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                    !x.Dismantle &&
+                                                                    x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3093,9 +3105,10 @@ namespace TLIS_Service.Services
                                                                     if (CheckAzimuthAndHeightBase.Count > 0)
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                             (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                       !x.Dismantle &&
+                                                                       x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                       x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                                     if (CheckName != null)
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3230,9 +3243,10 @@ namespace TLIS_Service.Services
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                            (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                               && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                          !x.Dismantle &&
+                                                                          x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                          x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                                     if (CheckName != null)
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3422,9 +3436,10 @@ namespace TLIS_Service.Services
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                            var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                            (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                            var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                          !x.Dismantle &&
+                                                                          x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                          x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3556,9 +3571,10 @@ namespace TLIS_Service.Services
                                                             if (CheckAzimuthAndHeightBase.Count > 0)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                            var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                           && x.SiteCode.ToLower() == SiteCode.ToLower()));
+                                                            var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                    !x.Dismantle &&
+                                                                    x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                             if (CheckName != null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3737,10 +3753,11 @@ namespace TLIS_Service.Services
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-        
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                                             (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                                                && x.SiteCode.ToLower() == SiteCode.ToLower()));
+
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                      !x.Dismantle &&
+                                                                      x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                      x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3983,11 +4000,10 @@ namespace TLIS_Service.Services
                                                     RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
 
                                                 }
-
-                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
-
+                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                           !x.Dismantle && x.Id != RadioAntenna.Id&&
+                                                           x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                           x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -4109,9 +4125,10 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                              !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                              x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                              x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4225,9 +4242,10 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                       x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4350,9 +4368,10 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                           !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                           x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                           x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4524,9 +4543,10 @@ namespace TLIS_Service.Services
                                                             RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                         }
 
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                                  !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                                  x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                                  x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4645,9 +4665,10 @@ namespace TLIS_Service.Services
                                                             RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                         }
 
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                           !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                           x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                           x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4759,9 +4780,10 @@ namespace TLIS_Service.Services
                                                         }
 
 
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                            !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                            x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4881,9 +4903,10 @@ namespace TLIS_Service.Services
                                                             RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                         }
 
-                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                              !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                              x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                              x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5050,9 +5073,10 @@ namespace TLIS_Service.Services
                                                     {
                                                         RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                     }
-                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                               !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                               x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                               x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5172,9 +5196,10 @@ namespace TLIS_Service.Services
                                                         RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                     }
 
-                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                        x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5285,9 +5310,10 @@ namespace TLIS_Service.Services
                                                         RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                     }
 
-                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                         !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                         x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                         x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5408,9 +5434,10 @@ namespace TLIS_Service.Services
                                                         RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                     }
 
-                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioAntenna.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                            !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                            x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5569,9 +5596,10 @@ namespace TLIS_Service.Services
                                                     RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
                                                 }
 
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.DishName.ToLower() == RadioAntenna.Name.ToLower() : false
-                                                           && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
+                                                         !x.Dismantle && x.Id != RadioAntenna.Id &&
+                                                         x.Name.ToLower() == RadioAntenna.Name.ToLower() &&
+                                                         x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioAntenna.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5742,10 +5770,11 @@ namespace TLIS_Service.Services
                                                 if (CheckAzimuthAndHeightBase != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
                                         
-                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
-
+                                              
+                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                       x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -5869,9 +5898,10 @@ namespace TLIS_Service.Services
                                                 if (CheckAzimuthAndHeightBase != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                        x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -5987,9 +6017,10 @@ namespace TLIS_Service.Services
                                                 if (CheckAzimuthAndHeightBase != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                      !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                      x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                      x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6113,10 +6144,11 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeightBase != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
- 
-                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+
+                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                    !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                    x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                    x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6300,9 +6332,10 @@ namespace TLIS_Service.Services
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                         !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                         x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                         x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6447,9 +6480,10 @@ namespace TLIS_Service.Services
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                             !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                             x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                             x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6570,9 +6604,10 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                                x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6717,10 +6752,10 @@ namespace TLIS_Service.Services
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-
-                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                        (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                        var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                        x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -6903,10 +6938,11 @@ namespace TLIS_Service.Services
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                
-                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+
+                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                            !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                            x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7034,9 +7070,10 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                             !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                             x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                             x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7153,10 +7190,11 @@ namespace TLIS_Service.Services
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                      
-                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+
+                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                              !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                              x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                              x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7285,9 +7323,10 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => !x.Dismantle && x.Id != RadioRRU.Id &&
-                                                    (x.Id != null ? x.Name.ToLower() == RadioRRU.Name.ToLower() : false
-                                                       && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+                                                    var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                                  !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                                  x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                                  x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7461,10 +7500,11 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                
-                                                var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x => !x.Dismantle &&
-                                                        (x.Id != null ? x.DishName.ToLower() == RadioRRU.Name.ToLower() : false
-                                                           && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()));
+
+                                                var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
+                                                             !x.Dismantle && x.Id != RadioRRU.Id &&
+                                                             x.Name.ToLower() == RadioRRU.Name.ToLower() &&
+                                                             x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {RadioRRU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -11589,7 +11629,7 @@ namespace TLIS_Service.Services
                                 baseInstAttViews.Value = sectionsLegTypeViewModel;
                                 baseInstAttViews.Label = "Select RadioAntenna";
                                 baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
-                                baseInstAttViews.DataType = "list";
+                                baseInstAttViews.DataType = "MultiSelect";
                                 Config.Add(baseInstAttViews);
                             }
                           
@@ -11602,7 +11642,7 @@ namespace TLIS_Service.Services
                             baseInstAttViews.Label = "Select RadioAntenna";
                             baseInstAttViews.Options = new object[0];
                             baseInstAttViews.visible = false;
-                            baseInstAttViews.DataType = "list";
+                            baseInstAttViews.DataType = "MultiSelect";
                             Config.Add(baseInstAttViews);                          
                         }
                         if (RadioRRU.sideArmId == null)

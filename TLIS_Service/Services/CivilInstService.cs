@@ -102,51 +102,51 @@ namespace TLIS_Service.Services
             _services = services;
             _mapper = mapper;
         }
-        public Response<LoadsOnSideArm> GetLoadsOnSideArm(int SideArmId)
+        public Response<CivilLoads> GetLoadsOnSideArm(int SideArmId)
         {
             try
             {
-                LoadsOnSideArm OutPut = new LoadsOnSideArm();
+                CivilLoads OutPut = new CivilLoads();
 
                 List<TLIcivilLoads> CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle && x.sideArmId == SideArmId && x.allLoadInstId != null, x => x.allLoadInst,
                     x => x.allLoadInst.mwBU, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
                     x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU).ToList();
 
-                OutPut.MW_ODUs = _mapper.Map<List<MW_ODUViewModel>>(CivilLoads.Where(x => x.allLoadInst.mwODUId != null)
+                OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwODUId != null)
                     .Select(x => x.allLoadInst.mwODU).Distinct().ToList());
 
-                OutPut.MW_Dishes = _mapper.Map<List<MW_DishViewModel>>(CivilLoads.Where(x => x.allLoadInst.mwDishId != null)
+                OutPut.MW_Dishes = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwDishId != null)
                     .Select(x => x.allLoadInst.mwDish).Distinct().ToList());
 
-                OutPut.MW_RFUs = _mapper.Map<List<MW_RFUViewModel>>(CivilLoads.Where(x => x.allLoadInst.mwRFUId != null)
+                OutPut.MW_RFUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwRFUId != null)
                     .Select(x => x.allLoadInst.mwRFU).Distinct().ToList());
 
-                OutPut.MW_BUs = _mapper.Map<List<MW_BUViewModel>>(CivilLoads.Where(x => x.allLoadInst.mwBUId != null)
+                OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwBUId != null)
                     .Select(x => x.allLoadInst.mwBU).Distinct().ToList());
 
-                OutPut.MW_Others = _mapper.Map<List<Mw_OtherViewModel>>(CivilLoads.Where(x => x.allLoadInst.mwOtherId != null)
+                OutPut.MW_Others = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwOtherId != null)
                     .Select(x => x.allLoadInst.mwOther).Distinct().ToList());
 
-                OutPut.RadioAntennas = _mapper.Map<List<RadioAntennaViewModel>>(CivilLoads.Where(x => x.allLoadInst.radioAntennaId != null)
+                OutPut.RadioAntennas = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioAntennaId != null)
                     .Select(x => x.allLoadInst.radioAntenna).Distinct().ToList());
 
-                OutPut.RadioRRUs = _mapper.Map<List<RadioRRUViewModel>>(CivilLoads.Where(x => x.allLoadInst.radioRRUId != null)
+                OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioRRUId != null)
                     .Select(x => x.allLoadInst.radioRRU).Distinct().ToList());
 
-                OutPut.RadioOthers = _mapper.Map<List<RadioOtherViewModel>>(CivilLoads.Where(x => x.allLoadInst.radioOtherId != null)
+                OutPut.RadioOthers = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioOtherId != null)
                     .Select(x => x.allLoadInst.radioOther).Distinct().ToList());
 
-                OutPut.Powers = _mapper.Map<List<PowerViewModel>>(CivilLoads.Where(x => x.allLoadInst.powerId != null)
+                OutPut.Powers = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.powerId != null)
                     .Select(x => x.allLoadInst.power).Distinct().ToList());
 
-                OutPut.LoadOthers = _mapper.Map<List<LoadOtherViewModel>>(CivilLoads.Where(x => x.allLoadInst.loadOtherId != null)
+                OutPut.LoadOthers = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.loadOtherId != null)
                     .Select(x => x.allLoadInst.loadOther).Distinct().ToList());
 
-                return new Response<LoadsOnSideArm>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<LoadsOnSideArm>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<CivilLoads>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
         public Response<CivilLoads> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType)

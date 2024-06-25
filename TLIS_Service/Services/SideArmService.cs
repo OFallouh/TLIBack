@@ -302,6 +302,12 @@ namespace TLIS_Service.Services
                 {
                     var SideArm = _dbContext.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == sideArmId &&
                     x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
+
+                    var LoadONSideArm = _dbContext.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == sideArmId &&
+                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId !=null);
+                    if (LoadONSideArm != null)
+                     return new Response<bool>(true, false, null, "can not dismantle this sidearm becuase found load on it", (int)ApiReturnCode.fail);
+                    
                     var OldSideArm = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.sideArmId == sideArmId &&
                     x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
 
