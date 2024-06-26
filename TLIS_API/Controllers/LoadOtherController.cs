@@ -83,7 +83,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleLoadOther")]
 
-        public IActionResult DismantleLoadOther(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleLoadOther(string sitecode, int Id, string LoadName, int TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -104,7 +104,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.LoadOtherService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIloadOther.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.LoadOtherService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLIloadOther.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }

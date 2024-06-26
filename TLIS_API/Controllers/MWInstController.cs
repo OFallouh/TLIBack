@@ -355,7 +355,7 @@ namespace TLIS_API.Controllers
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_BU")]
-        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int? TaskId)
+        public IActionResult DismantleMW_BU(string sitecode, int Id, string LoadName,int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -376,12 +376,12 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_ODU")]
-        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_ODU(string sitecode, int Id, string LoadName, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -402,13 +402,13 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_RFU")]
 
-        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_RFU(string sitecode, int Id, string LoadName, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -429,13 +429,13 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Dish")]
 
-        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_Dish(string sitecode, int Id, string LoadName, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -456,13 +456,13 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Other")]
 
-        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_Other(string sitecode, int Id, string LoadName, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -483,7 +483,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

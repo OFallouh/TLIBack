@@ -182,7 +182,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleRadioRRU")]
 
-        public IActionResult DismantleRadioRRU(string sitecode, int LoadId, string LoadName, int? TaskId)
+        public IActionResult DismantleRadioRRU(string sitecode, int Id, string LoadName, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -203,14 +203,14 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleRadioOther")]
 
-        public IActionResult DismantleRadioOther(string sitecode, int LoadId, string LoadName,int? TaskId)
+        public IActionResult DismantleRadioOther(string sitecode, int Id, string LoadName,int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -231,13 +231,13 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleRadioAntenna")]
-        public IActionResult DismatleRadioAntenna(string sitecode, int LoadId, string LoadName,int? TaskId)
+        public IActionResult DismatleRadioAntenna(string sitecode, int Id, string LoadName,int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -258,7 +258,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
