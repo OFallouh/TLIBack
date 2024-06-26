@@ -497,6 +497,15 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetAllSitesWithoutPaginationForWorkFlow();
             return Ok(response);
         }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetAllSitesWithoutPagination")]
+        [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
+        public IActionResult GetAllSitesWithoutPagination([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.GetAllSitesWithoutPagination(parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
+            return Ok(response);
+        }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetUsedSitesCount")]
         public IActionResult GetUsedSitesCount()

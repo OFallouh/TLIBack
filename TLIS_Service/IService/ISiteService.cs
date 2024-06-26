@@ -28,6 +28,7 @@ namespace TLIS_Service.IService
 {
     public interface ISiteService
     {
+        Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
