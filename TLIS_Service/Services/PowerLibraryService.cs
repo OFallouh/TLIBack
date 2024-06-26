@@ -840,7 +840,7 @@ namespace TLIS_Service.Services
 
                     if (editPowerLibraryObject.DynamicAttributes != null ? editPowerLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editPowerLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, MWDishLibraryEntites.Id, userId, resultId, MWDishLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editPowerLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, PowerLibraryEntites.Id, userId, resultId, PowerLegLib.Id);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
