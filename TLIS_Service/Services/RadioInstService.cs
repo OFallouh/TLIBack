@@ -11642,9 +11642,9 @@ namespace TLIS_Service.Services
                                 sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                                 baseInstAttViews.Key = "RadioAntennaId";
-                                baseInstAttViews.Value = sectionsLegTypeViewModel;
+                                baseInstAttViews.Value = sectionsLegTypeViewModelsidearm;
                                 baseInstAttViews.Label = "Select RadioAntenna";
-                                baseInstAttViews.Options = sectionsLegTypeViewModel;
+                                baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
                                 baseInstAttViews.DataType = "MultiSelect";
                                 Config.Add(baseInstAttViews);
                             }
