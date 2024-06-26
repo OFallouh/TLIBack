@@ -184,7 +184,7 @@ namespace TLIS_Service.Services
                             }
                             transaction.Complete();
                             tran.Commit();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<AddSideArmLibraryObject>();
                         }
                         catch (Exception err)
@@ -786,7 +786,7 @@ namespace TLIS_Service.Services
                     DisableDynamicAttLibValues(TableNameEntity.Id, id, UserId);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<SideArmLibraryViewModel>();
                 }
                 catch (Exception err)
@@ -831,7 +831,7 @@ namespace TLIS_Service.Services
                     _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, OldSideWithArm, NewSideWithArm);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<SideArmLibraryViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
 
                 }
@@ -948,7 +948,7 @@ namespace TLIS_Service.Services
                     _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editSideArmLibraryViewModel.dynamicAttributes,connectionString, TableNames.Id, tLIsideArmLibrary.Id, UserId, resultId, SidArm.Id);
                 }
                 await _unitOfWork.SaveChangesAsync();
-                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                 return new Response<EditSideArmLibraryObject>();
             }
             catch (Exception err)

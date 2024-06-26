@@ -17,6 +17,7 @@ using static TLIS_Repository.Helpers.Constants;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using Oracle.ManagedDataAccess.Client;
+using System.Data;
 
 namespace TLIS_Repository.Base
 {
@@ -1325,16 +1326,18 @@ namespace TLIS_Repository.Base
             }
             _context.SaveChanges();
         }
-        public void RefreshView(string connectionString, string viewName)
+        public void RefreshView(string connectionString)
         {
             try
             {
                 using (var connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
-                    using (var command = new OracleCommand($"BEGIN DBMS_MVIEW.REFRESH('{viewName}', 'C'); END;", connection))
+                    string storedProcedureName = "refresh_all_mviews";
+                    using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
                     {
-                        command.ExecuteNonQuery();
+                        procedureCommand.CommandType = CommandType.StoredProcedure;
+                        procedureCommand.ExecuteNonQuery();
                     }
                 }
             }

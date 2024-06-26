@@ -3489,8 +3489,9 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilWithLegId != null)
                                         {
-                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                            AddMW_ODU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                            AddMW_ODU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),x=>x.allCivilInst,
+                                            x=>x.allCivilInst.civilWithLegs,x=>x.allCivilInst.civilWithoutLeg,x=>x.allCivilInst.civilNonSteel);
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
                                             if (AddMW_ODU.installationConfig?.LegId != null)
@@ -3791,8 +3792,11 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilWithoutLegId != null)
                                         {
-                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithoutLegId
-                                            == AddMW_ODU.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId
+                                            == AddMW_ODU.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()
+                                            , x => x.allCivilInst,
+                                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
+                      
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
 
@@ -4079,8 +4083,11 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilNonSteelId != null)
                                         {
-                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilNonSteelId
-                                            == AddMW_ODU.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                                            CivilFound = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId
+                                            == AddMW_ODU.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()
+                                            , x => x.allCivilInst,
+                                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
+
                                             if (CivilFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Civil is not found", (int)ApiReturnCode.fail);
 
@@ -6061,11 +6068,11 @@ namespace TLIS_Service.Services
                             }
                             if (LoadSubType.TLImwODU.ToString() == TableName)
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWODU_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                             }
                             else if (LoadSubType.TLImwDish.ToString() == TableName)
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWDISH_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                             }
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
@@ -8832,7 +8839,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWDISH_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -10396,7 +10403,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_MWODU_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -16533,7 +16540,7 @@ namespace TLIS_Service.Services
                     }
                     if (LoadName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     //else if (addDependencyViewModel.TableName == "TLIradioOther")
                     //{
@@ -16541,7 +16548,7 @@ namespace TLIS_Service.Services
                     //}
                     else if (LoadName == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_RRU_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
 
                     //else if (addDependencyViewModel.TableName == "TLImwBU")
@@ -16554,11 +16561,11 @@ namespace TLIS_Service.Services
                     //}
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwODU.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     //else if (addDependencyViewModel.TableName == "TLImwOther")
                     //{

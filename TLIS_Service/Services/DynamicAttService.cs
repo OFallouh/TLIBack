@@ -393,146 +393,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             //FOR ENTITIES
                             transaction.Complete();
-                            if (addDependencyInstViewModel.TableName == "TLIcivilWithLegs")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIcivilWithoutLeg")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIcivilNonSteel")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIcivilNonSteelLibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIcivilWithLegLibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIcivilWithoutLegLibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIsideArm")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIsideArmLibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLIradioAntenna")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
-                            }
-                            //else if (addDependencyInstViewModel.TableName == "TLIradioOther")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIradioRRU")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIradioOtherLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            else if (addDependencyInstViewModel.TableName == "TLIradioAntennaLibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
-                            }
-                            //else if (addDependencyInstViewModel.TableName == "TLIradioRRULibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLImwBU")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLImwRFU")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            else if (addDependencyInstViewModel.TableName == "TLImwDish")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLImwODU")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
-                            }
-                            //else if (addDependencyInstViewModel.TableName == "TLImwOther")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLImwBULibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLImwRFULibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            else if (addDependencyInstViewModel.TableName == "TLImwDishLibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
-                            }
-                            else if (addDependencyInstViewModel.TableName == "TLImwODULibrary")
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
-                            }
-                            //else if (addDependencyInstViewModel.TableName == "TLImwOtherLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIpower")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIpowerLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIloadOther")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIloadOtherLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIcabinet")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIsolar")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIgenerator")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIsolarLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIgeneratorLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIcabinetPowerLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
-                            //else if (addDependencyInstViewModel.TableName == "TLIcabinetTelecomLibrary")
-                            //{
-                            //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                            //}
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<AddDependencyInstViewModel>();
                         }
                         catch (Exception err)
@@ -8221,39 +8082,39 @@ namespace TLIS_Service.Services
 
                             if (addDependencyViewModel.TableName == "TLIcivilWithLegs")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIcivilWithoutLeg")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIcivilNonSteel")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIcivilNonSteelLibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIcivilWithLegLibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIcivilWithoutLegLibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIsideArm")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIsideArmLibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLIradioAntenna")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             //else if (addDependencyViewModel.TableName == "TLIradioOther")
                             //{
@@ -8269,7 +8130,7 @@ namespace TLIS_Service.Services
                             //}
                             else if (addDependencyViewModel.TableName == "TLIradioAntennaLibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             //else if (addDependencyViewModel.TableName == "TLIradioRRULibrary")
                             //{
@@ -8285,11 +8146,11 @@ namespace TLIS_Service.Services
                             //}
                             else if (addDependencyViewModel.TableName == "TLImwDish")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLImwODU")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             //else if (addDependencyViewModel.TableName == "TLImwOther")
                             //{
@@ -8305,11 +8166,11 @@ namespace TLIS_Service.Services
                             //}
                             else if (addDependencyViewModel.TableName == "TLImwDishLibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             else if (addDependencyViewModel.TableName == "TLImwODULibrary")
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             }
                             //else if (addDependencyViewModel.TableName == "TLImwOtherLibrary")
                             //{
@@ -8727,146 +8588,7 @@ namespace TLIS_Service.Services
                     await _unitOfWork.DynamicAttRepository.UpdateItem(DynamicAtt);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
-                    if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithLegs")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithoutLeg")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilNonSteel")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilNonSteelLibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_LIBRARY_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithLegLibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIcivilWithoutLegLibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIsideArm")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIsideArmLibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_SIDEARM_LIBRARY_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIradioAntenna")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
-                    }
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioOther")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioRRU")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioOtherLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLIradioAntennaLibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
-                    }
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIradioRRULibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwBU")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwRFU")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwDish")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwODU")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
-                    }
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwOther")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwBULibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwRFULibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwDishLibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
-                    }
-                    else if (DynamicAttViewModel.tablesNames_Name == "TLImwODULibrary")
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
-                    }
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLImwOtherLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIpower")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIpowerLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIloadOther")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIloadOtherLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIcabinet")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIsolar")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIgenerator")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIsolarLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIgeneratorLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIcabinetPowerLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (DynamicAttViewModel.tablesNames_Name == "TLIcabinetTelecomLibrary")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)

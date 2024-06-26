@@ -1980,7 +1980,7 @@ namespace TLIS_Service.Services
                             transaction.Complete();
                             tran.Commit();
                            
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         
                             return new Response<AddRadioAntennaLibraryObject>();
                         }
@@ -2042,7 +2042,7 @@ namespace TLIS_Service.Services
                             transaction.Complete();
                             tran.Commit();
 
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_RRU_LIBRARY_VIEW"));
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
 
                             return new Response<AddRadioRRULibraryObject>();
                         }
@@ -3318,7 +3318,7 @@ namespace TLIS_Service.Services
                     await _unitOfWork.SaveChangesAsync();
 
                     transaction.Complete();
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<EditRadioAntennaLibraryObject>();
                 }
                 catch (Exception err)
@@ -3427,7 +3427,7 @@ namespace TLIS_Service.Services
                     await _unitOfWork.SaveChangesAsync();
 
                     transaction.Complete();
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_RRU_LIBRARY_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<EditRadioRRULibraryObject>();
                 }
                 catch (Exception err)
@@ -4557,7 +4557,7 @@ namespace TLIS_Service.Services
                     transaction.Complete();
                     if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                     {
@@ -4565,7 +4565,7 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                     {
-                          Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_RRU_LIBRARY_VIEW"));
+                          Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     return new Response<AllItemAttributes>();
                 }
@@ -4751,7 +4751,7 @@ namespace TLIS_Service.Services
                     transaction.Complete();
                     if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_LIBRARY_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                     {
@@ -4759,7 +4759,7 @@ namespace TLIS_Service.Services
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                     {
-                       Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_RRU_LIBRARY_VIEW"));
+                       Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                 
                     return new Response<AllItemAttributes>();

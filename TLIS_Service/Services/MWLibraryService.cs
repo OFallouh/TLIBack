@@ -3614,7 +3614,7 @@ namespace TLIS_Service.Services
                             
 
                             transaction.Complete();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<AddMWDishLibraryObject>();
                         }
                         catch (Exception err)
@@ -3688,7 +3688,7 @@ namespace TLIS_Service.Services
 
 
                             transaction.Complete();
-                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<ADDMWODULibraryObject>();
                         }
                         catch (Exception err)
@@ -5070,7 +5070,7 @@ namespace TLIS_Service.Services
 
 
                     transaction.Complete();
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<EditMWDishLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -5201,7 +5201,7 @@ namespace TLIS_Service.Services
 
 
                     transaction.Complete();
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<EditMWODULibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -6990,26 +6990,7 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
-                    if (LoadSubType.TLImwBULibrary.ToString() == TableName)
-                    {
-                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
-                    else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
-                    }
-                    else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
-                    }
-                    else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
-                    {
-                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
-                    else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
-                    {
-                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -7331,11 +7312,11 @@ namespace TLIS_Service.Services
                     }
                     else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_LIBRARY_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
                     {

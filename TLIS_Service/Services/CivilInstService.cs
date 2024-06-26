@@ -2745,7 +2745,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         return new Response<ObjectInstAtts>();
                     }
                     else
@@ -2963,7 +2963,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         return new Response<ObjectInstAtts>();
                     }
                     else
@@ -3095,7 +3095,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         return new Response<ObjectInstAtts>();
                     }
 
@@ -3465,7 +3465,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -3812,7 +3812,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -3966,7 +3966,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_NONSTEEL_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<ObjectInstAtts>();
                 }
                 catch (Exception err)
@@ -11036,7 +11036,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     else 
@@ -11150,7 +11150,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHOUTLEGS_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     else
@@ -11265,7 +11265,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MV_CIVIL_NONSTEEL_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                         return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
                     else

@@ -306,7 +306,7 @@ namespace TLIS_Service.Services
                     var LoadONSideArm = _dbContext.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == sideArmId &&
                     x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId !=null);
                     if (LoadONSideArm != null)
-                     return new Response<bool>(true, false, null, "can not dismantle this sidearm becuase found load on it", (int)ApiReturnCode.fail);
+                     return new Response<bool>(true, false, null, "can not dismantle this sidearm becuase found on it", (int)ApiReturnCode.fail);
                     
                     var OldSideArm = _dbContext.TLIcivilLoads.AsNoTracking().FirstOrDefault(x => x.sideArmId == sideArmId &&
                     x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
@@ -341,7 +341,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
 
@@ -3243,7 +3243,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transactionScope.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                         return new Response<EditSidearmInstallationObject>();
                     }
                     else
@@ -4509,7 +4509,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             transaction.Complete();
                         }
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_SIDEARM_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                         return new Response<SideArmViewDto>();
                     }
                     else

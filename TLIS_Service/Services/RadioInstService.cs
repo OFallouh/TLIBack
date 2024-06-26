@@ -3863,11 +3863,11 @@ namespace TLIS_Service.Services
                             }
                             if (LoadSubType.TLIradioAntenna.ToString() == TableName)
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_RADIO_ANTENNA_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                             }
                             if (LoadSubType.TLIradioRRU.ToString() == TableName)
                             {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_RADIO_RRU_VIEW"));
+                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                             }
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
@@ -7606,11 +7606,11 @@ namespace TLIS_Service.Services
                     }
                     if (LoadSubType.TLIradioAntenna.ToString() == TableName)
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_RADIO_ANTENNA_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     }
                     if (LoadSubType.TLIradioRRU.ToString() == TableName)
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString, "MV_RADIO_RRU_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     }
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
@@ -9609,7 +9609,7 @@ namespace TLIS_Service.Services
                     }
                     if (LoadName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_ANTENNA_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     //else if (addDependencyViewModel.TableName == "TLIradioOther")
                     //{
@@ -9617,7 +9617,7 @@ namespace TLIS_Service.Services
                     //}
                     else if (LoadName == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_RADIO_RRU_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
 
                     //else if (addDependencyViewModel.TableName == "TLImwBU")
@@ -9630,11 +9630,11 @@ namespace TLIS_Service.Services
                     //}
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwODU.ToString())
                     {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWODU_VIEW"));
+                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     }
                     //else if (addDependencyViewModel.TableName == "TLImwOther")
                     //{
