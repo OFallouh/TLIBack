@@ -17,8 +17,8 @@ namespace TLIS_Service.IService
     {
         Response<ReturnWithFilters<PowerLibraryViewModel>> GetPowerLibraries(ParameterPagination parameters, List<FilterObjectList> filters = null);
         Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName);
-        Response<AddPowerLibraryObject> AddPowerLibrary(AddPowerLibraryObject PowerLibraryViewModel, string connectionString);
-        //Task<Response<AllItemAttributes>> EditPowerLibrary(string TableName, EditPowerLibraryViewModel PowerLibraryViewModel);
+        Response<AddPowerLibraryObject> AddPowerLibrary(int UserId, AddPowerLibraryObject PowerLibraryViewModel, string connectionString);
+        Task<Response<EditPowerLibraryObject>> EditPowerLibrary(int userId, EditPowerLibraryObject editPowerLibraryObject, string TableName, string connectionString);
         Task<Response<AllItemAttributes>> DisablePowerLibrary(string TableName, int Id);
         Task<Response<AllItemAttributes>> DeletePowerLibrary(string TableName, int Id);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);

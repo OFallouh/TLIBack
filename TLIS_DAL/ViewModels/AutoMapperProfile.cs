@@ -172,6 +172,8 @@ using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.AddRadioRRULibraryObject;
 using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.EditRadioRRULibraryObject;
 using static TLIS_DAL.ViewModels.RadioRRUDTOs.AddRadioRRUInstallationObject;
 using static TLIS_DAL.ViewModels.RadioRRUDTOs.EditRadioRRUInstallationObject;
+using TLIS_DAL.ViewModels.PowerLibraryDTOs;
+using static TLIS_DAL.ViewModels.PowerLibraryDTOs.AddPowerLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -247,6 +249,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<SectionsLegTypeViewModel, MV_MWDISH_VIEW>().ReverseMap();
             CreateMap<InstallationRadioAntennaAttributeObject, TLIradioAntenna>().ReverseMap();
             CreateMap<EditInstallationRadioAntennaAttributeObject, TLIradioAntenna>().ReverseMap();
+            CreateMap<PowerLibraryAttributes, TLIpowerLibrary>().ReverseMap();
+            CreateMap<EditPowerLibraryObject, TLIpowerLibrary>().ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -69,7 +70,25 @@ namespace TLIS_API.Controllers.Load
             if(TryValidateModel(addPowerLibraryViewModel, nameof(AddPowerLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.PowerLibraryService.AddPowerLibrary(addPowerLibraryViewModel, ConnectionString);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.PowerLibraryService.AddPowerLibrary(userId, addPowerLibraryViewModel, ConnectionString);
                 return Ok(response);
             }
             else
@@ -81,24 +100,43 @@ namespace TLIS_API.Controllers.Load
             }
         }
 
-        //[HttpPost("EditPowerLibrary")]
-        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        [HttpPost("EditPowerLibrary")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
 
-        //public async Task<IActionResult> EditPowerLibrary([FromBody]EditPowerLibraryViewModel editPowerLibraryViewModel)
-        //{
-        //    if(TryValidateModel(editPowerLibraryViewModel, nameof(EditPowerLibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.PowerLibraryService.EditPowerLibrary(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), editPowerLibraryViewModel);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        public async Task<IActionResult> EditPowerLibrary([FromBody] EditPowerLibraryObject editPowerLibraryViewModel)
+        {
+            if (TryValidateModel(editPowerLibraryViewModel, nameof(EditPowerLibraryObject)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.PowerLibraryService.EditPowerLibrary(userId, editPowerLibraryViewModel, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [HttpPost("DisablePowerLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisablePowerLibrary(int Id)
