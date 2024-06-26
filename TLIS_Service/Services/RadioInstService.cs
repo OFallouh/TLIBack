@@ -11359,6 +11359,21 @@ namespace TLIS_Service.Services
                             Config.Add(baseInstAttViews);
                         }
                         objectInst.installationConfig = Config;
+                        string[] prefixes = new string[]
+                           {
+                                    "installationplaceid",
+                                    "civilsteeltype",
+                                    "civilwithleg",
+                                    "civilwithoutleg",
+                                    "civilnonsteel",
+                                    "legid",
+                                    "sidearmid",
+                                    
+                           };
+
+                        objectInst.installationConfig = Config
+                            .OrderBy(x => Array.FindIndex(prefixes, prefix => x.Key.ToLower().StartsWith(prefix)))
+                            .ThenBy(x => x.Key);
                     }
                     var InstallationDate = new BaseInstAttViews()
                     {
@@ -11624,11 +11639,12 @@ namespace TLIS_Service.Services
                                     Id = Convert.ToInt32(item.radioAntennaId),
                                     Name = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => x.Id == item.radioAntennaId)?.Name
                                 };
+                                sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                                 baseInstAttViews.Key = "RadioAntennaId";
                                 baseInstAttViews.Value = sectionsLegTypeViewModel;
                                 baseInstAttViews.Label = "Select RadioAntenna";
-                                baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
+                                baseInstAttViews.Options = sectionsLegTypeViewModel;
                                 baseInstAttViews.DataType = "MultiSelect";
                                 Config.Add(baseInstAttViews);
                             }
@@ -11670,7 +11686,25 @@ namespace TLIS_Service.Services
                             };
                             Config.Add(baseInstAttViews);
                         }
+
+
                         objectInst.installationConfig = Config;
+                        string[] prefixes = new string[]
+                           {
+                                    "installationplaceid",
+                                    "civilsteeltype",
+                                    "civilwithleg",
+                                    "civilwithoutleg",
+                                    "civilnonsteel",
+                                    "legid",
+                                    "sidearmid",
+                                    "radioantennaid",
+                           };
+
+                        objectInst.installationConfig = Config
+                            .OrderBy(x => Array.FindIndex(prefixes, prefix => x.Key.ToLower().StartsWith(prefix)))
+                            .ThenBy(x => x.Key);
+                        
                     }
                     var InstallationDate = new BaseInstAttViews()
                     {
