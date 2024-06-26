@@ -8,13 +8,14 @@ using TLIS_DAL.ViewModels.LogisticalDTOs;
 
 namespace TLIS_DAL.ViewModels.PowerLibraryDTOs
 {
-    public class AddPowerLibraryObject
+    public class EditPowerLibraryObject
     {
-        public PowerLibraryAttributes AttributesActivatedLibrary { get; set; }
-        public AddLogisticalViewModel LogisticalItems { get; set; }
+        public EditPowerLibraryAttributes AttributesActivatedLibrary { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
-        public class PowerLibraryAttributes
+        public AddLogisticalViewModel LogisticalItems { get; set; }
+        public class EditPowerLibraryAttributes
         {
+            public int Id { get; set; }
             public string Model { get; set; }
             public string? Note { get; set; } = "";
             public string? FrequencyRange { get; set; } = "";

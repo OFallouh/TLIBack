@@ -11629,27 +11629,35 @@ namespace TLIS_Service.Services
                             Config.Add(baseInstAttViews);
                         }
                         var RadioAntenna = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.allLoadInst.radioRRUId && x.radioAntennaId != null).ToList();
-                        if (RadioAntenna !=null )
+                        if (RadioAntenna != null)
                         {
+                            List<SectionsLegTypeViewModel> sectionsLegTypeViewModelsidearm = new List<SectionsLegTypeViewModel>();
+                            List<int> sectionsLegTypeViewModelsidearm2 = new List<int>();
+
                             foreach (var item in RadioAntenna)
                             {
-                                List<SectionsLegTypeViewModel> sectionsLegTypeViewModelsidearm = new List<SectionsLegTypeViewModel>();
+                                int radioAntennaId = Convert.ToInt32(item.radioAntennaId);
+                                string antennaName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => x.Id == radioAntennaId)?.Name;
+
                                 SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
                                 {
-                                    Id = Convert.ToInt32(item.radioAntennaId),
-                                    Name = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => x.Id == item.radioAntennaId)?.Name
+                                    Id = radioAntennaId,
+                                    Name = antennaName
                                 };
+
                                 sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
-                                BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "radioAntennaId";
-                                baseInstAttViews.Value = sectionsLegTypeViewModelsidearm;
-                                baseInstAttViews.Label = "Select RadioAntenna";
-                                baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
-                                baseInstAttViews.DataType = "MultiSelect";
-                                Config.Add(baseInstAttViews);
+                                sectionsLegTypeViewModelsidearm2.Add(radioAntennaId);
                             }
-                          
+
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
+                            baseInstAttViews.Key = "radioAntennaId";
+                            baseInstAttViews.Value = sectionsLegTypeViewModelsidearm2;
+                            baseInstAttViews.Label = "Select RadioAntenna";
+                            baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
+                            baseInstAttViews.DataType = "MultiSelect";
+                            Config.Add(baseInstAttViews);
                         }
+
                         if (RadioAntenna == null)
                         {                                                       
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();

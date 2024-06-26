@@ -535,7 +535,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWODU is not  found", (int)Helpers.Constants.ApiReturnCode.success);
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWODU is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)

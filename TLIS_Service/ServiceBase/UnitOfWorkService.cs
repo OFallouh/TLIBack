@@ -190,7 +190,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_PowerLibraryService == null)
-                    _PowerLibraryService = new PowerLibraryService(_unitOfWork, _services,_mapper);
+                    _PowerLibraryService = new PowerLibraryService(_unitOfWork, _services,_mapper, db);
 
                 return _PowerLibraryService;
             }
