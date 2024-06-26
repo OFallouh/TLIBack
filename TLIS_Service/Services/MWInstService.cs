@@ -4451,7 +4451,8 @@ namespace TLIS_Service.Services
 
                                                         var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                            x.LEG_ID == AddMW_Dish.installationConfig.legId && x.SiteCode.ToLower() == SiteCode.ToLower())
+                                                            x.LEG_ID == AddMW_Dish.installationConfig.legId && x.SiteCode.ToLower() 
+                                                            == SiteCode.ToLower())
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode })
                                                                 .Select(g => g.First())
                                                                 .ToList();
@@ -4471,7 +4472,7 @@ namespace TLIS_Service.Services
                                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
                                                             if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + " " + mwDish.Azimuth;
 
                                                             }
 

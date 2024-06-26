@@ -11478,7 +11478,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                        NameAttribute.Value = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x => x.Id == RadioId)?.Name;
+                        NameAttribute.Value = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x => x.Id == RadioId)?.Name;
                     }
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
                     {

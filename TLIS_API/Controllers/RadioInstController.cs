@@ -203,7 +203,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
@@ -231,12 +231,12 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpGet("DismatleRadioAntenna")]
+        [HttpGet("DismantleRadioAntenna")]
         public IActionResult DismatleRadioAntenna(string sitecode, int LoadId, string LoadName,int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -258,7 +258,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, LoadName, TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.RadioInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
 
         }

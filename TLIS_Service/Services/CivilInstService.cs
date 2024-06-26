@@ -10776,7 +10776,7 @@ namespace TLIS_Service.Services
 
                     var ODULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId ==
                     LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower()
-                    , x => x.allLoadInst).Select(x=>x.allLoadInst.mwODU).ToList();
+                    , x => x.allLoadInst,x=>x.allLoadInst.mwODU).Select(x=>x.allLoadInst.mwODU).ToList();
 
                     OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(ODULoad);
 
@@ -10784,7 +10784,7 @@ namespace TLIS_Service.Services
 
                     var MWBULoadSdDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.SdDishId ==
                           LoadId
-                           && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst)
+                           && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst,x=>x.allLoadInst.mwBU)
                         .Select(x=>x.allLoadInst.mwBU).ToList();
 
                     var MWBULoadMainDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.MainDishId

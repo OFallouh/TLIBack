@@ -290,7 +290,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CategoryId);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetRelationshipBetweenloads")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetRelationshipBetweenloads(int loadid, string Loadname,string SiteCode)

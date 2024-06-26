@@ -60,7 +60,8 @@ namespace TLIS_API.Helpers
             TLImwRFU,
             TLImwOther,
             TLIradioOther,
-            TLIloadOther
+            TLIloadOther,
+            TLIpower
         }
 
         public enum OtherInventoryType
