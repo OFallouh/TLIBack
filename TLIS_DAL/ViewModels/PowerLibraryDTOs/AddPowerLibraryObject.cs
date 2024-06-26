@@ -16,14 +16,17 @@ namespace TLIS_DAL.ViewModels.PowerLibraryDTOs
         public class PowerLibraryAttributes
         {
             public string Model { get; set; }
-            public string Note { get; set; }
-            public float Weight { get; set; }
-            public string FrequencyRange { get; set; }
-            public string Type { get; set; }
+            public string? Note { get; set; }
+            public string? FrequencyRange { get; set; }
+            public string? BandWidth { get; set; }
+            public string? ChannelBandWidth { get; set; }
+            public string? Type { get; set; }
             public float Size { get; set; }
-            public string L_W_H { get; set; }
+            public string? L_W_H { get; set; }
+            public float Weight { get; set; }
             public float width { get; set; }
             public float Length { get; set; }
+            public float Height { get; set; }
             public float Depth { get; set; }
             public float SpaceLibrary { get; set; }
             public bool Active { get; set; }

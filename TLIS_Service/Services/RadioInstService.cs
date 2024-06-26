@@ -11641,7 +11641,7 @@ namespace TLIS_Service.Services
                                 };
                                 sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                                baseInstAttViews.Key = "RadioAntennaId";
+                                baseInstAttViews.Key = "radioAntennaId";
                                 baseInstAttViews.Value = sectionsLegTypeViewModelsidearm;
                                 baseInstAttViews.Label = "Select RadioAntenna";
                                 baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
@@ -11653,7 +11653,7 @@ namespace TLIS_Service.Services
                         if (RadioAntenna == null)
                         {                                                       
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "RadioAntennaId";
+                            baseInstAttViews.Key = "radioAntennaId";
                             baseInstAttViews.Value = null;
                             baseInstAttViews.Label = "Select RadioAntenna";
                             baseInstAttViews.Options = new object[0];

@@ -33,6 +33,9 @@ using TLIS_DAL.ViewModels.MW_RFUDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.PowerLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.AsTypeDTOs;
+using TLIS_DAL.ViewModels.PolarityTypeDTOs;
+using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1654,12 +1657,45 @@ namespace TLIS_Service.Services
             try
             {
                 GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
-                var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLImwBULibrary.ToString(), null, null).ToList();
-                var logisticalItem=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("Power");
-                attributes.LogisticalItems = logisticalItem;
+                var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == "TLIpowerLibrary");
+                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIpowerLibrary.ToString(), null, null)
+                   .ToList();
+                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("Power");
+                attributes.LogisticalItems = LogisticalItems;
                 attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
+                IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                   .GetDynamicLibAtt(TableNameEntity.Id, null)
+                   .Select(DynamicAttribute =>
+                   {
+                       TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                       if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                       {
+                           switch (DynamicAttribute.DataType.ToLower())
+                           {
+                               case "string":
+                                   DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                                   break;
+                               case "int":
+                                   DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "double":
+                                   DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "bool":
+                                   DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "datetime":
+                                   DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                           }
+                       }
+                       else
+                       {
+                           DynamicAttribute.Value = " ".Split(' ')[0];
+                       }
+                       return DynamicAttribute;
+                   });
+                attributes.DynamicAttributes = DynamicAttributesWithoutValue;
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
