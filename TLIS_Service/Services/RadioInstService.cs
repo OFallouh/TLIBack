@@ -11628,8 +11628,9 @@ namespace TLIS_Service.Services
                                 Id = Convert.ToInt32(RadioRRU.sideArmId),
                                 Name = _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => x.Id == RadioRRU.sideArm.Id)?.Name
                             };
+                            sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "SideArmId";
+                            baseInstAttViews.Key = "sideArmId";
                             baseInstAttViews.Value = sectionsLegTypeViewModel;
                             baseInstAttViews.Label = "Select SideArm";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
@@ -11680,7 +11681,7 @@ namespace TLIS_Service.Services
                         if (RadioRRU.sideArmId == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "SideArmId";
+                            baseInstAttViews.Key = "sideArmId";
                             baseInstAttViews.Value = null;
                             baseInstAttViews.Label = "Select SideArm";
                             baseInstAttViews.Options = new object[0];

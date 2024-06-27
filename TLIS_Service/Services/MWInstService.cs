@@ -19627,7 +19627,7 @@ namespace TLIS_Service.Services
                             ConfigureView3("civilWithLeg", sectionsLegTypeViewModels[2], "civilWithLegId", MWODU.allCivilInst.civilWithLegs, _dbContext.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.Id == MWODU.allCivilInst.civilWithLegsId));
                         }
 
-                        if (MWODU.sideArmId != 0 && MWODU.sideArmId != null)
+                        if (MWODU.sideArmId != 0 && MWODU.sideArmId != null && MWODU.allLoadInst.mwODU.OduInstallationTypeId != 1)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {
