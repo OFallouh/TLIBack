@@ -63,7 +63,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantlePower")]
 
-        public IActionResult DismantlePower(string sitecode, int Id, string LoadName, int TaskId)
+        public IActionResult DismantlePower(string sitecode, int Id , int TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 

@@ -355,7 +355,7 @@ namespace TLIS_API.Controllers
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_BU")]
-        public IActionResult DismantleMW_BU(string sitecode, int Id, string LoadName,int? TaskId)
+        public IActionResult DismantleMW_BU(string sitecode, int Id,int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -381,7 +381,7 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_ODU")]
-        public IActionResult DismantleMW_ODU(string sitecode, int Id, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_ODU(string sitecode, int Id, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -408,7 +408,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_RFU")]
 
-        public IActionResult DismantleMW_RFU(string sitecode, int Id, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_RFU(string sitecode, int Id, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -435,7 +435,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Dish")]
 
-        public IActionResult DismantleMW_Dish(string sitecode, int Id, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_Dish(string sitecode, int Id, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -462,7 +462,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_Other")]
 
-        public IActionResult DismantleMW_Other(string sitecode, int Id, string LoadName, int? TaskId)
+        public IActionResult DismantleMW_Other(string sitecode, int Id, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
