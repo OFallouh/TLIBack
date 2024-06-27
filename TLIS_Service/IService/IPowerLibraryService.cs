@@ -22,6 +22,7 @@ namespace TLIS_Service.IService
         Task<Response<AllItemAttributes>> DisablePowerLibrary(string TableName, int Id);
         Task<Response<AllItemAttributes>> DeletePowerLibrary(string TableName, int Id);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
+        Response<GetEnableAttribute> GetPowerLibrariesEnabledAtt(string ConnectionString);
         Response<ReturnWithFilters<object>> GetPowerLibrariesWithEnableAttributes(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }
 }

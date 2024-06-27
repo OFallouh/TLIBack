@@ -47,6 +47,14 @@ namespace TLIS_API.Controllers.Load
             var response = _unitOfWorkService.PowerLibraryService.GetPowerLibrariesWithEnableAttributes(CombineFilters, parameterPagination);
             return Ok(response);
         }
+        [HttpPost("GetPowerLibrariesEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        public IActionResult GetPowerLibrariesEnabledAtt()
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.PowerLibraryService.GetPowerLibrariesEnabledAtt(ConnectionString);
+            return Ok(response);
+        }
         [HttpGet("GetForAddPowerLibrary")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddPowerLibrary()

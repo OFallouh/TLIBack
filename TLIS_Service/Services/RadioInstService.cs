@@ -9171,8 +9171,7 @@ namespace TLIS_Service.Services
                         {
                             var RadioAntenna = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.radioRRUId
                             == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allLoadInst.radioAntennaId != null
-                            && _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y => y.allLoadInst.radioAntennaId == x.allLoadInst.radioAntennaId
-                            && !y.Dismantle && y.SiteCode.ToLower() == sitecode.ToLower(), y => y.allLoadInst).Any(), x => x.allLoadInst).ToList();
+                            , x => x.allLoadInst).ToList();
                             RadioRRULoad.Dismantle = true;
                             foreach (var radioAntenna in RadioAntenna)
                             {
@@ -9306,12 +9305,8 @@ namespace TLIS_Service.Services
                              x.allLoadInst.radioAntennaId == LoadId &&
                              x.allLoadInst.radioRRUId != null &&
                              !x.Dismantle &&
-                             x.SiteCode.ToLower() == sitecode.ToLower() &&
-                             _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y =>
-                                 y.allLoadInst.radioRRUId == x.allLoadInst.radioRRUId &&
-                                 !y.Dismantle &&
-                                 y.SiteCode.ToLower() == sitecode.ToLower()
-                              , y => y.allLoadInst).Any(), x => x.allLoadInst
+                             x.SiteCode.ToLower() == sitecode.ToLower() 
+                            , x => x.allLoadInst
                             ).ToList();
 
                             foreach (var radioRRuLoad in RadioRRuLoad)
