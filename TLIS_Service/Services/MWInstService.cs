@@ -3270,7 +3270,7 @@ namespace TLIS_Service.Services
                                                         ReservedSpace = false,
                                                         SiteCode = SiteCode,
                                                         sideArmId = tLImwDish?.sideArmId,
-                                                        legId = tLImwDish?.legId,
+                                                        legId = AddMW_ODU.installationConfig?.LegId,
                                                         sideArm2Id = tLImwDish?.sideArm2Id,
                                                         Leg2Id = tLImwDish?.Leg2Id,
 
@@ -19348,6 +19348,7 @@ namespace TLIS_Service.Services
                             baseInstAttViews.DataType = "MultiSelect";
                             Config.Add(baseInstAttViews);
                         }
+                     
                         if (MWDish.sideArm == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
@@ -19636,6 +19637,20 @@ namespace TLIS_Service.Services
                                 Options = _mapper.Map<OwnerViewModel>(_dbContext.MV_SIDEARM_VIEW.FirstOrDefault(x => x.Id == MWODU.sideArmId)),
                                 DataType = "list",
                                 visible = true
+                            };
+                            Config.Add(baseInstAttViews);
+
+                        }
+                        if (MWODU.sideArmId != 0 && MWODU.sideArmId != null && MWODU.allLoadInst.mwODU.OduInstallationTypeId==1)
+                        {
+                            BaseInstAttViews baseInstAttViews = new BaseInstAttViews
+                            {
+                                Key = "sideArmId",
+                                Value = null,
+                                Label = "Select sideArm",
+                                Options = new object[0],
+                                DataType = "list",
+                                visible = false
                             };
                             Config.Add(baseInstAttViews);
 
